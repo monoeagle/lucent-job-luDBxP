@@ -17,6 +17,7 @@ def test_index_renders_form_and_local_assets(client):
     assert 'id="connection_url"' in html
     # assets must be local, never a CDN
     assert "/static/js/app.js" in html
+    assert "/static/lib/cytoscape.min.js" in html  # graph lib bundled locally
     assert "http://" not in html and "https://" not in html
 
 

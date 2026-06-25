@@ -28,6 +28,9 @@ def test_joinpath_endpoint_returns_sql(client, inventory_url):
     assert paths
     assert "SELECT" in paths[0]["sql"]
     assert "VirtualMachines" in paths[0]["tables"]
+    # edges describe the actual join steps (for graph highlighting)
+    assert paths[0]["edges"]
+    assert all(len(e) == 2 for e in paths[0]["edges"])
 
 
 def test_joinpath_no_connection_returns_400(client):
@@ -79,6 +82,24 @@ def test_joinpath_empty_connection_returns_clear_message(client):
     })
     assert resp.status_code == 400
     assert "Connection-URL" in resp.get_json()["error"]
+
+
+def test_graph_endpoint_returns_nodes_and_edges(client, inventory_url):
+    resp = client.post("/api/graph", json={"connection_url": inventory_url})
+    assert resp.status_code == 200
+    data = resp.get_json()
+    node_ids = {n["id"] for n in data["nodes"]}
+    assert node_ids == {
+        "Networks", "VirtualMachines", "OperatingSystems", "VMwareCluster",
+    }
+    pairs = {frozenset((e["source"], e["target"])) for e in data["edges"]}
+    assert frozenset(("VirtualMachines", "Networks")) in pairs
+
+
+def test_graph_empty_connection_returns_400(client):
+    resp = client.post("/api/graph", json={"connection_url": ""})
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
 
 
 def test_joinpath_unknown_column_returns_400(client, inventory_url):

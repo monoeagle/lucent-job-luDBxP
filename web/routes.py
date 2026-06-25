@@ -45,6 +45,23 @@ def api_schema():
     ])
 
 
+@bp.post("/api/graph")
+def api_graph():
+    """Return the FK graph as nodes and edges for visualization."""
+    data = request.get_json(silent=True) or {}
+    url = data.get("connection_url", "")
+    if not url.strip():
+        return jsonify(error=_NO_URL_MSG), 400
+    try:
+        schema = SqlAlchemyLoader(url).load()
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+    graph = build_graph(schema)
+    nodes = [{"id": n} for n in graph.nodes]
+    edges = [{"source": a, "target": b} for a, b in graph.edges]
+    return jsonify(nodes=nodes, edges=edges)
+
+
 @bp.post("/api/joinpath")
 def api_joinpath():
     """Find join paths between two columns and return the generated SQL."""
@@ -88,7 +105,12 @@ def api_joinpath():
     try:
         for p in paths:
             gen = generate_sql(p, selects, filters)
-            out.append({"tables": list(p.tables), "sql": gen.sql, "params": gen.params})
+            out.append({
+                "tables": list(p.tables),
+                "edges": [[s.left_table, s.right_table] for s in p.steps],
+                "sql": gen.sql,
+                "params": gen.params,
+            })
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
     return jsonify(paths=out)

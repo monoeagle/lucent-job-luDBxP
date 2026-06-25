@@ -1,5 +1,6 @@
 "use strict";
 let SCHEMA = { tables: [] };
+let CY = null;  // Cytoscape instance for the schema graph
 
 // Operators the backend accepts (core/sqlgen.py _ALLOWED_OPS).
 const OPERATORS = ["=", "!=", "<", ">", "<=", ">=", "LIKE"];
@@ -73,6 +74,57 @@ function collectFilters() {
   return filters;
 }
 
+// --- Schema graph (Cytoscape) --------------------------------------------
+async function drawGraph(url) {
+  const g = await postJSON("/api/graph", { connection_url: url });
+  const elements = [
+    ...g.nodes.map((n) => ({ data: { id: n.id } })),
+    ...g.edges.map((e) => ({ data: { source: e.source, target: e.target } })),
+  ];
+  CY = cytoscape({
+    container: document.getElementById("graph"),
+    elements,
+    style: [
+      { selector: "node", style: {
+        label: "data(id)", "font-size": 9, color: "#fff",
+        "background-color": "#2E6FAE", "text-valign": "center",
+        "text-halign": "center", shape: "round-rectangle",
+        width: 84, height: 24, "text-wrap": "wrap", "text-max-width": 78 } },
+      { selector: "edge", style: {
+        "line-color": "#bbb", width: 2, "curve-style": "bezier" } },
+      { selector: "node.hl", style: {
+        "background-color": "#E0532E", "border-width": 2, "border-color": "#7a1f0a" } },
+      { selector: "edge.hl", style: { "line-color": "#E0532E", width: 4 } },
+    ],
+  });
+  // Force-directed layout; fit the whole graph into view once it settles
+  // (fit must run after layoutstop, not before, or it sees stale positions).
+  const layout = CY.layout({
+    name: "cose", animate: false, padding: 24, randomize: true,
+    nodeRepulsion: 16000, idealEdgeLength: 110, nodeOverlap: 28,
+    componentSpacing: 120,
+  });
+  layout.one("layoutstop", () => CY.fit(undefined, 24));
+  layout.run();
+  window.CY = CY;  // expose for browser-console debugging and e2e checks
+  document.getElementById("graph_section").hidden = false;
+}
+
+function highlightPath(edges) {
+  if (!CY) return;
+  CY.elements().removeClass("hl");
+  const nodes = new Set();
+  for (const [a, b] of edges) {
+    nodes.add(a);
+    nodes.add(b);
+    CY.edges().forEach((e) => {
+      const s = e.source().id(), t = e.target().id();
+      if ((s === a && t === b) || (s === b && t === a)) e.addClass("hl");
+    });
+  }
+  nodes.forEach((id) => CY.$id(id).addClass("hl"));
+}
+
 // --- Wiring ---------------------------------------------------------------
 document.getElementById("btn_load").addEventListener("click", async () => {
   const url = document.getElementById("connection_url").value;
@@ -81,6 +133,7 @@ document.getElementById("btn_load").addEventListener("click", async () => {
     fillTableSelects();
     document.getElementById("filters").innerHTML = "";  // reset on new schema
     document.getElementById("builder").hidden = false;
+    await drawGraph(url);
   } catch (e) { alert(e.message); }
 });
 
@@ -105,7 +158,10 @@ document.getElementById("btn_build").addEventListener("click", async () => {
     list.innerHTML = data.paths
       .map((p, i) => `<li><a href="#" data-i="${i}">${p.tables.join(" → ")}</a></li>`)
       .join("");
-    const show = (i) => { document.getElementById("sql_out").textContent = data.paths[i].sql; };
+    const show = (i) => {
+      document.getElementById("sql_out").textContent = data.paths[i].sql;
+      highlightPath(data.paths[i].edges || []);
+    };
     list.querySelectorAll("a").forEach((a) =>
       a.addEventListener("click", (ev) => { ev.preventDefault(); show(+a.dataset.i); }));
     show(0);

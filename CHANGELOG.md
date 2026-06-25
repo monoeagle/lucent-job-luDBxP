@@ -16,6 +16,10 @@
 - Filter-UI: „Filter +" fügt Filterzeilen hinzu (Tabelle · Spalte · Operator ·
   Wert · Entfernen); mehrere Filter werden mit UND verknüpft und an die
   bestehende, getestete Backend-Filterlogik (parametrisiertes WHERE) gesendet.
+- Graph-Visualisierung: neuer `/api/graph`-Endpoint (Knoten/Kanten) und eine
+  interaktive Schema-Graph-Ansicht mit Cytoscape.js (lokal gebundelt, keine
+  CDN). Der gewählte Join-Pfad wird im Graph farblich hervorgehoben; die
+  joinpath-Antwort liefert dazu die konkreten Pfad-Kanten.
 
 ### Changed
 - UX: Connection-URL wird aus `default_connection` (config.json) vorbefüllt —
