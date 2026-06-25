@@ -39,6 +39,11 @@ Server listens at `http://127.0.0.1:5057`.
 ./venv/bin/python -m pytest -v       # verbose
 ```
 
+## Bekannte Einschränkungen (v1)
+
+- **Composite foreign keys:** Schemas with multi-column FKs are joined on only the first column pair in v1; single-column FKs are fully supported.
+- **Database backends:** Postgres support is implemented via SQLAlchemy but is only covered by automated tests against SQLite in v1.
+
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:
 ```bash

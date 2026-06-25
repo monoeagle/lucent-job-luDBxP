@@ -3,6 +3,7 @@
 Shortest-first with a deterministic tie-break (lexicographic table sequence)
 so identical input always yields identical SQL. Returns up to k candidates.
 """
+import itertools
 from dataclasses import dataclass
 
 import networkx as nx
@@ -64,6 +65,10 @@ def find_paths(
     adding only new nodes.  No table ever appears more than once in the
     resulting JoinPath, making every step safe to emit as a SQL JOIN clause.
 
+    At most MAX_PATH_ENUMERATION shortest paths are enumerated from the
+    NetworkX generator before k-selection; this bounds memory and runtime on
+    schemas with many alternative routes.
+
     Args:
         graph: A NetworkX Graph produced by build_graph().
         start_table: Name of the starting table.
@@ -82,9 +87,12 @@ def find_paths(
     if start_table not in graph or target_table not in graph:
         raise NoPathError(f"Unknown table: {start_table} or {target_table}")
 
-    # Collect k shortest simple paths, then sort for determinism.
+    # Collect at most MAX_PATH_ENUMERATION shortest simple paths, then sort for determinism.
     try:
-        raw = list(nx.shortest_simple_paths(graph, start_table, target_table))
+        raw = list(itertools.islice(
+            nx.shortest_simple_paths(graph, start_table, target_table),
+            config.MAX_PATH_ENUMERATION,
+        ))
     except (nx.NetworkXNoPath, nx.NodeNotFound) as exc:
         raise NoPathError(
             f"No join path between {start_table} and {target_table}"

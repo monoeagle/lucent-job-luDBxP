@@ -66,3 +66,14 @@ def test_schema_empty_connection_returns_400(client):
     resp = client.post("/api/schema", json={"connection_url": ""})
     assert resp.status_code == 400
     assert "error" in resp.get_json()
+
+
+def test_joinpath_unknown_column_returns_400(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "GhostColumn"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()

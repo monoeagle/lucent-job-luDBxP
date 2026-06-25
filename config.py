@@ -3,7 +3,7 @@ import os
 
 APP_NAME = "Lucent DB Explorer"
 APP_SLUG = "luDBxP"
-APP_VERSION = "0.1.0"  # NUR via sync_version.py ändern!
+APP_VERSION = "0.1.0"  # change only via sync_version.py
 APP_AUTHOR = "Tobias Philipp / Lucent Trails"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -11,7 +11,8 @@ LOG_DIR = os.path.join(BASE_DIR, "Logs")
 CONFIG_JSON = os.path.join(BASE_DIR, "config.json")
 
 WEB_HOST = "127.0.0.1"
-WEB_PORT = 5057  # vor Hub-Start gegen Registry prüfen
+WEB_PORT = 5057  # verify against port registry before hub start
 
-# k-kürzeste Join-Pfade, die maximal zurückgegeben werden
+# max number of k-shortest join paths returned
 MAX_JOIN_PATHS = 5
+MAX_PATH_ENUMERATION = 200  # cap on simple paths enumerated before k-selection (prevents hang on large schemas)

@@ -2,6 +2,7 @@ import pytest
 from core.graph import build_graph
 from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
 from core.pathfinder import find_paths, NoPathError
+import config
 
 
 @pytest.fixture
@@ -57,3 +58,11 @@ def test_filter_weave_has_no_duplicate_tables(graph):
         assert step.right_table not in seen      # right side is the new table
         seen.add(step.right_table)
     assert "OperatingSystems" in p.tables
+
+
+def test_enumeration_cap_respected(graph):
+    # The enumeration cap must not be exceeded and the shortest path must still be first.
+    paths = find_paths(graph, "Networks", "VMwareCluster")
+    assert len(paths) <= config.MAX_PATH_ENUMERATION
+    # Shortest path from the test schema is the two-hop Networks -> VirtualMachines -> VMwareCluster
+    assert paths[0].tables == ("Networks", "VirtualMachines", "VMwareCluster")

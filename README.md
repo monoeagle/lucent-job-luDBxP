@@ -13,3 +13,8 @@ bash run.sh --version
 ```bash
 ./venv/bin/python -m pytest
 ```
+
+## Bekannte Einschränkungen (v1)
+
+- **Composite foreign keys:** Schemas with multi-column FKs are joined on only the first column pair in v1; single-column FKs are fully supported.
+- **Database backends:** Postgres support is implemented via SQLAlchemy but is only covered by automated tests against SQLite in v1.
