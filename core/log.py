@@ -1,4 +1,4 @@
-"""Unified logging to stdout + a rotating file under LOG_DIR."""
+"""Unified logging to stdout + an append-only file under LOG_DIR."""
 import logging
 import os
 
@@ -6,6 +6,14 @@ import config
 
 
 def init_logging(log_dir: str = config.LOG_DIR) -> logging.Logger:
+    """Initialize unified logging to stdout and file.
+
+    Args:
+        log_dir: Directory for log files (defaults to config.LOG_DIR).
+
+    Returns:
+        The configured Logger instance.
+    """
     os.makedirs(log_dir, exist_ok=True)
     logger = logging.getLogger("luDBxP")
     if logger.handlers:

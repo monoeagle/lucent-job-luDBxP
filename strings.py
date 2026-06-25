@@ -12,11 +12,24 @@ _lang = "de"
 
 
 def set_language(lang: str) -> None:
+    """Set the active language for UI text.
+
+    Args:
+        lang: Language code ("de" or "en"); defaults to "de" if invalid.
+    """
     global _lang
     _lang = lang if lang in ("de", "en") else "de"
 
 
 def t(key: str) -> str:
+    """Translate a UI string key to the active language.
+
+    Args:
+        key: The string key to translate.
+
+    Returns:
+        The translated string, or "[key]" if not found.
+    """
     entry = _STRINGS.get(key)
     if entry is None:
         return f"[{key}]"

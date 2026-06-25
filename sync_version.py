@@ -12,6 +12,19 @@ _VER_RE = re.compile(r"^\d+\.\d+\.\d+$")
 
 
 def bump(current: str, kind: str, explicit: str = "") -> str:
+    """Bump version string according to semver rules.
+
+    Args:
+        current: Current version string (e.g., "0.1.0").
+        kind: Bump kind ("patch", "minor", "major", or "set").
+        explicit: New version for "set" kind; must match X.Y.Z format.
+
+    Returns:
+        The new version string.
+
+    Raises:
+        ValueError: If kind is unknown or explicit version does not match X.Y.Z format.
+    """
     if kind == "set":
         if not _VER_RE.match(explicit):
             raise ValueError(f"Invalid version: {explicit}")
@@ -27,6 +40,11 @@ def bump(current: str, kind: str, explicit: str = "") -> str:
 
 
 def _write(new_version: str) -> None:
+    """Write new version to config.py and lucent-hub.yml.
+
+    Args:
+        new_version: The new version string to persist.
+    """
     import os
     cfg = os.path.join(config.BASE_DIR, "config.py")
     with open(cfg, encoding="utf-8") as fh:
@@ -44,6 +62,11 @@ def _write(new_version: str) -> None:
 
 
 def main(argv: list[str]) -> None:
+    """CLI entry point for version bumping.
+
+    Args:
+        argv: Command-line arguments (argv[0] is script name).
+    """
     flag = argv[1] if len(argv) > 1 else ""
     mapping = {"--patch": "patch", "--minor": "minor", "--major": "major"}
     if flag in mapping:
