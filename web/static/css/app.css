@@ -47,6 +47,36 @@ body {
 }
 #graph { flex: 1 1 auto; min-height: 0; }  /* fills panel, never scrolls the page */
 
+/* --- UML card area (interactive join-path selection, below graph) --- */
+#uml_area {
+  flex: 0 0 auto; max-height: 40%; overflow-y: auto;
+  border-top: 1px solid #ccc; background: #fafafa;
+}
+#uml_bar {
+  position: sticky; top: 0; z-index: 1;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .3rem .5rem; background: #f0f0f4;
+  border-bottom: 1px solid #ddd; font-size: .82rem;
+}
+#uml_status { flex: 1 1 auto; font-family: monospace; font-size: .8rem; color: #333; }
+#uml_reset { font-size: .78rem; padding: .15rem .4rem; }
+.uml-card {
+  border: 1px solid #c8ccd5; border-radius: 4px;
+  margin: .4rem .5rem; font-size: .82rem; background: #fff;
+}
+.uml-card-head {
+  background: #2E6FAE; color: #fff; font-weight: 600;
+  padding: .25rem .5rem; border-radius: 3px 3px 0 0; font-size: .82rem;
+}
+.uml-col {
+  display: flex; gap: .4rem; align-items: center;
+  padding: .18rem .5rem; cursor: pointer; border-top: 1px solid #eee;
+}
+.uml-col:hover { background: #eef2ff; }
+.uml-col.sel-source { background: #d4edda; font-weight: 600; }
+.uml-col.sel-target { background: #f8d7da; font-weight: 600; }
+.uml-col-type { margin-left: auto; color: #888; font-style: italic; font-size: .76rem; }
+
 /* --- sidebar object browser --- */
 .sidebar h3 { font-size: .8rem; text-transform: uppercase; color: #777;
   margin: .6rem 0 .25rem; }

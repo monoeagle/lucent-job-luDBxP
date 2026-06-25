@@ -12,6 +12,9 @@ const DB_TYPES = [
 ];
 const PORT_DEFAULTS = { postgresql: 5432, mysql: 3306, mssql: 1433 };
 
+// ===== Graph selection state (AP-1: interactive join-path selection) =====
+let GRAPH_SEL = { source: null, target: null };
+
 const $ = (id) => document.getElementById(id);
 
 // The real URL (with password) lives in a hidden field; show a masked form.
@@ -330,12 +333,126 @@ async function runBuild() {
   } catch (e) { alert(e.message); }
 }
 
+// ===== UML card area (AP-1) =====
+function showUmlCard(tableName) {
+  const t = tableByName(tableName);
+  if (!t) return;
+  const cards = $("uml_cards");
+  if (!cards) return;
+
+  // If card already exists, move it to the front
+  let card = cards.querySelector(`.uml-card[data-table="${CSS.escape(tableName)}"]`);
+  if (card) { cards.insertBefore(card, cards.firstChild); return; }
+
+  card = document.createElement("div");
+  card.className = "uml-card";
+  card.dataset.table = tableName;
+
+  const colsHtml = t.columns.map((c) => {
+    const pk = c.pk ? ` <span class="badge">PK</span>` : "";
+    return `<div class="uml-col" data-table="${esc(tableName)}" data-col="${esc(c.name)}">${esc(c.name)}${pk}<span class="uml-col-type">${esc(c.type)}</span></div>`;
+  }).join("");
+
+  card.innerHTML = `<div class="uml-card-head">${esc(tableName)}</div>${colsHtml}`;
+  card.querySelectorAll(".uml-col").forEach((row) => {
+    row.addEventListener("click", () => selectColumn(row.dataset.table, row.dataset.col));
+  });
+  cards.insertBefore(card, cards.firstChild);
+}
+
+function _updateUmlMarks() {
+  document.querySelectorAll(".uml-col.sel-source, .uml-col.sel-target").forEach((el) => {
+    el.classList.remove("sel-source", "sel-target");
+  });
+  if (GRAPH_SEL.source) {
+    const el = document.querySelector(
+      `.uml-col[data-table="${CSS.escape(GRAPH_SEL.source.table)}"][data-col="${CSS.escape(GRAPH_SEL.source.column)}"]`
+    );
+    if (el) el.classList.add("sel-source");
+  }
+  if (GRAPH_SEL.target) {
+    const el = document.querySelector(
+      `.uml-col[data-table="${CSS.escape(GRAPH_SEL.target.table)}"][data-col="${CSS.escape(GRAPH_SEL.target.column)}"]`
+    );
+    if (el) el.classList.add("sel-target");
+  }
+}
+
+function _updateGraphNodeMarkers() {
+  if (!CY) return;
+  CY.nodes().removeClass("sel-source sel-target");
+  if (GRAPH_SEL.source) CY.$id(GRAPH_SEL.source.table).addClass("sel-source");
+  if (GRAPH_SEL.target) CY.$id(GRAPH_SEL.target.table).addClass("sel-target");
+}
+
+function _updateStatusBar() {
+  const bar = $("uml_status");
+  if (!bar) return;
+  if (!GRAPH_SEL.source) { bar.textContent = ""; return; }
+  let txt = `Quelle: ${GRAPH_SEL.source.table}.${GRAPH_SEL.source.column}`;
+  if (GRAPH_SEL.target) txt += ` → Ziel: ${GRAPH_SEL.target.table}.${GRAPH_SEL.target.column}`;
+  bar.textContent = txt;
+}
+
+function selectColumn(tableName, colName) {
+  if (!GRAPH_SEL.source) {
+    GRAPH_SEL.source = { table: tableName, column: colName };
+  } else if (!GRAPH_SEL.target) {
+    if (GRAPH_SEL.source.table === tableName) {
+      $("uml_status").textContent =
+        `Quelle: ${GRAPH_SEL.source.table}.${GRAPH_SEL.source.column} — Ziel muss eine andere Tabelle sein`;
+      return;
+    }
+    GRAPH_SEL.target = { table: tableName, column: colName };
+    _updateStatusBar();
+    _updateUmlMarks();
+    _updateGraphNodeMarkers();
+    applyGraphSelection();
+    return;
+  } else {
+    // Both already set: start a new selection
+    resetGraphSelection();
+    GRAPH_SEL.source = { table: tableName, column: colName };
+  }
+  _updateStatusBar();
+  _updateUmlMarks();
+  _updateGraphNodeMarkers();
+}
+
+async function applyGraphSelection() {
+  if (!GRAPH_SEL.source || !GRAPH_SEL.target) return;
+  const src = GRAPH_SEL.source;
+  const tgt = GRAPH_SEL.target;
+  openJoinBuilder();
+  $("start_table").value = src.table;
+  fillCols("start_table", "start_col");
+  $("start_col").value = src.column;
+  $("target_table").value = tgt.table;
+  fillCols("target_table", "target_col");
+  $("target_col").value = tgt.column;
+  activateTab("joinbuilder");
+  await runBuild();
+}
+
+function resetGraphSelection() {
+  GRAPH_SEL = { source: null, target: null };
+  _updateStatusBar();
+  _updateUmlMarks();
+  _updateGraphNodeMarkers();
+}
+
 // ===== Schema graph =====
 async function drawGraph() {
   const g = await postJSON("/api/graph", {
     connection_url: connUrl(), include_implied: includeImplied(),
   });
   if (CY) CY.destroy();
+
+  // Reset UML selection state and clear cards on every graph (re)build
+  GRAPH_SEL = { source: null, target: null };
+  if ($("uml_cards")) $("uml_cards").innerHTML = "";
+  if ($("uml_status")) $("uml_status").textContent = "";
+
   const elements = [
     ...g.nodes.map((n) => ({ data: { id: n.id } })),
     ...g.edges.map((e) => ({
@@ -358,8 +475,15 @@ async function drawGraph() {
       { selector: "node.hl", style: {
         "background-color": "#E0532E", "border-width": 2, "border-color": "#7a1f0a" } },
       { selector: "edge.hl", style: { "line-color": "#E0532E", width: 4 } },
+      { selector: "node.sel-source", style: {
+        "border-width": 4, "border-color": "#1e7e34" } },
+      { selector: "node.sel-target", style: {
+        "border-width": 4, "border-color": "#c0392b" } },
     ],
   });
+  // Register dbltap handler: opens the UML card for the clicked table node
+  CY.on("dbltap", "node", (e) => showUmlCard(e.target.id()));
+
   const layout = CY.layout({
     name: "cose", animate: false, padding: 24, randomize: true,
     nodeRepulsion: 16000, idealEdgeLength: 110, nodeOverlap: 28, componentSpacing: 120,
@@ -529,6 +653,7 @@ function openConnections() {
 // ===== Wiring =====
 $("btn_load").addEventListener("click", doConnect);
 $("btn_connections").addEventListener("click", openConnections);
+$("uml_reset").addEventListener("click", resetGraphSelection);
 $("include_implied").addEventListener("change", () => {
   if (SCHEMA.tables.length) drawGraph().catch((e) => alert(e.message));
 });
