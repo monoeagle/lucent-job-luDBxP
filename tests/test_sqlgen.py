@@ -1,3 +1,5 @@
+import pytest
+
 from core.pathfinder import JoinPath, JoinStep
 from core.sqlgen import generate_sql, Selection, Filter
 
@@ -37,3 +39,15 @@ def test_determinism():
     a = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))
     b = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))
     assert a.sql == b.sql
+
+
+def test_empty_selects_raises():
+    with pytest.raises(ValueError):
+        generate_sql(_path(), selects=())
+
+
+def test_bad_operator_raises():
+    with pytest.raises(ValueError):
+        generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("VirtualMachines", "OSID", "DROP", 1),))

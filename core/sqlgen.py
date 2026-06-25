@@ -28,10 +28,11 @@ class Filter:
 @dataclass(frozen=True)
 class GeneratedSQL:
     sql: str
-    params: dict
+    params: dict[str, object]
 
 
-def generate_sql(path: JoinPath, selects, filters=()) -> GeneratedSQL:
+def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
+                 filters: tuple[Filter, ...] = ()) -> GeneratedSQL:
     """Generate read-only SELECT SQL from a JoinPath with optional filters.
 
     Args:
