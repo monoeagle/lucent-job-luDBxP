@@ -1,5 +1,6 @@
 import pytest
 from web import create_app
+from sample_data.build_demo_db import build
 
 
 @pytest.fixture
@@ -7,6 +8,14 @@ def client():
     app = create_app()
     app.config.update(TESTING=True)
     return app.test_client()
+
+
+@pytest.fixture
+def demo_url(tmp_path):
+    """Demo CMDB SQLite URL with real data rows (for /api/joinpath/run tests)."""
+    db = tmp_path / "demo_api.db"
+    build(str(db))
+    return f"sqlite:///{db}"
 
 
 def test_schema_endpoint_returns_tables(client, inventory_url):
@@ -350,6 +359,52 @@ def test_joinpath_ap3_invalid_direction_returns_400(client, inventory_url):
         "target": {"table": "VMwareCluster", "column": "ClusterID"},
         "filters": [],
         "order_by": [{"table": "VirtualMachines", "column": "VMID", "dir": "SIDEWAYS"}],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+# ===== /api/joinpath/run =====
+
+def test_joinpath_run_returns_columns_and_rows(client, demo_url):
+    """/api/joinpath/run returns columns + data rows for a known demo path."""
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Network", "column": "VLAN"},
+        "target": {"table": "Cluster", "column": "Name"},
+        "filters": [],
+        "path_index": 0,
+    })
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert "columns" in data and "rows" in data and "sql" in data
+    assert "VLAN" in data["columns"]
+    assert "Name" in data["columns"]
+    assert isinstance(data["rows"], list)
+    assert len(data["rows"]) >= 1  # demo has matching rows (Networks + Clusters share DCs)
+
+
+def test_joinpath_run_rows_within_server_cap(client, demo_url):
+    """Server never returns more than 200 rows regardless of join size."""
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Network", "column": "VLAN"},
+        "target": {"table": "Cluster", "column": "Name"},
+        "filters": [],
+        "path_index": 0,
+    })
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert len(data["rows"]) <= 200  # hard server-side cap via fetchmany(200)
+
+
+def test_joinpath_run_unknown_column_returns_400(client, demo_url):
+    """Unknown start column must be rejected with 400 before any SQL is run."""
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Network", "column": "NoSuchColumn"},
+        "target": {"table": "Cluster", "column": "Name"},
+        "filters": [],
     })
     assert resp.status_code == 400
     assert "error" in resp.get_json()

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0] — 2026-06-26
+### Added
+- Join-Builder: tabellarischer **Ausgabebereich** unter dem generierten SELECT.
+  Beim Wählen eines Join-Pfads wird das SQL angezeigt **und** ausgeführt; die
+  zurückgelieferten Zeilen erscheinen als Tabelle (`#join_result`). Neuer
+  read-only Endpoint `POST /api/joinpath/run`: das SELECT wird **serverseitig**
+  aus den (validierten) Join-Parametern erzeugt (kein client-geliefertes SQL),
+  parametrisiert ausgeführt und auf max. 200 Zeilen begrenzt
+  (`core.datapreview.execute_select`). DRY-Refaktorierung der gemeinsamen
+  Pfad-/SQL-Bau-Logik (`_parse_joinpath_params`, `_make_path_gen`).
+
 ## [0.1.0] — 2026-06-25
 ### Added
 - FK-Graph aus Live-DB-Reflection (SQLAlchemy, SQLite + Postgres).

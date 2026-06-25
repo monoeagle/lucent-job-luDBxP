@@ -106,6 +106,14 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Pro Join-Pfad: SELECT = Start + Ziel + Zusatzspalten, deren Tabelle auf *diesem* Pfad liegt (jedes SQL bleibt gültig)
 - [x] Tests (sqlgen 3 Selections; API: erscheint im SQL / off-path weggelassen / unbekannte Spalte 400)
 
+## AP-5 — Tabellarischer Ausgabebereich im Join-Builder (v0.2.0)
+- [x] Ergebnis-Container `#join_result` unter dem generierten SELECT
+- [x] Pfad-Klick zeigt SQL **und** führt es read-only aus → Ergebnistabelle (Spalten + Zeilen, NULL kursiv)
+- [x] Neuer Endpoint `POST /api/joinpath/run` (gleiche Join-Parameter + `path_index`); SQL serverseitig via `generate_sql`, kein client-SQL
+- [x] `core/datapreview.py::execute_select()` — parametrisiertes read-only SELECT, harte Zeilen-Obergrenze (200)
+- [x] DRY: `_parse_joinpath_params` + `_make_path_gen` von `api_joinpath` und Run-Endpoint geteilt
+- [x] 3 neue API-Tests (Spalten/Zeilen, Zeilen-Cap, unbekannte Spalte 400); 109 Tests grün
+
 ## AP-3 — SQL-Optionen-Paket (Join-Builder)
 - [x] DISTINCT (Checkbox)
 - [x] ORDER BY (Tabelle.Spalte + ASC/DESC, mehrere; pro Pfad auf Pfad-Tabellen gefiltert)

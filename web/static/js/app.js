@@ -268,7 +268,8 @@ function openJoinBuilder() {
     ` placeholder="–" style="width:72px;margin-left:4px"></label>` +
     `<button id="btn_build" style="margin-left:12px">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
-    `<pre class="sql_out" id="sql_out"></pre></div>`;
+    `<pre class="sql_out" id="sql_out"></pre>` +
+    `<div id="join_result"></div></div>`;
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
   $("btn_add_filter").addEventListener("click", addFilterRow);
@@ -295,6 +296,7 @@ function refillJoinBuilder() {
   $("extra_cols").innerHTML = "";
   $("path_list").innerHTML = "";
   $("sql_out").textContent = "";
+  if ($("join_result")) $("join_result").innerHTML = "";
   if ($("jb_distinct")) $("jb_distinct").checked = false;
   if ($("jb_limit")) $("jb_limit").value = "";
 }
@@ -454,9 +456,30 @@ async function runBuild() {
     const list = $("path_list");
     list.innerHTML = data.paths.map((p, i) =>
       `<li><a href="#" data-i="${i}">${p.tables.map(esc).join(" → ")}</a></li>`).join("");
-    const show = (i) => {
+    const show = async (i) => {
       $("sql_out").textContent = data.paths[i].sql;
       highlightPath(data.paths[i].edges || []);
+      const resultEl = $("join_result");
+      if (!resultEl) return;
+      resultEl.innerHTML = "<p class='hint'>lädt…</p>";
+      try {
+        const runBody = Object.assign({}, body, { path_index: i });
+        const res = await postJSON("/api/joinpath/run", runBody);
+        if (!res.rows.length) {
+          resultEl.innerHTML = "<p class='hint'>keine Ergebniszeilen</p>";
+          return;
+        }
+        const thead = res.columns.map((c) => `<th>${esc(c)}</th>`).join("");
+        const tbody = res.rows.map((r) =>
+          "<tr>" + r.map((v) =>
+            `<td>${v === null ? "<i>NULL</i>" : esc(v)}</td>`).join("") + "</tr>"
+        ).join("");
+        resultEl.innerHTML =
+          `<table class="cols"><thead><tr>${thead}</tr></thead>` +
+          `<tbody>${tbody}</tbody></table>`;
+      } catch (e) {
+        resultEl.innerHTML = `<p class='hint'>Fehler: ${esc(e.message)}</p>`;
+      }
     };
     list.querySelectorAll("a").forEach((a) =>
       a.addEventListener("click", (ev) => { ev.preventDefault(); show(+a.dataset.i); }));

@@ -111,6 +111,13 @@ body {
 .sql_out { background: #1A1A2E; color: #eaeaea; padding: 1rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
 
+/* --- join result table --- */
+#join_result {
+  margin-top: .6rem;
+  max-height: 320px;
+  overflow: auto;
+}
+
 /* --- sub-tabs inside a detail tab --- */
 .subtabbar { display: flex; gap: 2px; margin: -.8rem -.8rem .8rem; padding: 0 .4rem;
   border-bottom: 1px solid #ddd; background: #f6f6f9; }

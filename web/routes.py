@@ -13,7 +13,7 @@ from core.pathfinder import find_paths, NoPathError
 from core.sqlgen import generate_sql, Selection, Filter
 from core.settings import Settings
 from core.ddl import table_ddl
-from core.datapreview import fetch_rows
+from core.datapreview import fetch_rows, execute_select
 from core.connection import build_url
 
 # Connection fields that may be persisted (never the password).
@@ -188,6 +188,133 @@ def api_graph():
     return jsonify(nodes=nodes, edges=edges)
 
 
+# ===== Join-path helpers (shared by /api/joinpath and /api/joinpath/run) =====
+
+_JP_NULL_OPS = frozenset({"IS NULL", "IS NOT NULL"})
+
+
+def _parse_joinpath_params(data: dict, schema):
+    """Parse and validate all join-path parameters from request JSON.
+
+    Returns a 8-tuple:
+    ``(start, target, filters, extra_selections, distinct, limit,
+       order_by_validated, filter_tables)``
+
+    Raises:
+        KeyError: If a required field is absent.
+        ValueError: If a parameter value is invalid (unknown column, bad
+            ORDER BY direction, malformed BETWEEN value list, …).
+    """
+    start = data["start"]
+    target = data["target"]
+
+    # --- Filters ---
+    raw_filters = data.get("filters", [])
+    filters_list: list[Filter] = []
+    for f in raw_filters:
+        op = f["op"]
+        if op in _JP_NULL_OPS:
+            value = None
+        elif op == "IN":
+            raw_val = f.get("value") or []
+            if isinstance(raw_val, list):
+                value = [v for v in raw_val if v != "" and v is not None]
+            else:
+                value = [v.strip() for v in str(raw_val).split(",") if v.strip()]
+            if not value:
+                continue  # skip empty IN (no rows could match)
+        elif op == "BETWEEN":
+            raw_val = f.get("value") or []
+            if len(raw_val) != 2:
+                raise ValueError("BETWEEN requires exactly 2 values")
+            value = tuple(raw_val)
+        else:
+            value = f["value"]
+        filters_list.append(Filter(f["table"], f["column"], op, value))
+    filters = tuple(filters_list)
+
+    # --- Extra SELECT columns ---
+    extra_selections = tuple(
+        Selection(es["table"], es["column"])
+        for es in data.get("extra_selects", [])
+    )
+
+    # --- AP-3: DISTINCT, LIMIT ---
+    distinct = bool(data.get("distinct", False))
+    limit_raw = data.get("limit")
+    limit = None
+    if limit_raw is not None:
+        try:
+            n = int(limit_raw)
+            if n > 0:
+                limit = n
+        except (TypeError, ValueError):
+            pass  # invalid/non-positive limit → no LIMIT clause
+
+    # --- AP-3: ORDER BY — validate columns, keep direction allowlist ---
+    raw_order_by = data.get("order_by", [])
+    order_by_validated: list[tuple[str, str, str]] = []
+    for ob in raw_order_by:
+        tbl = ob.get("table", "")
+        col = ob.get("column", "")
+        direction = (ob.get("dir") or "ASC").upper()
+        if direction not in ("ASC", "DESC"):
+            raise ValueError(f"invalid ORDER BY direction: {direction!r}")
+        if not schema.has_column(tbl, col):
+            raise ValueError(f"unknown column: {tbl}.{col}")
+        order_by_validated.append((tbl, col, direction))
+
+    # --- Validate that every referenced column exists in the reflected schema ---
+    for tbl, col in ([(start["table"], start["column"]),
+                      (target["table"], target["column"])] +
+                     [(f.table, f.column) for f in filters] +
+                     [(s.table, s.column) for s in extra_selections]):
+        if not schema.has_column(tbl, col):
+            raise ValueError(f"unknown column: {tbl}.{col}")
+
+    filter_tables = tuple(f.table for f in filters)
+    return (start, target, filters, extra_selections,
+            distinct, limit, order_by_validated, filter_tables)
+
+
+def _make_path_gen(p, start: dict, target: dict,
+                   extra_selections: tuple,
+                   filters: tuple,
+                   distinct: bool,
+                   limit,
+                   order_by_validated: list):
+    """Build a GeneratedSQL for a single join path.
+
+    Filters extra_selections and order_by to only the tables actually present
+    on *p*, mirroring the behaviour of api_joinpath.
+    """
+    path_tables = set(p.tables)
+    seen: set[tuple[str, str]] = set()
+    selects_for_path: list[Selection] = []
+    for sel in (Selection(start["table"], start["column"]),
+                Selection(target["table"], target["column"])):
+        key = (sel.table, sel.column)
+        if key not in seen:
+            seen.add(key)
+            selects_for_path.append(sel)
+    for sel in extra_selections:
+        key = (sel.table, sel.column)
+        if sel.table in path_tables and key not in seen:
+            seen.add(key)
+            selects_for_path.append(sel)
+
+    order_by_for_path = tuple(
+        (tbl, col, direction)
+        for tbl, col, direction in order_by_validated
+        if tbl in path_tables
+    )
+
+    return generate_sql(p, tuple(selects_for_path), filters,
+                        distinct=distinct,
+                        order_by=order_by_for_path,
+                        limit=limit)
+
+
 @bp.post("/api/joinpath")
 def api_joinpath():
     """Find join paths between two columns and return the generated SQL."""
@@ -206,74 +333,11 @@ def api_joinpath():
     except Exception as exc:
         _log.exception("graph build failed")
         return jsonify(error="internal error building schema graph"), 500
+
     try:
-        start = data["start"]
-        target = data["target"]
-
-        # --- Build filters with extended operator support ---
-        _NULL_OPS = {"IS NULL", "IS NOT NULL"}
-        raw_filters = data.get("filters", [])
-        filters_list = []
-        for f in raw_filters:
-            op = f["op"]
-            if op in _NULL_OPS:
-                value = None
-            elif op == "IN":
-                raw_val = f.get("value") or []
-                if isinstance(raw_val, list):
-                    value = [v for v in raw_val if v != "" and v is not None]
-                else:
-                    value = [v.strip() for v in str(raw_val).split(",") if v.strip()]
-                if not value:
-                    continue  # skip empty IN (no rows could match)
-            elif op == "BETWEEN":
-                raw_val = f.get("value") or []
-                if len(raw_val) != 2:
-                    return jsonify(error="BETWEEN requires exactly 2 values"), 400
-                value = tuple(raw_val)
-            else:
-                value = f["value"]
-            filters_list.append(Filter(f["table"], f["column"], op, value))
-        filters = tuple(filters_list)
-
-        extra_selections = tuple(
-            Selection(es["table"], es["column"])
-            for es in data.get("extra_selects", [])
-        )
-
-        # --- AP-3: DISTINCT, LIMIT ---
-        distinct = bool(data.get("distinct", False))
-        limit_raw = data.get("limit")
-        limit = None
-        if limit_raw is not None:
-            try:
-                n = int(limit_raw)
-                if n > 0:
-                    limit = n
-            except (TypeError, ValueError):
-                pass  # invalid/non-positive limit → no LIMIT clause
-
-        # --- AP-3: ORDER BY — validate columns, keep direction allowlist ---
-        raw_order_by = data.get("order_by", [])
-        order_by_validated: list[tuple[str, str, str]] = []
-        for ob in raw_order_by:
-            tbl = ob.get("table", "")
-            col = ob.get("column", "")
-            direction = (ob.get("dir") or "ASC").upper()
-            if direction not in ("ASC", "DESC"):
-                return jsonify(error=f"invalid ORDER BY direction: {direction!r}"), 400
-            if not schema.has_column(tbl, col):
-                return jsonify(error=f"unknown column: {tbl}.{col}"), 400
-            order_by_validated.append((tbl, col, direction))
-
-        # Validate that every referenced column exists in the reflected schema.
-        for tbl, col in ([(start["table"], start["column"]),
-                          (target["table"], target["column"])] +
-                         [(f.table, f.column) for f in filters] +
-                         [(s.table, s.column) for s in extra_selections]):
-            if not schema.has_column(tbl, col):
-                return jsonify(error=f"unknown column: {tbl}.{col}"), 400
-        filter_tables = tuple(f.table for f in filters)
+        (start, target, filters, extra_selections,
+         distinct, limit, order_by_validated,
+         filter_tables) = _parse_joinpath_params(data, schema)
         paths = find_paths(graph, start["table"], target["table"], filter_tables)
     except KeyError as exc:
         return jsonify(error=f"missing field: {exc}"), 400
@@ -285,34 +349,8 @@ def api_joinpath():
     out = []
     try:
         for p in paths:
-            # Build per-path SELECT list: start + target are always first,
-            # then any extra columns whose table actually appears on this path.
-            path_tables = set(p.tables)
-            seen: set[tuple[str, str]] = set()
-            selects_for_path: list[Selection] = []
-            for sel in (Selection(start["table"], start["column"]),
-                        Selection(target["table"], target["column"])):
-                key = (sel.table, sel.column)
-                if key not in seen:
-                    seen.add(key)
-                    selects_for_path.append(sel)
-            for sel in extra_selections:
-                key = (sel.table, sel.column)
-                if sel.table in path_tables and key not in seen:
-                    seen.add(key)
-                    selects_for_path.append(sel)
-
-            # AP-3: Filter order_by to only tables present on this path
-            order_by_for_path = tuple(
-                (tbl, col, direction)
-                for tbl, col, direction in order_by_validated
-                if tbl in path_tables
-            )
-
-            gen = generate_sql(p, tuple(selects_for_path), filters,
-                               distinct=distinct,
-                               order_by=order_by_for_path,
-                               limit=limit)
+            gen = _make_path_gen(p, start, target, extra_selections, filters,
+                                 distinct, limit, order_by_validated)
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],
@@ -322,3 +360,64 @@ def api_joinpath():
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
     return jsonify(paths=out)
+
+
+@bp.post("/api/joinpath/run")
+def api_joinpath_run():
+    """Execute the SQL for one join path and return tabular results.
+
+    Accepts the same parameters as /api/joinpath plus an optional
+    ``path_index`` (int, default 0) to select which path to execute.
+    Returns ``{columns, rows, sql}``; rows are capped at 200.
+
+    Security: SQL is built server-side from join parameters via
+    ``generate_sql`` — no client-supplied SQL string is ever executed.
+    """
+    data = request.get_json(silent=True) or {}
+    url = data.get("connection_url", "")
+    if not url.strip():
+        return jsonify(error=_NO_URL_MSG), 400
+    try:
+        schema = SqlAlchemyLoader(url).load()
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+
+    include_implied = bool(data.get("include_implied", False))
+    try:
+        graph = build_graph(schema, include_implied)
+    except Exception as exc:
+        _log.exception("graph build failed")
+        return jsonify(error="internal error building schema graph"), 500
+
+    try:
+        (start, target, filters, extra_selections,
+         distinct, limit, order_by_validated,
+         filter_tables) = _parse_joinpath_params(data, schema)
+        paths = find_paths(graph, start["table"], target["table"], filter_tables)
+    except KeyError as exc:
+        return jsonify(error=f"missing field: {exc}"), 400
+    except NoPathError as exc:
+        return jsonify(error=str(exc)), 400
+    except ValueError as exc:
+        return jsonify(error=str(exc)), 400
+
+    # Select the requested path; clamp to valid range
+    try:
+        path_index = int(data.get("path_index") or 0)
+    except (TypeError, ValueError):
+        path_index = 0
+    if path_index < 0 or path_index >= len(paths):
+        path_index = 0
+
+    try:
+        gen = _make_path_gen(paths[path_index], start, target, extra_selections,
+                             filters, distinct, limit, order_by_validated)
+    except ValueError as exc:
+        return jsonify(error=str(exc)), 400
+
+    try:
+        result = execute_select(url, gen.sql, gen.params)
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+
+    return jsonify(columns=result["columns"], rows=result["rows"], sql=gen.sql)

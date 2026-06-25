@@ -9,6 +9,41 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
 
+def execute_select(connection_url: str, sql: str, params: dict,
+                   max_rows: int = 200) -> dict:
+    """Execute a server-generated parameterized SELECT and return rows.
+
+    The SQL must have been produced by ``generate_sql`` (server-side); the
+    caller must never pass client-supplied SQL strings here.
+
+    Args:
+        connection_url: SQLAlchemy connection URL.
+        sql: A read-only SELECT statement with named :placeholders.
+        params: Dict mapping placeholder names to their values.
+        max_rows: Maximum number of rows to return (hard cap).
+
+    Returns:
+        A dict ``{"columns": [...], "rows": [[...], ...]}``.
+
+    Raises:
+        ConnectionError: If the database is unreachable or the query fails.
+    """
+    try:
+        engine = create_engine(connection_url)
+    except SQLAlchemyError as exc:
+        raise ConnectionError(f"Could not create engine: {exc}") from exc
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text(sql), params)
+            columns = list(result.keys())
+            rows = [list(r) for r in result.fetchmany(max_rows)]
+        return {"columns": columns, "rows": rows}
+    except SQLAlchemyError as exc:
+        raise ConnectionError(f"Could not execute query: {exc}") from exc
+    finally:
+        engine.dispose()
+
+
 def fetch_rows(connection_url: str, object_name: str,
                valid_names: set, limit: int = 100) -> dict:
     """Fetch up to `limit` rows from a table or view.
