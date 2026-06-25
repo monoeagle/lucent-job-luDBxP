@@ -1,16 +1,28 @@
 {
-  "generatedAt": "2026-06-26T00:10:56",
+  "generatedAt": "2026-06-26T00:29:49",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 1,
+      "commits": 3,
       "kinds": {
+        "fix": 1,
+        "docs": 1,
         "feat": 1
       },
       "list": [
+        {
+          "sha": "8292f38",
+          "subject": "fix(web): klare Meldung bei nicht erreichbarem Server (AP-2)",
+          "kind": "fix"
+        },
+        {
+          "sha": "68e707e",
+          "subject": "docs: App-Screenshots in die Doku + AP-1 als erledigt",
+          "kind": "docs"
+        },
         {
           "sha": "aedcf9d",
           "subject": "feat(web): AP-1 interaktive Join-Pfad-Auswahl im Graph",
@@ -219,7 +231,7 @@
     }
   },
   "stats": {
-    "totalCommits": 38,
+    "totalCommits": 40,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
@@ -229,11 +241,11 @@
       },
       {
         "kind": "docs",
-        "count": 9
+        "count": 10
       },
       {
         "kind": "fix",
-        "count": 5
+        "count": 6
       },
       {
         "kind": "chore",
