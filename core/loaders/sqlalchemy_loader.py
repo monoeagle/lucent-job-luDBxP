@@ -46,7 +46,8 @@ class SqlAlchemyLoader(SchemaLoader):
                         fk["constrained_columns"], fk["referred_columns"]
                     ):
                         fks.append(ForeignKey(local, fk["referred_table"], remote))
-                tables.append(Table(tname, columns, tuple(fks)))
+                pk = tuple(insp.get_pk_constraint(tname).get("constrained_columns", []))
+                tables.append(Table(tname, columns, tuple(fks), pk))
             return Schema(tuple(tables))
         except SQLAlchemyError as exc:
             raise ConnectionError(f"Could not reflect schema: {exc}") from exc

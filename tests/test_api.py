@@ -102,6 +102,37 @@ def test_graph_empty_connection_returns_400(client):
     assert "error" in resp.get_json()
 
 
+def test_graph_without_implied_has_no_edges_in_nofk(client, inventory_nofk_url):
+    resp = client.post("/api/graph", json={"connection_url": inventory_nofk_url})
+    assert resp.get_json()["edges"] == []
+
+
+def test_graph_with_implied_adds_marked_edges(client, inventory_nofk_url):
+    resp = client.post("/api/graph", json={
+        "connection_url": inventory_nofk_url, "include_implied": True})
+    edges = resp.get_json()["edges"]
+    assert edges and all(e["implied"] for e in edges)
+
+
+def test_joinpath_with_implied_finds_path(client, inventory_nofk_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_nofk_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [], "include_implied": True})
+    assert resp.status_code == 200
+    assert resp.get_json()["paths"]
+
+
+def test_joinpath_without_implied_no_path_in_nofk(client, inventory_nofk_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_nofk_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": []})
+    assert resp.status_code == 400
+
+
 def test_joinpath_unknown_column_returns_400(client, inventory_url):
     resp = client.post("/api/joinpath", json={
         "connection_url": inventory_url,

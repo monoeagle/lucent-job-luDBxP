@@ -4,26 +4,35 @@ import pytest
 from sqlalchemy import create_engine, text
 
 
-def _schema_sql() -> str:
+def _schema_sql(filename: str = "inventory_schema.sql") -> str:
     here = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(here, "fixtures", "inventory_schema.sql"), encoding="utf-8") as fh:
+    with open(os.path.join(here, "fixtures", filename), encoding="utf-8") as fh:
         return fh.read()
 
 
-@pytest.fixture
-def inventory_url(tmp_path) -> str:
-    """File-based SQLite URL so SQLAlchemy reflection sees the schema."""
-    db_path = tmp_path / "inventory.db"
+def _build_sqlite(tmp_path, name: str, schema_file: str) -> str:
+    db_path = tmp_path / name
     url = f"sqlite:///{db_path}"
     engine = create_engine(url)
     with engine.begin() as conn:
-        # PRAGMA so SQLite reports foreign keys during reflection
-        for statement in _schema_sql().split(";"):
+        for statement in _schema_sql(schema_file).split(";"):
             stmt = statement.strip()
             if stmt:
                 conn.execute(text(stmt))
     engine.dispose()
     return url
+
+
+@pytest.fixture
+def inventory_url(tmp_path) -> str:
+    """File-based SQLite URL so SQLAlchemy reflection sees the schema."""
+    return _build_sqlite(tmp_path, "inventory.db", "inventory_schema.sql")
+
+
+@pytest.fixture
+def inventory_nofk_url(tmp_path) -> str:
+    """Same inventory shape but without declared FKs (for implied-FK tests)."""
+    return _build_sqlite(tmp_path, "inventory_nofk.db", "inventory_nofk_schema.sql")
 
 
 @pytest.fixture

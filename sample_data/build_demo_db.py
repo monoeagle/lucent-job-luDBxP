@@ -20,6 +20,7 @@ project venv. Import build() from tests, or run as a script to (re)generate
 sample_data/demo_cmdb.db.
 """
 import os
+import re
 import sqlite3
 
 # Table creation order respects foreign-key dependencies (parents first).
@@ -209,22 +210,40 @@ _DATA = [
 ]
 
 
-def build(db_path: str) -> None:
+def _strip_foreign_keys(schema_sql: str) -> str:
+    """Remove all FK declarations, keeping tables, primary keys, and columns.
+
+    Used to produce a no-FK variant where relationships exist only by naming
+    convention -- the case implied-FK detection is meant to recover.
+    """
+    # Standalone composite FK clauses (with their leading comma).
+    schema_sql = re.sub(
+        r",\s*FOREIGN KEY\s*\([^)]*\)\s*REFERENCES\s+\w+\s*\([^)]*\)", "", schema_sql
+    )
+    # Inline column-level REFERENCES.
+    schema_sql = re.sub(r"\s+REFERENCES\s+\w+\s*\([^)]*\)", "", schema_sql)
+    return schema_sql
+
+
+def build(db_path: str, with_fks: bool = True) -> None:
     """Create (or overwrite) a demo CMDB database at db_path.
 
     Args:
         db_path: Filesystem path for the SQLite file. An existing file at this
             path is removed first so the build is reproducible.
+        with_fks: When False, omit all declared foreign keys (relationships
+            survive only as naming conventions, for implied-FK demos).
     """
     if os.path.exists(db_path):
         os.remove(db_path)
     parent = os.path.dirname(os.path.abspath(db_path))
     os.makedirs(parent, exist_ok=True)
 
+    schema = _SCHEMA if with_fks else _strip_foreign_keys(_SCHEMA)
     conn = sqlite3.connect(db_path)
     try:
         conn.execute("PRAGMA foreign_keys = ON")
-        conn.executescript(_SCHEMA)
+        conn.executescript(schema)
         for table, rows in _DATA:
             placeholders = ", ".join(["?"] * len(rows[0]))
             conn.executemany(
@@ -235,11 +254,11 @@ def build(db_path: str) -> None:
         conn.close()
 
 
-def _default_path() -> str:
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "demo_cmdb.db")
+def _default_path(name: str = "demo_cmdb.db") -> str:
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
 
 
 if __name__ == "__main__":
-    target = _default_path()
-    build(target)
-    print(f"Demo-DB erzeugt: {target}")
+    build(_default_path("demo_cmdb.db"), with_fks=True)
+    build(_default_path("demo_cmdb_nofk.db"), with_fks=False)
+    print("Demo-DBs erzeugt: demo_cmdb.db (mit FKs), demo_cmdb_nofk.db (ohne FKs)")

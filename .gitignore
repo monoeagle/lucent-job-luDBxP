@@ -13,3 +13,4 @@ Logs/
 
 # Demo-DB ist absichtlich eingecheckt (Ausnahme zu *.db)
 !sample_data/demo_cmdb.db
+!sample_data/demo_cmdb_nofk.db

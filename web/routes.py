@@ -56,9 +56,13 @@ def api_graph():
         schema = SqlAlchemyLoader(url).load()
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
-    graph = build_graph(schema)
+    include_implied = bool(data.get("include_implied", False))
+    graph = build_graph(schema, include_implied)
     nodes = [{"id": n} for n in graph.nodes]
-    edges = [{"source": a, "target": b} for a, b in graph.edges]
+    edges = [
+        {"source": a, "target": b, "implied": graph[a][b].get("implied", False)}
+        for a, b in graph.edges
+    ]
     return jsonify(nodes=nodes, edges=edges)
 
 
@@ -74,8 +78,9 @@ def api_joinpath():
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
 
+    include_implied = bool(data.get("include_implied", False))
     try:
-        graph = build_graph(schema)
+        graph = build_graph(schema, include_implied)
     except Exception as exc:
         _log.exception("graph build failed")
         return jsonify(error="internal error building schema graph"), 500

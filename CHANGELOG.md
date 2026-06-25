@@ -20,6 +20,12 @@
   interaktive Schema-Graph-Ansicht mit Cytoscape.js (lokal gebundelt, keine
   CDN). Der gewählte Join-Pfad wird im Graph farblich hervorgehoben; die
   joinpath-Antwort liefert dazu die konkreten Pfad-Kanten.
+- Implizite (geratene) Foreign Keys: optionale Heuristik (Spaltenname trifft
+  einspaltige Primärschlüssel-Spalte einer anderen Tabelle, kompatibler Typ).
+  Per Checkbox einschaltbar; gefundene Beziehungen erscheinen im Graph
+  gestrichelt und ermöglichen Join-Pfade auch ohne deklarierte FKs. Loader/
+  Modell führen jetzt Primärschlüssel-Infos. Neue FK-lose Demo-DB
+  (`demo_cmdb_nofk.db`) zum Ausprobieren.
 
 ### Changed
 - UX: Connection-URL wird aus `default_connection` (config.json) vorbefüllt —

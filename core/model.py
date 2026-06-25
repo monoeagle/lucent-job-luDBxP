@@ -20,6 +20,7 @@ class Table:
     name: str
     columns: tuple[Column, ...]
     foreign_keys: tuple[ForeignKey, ...]
+    primary_key: tuple[str, ...] = ()  # primary-key column names
 
 
 @dataclass(frozen=True)

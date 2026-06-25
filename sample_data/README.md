@@ -9,8 +9,9 @@ Integrationstests (`tests/test_demo_db_cases.py`).
 
 | Datei | Zweck |
 |---|---|
-| `build_demo_db.py` | Generator (reine stdlib `sqlite3`, läuft ohne venv). Erzeugt die DB reproduzierbar. |
-| `demo_cmdb.db` | Die fertige Datenbank — sofort nutzbar. |
+| `build_demo_db.py` | Generator (reine stdlib `sqlite3`, läuft ohne venv). Erzeugt beide DBs reproduzierbar. |
+| `demo_cmdb.db` | Die fertige Datenbank (mit deklarierten Foreign Keys) — sofort nutzbar. |
+| `demo_cmdb_nofk.db` | Gleiche Tabellen/Daten, aber **ohne** deklarierte FKs — zum Ausprobieren der **impliziten Foreign Keys**. |
 
 ## Neu erzeugen
 
@@ -55,6 +56,16 @@ die dokumentierte v1-Einschränkung, hier sichtbar gemacht.
   „Keine Join-Verbindung gefunden"-Meldung (HTTP 400) aus.
 
 - **Beispiel No-Path:** Start `LicenseKey.Product` · Ziel `Datacenter.Name`.
+
+### 3b. Implizite Foreign Keys (`demo_cmdb_nofk.db`)
+In `demo_cmdb_nofk.db` sind **keine** FKs deklariert — die Beziehungen stecken
+nur in den Spaltennamen (`Host.ClusterID` passt zur PK `Cluster.ClusterID`).
+
+- Connection-URL auf `…/sample_data/demo_cmdb_nofk.db` setzen, **„Implizite
+  (geratene) Beziehungen einbeziehen"** ankreuzen, „Schema laden".
+- Ohne Häkchen: keine Kanten, keine Pfade. Mit Häkchen: die geratenen
+  Beziehungen erscheinen **gestrichelt** im Graph und Join-Pfade werden möglich.
+- Beispiel: Start `Network.VLAN` · Ziel `Datacenter.Name`.
 
 ### 4. Realistische Daten + Filter
 Genug Zeilen (Cluster, Hosts, VMs, Netze, Betriebssysteme, Datastores …), damit Abfragen

@@ -75,11 +75,19 @@ function collectFilters() {
 }
 
 // --- Schema graph (Cytoscape) --------------------------------------------
+function includeImplied() {
+  return document.getElementById("include_implied").checked;
+}
+
 async function drawGraph(url) {
-  const g = await postJSON("/api/graph", { connection_url: url });
+  const g = await postJSON("/api/graph", {
+    connection_url: url, include_implied: includeImplied(),
+  });
   const elements = [
     ...g.nodes.map((n) => ({ data: { id: n.id } })),
-    ...g.edges.map((e) => ({ data: { source: e.source, target: e.target } })),
+    ...g.edges.map((e) => ({
+      data: { source: e.source, target: e.target, implied: !!e.implied },
+    })),
   ];
   CY = cytoscape({
     container: document.getElementById("graph"),
@@ -92,6 +100,8 @@ async function drawGraph(url) {
         width: 84, height: 24, "text-wrap": "wrap", "text-max-width": 78 } },
       { selector: "edge", style: {
         "line-color": "#bbb", width: 2, "curve-style": "bezier" } },
+      { selector: "edge[?implied]", style: {
+        "line-style": "dashed", "line-color": "#9b59b6" } },
       { selector: "node.hl", style: {
         "background-color": "#E0532E", "border-width": 2, "border-color": "#7a1f0a" } },
       { selector: "edge.hl", style: { "line-color": "#E0532E", width: 4 } },
@@ -144,6 +154,13 @@ document.getElementById("target_table").addEventListener("change", () =>
 
 document.getElementById("btn_add_filter").addEventListener("click", addFilterRow);
 
+// Redraw the graph when implied relationships are toggled (if a schema is loaded).
+document.getElementById("include_implied").addEventListener("change", () => {
+  if (!SCHEMA.tables.length) return;
+  drawGraph(document.getElementById("connection_url").value)
+    .catch((e) => alert(e.message));
+});
+
 document.getElementById("btn_build").addEventListener("click", async () => {
   const url = document.getElementById("connection_url").value;
   const body = {
@@ -151,6 +168,7 @@ document.getElementById("btn_build").addEventListener("click", async () => {
     start: { table: start_table.value, column: start_col.value },
     target: { table: target_table.value, column: target_col.value },
     filters: collectFilters(),
+    include_implied: includeImplied(),
   };
   try {
     const data = await postJSON("/api/joinpath", body);
