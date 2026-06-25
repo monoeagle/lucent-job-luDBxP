@@ -28,6 +28,10 @@
   (`demo_cmdb_nofk.db`) zum Ausprobieren.
 
 ### Changed
+- Info-Bereich in der Sidebar ans untere Ende gesetzt; die Info-Seite zeigt
+  jetzt App-Metadaten (Name, Version, Ersteller) und den Technologie-Stack
+  mit Versionen (Python/Flask/SQLAlchemy/NetworkX/Cytoscape.js) über den neuen
+  `GET /api/info`-Endpoint, plus die Verbindungs-Übersicht.
 - Layout-Feinschliff: senkrechte Trennlinie zwischen Hauptbereich und Graph
   ist per Drag verschiebbar; der Graph-Bereich ist standardmäßig 1/3 der
   Breite (Cytoscape skaliert beim Ziehen mit). Sidebar bekommt Kategorien

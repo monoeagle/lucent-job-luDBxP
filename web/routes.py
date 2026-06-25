@@ -1,7 +1,11 @@
 """HTTP API: reflect a schema and compute join-path SQL. Read-only."""
 import logging
+import sys
+from importlib.metadata import PackageNotFoundError, version as pkg_version
 
 from flask import Blueprint, jsonify, render_template, request
+
+import config
 
 from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
 from core.graph import build_graph
@@ -28,6 +32,30 @@ def index():
     """
     default_connection = Settings.load().get("default_connection")
     return render_template("index.html", default_connection=default_connection)
+
+
+def _pkg_version(name: str) -> str:
+    try:
+        return pkg_version(name)
+    except PackageNotFoundError:
+        return "?"
+
+
+@bp.get("/api/info")
+def api_info():
+    """Return application metadata: name, version, author, and tech stack."""
+    return jsonify(
+        name=config.APP_NAME,
+        version=config.APP_VERSION,
+        author=config.APP_AUTHOR,
+        stack=[
+            {"name": "Python", "version": ".".join(map(str, sys.version_info[:3]))},
+            {"name": "Flask", "version": _pkg_version("flask")},
+            {"name": "SQLAlchemy", "version": _pkg_version("sqlalchemy")},
+            {"name": "NetworkX", "version": _pkg_version("networkx")},
+            {"name": "Cytoscape.js", "version": config.CYTOSCAPE_VERSION},
+        ],
+    )
 
 
 @bp.post("/api/schema")

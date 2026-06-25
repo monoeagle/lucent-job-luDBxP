@@ -79,11 +79,12 @@ function renderSidebar() {
     `<li data-kind="${kind}" data-name="${esc(o.name)}">${esc(o.name)}</li>`).join("");
   $("objects").innerHTML =
     `<h3>Tools</h3><ul class="objlist"><li data-action="joinbuilder">Join-Builder</li></ul>` +
-    `<h3>Info</h3><ul class="objlist"><li data-action="info">Übersicht</li></ul>` +
     `<h3>Tabellen (${SCHEMA.tables.length})</h3>` +
     `<ul class="objlist">${objList(SCHEMA.tables, "table")}</ul>` +
     `<h3>Views (${SCHEMA.views.length})</h3>` +
-    `<ul class="objlist">${objList(SCHEMA.views, "view")}</ul>`;
+    `<ul class="objlist">${objList(SCHEMA.views, "view")}</ul>` +
+    `<div class="sidebar-bottom"><h3>Info</h3>` +
+    `<ul class="objlist"><li data-action="info">Übersicht</li></ul></div>`;
   $("objects").querySelectorAll("li").forEach((li) => {
     li.addEventListener("click", () => {
       if (li.dataset.action === "joinbuilder") openJoinBuilder();
@@ -94,17 +95,41 @@ function renderSidebar() {
 }
 
 // ===== Info tab =====
-function openInfo() {
+async function openInfo() {
   const panel = ensureTab("info", "Info", true);
+  panel.innerHTML = "<div class='detail'><h2>Info</h2><p class='hint'>lädt…</p></div>";
+
+  let meta = null;
+  try {
+    const r = await fetch("/api/info");
+    if (r.ok) meta = await r.json();
+  } catch (e) { /* offline metadata fallback below */ }
+
+  const stackRows = meta
+    ? meta.stack.map((s) =>
+        `<tr><td>${esc(s.name)}</td><td>${esc(s.version)}</td></tr>`).join("")
+    : "";
   const fkCount = SCHEMA.tables.reduce((n, t) => n + t.foreign_keys.length, 0);
+  const dbBlock = SCHEMA.tables.length
+    ? `<h3>Verbindung</h3><table class="cols"><tbody>` +
+      `<tr><td>Connection-URL</td><td>${esc(connUrl())}</td></tr>` +
+      `<tr><td>Tabellen</td><td>${SCHEMA.tables.length}</td></tr>` +
+      `<tr><td>Views</td><td>${SCHEMA.views.length}</td></tr>` +
+      `<tr><td>Deklarierte Foreign Keys</td><td>${fkCount}</td></tr>` +
+      `</tbody></table>`
+    : "<p class='hint'>Noch nicht mit einer Datenbank verbunden.</p>";
+
   panel.innerHTML =
-    `<div class="detail"><h2>Info</h2>` +
+    `<div class="detail">` +
+    `<h2>${esc(meta ? meta.name : "Lucent DB Explorer")}</h2>` +
     `<table class="cols"><tbody>` +
-    `<tr><td>Connection-URL</td><td>${esc(connUrl())}</td></tr>` +
-    `<tr><td>Tabellen</td><td>${SCHEMA.tables.length}</td></tr>` +
-    `<tr><td>Views</td><td>${SCHEMA.views.length}</td></tr>` +
-    `<tr><td>Deklarierte Foreign Keys</td><td>${fkCount}</td></tr>` +
+    `<tr><td>Version</td><td>${esc(meta ? meta.version : "?")}</td></tr>` +
+    `<tr><td>Ersteller</td><td>${esc(meta ? meta.author : "?")}</td></tr>` +
     `</tbody></table>` +
+    `<h3>Technologie-Stack</h3>` +
+    `<table class="cols"><thead><tr><th>Komponente</th><th>Version</th></tr></thead>` +
+    `<tbody>${stackRows}</tbody></table>` +
+    dbBlock +
     `<p class="hint">Implizite (geratene) Foreign Keys lassen sich über die ` +
     `Checkbox oben einschalten.</p></div>`;
 }

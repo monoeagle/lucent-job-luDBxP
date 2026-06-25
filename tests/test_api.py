@@ -16,6 +16,15 @@ def test_schema_endpoint_returns_tables(client, inventory_url):
     assert "VirtualMachines" in names
 
 
+def test_info_endpoint_returns_metadata_and_stack(client):
+    data = client.get("/api/info").get_json()
+    assert data["name"] == "Lucent DB Explorer"
+    assert data["version"]
+    assert "Tobias" in data["author"]
+    stack_names = {s["name"] for s in data["stack"]}
+    assert {"Python", "Flask", "SQLAlchemy", "NetworkX", "Cytoscape.js"} <= stack_names
+
+
 def test_schema_returns_column_details_fks_and_views(client, inventory_url):
     data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
     vm = next(t for t in data["tables"] if t["name"] == "VirtualMachines")
