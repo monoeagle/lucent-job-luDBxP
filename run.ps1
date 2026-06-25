@@ -23,15 +23,24 @@ $Stamp   = Join-Path $PSScriptRoot '.req_stamp'
 $VenvPy  = Join-Path $Venv 'Scripts\python.exe'
 $VenvPip = Join-Path $Venv 'Scripts\pip.exe'
 
+# Offline wheelhouse (bundled Windows wheels). When present, setup runs without
+# internet. The compiled wheels are built for CPython 3.12 (win_amd64).
+$Wheels = Join-Path $PSScriptRoot 'wheels'
+
 function Find-Python {
-    # Prefer the py launcher (Windows), fall back to python on PATH.
-    foreach ($v in '3.13', '3.12', '3.11', '3.10') {
+    # With the offline wheelhouse, require Python 3.12 to match the cp312 wheels;
+    # otherwise prefer the newest available.
+    $versions = if (Test-Path $Wheels) { @('3.12') } else { @('3.13', '3.12', '3.11', '3.10') }
+    foreach ($v in $versions) {
         if (Get-Command py -ErrorAction SilentlyContinue) {
             & py "-$v" --version *> $null
             if ($LASTEXITCODE -eq 0) { return @('py', "-$v") }
         }
     }
     if (Get-Command python -ErrorAction SilentlyContinue) { return @('python') }
+    if (Test-Path $Wheels) {
+        throw 'Python 3.12 (64-bit) wird fuer das Offline-Setup benoetigt (passend zu wheels\).'
+    }
     throw 'Kein Python gefunden (py oder python).'
 }
 
@@ -43,7 +52,12 @@ function Setup-Venv {
     $newHash = (Get-FileHash 'requirements.txt' -Algorithm MD5).Hash
     $oldHash = if (Test-Path $Stamp) { Get-Content $Stamp -Raw } else { '' }
     if ($newHash -ne $oldHash.Trim()) {
-        & $VenvPip install -r requirements.txt
+        if (Test-Path $Wheels) {
+            Write-Host '  Offline-Setup: installiere aus wheels\ (kein Internet noetig)...'
+            & $VenvPip install --no-index --find-links $Wheels -r requirements.txt
+        } else {
+            & $VenvPip install -r requirements.txt
+        }
         Set-Content -Path $Stamp -Value $newHash -NoNewline
     }
 }
