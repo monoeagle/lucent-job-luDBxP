@@ -1,0 +1,35 @@
+graph TB
+    subgraph UI["3-Panel-UI (Browser)"]
+        OB["Objekt-Browser\n(Tabellen · Views)"]
+        JB["Join-Builder\n(Start → Ziel → Filter → SQL)"]
+        GR["FK-Graph\n(Cytoscape.js)"]
+    end
+    subgraph FLASK["Flask-API"]
+        S["/api/schema"]
+        J["/api/joinpath"]
+        G["/api/graph"]
+        D["/api/data"]
+        C["/api/connect"]
+    end
+    subgraph CORE["Core-Layer"]
+        SL["SQLAlchemy\nLoader"]
+        BG["FK-Graph\n(NetworkX)"]
+        PF["Pathfinder\n(k-kürzeste\nPfade)"]
+        SG["SQL-Generator\n(parametrisiert)"]
+        IFK["Implizite FK\nHeuristik"]
+    end
+    DB[("SQLite · PostgreSQL\nMySQL · MSSQL")]
+
+    OB --> S
+    JB --> J
+    JB --> G
+    GR --> G
+    OB --> D
+    S --> SL
+    J --> PF
+    G --> BG
+    C --> SL
+    SL --> DB
+    PF --> BG
+    PF --> SG
+    BG --> IFK

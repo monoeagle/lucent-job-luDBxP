@@ -5,7 +5,8 @@ description: "Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL."
 theme_color: "#2E6FAE"
 category: "Datenbank"
 type: "web"
-port: 5057   # verify against port registry before first hub start
+port: 5057       # verify against port registry before first hub start
+docs_port: 8046  # Docs-Port (8043=Presenter, 8044=HealthVault, 8045=Haushaltsbuch, 8046=luDBxP)
 
 run_command: "bash run.sh --skip-setup"
 

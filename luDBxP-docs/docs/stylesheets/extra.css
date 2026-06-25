@@ -1,0 +1,1980 @@
+/* ════════════════════════════════════════════════════════════
+   Lucent Trails – MkDocs Material Custom CSS
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Dunkelmodus (slate) ─────────────────────────────────── */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #0f1117;
+  --md-primary-fg-color--light: #1a2035;
+  --md-primary-fg-color--dark:  #080c12;
+  --md-accent-fg-color:         #22D3EE;
+  --md-accent-fg-color--transparent: rgba(34,211,238,.12);
+
+  --md-default-fg-color:        rgba(221, 227, 240, 0.87);
+  --md-default-fg-color--light: rgba(122, 134, 161, 0.54);
+  --md-default-bg-color:        #0f1117;
+  --md-default-bg-color--light: #181c27;
+
+  --md-code-bg-color:           #1f2436;
+  --md-code-fg-color:           #dde3f0;
+
+  --md-typeset-a-color:         #22D3EE;
+}
+
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #0f1117;
+}
+
+[data-md-color-scheme="slate"] .md-search__form {
+  background-color: #1a2035;
+}
+
+[data-md-color-scheme="slate"] .md-search__input {
+  color: #dde3f0;
+}
+
+[data-md-color-scheme="slate"] .md-search__input::placeholder {
+  color: rgba(122, 134, 161, 0.7);
+}
+
+/* ── Hellmodus (default) ─────────────────────────────────── */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        #1a2035;
+  --md-primary-fg-color--light: #2a3050;
+  --md-primary-fg-color--dark:  #0f1117;
+  --md-accent-fg-color:         #22D3EE;
+  --md-accent-fg-color--transparent: rgba(34,211,238,.12);
+
+  --md-default-fg-color:        rgba(26, 32, 44, 0.87);
+  --md-default-fg-color--light: rgba(74, 85, 104, 0.54);
+  --md-default-bg-color:        #ffffff;
+  --md-default-bg-color--light: #f7fafc;
+
+  --md-code-bg-color:           #edf2f7;
+  --md-code-fg-color:           #1a202c;
+
+  --md-typeset-a-color:         #22D3EE;
+}
+
+[data-md-color-scheme="default"] .md-header,
+[data-md-color-scheme="default"] .md-tabs {
+  background-color: #1a2035;
+}
+
+[data-md-color-scheme="default"] .md-header__title,
+[data-md-color-scheme="default"] .md-header__topic,
+[data-md-color-scheme="default"] .md-header__button,
+[data-md-color-scheme="default"] .md-tabs__link {
+  color: #ffffff !important;
+}
+
+[data-md-color-scheme="default"] .md-search__form {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="default"] .md-search__input {
+  color: #ffffff;
+}
+
+[data-md-color-scheme="default"] .md-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Sticky Header ──── */
+.md-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.md-header[data-md-state="shadow"] {
+  box-shadow: 0 0 .4rem .1rem rgba(0,0,0,.25);
+}
+
+/* ── Layout-Maximierung ──────────────────────────────────── */
+
+/* Header- + Footer-Höhe als Custom Property — Rail/Flyout richten sich danach */
+:root {
+  --adb-header-h: 48px;
+  --adb-footer-h: 22px;
+}
+
+/* Rechtes Inhaltsverzeichnis ausblenden */
+.md-sidebar--secondary {
+  display: none !important;
+}
+
+/* Volle Bildschirmbreite — Material limitiert .md-grid auf ~61 rem */
+.md-grid,
+.md-main__inner,
+.md-content {
+  max-width: none !important;
+}
+
+/* Etwas Padding rechts, damit Text nicht am Viewport-Rand klebt */
+.md-content__inner {
+  margin-right: 1.5rem;
+}
+
+/* ── Minimalistischer Footer (maximal kompakt) ───────────── */
+.md-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 250;
+  background-color: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  text-align: center;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  padding: 0;
+  border-top: 1px solid var(--md-default-fg-color--light);
+  box-shadow: none;
+}
+
+.md-footer-meta,
+.md-footer-meta__inner {
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
+.md-copyright {
+  padding: 2px 8px !important;
+  margin: 0 !important;
+}
+
+.md-copyright__highlight {
+  display: inline;
+  margin-right: 6px;
+}
+
+/* Footer-Puffer für fixed footer */
+.md-main__inner {
+  padding-bottom: 1.2rem;
+}
+
+.md-content {
+  padding-bottom: 0.8rem;
+}
+
+/* ── Lucent Hub – Doku beenden Button ───────────────────────────────────── */
+.hub-stop-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+  padding: 6px 12px;
+}
+
+.hub-stop-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 11px;
+  font-family: monospace;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+  opacity: 0.6;
+}
+
+.hub-stop-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  opacity: 1;
+}
+
+/* ── Lightbox für Doku-Screenshots ─────────────────────────────────────── */
+/* Universal-Backdrop, funktioniert in Hell- und Dunkelmodus.                */
+.adb-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 24px;
+  box-sizing: border-box;
+  cursor: zoom-out;
+}
+
+.adb-lightbox-overlay.open {
+  display: flex;
+}
+
+/* Bild belegt 90% Breite und 90% Hoehe; object-fit:contain skaliert das
+   eigentliche Pixel-/SVG-Inhalt auf die laengere Achse. Folge:
+     - Querformat (z.B. Mermaid 1500x400) erreicht volle 90vw Breite.
+     - Hochformat erreicht die volle 90vh Hoehe (Breite skaliert kleiner). */
+.adb-lightbox-img {
+  width: 90vw;
+  height: 90vh;
+  object-fit: contain;
+  box-sizing: border-box;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  cursor: default;
+  user-select: none;
+}
+
+.adb-lightbox-caption {
+  color: #e0e3eb;
+  font-size: 0.9rem;
+  margin-top: 12px;
+  text-align: center;
+  max-width: 80vw;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.adb-lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.adb-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Vor/Zurueck-Buttons links + rechts; Counter rechts oben neben Close. */
+.adb-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.adb-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.adb-lightbox-prev { left: 18px; }
+.adb-lightbox-next { right: 18px; }
+
+.adb-lightbox-counter {
+  position: absolute;
+  top: 20px;
+  right: 70px;
+  color: #e0e3eb;
+  font-size: 0.85rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: none;
+  pointer-events: none;
+}
+
+/* Mermaid-Pre-Render-SVGs: Pergament-Ton statt knallweiss */
+:root {
+  --adb-mermaid-bg: #f4ecd8;
+}
+
+/* Alle Bilder im Doku-Body zentrieren (Block-Display + auto-Margins). */
+.md-content article img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Inline-Icons / Emoji-Bilder ausnehmen (z.B. Material-Icons-Spans). */
+.md-content article p img + br + img,
+.md-content article .twemoji,
+.md-content article .md-tag img {
+  display: inline-block;
+  margin: 0;
+}
+
+/* Projektverlauf-Timeline: Gantt oben full-width, darunter zwei Feature-Tabellen. */
+.adb-timeline-gantt {
+  margin: 12px 0;
+}
+.adb-timeline-gantt img {
+  max-width: 100%;
+  height: auto;
+}
+
+.adb-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+  align-items: start;
+}
+@media (max-width: 60em) {
+  .adb-features-grid { grid-template-columns: 1fr; }
+}
+
+.adb-features-col h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.adb-features-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.adb-features-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.16);
+  vertical-align: top;
+}
+.adb-features-table td:first-child {
+  width: 22px;
+  font-size: 1.05rem;
+  text-align: center;
+}
+.adb-features-table td:nth-child(2) {
+  white-space: nowrap;
+  color: var(--md-default-fg-color);
+}
+[data-md-color-scheme="slate"] .adb-features-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.md-content article img[src*="/images/mermaid/"] {
+  background: var(--adb-mermaid-bg);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.adb-lightbox-img[src$=".svg"] {
+  background: var(--adb-mermaid-bg);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Phase 3 — Icon-Rail + Flyout-Panel
+
+   Ersetzt die Material-Sidebar links durch eine schmale Icon-Leiste.
+   Original-Sidebar bleibt im DOM (versteckt) damit Search/Routing intakt.
+   Nur ab Desktop-Breite aktiv (>= 76.25em) — Mobile behaelt Drawer.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@media screen and (min-width: 76.25em) {
+  /* Material-Standard-Sidebar links ausblenden */
+  .md-sidebar--primary {
+    display: none !important;
+  }
+
+  /* Content links Platz für 56 px Rail. Bei offenem Flyout (+240 px)
+     wandert der Content-Bereich nach rechts, damit das Panel nichts
+     verdeckt. Transition matched die Flyout-Slide-Dauer (0.18s).         */
+  .md-main__inner {
+    margin-left: 56px;
+    transition: margin-left 0.18s ease-out;
+  }
+
+  body:has(.adb-rail-flyout--open) .md-main__inner {
+    margin-left: 416px;  /* 56 (Rail) + 360 (Flyout) */
+  }
+
+  /* Icon-Rail — fixed, fuellt linke Seite zwischen Header und Footer */
+  .adb-rail {
+    position: fixed;
+    left: 0;
+    top: var(--adb-header-h);
+    bottom: var(--adb-footer-h);
+    width: 56px;
+    background: var(--md-default-bg-color--light);
+    border-right: 1px solid rgba(128, 128, 128, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 0;
+  }
+
+  .adb-rail-btn {
+    width: 56px;
+    height: 48px;
+    border: none;
+    background: transparent;
+    color: var(--md-default-fg-color);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: background-color 0.15s;
+    border-left: 3px solid transparent;
+  }
+
+  .adb-rail-btn:hover {
+    background: rgba(128, 128, 128, 0.12);
+  }
+
+  .adb-rail-btn--active {
+    border-left-color: var(--md-accent-fg-color);
+  }
+
+  .adb-rail-btn--current {
+    background: rgba(128, 128, 128, 0.16);
+    border-left-color: var(--md-accent-fg-color);
+  }
+
+  .adb-rail-icon {
+    font-size: 22px;
+    line-height: 1;
+    filter: grayscale(0.15);
+  }
+
+  /* Flyout — schiebt sich von links ein, bleibt offen bis Toggle klickt. */
+  .adb-rail-flyout {
+    position: fixed;
+    left: 56px;
+    top: var(--adb-header-h);
+    bottom: var(--adb-footer-h);
+    width: 360px;
+    background: var(--md-default-bg-color);
+    border-right: 1px solid rgba(128, 128, 128, 0.2);
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.12);
+    transform: translateX(-100%);
+    transition: transform 0.18s ease-out;
+    z-index: 99;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Toggle-Pfeil am rechten Flyout-Rand — schliesst das Panel */
+  .adb-rail-flyout__toggle {
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 44px;
+    background: var(--md-default-bg-color);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-left: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--md-default-fg-color--light);
+    font-size: 11px;
+    padding: 0;
+    z-index: 100;
+  }
+
+  .adb-rail-flyout__toggle:hover {
+    background: var(--md-default-bg-color--light);
+    color: var(--md-accent-fg-color);
+  }
+
+  .adb-rail-flyout--open {
+    transform: translateX(0);
+  }
+
+  /* Sanfter Content-Switch zwischen offenen Sections */
+  .adb-rail-flyout > * {
+    transition: opacity 0.12s ease-out;
+  }
+
+  .adb-rail-flyout--fading > * {
+    opacity: 0;
+  }
+
+  .adb-rail-flyout__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 12px 10px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+    background: var(--md-default-bg-color--light);
+    flex-shrink: 0;
+  }
+
+  .adb-rail-flyout__icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .adb-rail-flyout__title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--md-default-fg-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .adb-rail-flyout__close {
+    border: none;
+    background: transparent;
+    color: var(--md-default-fg-color--light);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    border-radius: 4px;
+  }
+
+  .adb-rail-flyout__close:hover {
+    background: rgba(128, 128, 128, 0.18);
+    color: var(--md-default-fg-color);
+  }
+
+  .adb-rail-flyout__list {
+    list-style: none;
+    padding: 4px 0;
+    margin: 0;
+    flex: 1;
+  }
+
+  .adb-rail-flyout__item a {
+    display: block;
+    padding: 4px 12px;
+    color: var(--md-default-fg-color);
+    text-decoration: none;
+    font-size: 0.74rem;
+    line-height: 1.3;
+    border-left: 3px solid transparent;
+    transition: background-color 0.1s, border-color 0.1s;
+    overflow-wrap: anywhere;
+  }
+
+  .adb-rail-flyout__item a:hover {
+    background: rgba(128, 128, 128, 0.1);
+    color: var(--md-accent-fg-color);
+  }
+
+  .adb-rail-flyout__item--active a {
+    background: var(--md-accent-fg-color--transparent);
+    border-left-color: var(--md-accent-fg-color);
+    color: var(--md-accent-fg-color);
+    font-weight: 600;
+  }
+
+  /* TreeView: Sub-Gruppen mit kollabierbarem Header */
+  .adb-rail-flyout__group {
+    list-style: none;
+  }
+
+  .adb-rail-flyout__groupbtn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    padding: 4px 10px;
+    font-size: 0.68rem;
+    color: var(--md-default-fg-color--light);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-family: inherit;
+  }
+
+  .adb-rail-flyout__groupbtn:hover {
+    color: var(--md-default-fg-color);
+    background: rgba(128, 128, 128, 0.06);
+  }
+
+  .adb-rail-flyout__chev {
+    width: 10px;
+    display: inline-block;
+    transition: transform 0.15s;
+    font-size: 0.6rem;
+    color: var(--md-default-fg-color--light);
+  }
+
+  .adb-rail-flyout__group--closed .adb-rail-flyout__chev {
+    transform: rotate(-90deg);
+  }
+
+  /* Sub-Tree-Liste: weicher Auf-/Zuklapp via max-height.
+     Offen-Wert großzügig, sonst werden lange Seiten-Bäume (z. B. Roadmap,
+     Styleguide) im aufgeklappten Menü abgeschnitten. */
+  .adb-rail-flyout__sublist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    max-height: 2400px;
+    transition: max-height 0.22s ease-out;
+  }
+
+  .adb-rail-flyout__group--closed > .adb-rail-flyout__sublist {
+    max-height: 0;
+  }
+
+  /* Einrueckung nach Tiefe */
+  .adb-rail-flyout__item[data-depth="1"] a,
+  .adb-rail-flyout__group[data-depth="1"] > .adb-rail-flyout__groupbtn {
+    padding-left: 20px;
+  }
+  .adb-rail-flyout__item[data-depth="2"] a,
+  .adb-rail-flyout__group[data-depth="2"] > .adb-rail-flyout__groupbtn {
+    padding-left: 32px;
+  }
+  .adb-rail-flyout__item[data-depth="3"] a {
+    padding-left: 44px;
+  }
+}
+
+/* Auf Mobile/Tablet bleibt das Original-Verhalten (Drawer) */
+@media screen and (max-width: 76.24em) {
+  .adb-rail,
+  .adb-rail-flyout {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Phase 4 — Header-Reorg + Search-Shortcut + Rail-Utility-Buttons
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Palette-Toggle im Header weg (wandert in die Icon-Rail) */
+.md-header [data-md-component="palette"] {
+  display: none !important;
+}
+
+/* Hub-Stop-Bar oben rechts weg (wandert in die Icon-Rail) */
+.hub-stop-bar {
+  display: none !important;
+}
+
+/* Site-Title kompakter, Topic-Scroll-Variante ausblenden */
+.md-header__title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+.md-header__topic[data-md-component="header-topic"] {
+  display: none !important;
+}
+
+.md-header__inner {
+  align-items: center;
+}
+
+.md-search {
+  margin-right: 8px;
+}
+
+/* Status-Badge im Header */
+.adb-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  margin-right: 10px;
+  padding: 3px 9px;
+  border-radius: 11px;
+  background: rgba(34, 197, 94, 0.18);
+  color: #16a34a;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+  border: 1px solid rgba(34, 197, 94, 0.40);
+  white-space: nowrap;
+  cursor: help;
+  line-height: 1;
+}
+
+.adb-status-badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+  display: inline-block;
+}
+
+/* Roadmap-Badge-Button im Header: klickbar, öffnet den Gantt im Modal. Vom
+   grünen „verifiziert"-Badge farblich abgesetzt (Cyan/Accent). */
+.adb-roadmap-badge {
+  margin-left: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(34, 211, 238, 0.16);
+  color: #0e7490;
+  border-color: rgba(34, 211, 238, 0.45);
+}
+.adb-roadmap-badge:hover { background: rgba(34, 211, 238, 0.30); }
+.adb-roadmap-badge .adb-status-badge__dot {
+  background: #22d3ee;
+  box-shadow: 0 0 6px rgba(34, 211, 238, 0.6);
+}
+[data-md-color-scheme="default"] .adb-roadmap-badge {
+  background: rgba(34, 211, 238, 0.22);
+  color: #67e8f9;
+}
+
+/* Hellmodus-Header ist dunkelblau — Badge braucht hellere Kontur */
+[data-md-color-scheme="default"] .adb-status-badge {
+  background: rgba(34, 197, 94, 0.22);
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.45);
+}
+
+/* Projektverlauf-Badge im Header */
+.adb-timeline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 10px;
+  padding: 3px 9px;
+  border-radius: 11px;
+  background: rgba(56, 139, 253, 0.18);
+  color: #58a6ff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+  border: 1px solid rgba(56, 139, 253, 0.40);
+  white-space: nowrap;
+  text-decoration: none;
+  line-height: 1;
+  transition: background 100ms ease, border-color 100ms ease, transform 80ms ease;
+}
+.adb-timeline-badge:hover {
+  background: rgba(56, 139, 253, 0.32);
+  border-color: rgba(56, 139, 253, 0.65);
+  transform: translateY(-1px);
+}
+.adb-timeline-badge__icon {
+  font-size: 0.85rem;
+  filter: saturate(0.85);
+}
+[data-md-color-scheme="default"] .adb-timeline-badge {
+  background: rgba(56, 139, 253, 0.22);
+  color: #79c0ff;
+  border-color: rgba(56, 139, 253, 0.45);
+}
+
+/* Header-Source ausblenden — kein Repo-Link */
+.md-header__source {
+  display: none !important;
+}
+
+/* Search-Button sichtbar gegen dunklen Header */
+.md-search__button {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #1a202c !important;
+  --md-default-fg-color: #1a202c;
+  --md-default-bg-color--light: rgba(0, 0, 0, 0.10);
+}
+
+.md-search__button:hover,
+.md-search__button:focus {
+  background-color: #ffffff !important;
+}
+
+.md-search__button::after {
+  background: rgba(0, 0, 0, 0.10) !important;
+  color: #1a202c !important;
+}
+
+/* Page-H1 ganz raus (Title ist im Header). */
+.md-content__inner > h1:first-child {
+  display: none !important;
+}
+
+/* Permanent-Link-Anker (¶) an Headings ausblenden */
+.md-typeset .headerlink {
+  display: none !important;
+}
+
+/* Spacing zwischen Header und erstem Content reduzieren */
+.md-main__inner {
+  margin-top: 0.4rem !important;
+}
+
+.md-content__inner {
+  padding-top: 0 !important;
+}
+
+.md-content__inner > *:first-child,
+.md-content__inner > h1:first-child + * {
+  margin-top: 0 !important;
+}
+
+/* Bilder + Mermaid-SVGs zentriert */
+.md-typeset img,
+.md-typeset svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Standalone-Block-Bilder */
+.md-typeset > p > img,
+.md-typeset > p > svg,
+.md-typeset > p > a > img,
+.md-typeset > p > a > svg,
+.md-typeset figure > img,
+.md-typeset figure > svg {
+  max-width: 85%;
+  max-height: 65vh;
+  width: auto;
+  height: auto;
+}
+
+/* Atmender vertikaler Abstand um Block-Bilder */
+.md-typeset > p:has(> img),
+.md-typeset > p:has(> svg),
+.md-typeset > figure {
+  margin-top: 1.8em;
+  margin-bottom: 1.8em;
+}
+
+/* Inline-Bilder (Listen-Icons, Links mit Thumbnail) bleiben kompakt */
+.md-typeset li img,
+.md-typeset a > img:not(.adb-block-img) {
+  display: inline;
+  margin: 0;
+  width: auto;
+  height: auto;
+  vertical-align: middle;
+}
+
+.md-typeset li img {
+  max-height: 1.4em;
+}
+
+/* Icon-Rail Utility-Footer (Palette + Stop) ────────────────── */
+@media screen and (min-width: 76.25em) {
+  .adb-rail-footer {
+    margin-top: auto;
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .adb-rail-btn--util .adb-rail-icon {
+    font-size: 18px;
+  }
+
+  .adb-rail-btn--stop {
+    color: rgba(239, 68, 68, 0.85);
+  }
+
+  .adb-rail-btn--stop:hover {
+    background: rgba(239, 68, 68, 0.15);
+  }
+
+  /* Dashboard-Icon-Button */
+  .adb-rail-btn--dashboard {
+    background: rgba(34, 197, 94, 0.10);
+    border-left: 3px solid #16a34a !important;
+  }
+
+  .adb-rail-btn--dashboard:hover {
+    background: rgba(34, 197, 94, 0.22);
+  }
+
+  .adb-rail-btn--dashboard .adb-rail-icon {
+    font-size: 20px;
+    filter: grayscale(0);
+  }
+
+  /* Archiv-Footer-Button */
+  .adb-rail-btn--archive .adb-rail-icon {
+    font-size: 18px;
+    opacity: 0.7;
+  }
+  .adb-rail-btn--archive:hover .adb-rail-icon {
+    opacity: 1;
+  }
+
+  /* Info-Footer-Button (Entwickler + Stack) */
+  .adb-rail-btn--info .adb-rail-icon {
+    font-size: 19px;
+    opacity: 0.75;
+    font-style: italic;
+    font-family: 'Georgia', serif;
+    font-weight: 700;
+  }
+  .adb-rail-btn--info:hover .adb-rail-icon {
+    opacity: 1;
+  }
+
+  /* Info-Flyout-Inhalt (Entwickler + Stack) */
+  .adb-rail-flyout__info {
+    padding: 10px 14px 14px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .adb-info-block {
+    margin-bottom: 14px;
+  }
+
+  .adb-info-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .adb-info-block h4 {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--md-default-fg-color--light);
+    margin: 0 0 6px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+  }
+
+  .adb-info-block p {
+    margin: 0;
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+
+  .adb-info-block p strong {
+    font-size: 0.82rem;
+    color: var(--md-default-fg-color);
+  }
+
+  .adb-info-block p a {
+    font-size: 0.7rem;
+    font-family: 'Consolas', 'SFMono-Regular', monospace;
+    color: var(--md-accent-fg-color);
+    text-decoration: none;
+  }
+
+  .adb-info-block p a:hover {
+    text-decoration: underline;
+  }
+
+  .adb-info-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .adb-info-block li {
+    padding: 2px 0;
+    font-family: 'Consolas', 'SFMono-Regular', monospace;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: var(--md-default-fg-color);
+  }
+
+  /* Stack-Tabelle (Name · Version) */
+  .adb-info-stack {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Consolas', 'SFMono-Regular', monospace;
+    font-size: 0.7rem;
+  }
+
+  .adb-info-stack td {
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+    line-height: 1.3;
+  }
+
+  .adb-info-stack tr:last-child td {
+    border-bottom: none;
+  }
+
+  .adb-info-stack td:first-child {
+    color: var(--md-default-fg-color);
+  }
+
+  .adb-info-stack td:last-child {
+    text-align: right;
+    color: var(--md-default-fg-color--light);
+    padding-left: 8px;
+    white-space: nowrap;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Audit-Komponenten — Bars, Snapshot-Box, Grid
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Summary-Bar oberhalb der 3-Spalten-Übersicht ─────────────────────────── */
+.adb-audit-summary {
+  margin: 1.2em 0 1.6em;
+}
+
+.adb-audit-summary__bar {
+  height: 14px;
+  background: var(--md-default-fg-color--lightest);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.adb-audit-summary__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+  transition: width 0.3s ease-out;
+}
+
+.adb-audit-summary__label {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.adb-audit-summary--green .adb-audit-summary__label::before {
+  content: '✓ ';
+  color: #16a34a;
+  font-weight: 700;
+}
+
+/* 3-Spalten-Grid ─────────────────────────── */
+.adb-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 1.4em 0;
+}
+
+@media screen and (max-width: 76.24em) {
+  .adb-audit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adb-audit-col {
+  background: var(--md-default-bg-color--light);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.adb-audit-col__head {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--md-accent-fg-color);
+  color: var(--md-default-fg-color);
+  letter-spacing: 0.01em;
+}
+
+.adb-audit-col--ps  .adb-audit-col__head { border-bottom-color: #22D3EE; }
+.adb-audit-col--cs  .adb-audit-col__head { border-bottom-color: #155724; }
+.adb-audit-col--other .adb-audit-col__head { border-bottom-color: #856404; }
+
+/* Audit-Items ────────────────────────────────────────────────────────── */
+.adb-audit-item {
+  margin-bottom: 10px;
+}
+
+.adb-audit-item:last-child {
+  margin-bottom: 0;
+}
+
+.adb-audit-item__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.78rem;
+  margin-bottom: 4px;
+}
+
+.adb-audit-item__title {
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+}
+
+.adb-audit-item__value {
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+  font-size: 0.74rem;
+  color: var(--md-default-fg-color);
+  background: rgba(128, 128, 128, 0.08);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.adb-audit-item__bar {
+  height: 8px;
+  background: var(--md-default-fg-color--lightest);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(128, 128, 128, 0.12);
+}
+
+.adb-audit-item__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+  transition: width 0.3s ease-out;
+}
+
+.adb-audit-item__fill--info {
+  background: linear-gradient(90deg, #9ca3af 0%, #d1d5db 100%);
+}
+
+.adb-audit-item--info .adb-audit-item__value {
+  color: var(--md-default-fg-color--light);
+  font-style: italic;
+}
+
+.adb-audit-item__note {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: var(--md-default-fg-color--light);
+  line-height: 1.35;
+}
+
+/* Counter-Pills (Errors/Warnings/Info · Pass/Fail/Skip) ──────────────── */
+.adb-audit-counters {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+  flex-wrap: nowrap;
+}
+
+.adb-audit-counter {
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+  font-size: 0.64rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  line-height: 1.4;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.adb-audit-counter--zero {
+  background: rgba(128, 128, 128, 0.10);
+  color: var(--md-default-fg-color--light);
+  border-color: rgba(128, 128, 128, 0.18);
+}
+
+.adb-audit-counter--pass {
+  background: rgba(34, 197, 94, 0.16);
+  color: #16a34a;
+  border-color: rgba(34, 197, 94, 0.30);
+}
+
+.adb-audit-counter--warn {
+  background: rgba(245, 158, 11, 0.18);
+  color: #d97706;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.adb-audit-counter--err {
+  background: rgba(239, 68, 68, 0.18);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.adb-audit-counter--info {
+  background: rgba(59, 130, 246, 0.16);
+  color: #2563eb;
+  border-color: rgba(59, 130, 246, 0.30);
+}
+
+.adb-audit-counter--todo {
+  background: rgba(168, 162, 158, 0.18);
+  color: #78716c;
+  border-color: rgba(168, 162, 158, 0.40);
+  font-style: italic;
+}
+
+/* Audit-Chips (Pill-Style) ─────────── */
+.adb-audit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 0.66rem;
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+  border: 1px solid rgba(128, 128, 128, 0.18);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.adb-audit-chip--ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.adb-audit-chip--ok::before {
+  content: '✓';
+  font-weight: 700;
+}
+
+/* Audit-Banner — kompakter horizontaler Streifen oben auf Startseite ──── */
+.adb-audit-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.10) 0%, rgba(34, 197, 94, 0.02) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.30);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.74rem;
+  margin: 0 0 1.2em 0;
+  flex-wrap: wrap;
+}
+
+.adb-audit-banner__icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.adb-audit-banner__status {
+  font-weight: 700;
+  color: #16a34a;
+  letter-spacing: 0.02em;
+}
+
+.adb-audit-banner__bar {
+  flex: 0 0 80px;
+  height: 8px;
+  background: rgba(128, 128, 128, 0.18);
+  border-radius: 3px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.adb-audit-banner__fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+}
+
+.adb-audit-banner__count {
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.adb-audit-banner__chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.adb-audit-banner__date {
+  font-size: 0.7rem;
+  color: var(--md-default-fg-color--light);
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+}
+
+.adb-audit-banner__link {
+  font-size: 0.74rem;
+  font-weight: 600;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* Audit-Detail-Karten auf Dashboard ──────────────────────────────────── */
+.adb-audit-detail {
+  background: var(--md-default-bg-color--light);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+
+.adb-audit-detail__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+
+.adb-audit-detail__icon {
+  font-size: 1em;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.adb-audit-detail__icon--ok {
+  background: rgba(34, 197, 94, 0.18);
+  color: #16a34a;
+}
+
+.adb-audit-detail__title {
+  flex: 1;
+  font-weight: 700;
+}
+
+.adb-audit-detail__time {
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+  font-family: 'Consolas', 'SFMono-Regular', monospace;
+}
+
+.adb-audit-detail__body {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--md-default-fg-color);
+}
+
+/* Audit-History-Tabelle ─────────────────────────────────────────────── */
+.adb-audit-history table {
+  font-size: 0.78rem;
+}
+
+.adb-audit-history th,
+.adb-audit-history td {
+  padding: 4px 8px;
+}
+
+
+/* ────────────────────────────────────────────────────────────────────────
+   Projektverlauf — Activity-Heatmap + Phase-Buttons + Detail-Pane
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Color-Stops — 7-stufige Skala, mehrfarbig, KONTRASTREICHER:
+   0     · leeres Feld (klar gegen weißen Article-BG abgehoben)
+   1–2   · Grau hell
+   3–5   · Grau dunkel
+   6–12  · Grün hell  (produktiver Tag)
+   13–20 · Grün dunkel
+   21–40 · Orange/Rot hell (Marathon-Tag)
+   41+   · Rot dunkel (Audit-Marathon-Tag — viele kleine Commits)
+   Light-Mode: Bucket 0 jetzt deutlich grau (vorher quasi unsichtbar).
+   Dark-Mode: Bucket 0 etwas heller als Article-BG für gleichen Effekt. */
+:root {
+  --adb-act-0: #dfe2e5;       /* 0     · leer    — sichtbar gegen weißen BG */
+  --adb-act-1: #bcc1c7;       /* 1–2   · grau hell */
+  --adb-act-2: #838890;       /* 3–5   · grau dunkel */
+  --adb-act-3: #7cd394;       /* 6–12  · grün hell */
+  --adb-act-4: #2ea44f;       /* 13–20 · grün dunkel */
+  --adb-act-5: #f0883e;       /* 21–40 · orange */
+  --adb-act-6: #cf222e;       /* 41+   · rot */
+  --adb-act-border: rgba(0,0,0,0.12);
+}
+[data-md-color-scheme="slate"] {
+  --adb-act-0: #2b3145;       /* deutlich heller als #0f1117 Article-BG */
+  --adb-act-1: #404863;
+  --adb-act-2: #6c7593;
+  --adb-act-3: #1a6939;
+  --adb-act-4: #2ea44f;
+  --adb-act-5: #d8782b;
+  --adb-act-6: #e04a4a;
+  --adb-act-border: rgba(255,255,255,0.12);
+}
+
+.adb-act-heatmap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 0;
+  font-size: 11px;
+}
+
+.adb-act-months {
+  display: grid;
+  grid-template-columns: auto repeat(53, 1fr);
+  column-gap: 2px;
+  opacity: 0.7;
+  padding-left: 22px;  /* Day-Label-Spalte */
+}
+.adb-act-month-label {
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.adb-act-grid {
+  display: grid;
+  /* /projektverlauf-Seite: 10-Zeilen-Layout (Dekaden), 20 px Zellen + 3 px Gap
+     — deutlich größer als auf der Startseite. */
+  grid-template-rows: repeat(10, 20px);
+  column-gap: 3px;
+  row-gap: 3px;
+  grid-auto-flow: column;
+}
+
+.adb-act-day-label {
+  font-size: 10px;
+  opacity: 0.6;
+  padding-right: 4px;
+  line-height: 20px;
+}
+
+.adb-act-cell {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  border: 1px solid var(--adb-act-border);
+  background: var(--adb-act-0);
+  transition: transform 80ms ease, outline 80ms ease;
+}
+.adb-act-cell--empty { background: transparent; border-color: transparent; }
+.adb-act-cell--b0 { background: var(--adb-act-0); }
+.adb-act-cell--b1 { background: var(--adb-act-1); }
+.adb-act-cell--b2 { background: var(--adb-act-2); }
+.adb-act-cell--b3 { background: var(--adb-act-3); }
+.adb-act-cell--b4 { background: var(--adb-act-4); }
+.adb-act-cell--b5 { background: var(--adb-act-5); }
+.adb-act-cell--b6 { background: var(--adb-act-6); }
+.adb-act-legend__sep {
+  font-size: 9px;
+  opacity: 0.5;
+  margin: 0 2px;
+}
+.adb-act-cell--clickable {
+  cursor: pointer;
+}
+.adb-act-cell--clickable:hover {
+  outline: 2px solid var(--md-accent-fg-color, #22D3EE);
+  outline-offset: 1px;
+  transform: scale(1.15);
+}
+
+.adb-act-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+  opacity: 0.7;
+  margin-top: 4px;
+  font-size: 10px;
+}
+.adb-act-legend .adb-act-cell { width: 10px; height: 10px; }
+
+/* Statistik-Block: 3 große Zahlen + Kind-Pills */
+.adb-act-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+}
+.adb-act-stats-grid > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 16px;
+  background: var(--md-default-bg-color--light, #f7fafc);
+  border-radius: 4px;
+  border-left: 3px solid var(--md-accent-fg-color, #22D3EE);
+}
+.adb-act-stats-grid strong {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+}
+.adb-act-stats-grid span {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.adb-act-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 24px;
+}
+.adb-act-pill {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  background: var(--md-default-bg-color--light, #f0f0f0);
+  font-family: var(--md-code-font, monospace);
+}
+.adb-act-pill em { font-style: normal; font-weight: 600; opacity: 0.8; }
+.adb-act-pill--feat   { background: rgba(64,196,99,0.18); }
+.adb-act-pill--fix    { background: rgba(176,48,48,0.18); }
+.adb-act-pill--docs   { background: rgba(34,211,238,0.14); }
+.adb-act-pill--refactor { background: rgba(214,138,0,0.18); }
+.adb-act-pill--audit  { background: rgba(138,101,0,0.18); }
+.adb-act-pill--hotfix { background: rgba(176,48,48,0.28); }
+.adb-act-pill--chore  { background: rgba(120,120,120,0.18); }
+.adb-act-pill--test   { background: rgba(64,196,99,0.12); }
+.adb-act-pill--perf   { background: rgba(255,140,0,0.18); }
+
+/* Phase-Buttons unter dem Gantt */
+.adb-act-phases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+}
+.adb-act-phase-btn {
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--adb-act-border);
+  border-radius: 4px;
+  background: var(--md-default-bg-color, #fff);
+  cursor: pointer;
+  transition: background 80ms ease, border-color 80ms ease, transform 80ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font: inherit;
+  color: inherit;
+}
+.adb-act-phase-btn:hover {
+  background: var(--md-default-bg-color--light, #f7fafc);
+  border-color: var(--md-accent-fg-color, #22D3EE);
+  transform: translateX(2px);
+}
+.adb-act-phase-btn__label {
+  font-weight: 600;
+  font-size: 13px;
+}
+.adb-act-phase-btn__range {
+  font-size: 11px;
+  opacity: 0.7;
+  font-family: var(--md-code-font, monospace);
+}
+.adb-act-phase-btn--feature  { border-left: 3px solid #40c463; }
+.adb-act-phase-btn--fix      { border-left: 3px solid #B03030; }
+.adb-act-phase-btn--docs     { border-left: 3px solid #22D3EE; }
+.adb-act-phase-btn--perf     { border-left: 3px solid #FF8C00; }
+.adb-act-phase-btn--audit    { border-left: 3px solid #8A6500; }
+.adb-act-phase-btn--chore    { border-left: 3px solid #888888; }
+.adb-act-phase-btn--baseline { border-left: 3px solid #5C6BC0; }
+
+/* Detail-Pane: erscheint nach Klick */
+.adb-act-detail {
+  margin-top: 16px;
+  padding: 0;
+  border-radius: 4px;
+  background: var(--md-default-bg-color--light, #f7fafc);
+  border: 1px solid var(--adb-act-border);
+}
+.adb-act-detail:empty { display: none; }
+.adb-act-detail__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--adb-act-border);
+}
+.adb-act-detail__head strong { flex: 1; }
+.adb-act-detail__count {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--md-default-bg-color, #fff);
+  font-family: var(--md-code-font, monospace);
+}
+.adb-act-detail__close {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  opacity: 0.6;
+}
+.adb-act-detail__close:hover { opacity: 1; background: var(--md-default-bg-color, #fff); }
+.adb-act-detail__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 480px;
+  overflow-y: auto;
+}
+.adb-act-detail__item {
+  display: grid;
+  grid-template-columns: 70px 80px 1fr auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--adb-act-border);
+  font-size: 12px;
+}
+.adb-act-detail__item:last-child { border-bottom: none; }
+.adb-act-detail__sha {
+  font-family: var(--md-code-font, monospace);
+  opacity: 0.7;
+  font-size: 11px;
+}
+.adb-act-detail__kind {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--md-default-bg-color, #fff);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+.adb-act-detail__subject {
+  font-family: var(--md-text-font, inherit);
+  word-break: break-word;
+}
+.adb-act-detail__date {
+  font-size: 10px;
+  opacity: 0.5;
+  font-family: var(--md-code-font, monospace);
+}
+.adb-act-detail__empty {
+  padding: 24px 16px;
+  text-align: center;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Startseite — kompaktes Layout: Audit-Banner + Architektur-Bild + Footer
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Custom-Properties für die Startseite — skalieren mit Viewport. */
+:root {
+  --adb-home-cell:     clamp(10px, 1.1vw, 16px);
+  --adb-home-cell-gap: 2px;
+  --adb-home-col-h:    clamp(180px, 24vh, 240px);
+  --adb-home-title-fs: 9px;
+  /* Viewport minus Material-Header (~50px), Material-Footer (~80px) und 16px Atemraum */
+  --adb-home-page-h:   clamp(560px, calc(100vh - 146px), 1600px);
+}
+
+/* Wrapper-Layout: Flex-Column mit fixer Hoehe = Viewport - Material-Chrome.
+   Banner + Footer sind 0 0 auto, Arch streckt sich (flex: 1) und fuellt den
+   Restplatz, sodass Heatmap+Insights immer an der Unterkante andocken. */
+.adb-home-layout {
+  display: flex;
+  flex-direction: column;
+  height: var(--adb-home-page-h);
+  max-height: var(--adb-home-page-h);
+  box-sizing: border-box;
+  gap: 8px;
+}
+
+/* Material-Bottom-Padding der Article-Container nullen */
+body:has(.adb-home-layout) .md-main__inner,
+body:has(.adb-home-layout) .md-content {
+  padding-bottom: 0 !important;
+}
+
+.adb-home-layout > .adb-audit-banner { flex: 0 0 auto; }
+.adb-home-layout > .adb-home-footer  { flex: 0 0 auto; }
+
+/* Architektur-Container — streckt sich auf den gesamten Restplatz zwischen
+   Banner und Heatmap-Footer */
+.adb-home-arch {
+  flex: 1 1 auto;
+  min-height: 200px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 6px;
+  padding: 12px 16px;
+  background: #fafbfc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+}
+[data-md-color-scheme="slate"] .adb-home-arch {
+  background: #1a1e2a;
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.adb-home-arch img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* 3-Spalten-Grid am unteren Rand. */
+.adb-home-footer {
+  display: grid;
+  grid-template-columns: 4fr 2fr;
+  gap: 12px;
+  margin: 0;            /* symmetrisch zum Banner — Gap-Layout kuemmert sich um Abstand */
+  align-items: stretch;
+}
+@media (max-width: 800px) {
+  .adb-home-footer { grid-template-columns: 1fr; }
+}
+
+.adb-home-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Mini-Überschriften visually-hidden */
+.adb-home-footer__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.adb-home-footer [data-adb-activity-heatmap],
+.adb-home-footer [data-adb-activity-stats] {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Heatmap auf der Startseite: Months + Legend ausgeblendet */
+.adb-home-footer .adb-act-heatmap {
+  padding: 0;
+  gap: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  align-items: stretch;
+}
+.adb-home-footer .adb-act-months,
+.adb-home-footer .adb-act-legend { display: none; }
+
+.adb-home-footer .adb-act-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-template-columns: repeat(37, minmax(0, 1fr));
+  grid-template-rows:    repeat(10, minmax(0, 1fr));
+  column-gap: var(--adb-home-cell-gap);
+  row-gap: var(--adb-home-cell-gap);
+}
+.adb-home-footer .adb-act-cell {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Insights gestapelt */
+.adb-home-footer .adb-act-insights-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.adb-home-footer .adb-act-stats-grid {
+  grid-template-columns: 1fr;
+  gap: 3px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+.adb-home-footer .adb-act-stats-grid > div {
+  padding: 3px 10px;
+  background: #e8ecf1;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+  border-left-width: 2px;
+}
+[data-md-color-scheme="slate"] .adb-home-footer .adb-act-stats-grid > div {
+  background: #1f2436;
+}
+.adb-home-footer .adb-act-stats-grid strong { font-size: 15px; line-height: 1; }
+.adb-home-footer .adb-act-stats-grid span   { font-size: 9px; margin-top: 0; }
+
+/* Pills unten — Grid mit auto-rows, scrollt bei Overflow. */
+.adb-home-footer .adb-act-insights-grid > .adb-act-pills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  gap: 3px;
+  margin: 0;
+  align-content: start;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+.adb-home-footer .adb-act-pill  {
+  font-size: 9px;
+  padding: 2px 6px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Gantt-Mini: Thumbnail füllt Spaltenhöhe */
+.adb-home-gantt-mini {
+  border: 1px solid var(--adb-act-border, rgba(0,0,0,0.08));
+  border-radius: 4px;
+  padding: 4px;
+  cursor: zoom-in;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: border-color 80ms ease, transform 80ms ease;
+  align-items: stretch;
+  justify-content: center;
+}
+.adb-home-gantt-mini:hover {
+  border-color: var(--md-accent-fg-color, #22D3EE);
+  transform: scale(1.005);
+}
+.adb-home-gantt-mini img {
+  max-width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+.adb-home-gantt-mini__hint {
+  display: block;
+  text-align: center;
+  font-size: 9px;
+  opacity: 0.55;
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Heatmap Hover-Overlay (Floating-Tooltip mit Commits-Liste)
+   ──────────────────────────────────────────────────────────────────────── */
+.adb-act-overlay {
+  position: fixed;
+  z-index: 9999;
+  background: var(--md-default-bg-color, #fff);
+  border: 1px solid var(--adb-act-border, rgba(0,0,0,0.12));
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  padding: 10px 14px;
+  font-size: 12px;
+  max-width: 420px;
+  pointer-events: none;
+  /* Sichtbar nur wenn data-show=true gesetzt */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 100ms ease, transform 100ms ease;
+}
+.adb-act-overlay[data-show="true"] { opacity: 1; transform: translateY(0); }
+
+.adb-act-overlay__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--adb-act-border, rgba(0,0,0,0.08));
+}
+.adb-act-overlay__date { font-weight: 600; }
+.adb-act-overlay__count {
+  font-family: var(--md-code-font, monospace);
+  font-size: 10px;
+  opacity: 0.7;
+}
+.adb-act-overlay__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.adb-act-overlay__item {
+  display: grid;
+  grid-template-columns: 56px 56px 1fr;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 11px;
+}
+.adb-act-overlay__sha {
+  font-family: var(--md-code-font, monospace);
+  opacity: 0.6;
+  font-size: 10px;
+}
+.adb-act-overlay__kind {
+  font-size: 9px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--md-default-bg-color--light, #f0f0f0);
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.adb-act-overlay__more {
+  font-size: 10px;
+  opacity: 0.5;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+
+/* ── Commit-Zahl in der Tageskachel ──────────────────────────────────────────
+   Zeigt die exakte Commit-Anzahl im Feld (zusätzlich zur Farbe). Weißer Text mit
+   dunklem Halo bleibt auf hellen UND dunklen Buckets lesbar. */
+.adb-act-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 1px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,.75);
+  overflow: hidden;
+}
+/* Startseiten-Footer: kleinere, fluide Kacheln → Zahl mitskalieren. */
+.adb-home-footer .adb-act-cell { font-size: clamp(6px, 0.95vw, 10px); }
+/* Legende braucht keine Zahlen. */
+.adb-act-legend .adb-act-cell { font-size: 0; text-shadow: none; }

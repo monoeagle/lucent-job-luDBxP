@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant B as Browser
+    participant F as Flask (routes.py)
+    participant L as SqlAlchemyLoader
+    participant G as build_graph()
+    participant P as find_paths()
+    participant S as generate_sql()
+
+    B->>F: POST /api/joinpath {url, start, target, filters}
+    F->>L: SqlAlchemyLoader(url).load()
+    L-->>F: Schema (Tables + FKs)
+    F->>G: build_graph(schema, include_implied)
+    G-->>F: NetworkX DiGraph
+    F->>P: find_paths(graph, start_table, target_table)
+    P-->>F: Liste von Path-Objekten (k-kürzeste)
+    loop je Pfad
+        F->>S: generate_sql(path, selects, filters)
+        S-->>F: GeneratedSQL (sql, params)
+    end
+    F-->>B: [{tables, edges, sql, params}, ...]

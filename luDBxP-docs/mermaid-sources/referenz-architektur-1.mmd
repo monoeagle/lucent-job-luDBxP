@@ -1,0 +1,34 @@
+graph LR
+    subgraph WEB["web/"]
+        APP["app.py\n(Flask-App-Factory)"]
+        ROUTES["routes.py\n(Blueprint /api/*)"]
+        TPL["templates/\nindex.html"]
+        STATIC["static/\njs · css · lib"]
+    end
+    subgraph CORE["core/"]
+        LOADER["loaders/\nsqlalchemy_loader\nmanual_loader\nddl_loader"]
+        MODEL["model.py\nSchema · Table\nColumn · FK · View"]
+        GRAPH["graph.py\nbuild_graph()\nNetworkX DiGraph"]
+        PF["pathfinder.py\nfind_paths()\nk-shortest"]
+        SQLGEN["sqlgen.py\ngenerate_sql()\nSELECT+JOIN"]
+        IMPLIED["implied.py\nguess_implicit_fks()"]
+        PREVIEW["datapreview.py\nfetch_rows()"]
+        DDL["ddl.py\ntable_ddl()"]
+        CONN["connection.py\nbuild_url()"]
+        SETTINGS["settings.py\nSettings.load/save"]
+    end
+
+    APP --> ROUTES
+    ROUTES --> LOADER
+    ROUTES --> GRAPH
+    ROUTES --> PF
+    ROUTES --> SQLGEN
+    ROUTES --> PREVIEW
+    ROUTES --> DDL
+    ROUTES --> CONN
+    ROUTES --> SETTINGS
+    LOADER --> MODEL
+    GRAPH --> MODEL
+    GRAPH --> IMPLIED
+    PF --> GRAPH
+    SQLGEN --> PF

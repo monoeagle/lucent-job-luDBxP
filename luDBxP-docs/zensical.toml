@@ -1,0 +1,66 @@
+[project]
+site_name        = "Lucent DB Explorer"
+site_description = "Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.1.0"
+site_author      = "LucentTools"
+copyright        = "Copyright &copy; 2026 LucentTools"
+
+docs_dir = "docs"
+site_dir = "site"
+
+extra_css        = ["stylesheets/extra.css"]
+extra_javascript = [
+  { path = "javascripts/mermaid.min.js", defer = true },
+  "javascripts/mermaid-init.js",
+  "javascripts/palette-init.js",
+  "javascripts/lightbox.js",
+  "javascripts/activity-heatmap.js",
+  "javascripts/icon-rail.js",
+  "javascripts/hub-stop.js",
+]
+
+nav = [
+  { "Überblick" = "index.md" },
+  { "Grundlagen" = [
+    { "Installation"    = "grundlagen/installation.md" },
+    { "Schnellstart"    = "grundlagen/schnellstart.md" },
+  ]},
+  { "Referenz" = [
+    { "Architektur"     = "referenz/architektur.md" },
+    { "Datenmodell"     = "referenz/datenmodell.md" },
+    { "UseCases"        = "referenz/usecases.md" },
+  ]},
+  { "Entwicklung" = [
+    { "Projektstruktur" = "entwicklung/projektstruktur.md" },
+    { "Testing"         = "entwicklung/testing.md" },
+    { "Changelog"       = "entwicklung/changelog.md" },
+  ]},
+  { "Projekt" = [
+    { "Roadmap" = "projekt/roadmap.md" },
+  ]},
+]
+
+[project.theme]
+language = "de"
+font    = false   # Google Fonts CDN deaktivieren (No-CDN-Policy)
+features = [
+  "navigation.sections",
+  "navigation.top",
+  "search.highlight",
+  "content.code.copy",
+]
+
+[[project.theme.palette]]
+media   = "(prefers-color-scheme: light)"
+scheme  = "default"
+primary = "custom"
+accent  = "custom"
+toggle.icon = "material/weather-night"
+toggle.name = "Dunkelmodus aktivieren"
+
+[[project.theme.palette]]
+media   = "(prefers-color-scheme: dark)"
+scheme  = "slate"
+primary = "custom"
+accent  = "custom"
+toggle.icon = "material/weather-sunny"
+toggle.name = "Hellmodus aktivieren"

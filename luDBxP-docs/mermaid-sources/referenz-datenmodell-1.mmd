@@ -1,0 +1,8 @@
+erDiagram
+    Schema ||--o{ Table : "tables"
+    Schema ||--o{ View : "views"
+    Table ||--o{ Column : "columns"
+    Table ||--o{ ForeignKey : "foreign_keys"
+    Table ||--o| PrimaryKey : "primary_key (set)"
+    View ||--o{ Column : "columns"
+    ForeignKey }o--|| Table : "ref_table"
