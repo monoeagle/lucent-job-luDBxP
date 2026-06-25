@@ -26,7 +26,10 @@ class SqlAlchemyLoader(SchemaLoader):
         Raises:
             ConnectionError: If the database is unreachable or the URL is invalid.
         """
-        engine = create_engine(self._url)
+        try:
+            engine = create_engine(self._url)
+        except SQLAlchemyError as exc:
+            raise ConnectionError(f"Could not create engine: {exc}") from exc
         try:
             insp = inspect(engine)
             tables = []

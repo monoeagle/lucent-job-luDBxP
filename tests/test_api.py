@@ -39,3 +39,30 @@ def test_joinpath_no_connection_returns_400(client):
     })
     assert resp.status_code == 400
     assert "error" in resp.get_json()
+
+
+def test_joinpath_missing_start_returns_400(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+def test_joinpath_unknown_table_returns_400(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "DoesNotExist", "column": "x"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+def test_schema_empty_connection_returns_400(client):
+    resp = client.post("/api/schema", json={"connection_url": ""})
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
