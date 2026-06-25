@@ -105,3 +105,11 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] `extra_selects` an `/api/joinpath`; Validierung gegen `schema.has_column`
 - [x] Pro Join-Pfad: SELECT = Start + Ziel + Zusatzspalten, deren Tabelle auf *diesem* Pfad liegt (jedes SQL bleibt gültig)
 - [x] Tests (sqlgen 3 Selections; API: erscheint im SQL / off-path weggelassen / unbekannte Spalte 400)
+
+## AP-3 — SQL-Optionen-Paket (Join-Builder)
+- [x] DISTINCT (Checkbox)
+- [x] ORDER BY (Tabelle.Spalte + ASC/DESC, mehrere; pro Pfad auf Pfad-Tabellen gefiltert)
+- [x] LIMIT (Zahlenfeld; nur positive Ganzzahl)
+- [x] WHERE-Erweiterungen: IS NULL / IS NOT NULL (kein Wert), IN (n parametrisierte Werte), BETWEEN (2 Werte)
+- [x] UI rendert Wertfelder je Operator dynamisch; read-only + Named-Placeholder
+- [x] 20 neue Tests (sqlgen + API); 106 Tests grün

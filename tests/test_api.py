@@ -264,3 +264,112 @@ def test_joinpath_extra_select_unknown_column_returns_400(client, inventory_url)
     })
     assert resp.status_code == 400
     assert "error" in resp.get_json()
+
+
+# ===== AP-3: SQL-options package =====
+
+def test_joinpath_ap3_distinct_orderby_limit_in(client, inventory_url):
+    """E2E: DISTINCT + ORDER BY + LIMIT + IN filter all appear in the SQL."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [
+            {"table": "VirtualMachines", "column": "VMID",
+             "op": "IN", "value": ["1", "2", "3"]},
+        ],
+        "distinct": True,
+        "order_by": [{"table": "VirtualMachines", "column": "VMID", "dir": "DESC"}],
+        "limit": 50,
+    })
+    assert resp.status_code == 200
+    paths = resp.get_json()["paths"]
+    assert paths
+    sql = paths[0]["sql"]
+    # DISTINCT
+    assert "SELECT DISTINCT" in sql
+    # IN with parameterized placeholders
+    assert "IN (" in sql
+    assert ":p0_0" in sql
+    assert ":p0_1" in sql
+    assert ":p0_2" in sql
+    # ORDER BY
+    assert "ORDER BY" in sql
+    assert "VirtualMachines.VMID DESC" in sql
+    # LIMIT
+    assert "LIMIT 50" in sql
+    # ORDER BY before LIMIT
+    assert sql.index("ORDER BY") < sql.index("LIMIT 50")
+    # Values are parameterized, never inlined
+    params = paths[0]["params"]
+    assert params.get("p0_0") == "1"
+    assert params.get("p0_1") == "2"
+    assert params.get("p0_2") == "3"
+
+
+def test_joinpath_ap3_is_null_filter(client, inventory_url):
+    """IS NULL filter produces no placeholder and renders IS NULL in WHERE."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [
+            {"table": "VirtualMachines", "column": "OSID",
+             "op": "IS NULL", "value": None},
+        ],
+    })
+    assert resp.status_code == 200
+    paths = resp.get_json()["paths"]
+    assert paths
+    sql = paths[0]["sql"]
+    assert "VirtualMachines.OSID IS NULL" in sql
+    assert not paths[0]["params"]  # no params for IS NULL
+
+
+def test_joinpath_ap3_between_filter(client, inventory_url):
+    """BETWEEN filter uses two named placeholders."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [
+            {"table": "VirtualMachines", "column": "VMID",
+             "op": "BETWEEN", "value": ["1", "100"]},
+        ],
+    })
+    assert resp.status_code == 200
+    sql = resp.get_json()["paths"][0]["sql"]
+    assert "BETWEEN :p0_lo AND :p0_hi" in sql
+
+
+def test_joinpath_ap3_invalid_direction_returns_400(client, inventory_url):
+    """Invalid ORDER BY direction is rejected with 400."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [],
+        "order_by": [{"table": "VirtualMachines", "column": "VMID", "dir": "SIDEWAYS"}],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+def test_joinpath_ap3_orderby_offpath_excluded(client, inventory_url):
+    """ORDER BY column from a table not on the path is silently excluded."""
+    # Path Networks -> VirtualMachines -> VMwareCluster does NOT include OperatingSystems
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [],
+        "order_by": [
+            {"table": "OperatingSystems", "column": "OS_Family", "dir": "ASC"},
+            {"table": "VirtualMachines", "column": "VMID", "dir": "DESC"},
+        ],
+    })
+    assert resp.status_code == 200
+    sql = resp.get_json()["paths"][0]["sql"]
+    # OperatingSystems is off-path → excluded; VirtualMachines is on-path → included
+    assert "OperatingSystems" not in sql or "ORDER BY" not in sql.split("OperatingSystems")[0]
+    assert "VirtualMachines.VMID DESC" in sql

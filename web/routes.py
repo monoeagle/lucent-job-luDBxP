@@ -209,14 +209,63 @@ def api_joinpath():
     try:
         start = data["start"]
         target = data["target"]
-        filters = tuple(
-            Filter(f["table"], f["column"], f["op"], f["value"])
-            for f in data.get("filters", [])
-        )
+
+        # --- Build filters with extended operator support ---
+        _NULL_OPS = {"IS NULL", "IS NOT NULL"}
+        raw_filters = data.get("filters", [])
+        filters_list = []
+        for f in raw_filters:
+            op = f["op"]
+            if op in _NULL_OPS:
+                value = None
+            elif op == "IN":
+                raw_val = f.get("value") or []
+                if isinstance(raw_val, list):
+                    value = [v for v in raw_val if v != "" and v is not None]
+                else:
+                    value = [v.strip() for v in str(raw_val).split(",") if v.strip()]
+                if not value:
+                    continue  # skip empty IN (no rows could match)
+            elif op == "BETWEEN":
+                raw_val = f.get("value") or []
+                if len(raw_val) != 2:
+                    return jsonify(error="BETWEEN requires exactly 2 values"), 400
+                value = tuple(raw_val)
+            else:
+                value = f["value"]
+            filters_list.append(Filter(f["table"], f["column"], op, value))
+        filters = tuple(filters_list)
+
         extra_selections = tuple(
             Selection(es["table"], es["column"])
             for es in data.get("extra_selects", [])
         )
+
+        # --- AP-3: DISTINCT, LIMIT ---
+        distinct = bool(data.get("distinct", False))
+        limit_raw = data.get("limit")
+        limit = None
+        if limit_raw is not None:
+            try:
+                n = int(limit_raw)
+                if n > 0:
+                    limit = n
+            except (TypeError, ValueError):
+                pass  # invalid/non-positive limit → no LIMIT clause
+
+        # --- AP-3: ORDER BY — validate columns, keep direction allowlist ---
+        raw_order_by = data.get("order_by", [])
+        order_by_validated: list[tuple[str, str, str]] = []
+        for ob in raw_order_by:
+            tbl = ob.get("table", "")
+            col = ob.get("column", "")
+            direction = (ob.get("dir") or "ASC").upper()
+            if direction not in ("ASC", "DESC"):
+                return jsonify(error=f"invalid ORDER BY direction: {direction!r}"), 400
+            if not schema.has_column(tbl, col):
+                return jsonify(error=f"unknown column: {tbl}.{col}"), 400
+            order_by_validated.append((tbl, col, direction))
+
         # Validate that every referenced column exists in the reflected schema.
         for tbl, col in ([(start["table"], start["column"]),
                           (target["table"], target["column"])] +
@@ -229,6 +278,8 @@ def api_joinpath():
     except KeyError as exc:
         return jsonify(error=f"missing field: {exc}"), 400
     except NoPathError as exc:
+        return jsonify(error=str(exc)), 400
+    except ValueError as exc:
         return jsonify(error=str(exc)), 400
 
     out = []
@@ -250,7 +301,18 @@ def api_joinpath():
                 if sel.table in path_tables and key not in seen:
                     seen.add(key)
                     selects_for_path.append(sel)
-            gen = generate_sql(p, tuple(selects_for_path), filters)
+
+            # AP-3: Filter order_by to only tables present on this path
+            order_by_for_path = tuple(
+                (tbl, col, direction)
+                for tbl, col, direction in order_by_validated
+                if tbl in path_tables
+            )
+
+            gen = generate_sql(p, tuple(selects_for_path), filters,
+                               distinct=distinct,
+                               order_by=order_by_for_path,
+                               limit=limit)
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],

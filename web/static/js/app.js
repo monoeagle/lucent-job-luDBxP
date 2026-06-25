@@ -3,7 +3,8 @@
 let SCHEMA = { tables: [], views: [] };
 let CY = null;  // Cytoscape instance for the schema graph
 let SAVED_CONNS = [];  // saved connections (without passwords)
-const OPERATORS = ["=", "!=", "<", ">", "<=", ">=", "LIKE"];
+const OPERATORS = ["=", "!=", "<", ">", "<=", ">=", "LIKE",
+                   "IS NULL", "IS NOT NULL", "IN", "BETWEEN"];
 const DB_TYPES = [
   { v: "sqlite", label: "SQLite (Datei)" },
   { v: "postgresql", label: "PostgreSQL" },
@@ -256,16 +257,22 @@ function openJoinBuilder() {
     `<div class="row"><label>Ziel</label>` +
     `<select id="target_table"></select> . <select id="target_col"></select></div>` +
     `<div class="filters" id="filters"></div>` +
+    `<div class="filters" id="order_bys"></div>` +
     `<div class="filters" id="extra_cols"></div>` +
     `<div class="row">` +
     `<button id="btn_add_filter" title="Filterbedingung (mit UND verknüpft)">Filter +</button>` +
+    `<button id="btn_add_orderby" title="Sortierungsspalte hinzufügen">Sortierung +</button>` +
     `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Weitere Spalten +</button>` +
-    `<button id="btn_build">Join-Pfad bauen</button></div>` +
+    `<label style="margin-left:8px"><input type="checkbox" id="jb_distinct"> DISTINCT</label>` +
+    `<label style="margin-left:12px">LIMIT <input id="jb_limit" type="number" min="1"` +
+    ` placeholder="–" style="width:72px;margin-left:4px"></label>` +
+    `<button id="btn_build" style="margin-left:12px">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
     `<pre class="sql_out" id="sql_out"></pre></div>`;
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
   $("btn_add_filter").addEventListener("click", addFilterRow);
+  $("btn_add_orderby").addEventListener("click", addOrderByRow);
   $("btn_add_col").addEventListener("click", addColRow);
   $("btn_build").addEventListener("click", runBuild);
   if (SCHEMA.tables.length) refillJoinBuilder();
@@ -284,9 +291,30 @@ function refillJoinBuilder() {
   fillCols("start_table", "start_col");
   fillCols("target_table", "target_col");
   $("filters").innerHTML = "";
+  $("order_bys").innerHTML = "";
   $("extra_cols").innerHTML = "";
   $("path_list").innerHTML = "";
   $("sql_out").textContent = "";
+  if ($("jb_distinct")) $("jb_distinct").checked = false;
+  if ($("jb_limit")) $("jb_limit").value = "";
+}
+
+// Render the value input(s) for a filter row based on the selected operator.
+function _updateFilterValueField(row) {
+  const op = row.querySelector(".f-op").value;
+  const wrap = row.querySelector(".f-val-wrap");
+  if (op === "IS NULL" || op === "IS NOT NULL") {
+    wrap.innerHTML = "";
+  } else if (op === "BETWEEN") {
+    wrap.innerHTML =
+      `<input class="f-val-lo" type="text" placeholder="von" style="width:80px">` +
+      `<input class="f-val-hi" type="text" placeholder="bis" style="width:80px;margin-left:4px">`;
+  } else if (op === "IN") {
+    wrap.innerHTML =
+      `<input class="f-val" type="text" placeholder="Wert1, Wert2, …" style="width:180px">`;
+  } else {
+    wrap.innerHTML = `<input class="f-val" type="text" placeholder="Wert">`;
+  }
 }
 
 function addFilterRow() {
@@ -298,7 +326,7 @@ function addFilterRow() {
     `<select class="f-table">${optionList(names)}</select>` +
     `<select class="f-col"></select>` +
     `<select class="f-op">${OPERATORS.map((o) => `<option>${o}</option>`).join("")}</select>` +
-    `<input class="f-val" type="text" placeholder="Wert">` +
+    `<span class="f-val-wrap"></span>` +
     `<button type="button" class="f-del">✕</button>`;
   const fillFcol = () => {
     const t = tableByName(row.querySelector(".f-table").value);
@@ -307,7 +335,9 @@ function addFilterRow() {
   };
   fillFcol();
   row.querySelector(".f-table").addEventListener("change", fillFcol);
+  row.querySelector(".f-op").addEventListener("change", () => _updateFilterValueField(row));
   row.querySelector(".f-del").addEventListener("click", () => row.remove());
+  _updateFilterValueField(row);  // render initial value field for default op "="
   $("filters").appendChild(row);
 }
 
@@ -317,8 +347,61 @@ function collectFilters() {
     const table = row.querySelector(".f-table").value;
     const column = row.querySelector(".f-col").value;
     const op = row.querySelector(".f-op").value;
-    const value = row.querySelector(".f-val").value;
-    if (table && column && op && value !== "") out.push({ table, column, op, value });
+    if (!table || !column || !op) return;
+    if (op === "IS NULL" || op === "IS NOT NULL") {
+      out.push({ table, column, op, value: null });
+      return;
+    }
+    if (op === "BETWEEN") {
+      const lo = row.querySelector(".f-val-lo");
+      const hi = row.querySelector(".f-val-hi");
+      if (!lo || !hi || lo.value === "" || hi.value === "") return;
+      out.push({ table, column, op, value: [lo.value, hi.value] });
+      return;
+    }
+    if (op === "IN") {
+      const valEl = row.querySelector(".f-val");
+      if (!valEl) return;
+      const parts = valEl.value.split(",").map((s) => s.trim()).filter((s) => s !== "");
+      if (!parts.length) return;
+      out.push({ table, column, op, value: parts });
+      return;
+    }
+    const valEl = row.querySelector(".f-val");
+    if (!valEl || valEl.value === "") return;
+    out.push({ table, column, op, value: valEl.value });
+  });
+  return out;
+}
+
+function addOrderByRow() {
+  if (!SCHEMA.tables.length) return;
+  const row = document.createElement("div");
+  row.className = "orderby-row";
+  const names = SCHEMA.tables.map((t) => t.name);
+  row.innerHTML =
+    `<select class="ob-table">${optionList(names)}</select>` +
+    `<select class="ob-col"></select>` +
+    `<select class="ob-dir"><option>ASC</option><option>DESC</option></select>` +
+    `<button type="button" class="ob-del">✕</button>`;
+  const fillOcol = () => {
+    const t = tableByName(row.querySelector(".ob-table").value);
+    row.querySelector(".ob-col").innerHTML =
+      optionList(t ? t.columns.map((c) => c.name) : []);
+  };
+  fillOcol();
+  row.querySelector(".ob-table").addEventListener("change", fillOcol);
+  row.querySelector(".ob-del").addEventListener("click", () => row.remove());
+  $("order_bys").appendChild(row);
+}
+
+function collectOrderBy() {
+  const out = [];
+  document.querySelectorAll("#order_bys .orderby-row").forEach((row) => {
+    const table = row.querySelector(".ob-table").value;
+    const column = row.querySelector(".ob-col").value;
+    const dir = row.querySelector(".ob-dir").value;
+    if (table && column && dir) out.push({ table, column, dir });
   });
   return out;
 }
@@ -354,6 +437,7 @@ function collectExtraSelects() {
 }
 
 async function runBuild() {
+  const limitRaw = $("jb_limit") ? $("jb_limit").value.trim() : "";
   const body = {
     connection_url: connUrl(),
     start: { table: $("start_table").value, column: $("start_col").value },
@@ -361,6 +445,9 @@ async function runBuild() {
     filters: collectFilters(),
     extra_selects: collectExtraSelects(),
     include_implied: includeImplied(),
+    distinct: $("jb_distinct") ? $("jb_distinct").checked : false,
+    order_by: collectOrderBy(),
+    limit: limitRaw !== "" ? parseInt(limitRaw, 10) : null,
   };
   try {
     const data = await postJSON("/api/joinpath", body);
