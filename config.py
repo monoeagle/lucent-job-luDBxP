@@ -4,7 +4,7 @@ import os
 APP_NAME = "Lucent DB Explorer"
 APP_SLUG = "luDBxP"
 APP_VERSION = "0.1.0"  # change only via sync_version.py
-APP_AUTHOR = "Tobias Philipp / Lucent Trails"
+APP_AUTHOR = "Tobias Philipp / LucentTools"
 CYTOSCAPE_VERSION = "3.30.2"  # bundled in web/static/lib/cytoscape.min.js
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
