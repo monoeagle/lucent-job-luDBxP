@@ -1,0 +1,15 @@
+name: luDBxP
+display_name: "Lucent DB Explorer"
+version: "0.1.0"
+description: "Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL."
+theme_color: "#2E6FAE"
+category: "Datenbank"
+type: "web"
+port: 5057   # vor erstem Hub-Start gegen Registry prüfen
+
+run_command: "bash run.sh --skip-setup"
+
+setup:
+  command: "bash run.sh --setup-venv"
+  check: "venv"
+  label: "Python-Umgebung einrichten"
