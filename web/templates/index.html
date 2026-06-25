@@ -1,5 +1,33 @@
 <!doctype html>
 <html lang="de">
-<head><meta charset="utf-8"><title>Lucent DB Explorer</title></head>
-<body><h1>Lucent DB Explorer</h1></body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lucent DB Explorer</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+  <h1>Lucent DB Explorer</h1>
+  <section>
+    <label>Connection-URL
+      <input type="text" id="connection_url" placeholder="sqlite:///inventory.db">
+    </label>
+    <button id="btn_load">Schema laden</button>
+  </section>
+
+  <section id="builder" hidden>
+    <label>Start <select id="start_table"></select>.<select id="start_col"></select></label>
+    <label>Ziel <select id="target_table"></select>.<select id="target_col"></select></label>
+    <div id="filters"></div>
+    <button id="btn_add_filter">Filter +</button>
+    <button id="btn_build">Join-Pfad bauen</button>
+  </section>
+
+  <section id="result" hidden>
+    <ul id="path_list"></ul>
+    <pre id="sql_out"></pre>
+  </section>
+
+  <script src="/static/js/app.js"></script>
+</body>
 </html>
