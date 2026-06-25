@@ -1,15 +1,28 @@
 {
-  "generatedAt": "2026-06-25T23:41:39",
+  "generatedAt": "2026-06-26T00:10:56",
   "range": {
-    "from": "2025-06-26",
-    "to": "2026-06-25"
+    "from": "2025-06-27",
+    "to": "2026-06-26"
   },
   "byDay": {
-    "2026-06-25": {
-      "commits": 35,
+    "2026-06-26": {
+      "commits": 1,
       "kinds": {
+        "feat": 1
+      },
+      "list": [
+        {
+          "sha": "aedcf9d",
+          "subject": "feat(web): AP-1 interaktive Join-Pfad-Auswahl im Graph",
+          "kind": "feat"
+        }
+      ]
+    },
+    "2026-06-25": {
+      "commits": 37,
+      "kinds": {
+        "docs": 9,
         "feat": 17,
-        "docs": 7,
         "chore": 3,
         "fix": 5,
         "test": 1,
@@ -17,6 +30,16 @@
         "refactor": 1
       },
       "list": [
+        {
+          "sha": "cb02180",
+          "subject": "docs: gebaute Zensical-Site in master pushen (luDBxP-docs/site)",
+          "kind": "docs"
+        },
+        {
+          "sha": "80d5cbf",
+          "subject": "docs: Startseite nach LibreDrive-Pattern (AP-Überblick + Heatmap + Insights)",
+          "kind": "docs"
+        },
         {
           "sha": "88b6ed8",
           "subject": "feat: AppImage-Build (run.sh --appimage) + Icon",
@@ -196,17 +219,17 @@
     }
   },
   "stats": {
-    "totalCommits": 35,
-    "activeDays": 1,
-    "longestStreak": 1,
+    "totalCommits": 38,
+    "activeDays": 2,
+    "longestStreak": 2,
     "topKinds": [
       {
         "kind": "feat",
-        "count": 17
+        "count": 18
       },
       {
         "kind": "docs",
-        "count": 7
+        "count": 9
       },
       {
         "kind": "fix",

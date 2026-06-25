@@ -16,6 +16,9 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.
 **Ausgabe:** Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative
 Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.
 
+<img src="../images/screenshots/Screenshot_04_luDBxP.jpg"
+     alt="Join-Builder-Ergebnis: VirtualMachine → Datacenter, 5 Pfade, SQL-Block, Graph-Highlight in Rot.">
+
 ---
 
 ## UC-2: Gefilterte Abfrage erstellen

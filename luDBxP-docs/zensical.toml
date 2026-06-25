@@ -28,6 +28,7 @@ nav = [
     { "Architektur"     = "referenz/architektur.md" },
     { "Datenmodell"     = "referenz/datenmodell.md" },
     { "UseCases"        = "referenz/usecases.md" },
+    { "Oberfläche"      = "referenz/oberflaeche.md" },
   ]},
   { "Entwicklung" = [
     { "Projektstruktur" = "entwicklung/projektstruktur.md" },

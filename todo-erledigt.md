@@ -84,3 +84,12 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 ## AP-E19 — AppImage
 - [x] `build/LucentDBExplorer-0.1.0-x86_64.AppImage`: portables Linux-AppImage
 - [x] `build/appimage/LucentDBExplorer.AppDir/`: AppDir-Struktur mit AppRun-Script
+
+## AP-1 — Interaktive Pfad-Auswahl direkt im Graph (UML-Tabellenkarte)
+- [x] Doppelklick auf Cytoscape-Knoten → UML-Tabellenkarte im Graph-Panel einblenden (Spalten, Typen, PK-Badge)
+- [x] Erste Spaltenwahl = Quelle, zweite Spaltenwahl (andere Tabelle) = Ziel; visuelle Markierung
+- [x] Bei vollständiger Quelle+Ziel: `/api/joinpath` automatisch aufrufen
+- [x] Graph-Highlight des berechneten Join-Pfads (rote Kanten/Knoten)
+- [x] Join-Builder-Tab öffnet sich automatisch und füllt Start-/Ziel-Felder + Spalten-Selects (Zweiweg-Sync Graph ↔ Join-Builder)
+- [x] Statuszeile im Graph-Panel zeigt aktuelle Quelle/Ziel-Auswahl + „Auswahl zurücksetzen"-Button
+- [x] Betroffen: `web/static/js/app.js` (Graph-Interaktion, UML-Karte, Join-Builder-Sync)

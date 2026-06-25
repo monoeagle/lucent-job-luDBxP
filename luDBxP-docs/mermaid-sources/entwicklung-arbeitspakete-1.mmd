@@ -19,15 +19,15 @@ flowchart LR
         D12["Verbindungs-Manager\n(SQLite · PostgreSQL · MySQL · MSSQL)"]
         D13["Demo-CMDB\n+ run.sh · run.ps1"]
         D14["Doku · AppImage · Projektposter"]
+        D15["AP-1\nGraph-Interaktion\nDoppelklick → UML-Karte → Pfad-Auswahl"]
     end
 
     subgraph PLAN["📋  Geplant"]
         direction TB
-        P1["AP-1\nGraph-Interaktion\nDoppelklick → UML-Karte → Pfad-Auswahl"]
         P2["AP-2\nBug-Fix Verbinden\nfailed-to-fetch (verifizieren)"]
     end
 
     DONE --> PLAN
 
-    class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14 done
-    class P1,P2 plan
+    class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15 done
+    class P2 plan
