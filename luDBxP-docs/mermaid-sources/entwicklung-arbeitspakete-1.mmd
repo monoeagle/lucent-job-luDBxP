@@ -1,0 +1,51 @@
+flowchart TD
+    subgraph Kern["v1-Kern"]
+        A1["Core-Engine\n(SQLAlchemy\nread-only)"]
+        A2["Flask-API\n/api/schema\n/api/joinpath\n/api/data"]
+        A3["Join-Pfad-\nAlgorithmus\n(BFS)"]
+        A1 --> A2
+        A3 --> A2
+    end
+
+    subgraph UI["Web-Frontend"]
+        B1["Filter-UI\n(Tabelle/Spalte/\nOperator/Wert)"]
+        B2["3-Panel-Layout\nObjekt-Browser · Tabs\n· Graph-Panel"]
+        B3["Schema-Graph\n(Cytoscape.js,\nlokal gebundelt)"]
+        B4["Join-Builder\n(Start → Ziel → SQL)"]
+        B2 --> B3
+        B2 --> B4
+        B2 --> B1
+    end
+
+    subgraph FK["FK-Erkennung"]
+        C1["Echte FKs\n(DB-Constraints)"]
+        C2["Implizite FKs\n(SchemaSpy-\nHeuristik,\ngestrichelt)"]
+        C1 --> B3
+        C2 --> B3
+        C1 --> A3
+        C2 --> A3
+    end
+
+    subgraph Conn["Verbindungs-Manager"]
+        D1["Multi-DB-Support\nSQLite/PostgreSQL/\nMySQL/MSSQL"]
+        D2["Gespeicherte\nVerbindungen\n(kein Passwort)"]
+        D1 --> A1
+        D2 --> D1
+    end
+
+    Kern --> UI
+    FK --> Kern
+
+    subgraph Offen["Offene APs"]
+        E1["AP-1 Graph-Interaktion\nDoppelklick Tabelle\n→ UML-Karte\n→ Pfad-Auswahl"]
+        E2["AP-2 Bug-Fix\nVerbinden\nfailed-to-fetch\n(verifizieren)"]
+    end
+
+    UI -.-> E1
+    Conn -.-> E2
+
+    style Kern fill:#d4edda,stroke:#28a745
+    style UI fill:#d1ecf1,stroke:#17a2b8
+    style FK fill:#fff3cd,stroke:#ffc107
+    style Conn fill:#e2e3f0,stroke:#6c757d
+    style Offen fill:#f8d7da,stroke:#dc3545
