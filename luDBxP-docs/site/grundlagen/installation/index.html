@@ -388,6 +388,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#windows-powershell" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Windows (PowerShell)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-einrichtung-ohne-internet" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Offline-Einrichtung (ohne Internet)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#python-abhangigkeiten" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -947,6 +969,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#windows-powershell" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Windows (PowerShell)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-einrichtung-ohne-internet" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Offline-Einrichtung (ohne Internet)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#python-abhangigkeiten" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1048,6 +1092,35 @@
 <h3 id="direkte-einrichtung-ohne-menu">Direkte Einrichtung (ohne Menü)<a class="headerlink" href="#direkte-einrichtung-ohne-menu" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>run.sh<span class="w"> </span>--setup-venv
 </span></code></pre></div>
+<h2 id="windows-powershell">Windows (PowerShell)<a class="headerlink" href="#windows-powershell" title="Permanent link">&para;</a></h2>
+<p>Unter Windows übernimmt <code>run.ps1</code> dieselbe Rolle wie <code>run.sh</code> (gleiches Menü):</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.\</span><span class="n">run</span><span class="p">.</span><span class="n">ps1</span>                    <span class="c"># interaktives Menü</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">.\</span><span class="n">run</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Action</span> <span class="n">setup-venv</span> <span class="c"># nur Umgebung einrichten</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">.\</span><span class="n">run</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Action</span> <span class="nb">start </span>     <span class="c"># App starten → http://127.0.0.1:5057</span>
+</span></code></pre></div>
+<h2 id="offline-einrichtung-ohne-internet">Offline-Einrichtung (ohne Internet)<a class="headerlink" href="#offline-einrichtung-ohne-internet" title="Permanent link">&para;</a></h2>
+<p>Für Maschinen <strong>ohne PyPI-/Internet-Freigabe</strong> liegt ein <strong>Offline-Wheelhouse</strong>
+bei: der Ordner <code>wheels/</code> enthält alle Laufzeit-Abhängigkeiten als Windows-Wheels
+(<code>cp312-win_amd64</code>, ~7,8 MB). Ist <code>wheels/</code> vorhanden, installiert <code>run.ps1</code>
+<strong>automatisch offline</strong> (<code>pip --no-index --find-links wheels</code>):</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.\</span><span class="n">run</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Action</span> <span class="n">setup-venv</span>   <span class="c"># läuft ohne Internet aus wheels\</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Voraussetzung:</strong> Python <strong>3.12 (64-bit)</strong> muss installiert sein (Installer von
+  python.org, ~30 MB — einmalig, kein pip-Nachladen). Die kompilierten Wheels sind
+  <code>cp312</code>; <code>run.ps1</code> verlangt im Offline-Modus daher Python 3.12.</li>
+<li>Andere Python-Version oder Aktualisierung: siehe <code>wheels/README.md</code>
+  (<code>pip download …</code>-Rezept).</li>
+<li><strong>Linux:</strong> für einen vollständig offline-fähigen Build dient das AppImage
+  (<code>bash run.sh --appimage</code>), das Python + alle Abhängigkeiten bündelt.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Betrieb ist ohnehin offline-fähig</p>
+<p>Zur Laufzeit lädt die App <strong>nichts</strong> nach: alle Frontend-Assets (Cytoscape.js
+u. a.) sind lokal gebündelt, es gibt <strong>keine CDN-Aufrufe</strong>. Nur die <em>erstmalige</em>
+Einrichtung (<code>pip install</code>) benötigt die Pakete — entweder aus <code>wheels/</code>
+(offline) oder von PyPI (online).</p>
+</div>
 <h2 id="python-abhangigkeiten">Python-Abhängigkeiten<a class="headerlink" href="#python-abhangigkeiten" title="Permanent link">&para;</a></h2>
 <p>Die Kerndependencies werden automatisch installiert:</p>
 <table>
@@ -1092,14 +1165,14 @@
 unixODBC + der Microsoft ODBC Driver for SQL Server (<code>msodbcsql</code>) erforderlich.</p>
 <h2 id="dokumentation-einrichten">Dokumentation einrichten<a class="headerlink" href="#dokumentation-einrichten" title="Permanent link">&para;</a></h2>
 <p>Die Dokumentation hat eine eigene virtuelle Umgebung:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>luDBxP-docs
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bash<span class="w"> </span>run_luDBxP_docs.sh<span class="w">         </span><span class="c1"># installiert .venv-docs + Zensical automatisch</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>luDBxP-docs
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bash<span class="w"> </span>run_luDBxP_docs.sh<span class="w">         </span><span class="c1"># installiert .venv-docs + Zensical automatisch</span>
 </span></code></pre></div>
 <h3 id="voraussetzungen-fur-mermaid-diagramme">Voraussetzungen für Mermaid-Diagramme<a class="headerlink" href="#voraussetzungen-fur-mermaid-diagramme" title="Permanent link">&para;</a></h3>
 <p>Für das Rendern der Architekturdiagramme wird Node.js + npx benötigt
 (zieht beim ersten Lauf <code>@mermaid-js/mermaid-cli</code> + Chromium nach):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>node<span class="w"> </span>--version<span class="w">    </span><span class="c1"># Node.js 18+ empfohlen</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>npx<span class="w"> </span>--version
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>node<span class="w"> </span>--version<span class="w">    </span><span class="c1"># Node.js 18+ empfohlen</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>npx<span class="w"> </span>--version
 </span></code></pre></div>
 <p>Ohne mmdc werden die Diagramme im Browser über das lokal gebundelte
 <code>mermaid.min.js</code> gerendert (kein CDN-Zugriff).</p>

@@ -25,6 +25,41 @@ Das Menü legt automatisch eine virtuelle Umgebung (`venv/`) an und installiert 
 bash run.sh --setup-venv
 ```
 
+## Windows (PowerShell)
+
+Unter Windows übernimmt `run.ps1` dieselbe Rolle wie `run.sh` (gleiches Menü):
+
+```powershell
+.\run.ps1                    # interaktives Menü
+.\run.ps1 -Action setup-venv # nur Umgebung einrichten
+.\run.ps1 -Action start      # App starten → http://127.0.0.1:5057
+```
+
+## Offline-Einrichtung (ohne Internet)
+
+Für Maschinen **ohne PyPI-/Internet-Freigabe** liegt ein **Offline-Wheelhouse**
+bei: der Ordner `wheels/` enthält alle Laufzeit-Abhängigkeiten als Windows-Wheels
+(`cp312-win_amd64`, ~7,8 MB). Ist `wheels/` vorhanden, installiert `run.ps1`
+**automatisch offline** (`pip --no-index --find-links wheels`):
+
+```powershell
+.\run.ps1 -Action setup-venv   # läuft ohne Internet aus wheels\
+```
+
+- **Voraussetzung:** Python **3.12 (64-bit)** muss installiert sein (Installer von
+  python.org, ~30 MB — einmalig, kein pip-Nachladen). Die kompilierten Wheels sind
+  `cp312`; `run.ps1` verlangt im Offline-Modus daher Python 3.12.
+- Andere Python-Version oder Aktualisierung: siehe `wheels/README.md`
+  (`pip download …`-Rezept).
+- **Linux:** für einen vollständig offline-fähigen Build dient das AppImage
+  (`bash run.sh --appimage`), das Python + alle Abhängigkeiten bündelt.
+
+!!! note "Betrieb ist ohnehin offline-fähig"
+    Zur Laufzeit lädt die App **nichts** nach: alle Frontend-Assets (Cytoscape.js
+    u. a.) sind lokal gebündelt, es gibt **keine CDN-Aufrufe**. Nur die *erstmalige*
+    Einrichtung (`pip install`) benötigt die Pakete — entweder aus `wheels/`
+    (offline) oder von PyPI (online).
+
 ## Python-Abhängigkeiten
 
 Die Kerndependencies werden automatisch installiert:

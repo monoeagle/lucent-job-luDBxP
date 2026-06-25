@@ -1,18 +1,28 @@
 {
-  "generatedAt": "2026-06-26T00:29:49",
+  "generatedAt": "2026-06-26T00:48:06",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 3,
+      "commits": 5,
       "kinds": {
-        "fix": 1,
-        "docs": 1,
-        "feat": 1
+        "feat": 2,
+        "docs": 2,
+        "fix": 1
       },
       "list": [
+        {
+          "sha": "2aeb6a6",
+          "subject": "feat(win): Offline-Wheelhouse (7,8 MB) + run.ps1 Offline-Setup",
+          "kind": "feat"
+        },
+        {
+          "sha": "27f3361",
+          "subject": "docs: AP-Diagramm aktualisiert (AP-2 erledigt, alle v0.1.0-APs done) + Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "8292f38",
           "subject": "fix(web): klare Meldung bei nicht erreichbarem Server (AP-2)",
@@ -231,17 +241,17 @@
     }
   },
   "stats": {
-    "totalCommits": 40,
+    "totalCommits": 42,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "feat",
-        "count": 18
+        "count": 19
       },
       {
         "kind": "docs",
-        "count": 10
+        "count": 11
       },
       {
         "kind": "fix",
