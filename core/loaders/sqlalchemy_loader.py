@@ -26,8 +26,8 @@ class SqlAlchemyLoader(SchemaLoader):
         Raises:
             ConnectionError: If the database is unreachable or the URL is invalid.
         """
+        engine = create_engine(self._url)
         try:
-            engine = create_engine(self._url)
             insp = inspect(engine)
             tables = []
             for tname in insp.get_table_names():
@@ -44,7 +44,8 @@ class SqlAlchemyLoader(SchemaLoader):
                     ):
                         fks.append(ForeignKey(local, fk["referred_table"], remote))
                 tables.append(Table(tname, columns, tuple(fks)))
-            engine.dispose()
             return Schema(tuple(tables))
         except SQLAlchemyError as exc:
             raise ConnectionError(f"Could not reflect schema: {exc}") from exc
+        finally:
+            engine.dispose()
