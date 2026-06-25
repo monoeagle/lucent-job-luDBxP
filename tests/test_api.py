@@ -16,6 +16,18 @@ def test_schema_endpoint_returns_tables(client, inventory_url):
     assert "VirtualMachines" in names
 
 
+def test_schema_returns_column_details_fks_and_views(client, inventory_url):
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    vm = next(t for t in data["tables"] if t["name"] == "VirtualMachines")
+    vmid = next(c for c in vm["columns"] if c["name"] == "VMID")
+    assert vmid["pk"] is True and vmid["type"]
+    assert any(fk["ref_table"] == "Networks" for fk in vm["foreign_keys"])
+    views = {v["name"] for v in data["views"]}
+    assert "VMNetworks" in views
+    vmn = next(v for v in data["views"] if v["name"] == "VMNetworks")
+    assert "SELECT" in vmn["definition"].upper()
+
+
 def test_joinpath_endpoint_returns_sql(client, inventory_url):
     resp = client.post("/api/joinpath", json={
         "connection_url": inventory_url,

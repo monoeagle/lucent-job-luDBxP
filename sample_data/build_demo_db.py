@@ -109,6 +109,18 @@ CREATE TABLE LicenseKey (
     Product   TEXT NOT NULL,
     KeyValue  TEXT NOT NULL
 );
+
+CREATE VIEW WindowsVMs AS
+    SELECT vm.VMID, vm.Name AS VMName, os.Family, os.Version
+    FROM VirtualMachine vm
+    JOIN OperatingSystem os ON vm.OSID = os.OSID
+    WHERE os.Family = 'Windows';
+
+CREATE VIEW ClusterHostCount AS
+    SELECT c.ClusterID, c.Name AS ClusterName, COUNT(h.HostID) AS HostCount
+    FROM Cluster c
+    LEFT JOIN Host h ON h.ClusterID = c.ClusterID
+    GROUP BY c.ClusterID, c.Name;
 """
 
 # (table, rows) in insertion order. Each row is a full column tuple.

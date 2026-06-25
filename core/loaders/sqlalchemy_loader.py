@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 
-from core.model import Column, ForeignKey, Table, Schema
+from core.model import Column, ForeignKey, Table, View, Schema
 from core.schema_loader import SchemaLoader
 
 
@@ -48,7 +48,18 @@ class SqlAlchemyLoader(SchemaLoader):
                         fks.append(ForeignKey(local, fk["referred_table"], remote))
                 pk = tuple(insp.get_pk_constraint(tname).get("constrained_columns", []))
                 tables.append(Table(tname, columns, tuple(fks), pk))
-            return Schema(tuple(tables))
+            views = []
+            for vname in insp.get_view_names():
+                vcols = tuple(
+                    Column(col["name"], str(col["type"]))
+                    for col in insp.get_columns(vname)
+                )
+                try:
+                    definition = insp.get_view_definition(vname) or ""
+                except SQLAlchemyError:
+                    definition = ""
+                views.append(View(vname, vcols, definition))
+            return Schema(tuple(tables), tuple(views))
         except SQLAlchemyError as exc:
             raise ConnectionError(f"Could not reflect schema: {exc}") from exc
         finally:

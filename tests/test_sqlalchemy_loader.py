@@ -18,6 +18,15 @@ def test_load_reflects_foreign_keys(inventory_url):
     assert ("ClusterID", "VMwareCluster", "ClusterID") in fk_targets
 
 
+def test_load_reflects_views(inventory_url):
+    schema = SqlAlchemyLoader(inventory_url).load()
+    names = {v.name for v in schema.views}
+    assert "VMNetworks" in names
+    vmn = next(v for v in schema.views if v.name == "VMNetworks")
+    assert any(c.name == "VLAN" for c in vmn.columns)
+    assert "SELECT" in vmn.definition.upper()
+
+
 def test_bad_url_raises_connection_error():
     with pytest.raises(ConnectionError):
         SqlAlchemyLoader("sqlite:////nonexistent/path/that/cannot/exist.db").load()

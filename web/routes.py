@@ -39,10 +39,25 @@ def api_schema():
         schema = SqlAlchemyLoader(url).load()
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
-    return jsonify(tables=[
-        {"name": t.name, "columns": [c.name for c in t.columns]}
-        for t in schema.tables
-    ])
+    return jsonify(
+        tables=[{
+            "name": t.name,
+            "columns": [
+                {"name": c.name, "type": c.type, "pk": c.name in t.primary_key}
+                for c in t.columns
+            ],
+            "foreign_keys": [
+                {"column": fk.column, "ref_table": fk.ref_table,
+                 "ref_column": fk.ref_column}
+                for fk in t.foreign_keys
+            ],
+        } for t in schema.tables],
+        views=[{
+            "name": v.name,
+            "columns": [{"name": c.name, "type": c.type} for c in v.columns],
+            "definition": v.definition,
+        } for v in schema.views],
+    )
 
 
 @bp.post("/api/graph")

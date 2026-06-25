@@ -24,8 +24,16 @@ class Table:
 
 
 @dataclass(frozen=True)
+class View:
+    name: str
+    columns: tuple[Column, ...]
+    definition: str = ""
+
+
+@dataclass(frozen=True)
 class Schema:
     tables: tuple[Table, ...]
+    views: tuple[View, ...] = ()
 
     def table(self, name: str) -> Table:
         for t in self.tables:

@@ -28,6 +28,15 @@
   (`demo_cmdb_nofk.db`) zum Ausprobieren.
 
 ### Changed
+- UI-Redesign zum 3-Panel-Layout (wie ein minimalistischer SQL Developer):
+  Objekt-Browser links (Tabellen + Views), Tab-Bereich in der Mitte mit festem
+  „Join-Builder"-Tab plus dynamisch öffenbaren, schließbaren Detail-Tabs für
+  Tabellen/Views, und der Schema-Graph als festes Panel rechts mit eigenem
+  Scrolling (scrollt nicht mehr mit der Seite). Tabellen-Detail zeigt Spalten
+  (Typ, PK) und Foreign Keys; View-Detail zeigt Spalten und die SQL-Definition.
+- Views werden jetzt reflektiert; `/api/schema` liefert ein vollständiges
+  Struktur-Format (Spalten mit Typ/PK, Foreign Keys, Views mit Definition).
+  Demo-DBs enthalten zwei Beispiel-Views.
 - UX: Connection-URL wird aus `default_connection` (config.json) vorbefüllt —
   standardmäßig die mitgelieferte Demo-DB, sodass „Schema laden" sofort
   funktioniert. Verdrahtet `core/settings.py` in die Index-Route.

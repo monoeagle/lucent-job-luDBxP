@@ -16,3 +16,6 @@ CREATE TABLE VirtualMachines (
     OSID INTEGER NOT NULL REFERENCES OperatingSystems(OSID),
     ClusterID INTEGER NOT NULL REFERENCES VMwareCluster(ClusterID)
 );
+CREATE VIEW VMNetworks AS
+    SELECT vm.VMID, n.VLAN
+    FROM VirtualMachines vm JOIN Networks n ON vm.NetworkID = n.NetworkID;

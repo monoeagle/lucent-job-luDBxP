@@ -7,35 +7,30 @@
   <link rel="stylesheet" href="/static/css/app.css">
 </head>
 <body>
-  <h1>Lucent DB Explorer</h1>
-  <section>
-    <label>Connection-URL
-      <input type="text" id="connection_url" placeholder="sqlite:///inventory.db"
-             value="{{ default_connection or '' }}">
-    </label>
-    <button id="btn_load">Schema laden</button>
-    <p class="hint">Beispiel-DB ist vorausgefüllt — einfach „Schema laden" klicken.</p>
-    <label><input type="checkbox" id="include_implied"> Implizite (geratene) Beziehungen einbeziehen — für Schemata ohne deklarierte Foreign Keys</label>
-  </section>
+  <header class="topbar">
+    <span class="brand">Lucent DB Explorer</span>
+    <input type="text" id="connection_url" placeholder="sqlite:///inventory.db"
+           value="{{ default_connection or '' }}">
+    <button id="btn_load">Verbinden</button>
+    <label class="impl"><input type="checkbox" id="include_implied"> implizite FKs</label>
+    <span id="status" class="status"></span>
+  </header>
 
-  <section id="builder" hidden>
-    <label>Start <select id="start_table"></select>.<select id="start_col"></select></label>
-    <label>Ziel <select id="target_table"></select>.<select id="target_col"></select></label>
-    <div id="filters"></div>
-    <button id="btn_add_filter" title="Filterbedingung hinzufügen (mit UND verknüpft)">Filter +</button>
-    <button id="btn_build">Join-Pfad bauen</button>
-  </section>
+  <div class="layout">
+    <aside class="sidebar" id="objects">
+      <p class="hint">Verbinden, um Tabellen und Views zu laden.</p>
+    </aside>
 
-  <section id="result" hidden>
-    <ul id="path_list"></ul>
-    <pre id="sql_out"></pre>
-  </section>
+    <main class="main">
+      <div class="tabbar" id="tabbar"></div>
+      <div class="tabpanels" id="tabpanels"></div>
+    </main>
 
-  <section id="graph_section" hidden>
-    <h2>Schema-Graph</h2>
-    <p class="hint">Tabellen = Knoten, Foreign Keys = Kanten. Der gewählte Join-Pfad wird farblich hervorgehoben.</p>
-    <div id="graph"></div>
-  </section>
+    <section class="graphpanel">
+      <div class="panelhead">Schema-Graph</div>
+      <div id="graph"></div>
+    </section>
+  </div>
 
   <script src="/static/lib/cytoscape.min.js"></script>
   <script src="/static/js/app.js"></script>

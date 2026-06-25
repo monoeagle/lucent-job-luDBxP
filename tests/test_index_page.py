@@ -1,5 +1,3 @@
-import re
-
 import pytest
 from web import create_app
 
@@ -28,9 +26,9 @@ def test_index_prefills_default_connection(client):
     assert 'value="sqlite:///sample_data/demo_cmdb.db"' in html
 
 
-def test_filter_add_button_is_enabled(client):
-    # The "Filter +" button is wired up now and must not be disabled.
+def test_index_has_three_panel_shell(client):
+    # Sidebar (object browser), tab bar, and the fixed graph panel.
     html = client.get("/").get_data(as_text=True)
-    m = re.search(r'<button[^>]*id="btn_add_filter"[^>]*>', html)
-    assert m is not None
-    assert "disabled" not in m.group(0)
+    assert 'id="objects"' in html
+    assert 'id="tabbar"' in html
+    assert 'id="graph"' in html
