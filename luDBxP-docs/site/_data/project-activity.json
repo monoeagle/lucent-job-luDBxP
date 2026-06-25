@@ -1,18 +1,44 @@
 {
-  "generatedAt": "2026-06-26T00:48:06",
+  "generatedAt": "2026-06-26T01:19:47",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 5,
+      "commits": 10,
       "kinds": {
-        "feat": 2,
-        "docs": 2,
+        "feat": 4,
+        "style": 1,
+        "docs": 4,
         "fix": 1
       },
       "list": [
+        {
+          "sha": "c0fe6bb",
+          "subject": "feat: AP-3 SQL-Optionen-Paket (DISTINCT, ORDER BY, LIMIT, IS NULL/IN/BETWEEN)",
+          "kind": "feat"
+        },
+        {
+          "sha": "99fce0c",
+          "subject": "feat(web): AP-4 mehrere SELECT-Spalten",
+          "kind": "feat"
+        },
+        {
+          "sha": "8899890",
+          "subject": "style: Graph-Panel default auf 50% Breite (war 1/3)",
+          "kind": "style"
+        },
+        {
+          "sha": "8984c1c",
+          "subject": "docs: AP-3 (SQL-Optionen-Paket) + AP-4 (mehrere SELECT-Spalten) aufgenommen",
+          "kind": "docs"
+        },
+        {
+          "sha": "adcd85c",
+          "subject": "docs: Windows- + Offline-Einrichtung dokumentiert (Wheelhouse, run.ps1)",
+          "kind": "docs"
+        },
         {
           "sha": "2aeb6a6",
           "subject": "feat(win): Offline-Wheelhouse (7,8 MB) + run.ps1 Offline-Setup",
@@ -241,17 +267,17 @@
     }
   },
   "stats": {
-    "totalCommits": 42,
+    "totalCommits": 47,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "feat",
-        "count": 19
+        "count": 21
       },
       {
         "kind": "docs",
-        "count": 11
+        "count": 13
       },
       {
         "kind": "fix",
@@ -260,6 +286,10 @@
       {
         "kind": "chore",
         "count": 3
+      },
+      {
+        "kind": "style",
+        "count": 1
       },
       {
         "kind": "test",
@@ -274,7 +304,7 @@
         "count": 1
       }
     ],
-    "testCount": 79
+    "testCount": 104
   },
   "phases": []
 }
