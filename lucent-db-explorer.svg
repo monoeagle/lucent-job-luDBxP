@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Background -->
+  <rect width="256" height="256" rx="40" fill="#0D1B2A"/>
+  <!-- Database cylinder: top ellipse -->
+  <ellipse cx="128" cy="86" rx="58" ry="16" fill="#0D1B2A" stroke="#4A9EFF" stroke-width="3.5"/>
+  <!-- Cylinder walls -->
+  <line x1="70" y1="86" x2="70" y2="162" stroke="#4A9EFF" stroke-width="3.5"/>
+  <line x1="186" y1="86" x2="186" y2="162" stroke="#4A9EFF" stroke-width="3.5"/>
+  <!-- Middle band (second table row) -->
+  <ellipse cx="128" cy="124" rx="58" ry="16" fill="none" stroke="#2462A0" stroke-width="2"/>
+  <!-- Bottom ellipse -->
+  <ellipse cx="128" cy="162" rx="58" ry="16" fill="#0D1B2A" stroke="#4A9EFF" stroke-width="3.5"/>
+  <!-- Fill between walls (hide line through middle) -->
+  <rect x="71" y="87" width="114" height="75" fill="#0D1B2A"/>
+  <!-- Redraw middle band on top -->
+  <ellipse cx="128" cy="124" rx="58" ry="16" fill="none" stroke="#2462A0" stroke-width="2"/>
+  <!-- Graph overlay nodes -->
+  <circle cx="210" cy="64" r="7" fill="#00D4FF" opacity="0.95"/>
+  <circle cx="46"  cy="64" r="7" fill="#00D4FF" opacity="0.95"/>
+  <circle cx="210" cy="38" r="5" fill="#0099CC" opacity="0.85"/>
+  <circle cx="46"  cy="38" r="5" fill="#0099CC" opacity="0.85"/>
+  <!-- Graph edges connecting nodes to cylinder top -->
+  <line x1="128" y1="70" x2="210" y2="64" stroke="#00D4FF" stroke-width="1.8" opacity="0.75"/>
+  <line x1="128" y1="70" x2="46"  y2="64" stroke="#00D4FF" stroke-width="1.8" opacity="0.75"/>
+  <line x1="210" y1="64" x2="210" y2="38" stroke="#0099CC" stroke-width="1.5" opacity="0.65"/>
+  <line x1="46"  y1="64" x2="46"  y2="38" stroke="#0099CC" stroke-width="1.5" opacity="0.65"/>
+</svg>
