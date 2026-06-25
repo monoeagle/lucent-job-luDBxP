@@ -10,9 +10,11 @@
   <h1>Lucent DB Explorer</h1>
   <section>
     <label>Connection-URL
-      <input type="text" id="connection_url" placeholder="sqlite:///inventory.db">
+      <input type="text" id="connection_url" placeholder="sqlite:///inventory.db"
+             value="{{ default_connection or '' }}">
     </label>
     <button id="btn_load">Schema laden</button>
+    <p class="hint">Beispiel-DB ist vorausgefüllt — einfach „Schema laden" klicken.</p>
   </section>
 
   <section id="builder" hidden>

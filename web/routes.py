@@ -7,16 +7,25 @@ from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
 from core.graph import build_graph
 from core.pathfinder import find_paths, NoPathError
 from core.sqlgen import generate_sql, Selection, Filter
+from core.settings import Settings
 
 _log = logging.getLogger("luDBxP")
+
+# User-facing message for a missing/blank connection URL.
+_NO_URL_MSG = "Bitte eine Connection-URL angeben (z. B. sqlite:///pfad/zur.db)."
 
 bp = Blueprint("main", __name__)
 
 
 @bp.get("/")
 def index():
-    """Serve the main single-page application shell."""
-    return render_template("index.html")
+    """Serve the main single-page application shell.
+
+    Prefills the connection URL from the saved default_connection setting so
+    the first "Schema laden" click works out of the box.
+    """
+    default_connection = Settings.load().get("default_connection")
+    return render_template("index.html", default_connection=default_connection)
 
 
 @bp.post("/api/schema")
@@ -24,6 +33,8 @@ def api_schema():
     """Reflect a database schema and return tables with their columns."""
     data = request.get_json(silent=True) or {}
     url = data.get("connection_url", "")
+    if not url.strip():
+        return jsonify(error=_NO_URL_MSG), 400
     try:
         schema = SqlAlchemyLoader(url).load()
     except ConnectionError as exc:
@@ -38,12 +49,13 @@ def api_schema():
 def api_joinpath():
     """Find join paths between two columns and return the generated SQL."""
     data = request.get_json(silent=True) or {}
+    url = data.get("connection_url", "")
+    if not url.strip():
+        return jsonify(error=_NO_URL_MSG), 400
     try:
-        schema = SqlAlchemyLoader(data["connection_url"]).load()
+        schema = SqlAlchemyLoader(url).load()
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
-    except KeyError:
-        return jsonify(error="connection_url is required"), 400
 
     try:
         graph = build_graph(schema)

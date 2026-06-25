@@ -1,4 +1,4 @@
 {
   "language": "de",
-  "default_connection": ""
+  "default_connection": "sqlite:///sample_data/demo_cmdb.db"
 }

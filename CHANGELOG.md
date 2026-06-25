@@ -13,3 +13,10 @@
   inkl. Integrationstests pro Fall.
 - Interaktives Menü in `run.sh` (ohne Argument) plus `run.ps1` für Windows mit
   identischem Menü; Flags (`--skip-setup` etc.) bleiben Hub-kompatibel.
+
+### Changed
+- UX: Connection-URL wird aus `default_connection` (config.json) vorbefüllt —
+  standardmäßig die mitgelieferte Demo-DB, sodass „Schema laden" sofort
+  funktioniert. Verdrahtet `core/settings.py` in die Index-Route.
+- UX: Leere Connection-URL liefert eine klare Meldung statt der internen
+  SQLAlchemy-„Could not parse URL"-Fehlermeldung.

@@ -62,10 +62,23 @@ def test_joinpath_unknown_table_returns_400(client, inventory_url):
     assert "error" in resp.get_json()
 
 
-def test_schema_empty_connection_returns_400(client):
-    resp = client.post("/api/schema", json={"connection_url": ""})
+def test_schema_empty_connection_returns_clear_message(client):
+    # A blank URL must yield a helpful message, not the raw SQLAlchemy
+    # "Could not parse URL" internals.
+    resp = client.post("/api/schema", json={"connection_url": "   "})
     assert resp.status_code == 400
-    assert "error" in resp.get_json()
+    assert "Connection-URL" in resp.get_json()["error"]
+
+
+def test_joinpath_empty_connection_returns_clear_message(client):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": "",
+        "start": {"table": "A", "column": "x"},
+        "target": {"table": "B", "column": "y"},
+        "filters": [],
+    })
+    assert resp.status_code == 400
+    assert "Connection-URL" in resp.get_json()["error"]
 
 
 def test_joinpath_unknown_column_returns_400(client, inventory_url):

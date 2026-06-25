@@ -16,3 +16,10 @@ def test_index_renders_form_and_local_assets(client):
     # assets must be local, never a CDN
     assert "/static/js/app.js" in html
     assert "http://" not in html and "https://" not in html
+
+
+def test_index_prefills_default_connection(client):
+    # The connection input is prefilled from config.json's default_connection
+    # (the bundled demo DB), so the first "Schema laden" click works.
+    html = client.get("/").get_data(as_text=True)
+    assert 'value="sqlite:///sample_data/demo_cmdb.db"' in html
