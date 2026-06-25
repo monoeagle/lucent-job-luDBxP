@@ -1,5 +1,11 @@
 # Roadmap
 
+## Phasen-Timeline
+
+<img src="../images/mermaid/projekt-roadmap-1.svg" alt="Arbeitspaket-Roadmap (Gantt)">
+
+---
+
 ## Offene Arbeitspakete
 
 ### AP-1 — Interaktive Pfad-Auswahl direkt im Graph
@@ -34,6 +40,7 @@ Browser-Tab erreicht `127.0.0.1:5057` nicht → generisches Fehlerbild.
 
 ---
 
-## Erledigte Arbeitspakete
+## Erledigte Arbeitspakete (v0.1.0)
 
-Alle in v0.1.0 implementierten Features — siehe [Changelog](../entwicklung/changelog.md).
+Alle in v0.1.0 implementierten Features sind in `todo-erledigt.md` aufgelistet.
+Detaillierter Stand: [Changelog](../entwicklung/changelog.md).

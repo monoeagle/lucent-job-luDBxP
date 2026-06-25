@@ -1,5 +1,13 @@
 # Architektur
 
+## Systemüberblick
+
+Lucent DB Explorer verbindet ein Browser-Frontend direkt mit einer
+Live-Datenbankverbindung über eine Flask-API. Der Core-Layer kapselt die
+gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.
+
+<img src="../images/mermaid/referenz-architektur-3.svg" alt="Systemüberblick: UI · Flask-API · Core-Layer">
+
 ## Schichten
 
 Lucent DB Explorer folgt einem zweischichtigen Aufbau: ein `core/`-Layer für

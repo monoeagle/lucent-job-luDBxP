@@ -1,51 +1,33 @@
-flowchart TD
-    subgraph Kern["v1-Kern"]
-        A1["Core-Engine\n(SQLAlchemy\nread-only)"]
-        A2["Flask-API\n/api/schema\n/api/joinpath\n/api/data"]
-        A3["Join-Pfad-\nAlgorithmus\n(BFS)"]
-        A1 --> A2
-        A3 --> A2
+flowchart LR
+    classDef done fill:#1f6f3c,color:#fff,stroke:#1a5c32
+    classDef wip  fill:#7a5c00,color:#fff,stroke:#5e4600
+    classDef plan fill:#2c3550,color:#fff,stroke:#1e2538
+
+    subgraph DONE["✅  v0.1.0 — Erledigt"]
+        direction TB
+        D1["Core-Domänenmodell\nSchema / Table / Column / FK"]
+        D2["SQLAlchemy-Loader\n(live reflection, read-only)"]
+        D3["FK-Graph\n(NetworkX DiGraph)"]
+        D4["Pathfinder\n(k-kürzeste Pfade, BFS)"]
+        D5["SQL-Generator\n(read-only, parametrisiert)"]
+        D6["Flask-API\n/api/schema · joinpath · graph · data"]
+        D7["Filter-UI\n(Tabelle / Spalte / Operator / Wert)"]
+        D8["Graph-Visualisierung\n(Cytoscape.js, lokal gebundelt)"]
+        D9["Implizite FKs\n(SchemaSpy-Heuristik, gestrichelt)"]
+        D10["3-Panel-Layout\n+ Detail-Sub-Tabs"]
+        D11["Datenvorschau\n(erste 100 Zeilen / View)"]
+        D12["Verbindungs-Manager\n(SQLite · PostgreSQL · MySQL · MSSQL)"]
+        D13["Demo-CMDB\n+ run.sh · run.ps1"]
+        D14["Doku · AppImage · Projektposter"]
     end
 
-    subgraph UI["Web-Frontend"]
-        B1["Filter-UI\n(Tabelle/Spalte/\nOperator/Wert)"]
-        B2["3-Panel-Layout\nObjekt-Browser · Tabs\n· Graph-Panel"]
-        B3["Schema-Graph\n(Cytoscape.js,\nlokal gebundelt)"]
-        B4["Join-Builder\n(Start → Ziel → SQL)"]
-        B2 --> B3
-        B2 --> B4
-        B2 --> B1
+    subgraph PLAN["📋  Geplant"]
+        direction TB
+        P1["AP-1\nGraph-Interaktion\nDoppelklick → UML-Karte → Pfad-Auswahl"]
+        P2["AP-2\nBug-Fix Verbinden\nfailed-to-fetch (verifizieren)"]
     end
 
-    subgraph FK["FK-Erkennung"]
-        C1["Echte FKs\n(DB-Constraints)"]
-        C2["Implizite FKs\n(SchemaSpy-\nHeuristik,\ngestrichelt)"]
-        C1 --> B3
-        C2 --> B3
-        C1 --> A3
-        C2 --> A3
-    end
+    DONE --> PLAN
 
-    subgraph Conn["Verbindungs-Manager"]
-        D1["Multi-DB-Support\nSQLite/PostgreSQL/\nMySQL/MSSQL"]
-        D2["Gespeicherte\nVerbindungen\n(kein Passwort)"]
-        D1 --> A1
-        D2 --> D1
-    end
-
-    Kern --> UI
-    FK --> Kern
-
-    subgraph Offen["Offene APs"]
-        E1["AP-1 Graph-Interaktion\nDoppelklick Tabelle\n→ UML-Karte\n→ Pfad-Auswahl"]
-        E2["AP-2 Bug-Fix\nVerbinden\nfailed-to-fetch\n(verifizieren)"]
-    end
-
-    UI -.-> E1
-    Conn -.-> E2
-
-    style Kern fill:#d4edda,stroke:#28a745
-    style UI fill:#d1ecf1,stroke:#17a2b8
-    style FK fill:#fff3cd,stroke:#ffc107
-    style Conn fill:#e2e3f0,stroke:#6c757d
-    style Offen fill:#f8d7da,stroke:#dc3545
+    class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14 done
+    class P1,P2 plan

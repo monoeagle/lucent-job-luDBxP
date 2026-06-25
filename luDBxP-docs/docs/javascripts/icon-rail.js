@@ -406,6 +406,60 @@
     rail.appendChild(footer);
   }
 
+  // ── Roadmap-Badge im Header → Gantt im Modal ──────────────────────────
+  function roadmapSvgUrl() {
+    const s = document.querySelector('script[src*="javascripts/icon-rail.js"]');
+    const base = s ? s.src.replace(/javascripts\/icon-rail\.js.*$/, '') : '/';
+    return base + 'images/mermaid/projekt-roadmap-1.svg';
+  }
+  function closeRoadmap() {
+    const ov = document.getElementById('adb-roadmap-overlay');
+    if (!ov) return;
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  function openRoadmap() {
+    let ov = document.getElementById('adb-roadmap-overlay');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'adb-roadmap-overlay';
+      ov.className = 'adb-lightbox-overlay';
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      ov.innerHTML =
+        '<button class="adb-lightbox-close" aria-label="Schliessen">&times;</button>' +
+        '<div class="adb-lightbox-content"><img class="adb-lightbox-img" src="' +
+        roadmapSvgUrl() + '" alt="Arbeitspaket-Roadmap (Gantt)"></div>' +
+        '<div class="adb-lightbox-caption">Arbeitspaket-Roadmap (Gantt)</div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', function (e) {
+        if (e.target === ov || e.target.classList.contains('adb-lightbox-close')) {
+          closeRoadmap();
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && ov.classList.contains('open')) closeRoadmap();
+      });
+    }
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function addRoadmapBadge() {
+    const search = document.querySelector('.md-search');
+    if (!search || !search.parentNode) return;
+    if (document.querySelector('.adb-roadmap-badge')) return;  // idempotent
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'adb-status-badge adb-roadmap-badge';
+    btn.title = 'Arbeitspaket-Roadmap (Gantt) öffnen';
+    btn.innerHTML =
+      '<span class="adb-status-badge__dot" aria-hidden="true"></span>Roadmap';
+    btn.addEventListener('click', openRoadmap);
+    search.parentNode.insertBefore(btn, search);
+  }
+
   // ── Status-Badge im Header ────────────────────────────────────────────
   function addStatusBadge() {
     const search = document.querySelector('.md-search');
@@ -425,7 +479,7 @@
   function init() {
     updateHeaderTitle();
     addStatusBadge();
-    // addRoadmapBadge() bewusst weggelassen — kein Gantt-SVG in v0.1.0
+    addRoadmapBadge();
 
     const sections = parseSections();
     if (sections.length === 0) return;

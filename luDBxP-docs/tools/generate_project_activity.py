@@ -219,7 +219,7 @@ def count_tests(repo_root: str) -> int:
     py_re = re.compile(r"^\s*def test_\w+", re.MULTILINE)
     for p in root.rglob("*.py"):
         ps = p.as_posix()
-        if "/tests/" in ps and "/.venv" not in ps and "/build/" not in ps:
+        if "/tests/" in ps and "/.venv" not in ps and "/venv" not in ps and "/build/" not in ps:
             try:
                 n += len(py_re.findall(p.read_text(encoding="utf-8", errors="ignore")))
             except OSError:
