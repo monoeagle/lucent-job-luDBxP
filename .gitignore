@@ -17,7 +17,6 @@ Logs/
 
 # Docs
 luDBxP-docs/.venv-docs/
-luDBxP-docs/site/
 luDBxP-docs/.cache/
 
 # AppImage-Build
