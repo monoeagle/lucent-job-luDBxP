@@ -6,6 +6,12 @@ const OPERATORS = ["=", "!=", "<", ">", "<=", ">=", "LIKE"];
 
 const $ = (id) => document.getElementById(id);
 
+function esc(s) {
+  const d = document.createElement("div");
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
 async function postJSON(url, body) {
   const r = await fetch(url, {
     method: "POST",
@@ -67,31 +73,64 @@ function ensureTab(id, title, closable) {
   return panel;
 }
 
-function closeDetailTabs() {
-  document.querySelectorAll(".tab").forEach((t) => {
-    if (t.dataset.tab !== "joinbuilder") closeTab(t.dataset.tab);
+// ===== Object browser (sidebar) =====
+function renderSidebar() {
+  const objList = (items, kind) => items.map((o) =>
+    `<li data-kind="${kind}" data-name="${esc(o.name)}">${esc(o.name)}</li>`).join("");
+  $("objects").innerHTML =
+    `<h3>Tools</h3><ul class="objlist"><li data-action="joinbuilder">Join-Builder</li></ul>` +
+    `<h3>Info</h3><ul class="objlist"><li data-action="info">Übersicht</li></ul>` +
+    `<h3>Tabellen (${SCHEMA.tables.length})</h3>` +
+    `<ul class="objlist">${objList(SCHEMA.tables, "table")}</ul>` +
+    `<h3>Views (${SCHEMA.views.length})</h3>` +
+    `<ul class="objlist">${objList(SCHEMA.views, "view")}</ul>`;
+  $("objects").querySelectorAll("li").forEach((li) => {
+    li.addEventListener("click", () => {
+      if (li.dataset.action === "joinbuilder") openJoinBuilder();
+      else if (li.dataset.action === "info") openInfo();
+      else openDetail(li.dataset.kind, li.dataset.name);
+    });
   });
 }
 
-// ===== Object browser (sidebar) =====
-function renderSidebar() {
-  const list = (items, kind) => items.map((o) =>
-    `<li data-kind="${kind}" data-name="${o.name}">${o.name}</li>`).join("");
-  $("objects").innerHTML =
-    `<h3>Tabellen (${SCHEMA.tables.length})</h3>` +
-    `<ul class="objlist">${list(SCHEMA.tables, "table")}</ul>` +
-    `<h3>Views (${SCHEMA.views.length})</h3>` +
-    `<ul class="objlist">${list(SCHEMA.views, "view")}</ul>`;
-  $("objects").querySelectorAll("li").forEach((li) =>
-    li.addEventListener("click", () => openDetail(li.dataset.kind, li.dataset.name)));
+// ===== Info tab =====
+function openInfo() {
+  const panel = ensureTab("info", "Info", true);
+  const fkCount = SCHEMA.tables.reduce((n, t) => n + t.foreign_keys.length, 0);
+  panel.innerHTML =
+    `<div class="detail"><h2>Info</h2>` +
+    `<table class="cols"><tbody>` +
+    `<tr><td>Connection-URL</td><td>${esc(connUrl())}</td></tr>` +
+    `<tr><td>Tabellen</td><td>${SCHEMA.tables.length}</td></tr>` +
+    `<tr><td>Views</td><td>${SCHEMA.views.length}</td></tr>` +
+    `<tr><td>Deklarierte Foreign Keys</td><td>${fkCount}</td></tr>` +
+    `</tbody></table>` +
+    `<p class="hint">Implizite (geratene) Foreign Keys lassen sich über die ` +
+    `Checkbox oben einschalten.</p></div>`;
 }
 
-// ===== Detail tab (table or view) =====
+// ===== Detail tab (table or view) with sub-tabs =====
 function colRows(columns, withPk) {
   return columns.map((c) => {
     const pk = withPk && c.pk ? ` <span class="badge">PK</span>` : "";
-    return `<tr><td>${c.name}${pk}</td><td>${c.type}</td></tr>`;
+    return `<tr><td>${esc(c.name)}${pk}</td><td>${esc(c.type)}</td></tr>`;
   }).join("");
+}
+
+async function loadData(name, container) {
+  container.innerHTML = "<p class='hint'>lädt…</p>";
+  try {
+    const d = await postJSON("/api/data", { connection_url: connUrl(), object: name });
+    if (!d.rows.length) { container.innerHTML = "<p class='hint'>keine Zeilen</p>"; return; }
+    const head = d.columns.map((c) => `<th>${esc(c)}</th>`).join("");
+    const body = d.rows.map((r) =>
+      "<tr>" + r.map((v) =>
+        `<td>${v === null ? "<i>NULL</i>" : esc(v)}</td>`).join("") + "</tr>").join("");
+    container.innerHTML =
+      `<table class="cols"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  } catch (e) {
+    container.innerHTML = `<p class='hint'>Fehler: ${esc(e.message)}</p>`;
+  }
 }
 
 function openDetail(kind, name) {
@@ -100,31 +139,59 @@ function openDetail(kind, name) {
   if (panel.dataset.built) return;
   panel.dataset.built = "1";
 
+  let defHtml, sqlText;
   if (kind === "table") {
     const t = tableByName(name);
     const fks = t.foreign_keys.length
       ? "<ul>" + t.foreign_keys.map((f) =>
-          `<li>${f.column} → ${f.ref_table}.${f.ref_column}</li>`).join("") + "</ul>"
+          `<li>${esc(f.column)} → ${esc(f.ref_table)}.${esc(f.ref_column)}</li>`).join("") + "</ul>"
       : "<p class='hint'>keine Foreign Keys</p>";
-    panel.innerHTML =
-      `<div class="detail"><h2>Tabelle: ${t.name}</h2>` +
+    defHtml = `<h2>Tabelle: ${esc(t.name)}</h2>` +
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
       `<tbody>${colRows(t.columns, true)}</tbody></table>` +
-      `<h3>Foreign Keys</h3>${fks}</div>`;
+      `<h3>Foreign Keys</h3>${fks}`;
+    sqlText = t.ddl;
   } else {
     const v = SCHEMA.views.find((x) => x.name === name);
-    panel.innerHTML =
-      `<div class="detail"><h2>View: ${v.name}</h2>` +
+    defHtml = `<h2>View: ${esc(v.name)}</h2>` +
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
-      `<tbody>${colRows(v.columns, false)}</tbody></table>` +
-      `<h3>Definition</h3><pre class="viewdef"></pre></div>`;
-    panel.querySelector(".viewdef").textContent = v.definition || "(keine Definition)";
+      `<tbody>${colRows(v.columns, false)}</tbody></table>`;
+    sqlText = v.definition;
   }
+
+  panel.innerHTML =
+    `<div class="detail">` +
+    `<div class="subtabbar">` +
+    `<button class="subtab active" data-sub="def">Definition</button>` +
+    `<button class="subtab" data-sub="data">Daten</button>` +
+    `<button class="subtab" data-sub="sql">SQL</button></div>` +
+    `<div class="subpanel active" data-sub="def">${defHtml}</div>` +
+    `<div class="subpanel" data-sub="data"></div>` +
+    `<div class="subpanel" data-sub="sql"><pre class="viewdef"></pre></div></div>`;
+  panel.querySelector('.subpanel[data-sub="sql"] .viewdef').textContent =
+    sqlText || "(keine Definition)";
+
+  const dataPanel = panel.querySelector('.subpanel[data-sub="data"]');
+  let dataLoaded = false;
+  panel.querySelectorAll(".subtab").forEach((st) => {
+    st.addEventListener("click", () => {
+      panel.querySelectorAll(".subtab").forEach((x) =>
+        x.classList.toggle("active", x === st));
+      panel.querySelectorAll(".subpanel").forEach((p) =>
+        p.classList.toggle("active", p.dataset.sub === st.dataset.sub));
+      if (st.dataset.sub === "data" && !dataLoaded) {
+        dataLoaded = true;
+        loadData(name, dataPanel);
+      }
+    });
+  });
 }
 
 // ===== Join builder tab =====
-function buildJoinBuilder() {
-  const panel = ensureTab("joinbuilder", "Join-Builder", false);
+function openJoinBuilder() {
+  const panel = ensureTab("joinbuilder", "Join-Builder", true);
+  if (panel.dataset.built) return;
+  panel.dataset.built = "1";
   panel.innerHTML =
     `<div class="joinbuilder">` +
     `<div class="row"><label>Start</label>` +
@@ -137,11 +204,11 @@ function buildJoinBuilder() {
     `<button id="btn_build">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
     `<pre class="sql_out" id="sql_out"></pre></div>`;
-
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
   $("btn_add_filter").addEventListener("click", addFilterRow);
   $("btn_build").addEventListener("click", runBuild);
+  if (SCHEMA.tables.length) refillJoinBuilder();
 }
 
 function fillCols(tableSel, colSel) {
@@ -150,6 +217,7 @@ function fillCols(tableSel, colSel) {
 }
 
 function refillJoinBuilder() {
+  if (!$("start_table")) return;
   const names = SCHEMA.tables.map((t) => t.name);
   $("start_table").innerHTML = optionList(names);
   $("target_table").innerHTML = optionList(names);
@@ -206,7 +274,7 @@ async function runBuild() {
     const data = await postJSON("/api/joinpath", body);
     const list = $("path_list");
     list.innerHTML = data.paths.map((p, i) =>
-      `<li><a href="#" data-i="${i}">${p.tables.join(" → ")}</a></li>`).join("");
+      `<li><a href="#" data-i="${i}">${p.tables.map(esc).join(" → ")}</a></li>`).join("");
     const show = (i) => {
       $("sql_out").textContent = data.paths[i].sql;
       highlightPath(data.paths[i].edges || []);
@@ -271,12 +339,36 @@ function highlightPath(edges) {
   nodes.forEach((id) => CY.$id(id).addClass("hl"));
 }
 
+// ===== Resizable splitter (graph panel width) =====
+function setupSplitter() {
+  const splitter = $("splitter");
+  let dragging = false;
+  splitter.addEventListener("mousedown", (e) => {
+    dragging = true; splitter.classList.add("dragging");
+    document.body.style.userSelect = "none"; e.preventDefault();
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    const w = window.innerWidth - e.clientX;
+    const clamped = Math.max(220, Math.min(w, window.innerWidth - 420));
+    document.documentElement.style.setProperty("--graph-width", clamped + "px");
+    if (CY) CY.resize();
+  });
+  window.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false; splitter.classList.remove("dragging");
+    document.body.style.userSelect = "";
+    if (CY) { CY.resize(); CY.fit(undefined, 24); }
+  });
+}
+
 // ===== Wiring =====
 $("btn_load").addEventListener("click", async () => {
   try {
     SCHEMA = await postJSON("/api/schema", { connection_url: connUrl() });
-    closeDetailTabs();
+    document.querySelectorAll(".tab").forEach((t) => closeTab(t.dataset.tab));
     renderSidebar();
+    openJoinBuilder();
     refillJoinBuilder();
     activateTab("joinbuilder");
     await drawGraph();
@@ -292,4 +384,5 @@ $("include_implied").addEventListener("change", () => {
   if (SCHEMA.tables.length) drawGraph().catch((e) => alert(e.message));
 });
 
-buildJoinBuilder();  // create the (empty) join-builder tab on load
+renderSidebar();   // show Tools/Info even before connecting
+setupSplitter();

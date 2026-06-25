@@ -28,6 +28,28 @@ def test_schema_returns_column_details_fks_and_views(client, inventory_url):
     assert "SELECT" in vmn["definition"].upper()
 
 
+def test_schema_includes_table_ddl(client, inventory_url):
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    vm = next(t for t in data["tables"] if t["name"] == "VirtualMachines")
+    assert "CREATE TABLE VirtualMachines" in vm["ddl"]
+
+
+def test_data_endpoint_returns_columns(client, inventory_url):
+    resp = client.post("/api/data", json={
+        "connection_url": inventory_url, "object": "Networks"})
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert "VLAN" in data["columns"]
+    assert isinstance(data["rows"], list)
+
+
+def test_data_endpoint_unknown_object_returns_400(client, inventory_url):
+    resp = client.post("/api/data", json={
+        "connection_url": inventory_url, "object": "DoesNotExist"})
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
 def test_joinpath_endpoint_returns_sql(client, inventory_url):
     resp = client.post("/api/joinpath", json={
         "connection_url": inventory_url,

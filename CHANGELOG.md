@@ -28,6 +28,15 @@
   (`demo_cmdb_nofk.db`) zum Ausprobieren.
 
 ### Changed
+- Layout-Feinschliff: senkrechte Trennlinie zwischen Hauptbereich und Graph
+  ist per Drag verschiebbar; der Graph-Bereich ist standardmäßig 1/3 der
+  Breite (Cytoscape skaliert beim Ziehen mit). Sidebar bekommt Kategorien
+  „Tools" (Join-Builder) und „Info" (Übersicht: URL, Anzahl Tabellen/Views/FKs).
+- Detail-Tabs haben jetzt Unter-Tabs „Definition" (Struktur), „Daten"
+  (read-only Vorschau der ersten 100 Zeilen über den neuen `/api/data`-
+  Endpoint) und „SQL" (rekonstruiertes CREATE-DDL bzw. View-Definition).
+  Hinweis: Die Datenvorschau führt erstmals eine Abfrage aus — strikt
+  read-only (`SELECT … LIMIT`), Objektname gegen das Schema validiert.
 - UI-Redesign zum 3-Panel-Layout (wie ein minimalistischer SQL Developer):
   Objekt-Browser links (Tabellen + Views), Tab-Bereich in der Mitte mit festem
   „Join-Builder"-Tab plus dynamisch öffenbaren, schließbaren Detail-Tabs für

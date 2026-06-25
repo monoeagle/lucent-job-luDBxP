@@ -8,6 +8,8 @@ from core.graph import build_graph
 from core.pathfinder import find_paths, NoPathError
 from core.sqlgen import generate_sql, Selection, Filter
 from core.settings import Settings
+from core.ddl import table_ddl
+from core.datapreview import fetch_rows
 
 _log = logging.getLogger("luDBxP")
 
@@ -51,6 +53,7 @@ def api_schema():
                  "ref_column": fk.ref_column}
                 for fk in t.foreign_keys
             ],
+            "ddl": table_ddl(t),
         } for t in schema.tables],
         views=[{
             "name": v.name,
@@ -58,6 +61,28 @@ def api_schema():
             "definition": v.definition,
         } for v in schema.views],
     )
+
+
+@bp.post("/api/data")
+def api_data():
+    """Return the first rows of a table or view (read-only preview)."""
+    data = request.get_json(silent=True) or {}
+    url = data.get("connection_url", "")
+    obj = data.get("object", "")
+    if not url.strip():
+        return jsonify(error=_NO_URL_MSG), 400
+    try:
+        schema = SqlAlchemyLoader(url).load()
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+    valid = {t.name for t in schema.tables} | {v.name for v in schema.views}
+    try:
+        result = fetch_rows(url, obj, valid)
+    except ValueError as exc:
+        return jsonify(error=str(exc)), 400
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+    return jsonify(**result)
 
 
 @bp.post("/api/graph")
