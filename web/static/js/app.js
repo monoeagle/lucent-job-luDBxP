@@ -33,11 +33,20 @@ function esc(s) {
 }
 
 async function postJSON(url, body) {
-  const r = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+  let r;
+  try {
+    r = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch (e) {
+    // fetch() throws a TypeError ("Failed to fetch") only when the server is
+    // unreachable — translate it into an actionable message.
+    throw new Error(
+      "Server nicht erreichbar — läuft Lucent DB Explorer? " +
+      "Starte die App mit „bash run.sh“ und lade die Seite neu.");
+  }
   const data = await r.json();
   if (!r.ok) throw new Error(data.error || "Fehler");
   return data;
