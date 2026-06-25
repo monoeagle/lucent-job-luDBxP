@@ -1,6 +1,9 @@
 "use strict";
 let SCHEMA = { tables: [] };
 
+// Operators the backend accepts (core/sqlgen.py _ALLOWED_OPS).
+const OPERATORS = ["=", "!=", "<", ">", "<=", ">=", "LIKE"];
+
 async function postJSON(url, body) {
   const r = await fetch(url, {
     method: "POST",
@@ -12,10 +15,18 @@ async function postJSON(url, body) {
   return data;
 }
 
+function tableOptions() {
+  return SCHEMA.tables.map((t) => `<option>${t.name}</option>`).join("");
+}
+
+function columnOptions(tableName) {
+  const t = SCHEMA.tables.find((x) => x.name === tableName);
+  return (t ? t.columns : []).map((c) => `<option>${c}</option>`).join("");
+}
+
 function fillTableSelects() {
-  const opts = SCHEMA.tables.map((t) => `<option>${t.name}</option>`).join("");
   for (const id of ["start_table", "target_table"]) {
-    document.getElementById(id).innerHTML = opts;
+    document.getElementById(id).innerHTML = tableOptions();
   }
   fillColumns("start_table", "start_col");
   fillColumns("target_table", "target_col");
@@ -23,16 +34,52 @@ function fillTableSelects() {
 
 function fillColumns(tableSel, colSel) {
   const tname = document.getElementById(tableSel).value;
-  const t = SCHEMA.tables.find((x) => x.name === tname);
-  document.getElementById(colSel).innerHTML =
-    (t ? t.columns : []).map((c) => `<option>${c}</option>`).join("");
+  document.getElementById(colSel).innerHTML = columnOptions(tname);
 }
 
+// --- Filter rows ----------------------------------------------------------
+function addFilterRow() {
+  if (!SCHEMA.tables.length) return;
+  const row = document.createElement("div");
+  row.className = "filter-row";
+  const firstTable = SCHEMA.tables[0].name;
+  row.innerHTML =
+    `<select class="f-table">${tableOptions()}</select>` +
+    `<select class="f-col">${columnOptions(firstTable)}</select>` +
+    `<select class="f-op">${OPERATORS.map((o) => `<option>${o}</option>`).join("")}</select>` +
+    `<input class="f-val" type="text" placeholder="Wert">` +
+    `<button type="button" class="f-del">✕</button>`;
+  // Column list follows the chosen table.
+  row.querySelector(".f-table").addEventListener("change", (ev) => {
+    row.querySelector(".f-col").innerHTML = columnOptions(ev.target.value);
+  });
+  row.querySelector(".f-del").addEventListener("click", () => row.remove());
+  document.getElementById("filters").appendChild(row);
+}
+
+function collectFilters() {
+  const rows = document.querySelectorAll("#filters .filter-row");
+  const filters = [];
+  for (const row of rows) {
+    const table = row.querySelector(".f-table").value;
+    const column = row.querySelector(".f-col").value;
+    const op = row.querySelector(".f-op").value;
+    const value = row.querySelector(".f-val").value;
+    // Skip incomplete rows (a missing value is not a filter).
+    if (table && column && op && value !== "") {
+      filters.push({ table, column, op, value });
+    }
+  }
+  return filters;
+}
+
+// --- Wiring ---------------------------------------------------------------
 document.getElementById("btn_load").addEventListener("click", async () => {
   const url = document.getElementById("connection_url").value;
   try {
     SCHEMA = await postJSON("/api/schema", { connection_url: url });
     fillTableSelects();
+    document.getElementById("filters").innerHTML = "";  // reset on new schema
     document.getElementById("builder").hidden = false;
   } catch (e) { alert(e.message); }
 });
@@ -42,13 +89,15 @@ document.getElementById("start_table").addEventListener("change", () =>
 document.getElementById("target_table").addEventListener("change", () =>
   fillColumns("target_table", "target_col"));
 
+document.getElementById("btn_add_filter").addEventListener("click", addFilterRow);
+
 document.getElementById("btn_build").addEventListener("click", async () => {
   const url = document.getElementById("connection_url").value;
   const body = {
     connection_url: url,
     start: { table: start_table.value, column: start_col.value },
     target: { table: target_table.value, column: target_col.value },
-    filters: [],
+    filters: collectFilters(),
   };
   try {
     const data = await postJSON("/api/joinpath", body);

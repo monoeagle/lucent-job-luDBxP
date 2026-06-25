@@ -3,3 +3,5 @@ section { margin: 1rem 0; }
 pre { background: #1A1A2E; color: #eaeaea; padding: 1rem; overflow-x: auto; }
 label { display: block; margin: .5rem 0; }
 .hint { color: #666; font-size: .85rem; margin: .3rem 0 0; }
+.filter-row { display: flex; gap: .4rem; align-items: center; margin: .3rem 0; }
+.filter-row .f-del { padding: 0 .5rem; }

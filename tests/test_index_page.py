@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from web import create_app
 
@@ -23,3 +25,11 @@ def test_index_prefills_default_connection(client):
     # (the bundled demo DB), so the first "Schema laden" click works.
     html = client.get("/").get_data(as_text=True)
     assert 'value="sqlite:///sample_data/demo_cmdb.db"' in html
+
+
+def test_filter_add_button_is_enabled(client):
+    # The "Filter +" button is wired up now and must not be disabled.
+    html = client.get("/").get_data(as_text=True)
+    m = re.search(r'<button[^>]*id="btn_add_filter"[^>]*>', html)
+    assert m is not None
+    assert "disabled" not in m.group(0)

@@ -13,6 +13,9 @@
   inkl. Integrationstests pro Fall.
 - Interaktives Menü in `run.sh` (ohne Argument) plus `run.ps1` für Windows mit
   identischem Menü; Flags (`--skip-setup` etc.) bleiben Hub-kompatibel.
+- Filter-UI: „Filter +" fügt Filterzeilen hinzu (Tabelle · Spalte · Operator ·
+  Wert · Entfernen); mehrere Filter werden mit UND verknüpft und an die
+  bestehende, getestete Backend-Filterlogik (parametrisiertes WHERE) gesendet.
 
 ### Changed
 - UX: Connection-URL wird aus `default_connection` (config.json) vorbefüllt —
