@@ -112,7 +112,9 @@ def find_paths(
             best: list[str] | None = None
             for node in included:
                 try:
-                    conn = nx.shortest_path(graph, node, ftable)
+                    # Deterministic: among all shortest paths from this node to
+                    # ftable, take the lexicographically smallest.
+                    conn = min(nx.all_shortest_paths(graph, node, ftable))
                 except (nx.NetworkXNoPath, nx.NodeNotFound) as exc:
                     raise NoPathError(
                         f"Filter table {ftable} is not connected"
