@@ -213,14 +213,17 @@ def api_joinpath():
             Filter(f["table"], f["column"], f["op"], f["value"])
             for f in data.get("filters", [])
         )
+        extra_selections = tuple(
+            Selection(es["table"], es["column"])
+            for es in data.get("extra_selects", [])
+        )
         # Validate that every referenced column exists in the reflected schema.
         for tbl, col in ([(start["table"], start["column"]),
                           (target["table"], target["column"])] +
-                         [(f.table, f.column) for f in filters]):
+                         [(f.table, f.column) for f in filters] +
+                         [(s.table, s.column) for s in extra_selections]):
             if not schema.has_column(tbl, col):
                 return jsonify(error=f"unknown column: {tbl}.{col}"), 400
-        selects = (Selection(start["table"], start["column"]),
-                   Selection(target["table"], target["column"]))
         filter_tables = tuple(f.table for f in filters)
         paths = find_paths(graph, start["table"], target["table"], filter_tables)
     except KeyError as exc:
@@ -231,7 +234,23 @@ def api_joinpath():
     out = []
     try:
         for p in paths:
-            gen = generate_sql(p, selects, filters)
+            # Build per-path SELECT list: start + target are always first,
+            # then any extra columns whose table actually appears on this path.
+            path_tables = set(p.tables)
+            seen: set[tuple[str, str]] = set()
+            selects_for_path: list[Selection] = []
+            for sel in (Selection(start["table"], start["column"]),
+                        Selection(target["table"], target["column"])):
+                key = (sel.table, sel.column)
+                if key not in seen:
+                    seen.add(key)
+                    selects_for_path.append(sel)
+            for sel in extra_selections:
+                key = (sel.table, sel.column)
+                if sel.table in path_tables and key not in seen:
+                    seen.add(key)
+                    selects_for_path.append(sel)
+            gen = generate_sql(p, tuple(selects_for_path), filters)
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],

@@ -256,14 +256,17 @@ function openJoinBuilder() {
     `<div class="row"><label>Ziel</label>` +
     `<select id="target_table"></select> . <select id="target_col"></select></div>` +
     `<div class="filters" id="filters"></div>` +
+    `<div class="filters" id="extra_cols"></div>` +
     `<div class="row">` +
     `<button id="btn_add_filter" title="Filterbedingung (mit UND verknüpft)">Filter +</button>` +
+    `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Weitere Spalten +</button>` +
     `<button id="btn_build">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
     `<pre class="sql_out" id="sql_out"></pre></div>`;
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
   $("btn_add_filter").addEventListener("click", addFilterRow);
+  $("btn_add_col").addEventListener("click", addColRow);
   $("btn_build").addEventListener("click", runBuild);
   if (SCHEMA.tables.length) refillJoinBuilder();
 }
@@ -281,6 +284,7 @@ function refillJoinBuilder() {
   fillCols("start_table", "start_col");
   fillCols("target_table", "target_col");
   $("filters").innerHTML = "";
+  $("extra_cols").innerHTML = "";
   $("path_list").innerHTML = "";
   $("sql_out").textContent = "";
 }
@@ -319,12 +323,43 @@ function collectFilters() {
   return out;
 }
 
+function addColRow() {
+  if (!SCHEMA.tables.length) return;
+  const row = document.createElement("div");
+  row.className = "col-row";
+  const names = SCHEMA.tables.map((t) => t.name);
+  row.innerHTML =
+    `<select class="c-table">${optionList(names)}</select>` +
+    `<select class="c-col"></select>` +
+    `<button type="button" class="c-del">✕</button>`;
+  const fillCcol = () => {
+    const t = tableByName(row.querySelector(".c-table").value);
+    row.querySelector(".c-col").innerHTML =
+      optionList(t ? t.columns.map((c) => c.name) : []);
+  };
+  fillCcol();
+  row.querySelector(".c-table").addEventListener("change", fillCcol);
+  row.querySelector(".c-del").addEventListener("click", () => row.remove());
+  $("extra_cols").appendChild(row);
+}
+
+function collectExtraSelects() {
+  const out = [];
+  document.querySelectorAll("#extra_cols .col-row").forEach((row) => {
+    const table = row.querySelector(".c-table").value;
+    const column = row.querySelector(".c-col").value;
+    if (table && column) out.push({ table, column });
+  });
+  return out;
+}
+
 async function runBuild() {
   const body = {
     connection_url: connUrl(),
     start: { table: $("start_table").value, column: $("start_col").value },
     target: { table: $("target_table").value, column: $("target_col").value },
     filters: collectFilters(),
+    extra_selects: collectExtraSelects(),
     include_implied: includeImplied(),
   };
   try {

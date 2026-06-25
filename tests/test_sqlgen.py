@@ -51,3 +51,19 @@ def test_bad_operator_raises():
         generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      filters=(Filter("VirtualMachines", "OSID", "DROP", 1),))
+
+
+def test_three_selections():
+    """generate_sql renders all three columns in the SELECT clause."""
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID"),
+                              Selection("VirtualMachines", "VMID")))
+    assert "Networks.VLAN" in g.sql
+    assert "VMwareCluster.ClusterID" in g.sql
+    assert "VirtualMachines.VMID" in g.sql
+    # All three must appear on the same SELECT line
+    select_line = g.sql.splitlines()[0]
+    assert "Networks.VLAN" in select_line
+    assert "VMwareCluster.ClusterID" in select_line
+    assert "VirtualMachines.VMID" in select_line

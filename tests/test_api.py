@@ -213,3 +213,54 @@ def test_joinpath_unknown_column_returns_400(client, inventory_url):
     })
     assert resp.status_code == 400
     assert "error" in resp.get_json()
+
+
+def test_joinpath_extra_selects_appear_in_sql(client, inventory_url):
+    """Extra selects whose table is on the join path appear in the SELECT clause."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "extra_selects": [{"table": "VirtualMachines", "column": "VMID"}],
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    paths = resp.get_json()["paths"]
+    assert paths
+    # VirtualMachines is always on this path, so VMID must appear in every path's SQL
+    for p in paths:
+        assert "VirtualMachines.VMID" in p["sql"]
+    # Start and target columns must still be present
+    assert "Networks.VLAN" in paths[0]["sql"]
+    assert "VMwareCluster.ClusterID" in paths[0]["sql"]
+
+
+def test_joinpath_extra_select_off_path_excluded(client, inventory_url):
+    """Extra selects from a table not on this join path are silently excluded."""
+    # Path Networks -> VirtualMachines -> VMwareCluster does NOT include OperatingSystems
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "extra_selects": [{"table": "OperatingSystems", "column": "OS_Family"}],
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    paths = resp.get_json()["paths"]
+    assert paths
+    for p in paths:
+        assert "OperatingSystems" not in p["tables"]
+        assert "OperatingSystems.OS_Family" not in p["sql"]
+
+
+def test_joinpath_extra_select_unknown_column_returns_400(client, inventory_url):
+    """An extra select referencing an unknown column is rejected with 400."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "extra_selects": [{"table": "VirtualMachines", "column": "NoSuchColumn"}],
+        "filters": [],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()

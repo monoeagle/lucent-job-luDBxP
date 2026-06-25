@@ -99,3 +99,9 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Root Cause: nicht erreichbarer Dev-Server (beim Session-Handoff gestoppt) → `fetch()` wirft die rohe Meldung „Failed to fetch"
 - [x] Defense-in-depth-Fix: `postJSON` fängt den Netzwerkfehler ab und zeigt „Server nicht erreichbar — läuft Lucent DB Explorer? Starte die App mit bash run.sh …" statt „Failed to fetch"
 - [x] Verifiziert via Playwright (`route.abort`): klare Meldung statt „Failed to fetch"; 81 Tests grün
+
+## AP-4 — Mehrere SELECT-Spalten
+- [x] „Weitere Spalten +"-Bereich im Join-Builder (Tabelle.Spalte-Zeilen, analog Filter)
+- [x] `extra_selects` an `/api/joinpath`; Validierung gegen `schema.has_column`
+- [x] Pro Join-Pfad: SELECT = Start + Ziel + Zusatzspalten, deren Tabelle auf *diesem* Pfad liegt (jedes SQL bleibt gültig)
+- [x] Tests (sqlgen 3 Selections; API: erscheint im SQL / off-path weggelassen / unbekannte Spalte 400)
