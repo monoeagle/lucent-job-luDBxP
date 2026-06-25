@@ -42,3 +42,18 @@ def test_no_path_raises():
     g.add_node("B")
     with pytest.raises(NoPathError):
         find_paths(g, "A", "B")
+
+
+def test_filter_weave_has_no_duplicate_tables(graph):
+    paths = find_paths(graph, "Networks", "VMwareCluster",
+                       filter_tables=("OperatingSystems",))
+    p = paths[0]
+    # every table appears exactly once (valid for single-alias SQL joins)
+    assert len(p.tables) == len(set(p.tables))
+    # each join step introduces a table not seen before its step
+    seen = {p.tables[0]}
+    for step in p.steps:
+        assert step.left_table in seen          # left side already joined
+        assert step.right_table not in seen      # right side is the new table
+        seen.add(step.right_table)
+    assert "OperatingSystems" in p.tables
