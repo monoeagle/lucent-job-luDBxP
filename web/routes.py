@@ -367,8 +367,10 @@ def api_joinpath_run():
     """Execute the SQL for one join path and return tabular results.
 
     Accepts the same parameters as /api/joinpath plus an optional
-    ``path_index`` (int, default 0) to select which path to execute.
-    Returns ``{columns, rows, sql}``; rows are capped at 200.
+    ``path_index`` (int, default 0) to select which path to execute and an
+    optional ``max_rows`` (200/400/None=all). The requested row count is
+    clamped to ``config.MAX_RESULT_ROWS``; ``None`` means "all up to the
+    ceiling". Returns ``{columns, rows, sql, row_cap}``.
 
     Security: SQL is built server-side from join parameters via
     ``generate_sql`` — no client-supplied SQL string is ever executed.
@@ -415,9 +417,22 @@ def api_joinpath_run():
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
 
+    # Result row cap: client may request 200/400 or None ("Alle"). Always
+    # clamp to the hard ceiling so a huge join can never flood the browser.
+    hard_cap = config.MAX_RESULT_ROWS
+    req_rows = data.get("max_rows")
+    if req_rows is None:
+        max_rows = hard_cap
+    else:
+        try:
+            max_rows = max(1, min(int(req_rows), hard_cap))
+        except (TypeError, ValueError):
+            max_rows = config.DEFAULT_RESULT_ROWS
+
     try:
-        result = execute_select(url, gen.sql, gen.params)
+        result = execute_select(url, gen.sql, gen.params, max_rows=max_rows)
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
 
-    return jsonify(columns=result["columns"], rows=result["rows"], sql=gen.sql)
+    return jsonify(columns=result["columns"], rows=result["rows"],
+                   sql=gen.sql, row_cap=max_rows)

@@ -16,6 +16,10 @@ const PORT_DEFAULTS = { postgresql: 5432, mysql: 3306, mssql: 1433 };
 // ===== Graph selection state (AP-1: interactive join-path selection) =====
 let GRAPH_SEL = { source: null, target: null };
 
+// ===== Join-builder state (AP-6: result refresh + row-count selection) =====
+let JB_LAST = null;     // { body, paths } from the last successful build
+let JB_PATH_IDX = 0;    // currently selected path index
+
 const $ = (id) => document.getElementById(id);
 
 // The real URL (with password) lives in a hidden field; show a masked form.
@@ -269,13 +273,25 @@ function openJoinBuilder() {
     `<button id="btn_build" style="margin-left:12px">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
     `<pre class="sql_out" id="sql_out"></pre>` +
+    `<div class="row jb-result-bar" id="jb_result_bar" style="display:none">` +
+    `<label>Zeilen</label>` +
+    `<select id="jb_rows">` +
+    `<option value="200">200</option>` +
+    `<option value="400">400</option>` +
+    `<option value="0">Alle</option></select>` +
+    `<button id="jb_refresh" title="Ausgabe mit aktuellen Sortierungen/Spalten neu berechnen">Aktualisieren</button>` +
+    `<span id="jb_rows_info" class="hint"></span></div>` +
     `<div id="join_result"></div></div>`;
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
   $("btn_add_filter").addEventListener("click", addFilterRow);
   $("btn_add_orderby").addEventListener("click", addOrderByRow);
   $("btn_add_col").addEventListener("click", addColRow);
-  $("btn_build").addEventListener("click", runBuild);
+  $("btn_build").addEventListener("click", () => runBuild());
+  // AP-6: refresh re-reads the form (new sort/columns) and keeps the chosen path;
+  // changing the row count only re-fetches the current path (path is unaffected).
+  $("jb_refresh").addEventListener("click", () => runBuild(true));
+  $("jb_rows").addEventListener("change", () => renderJoinResult(JB_PATH_IDX));
   if (SCHEMA.tables.length) refillJoinBuilder();
 }
 
@@ -299,6 +315,10 @@ function refillJoinBuilder() {
   if ($("join_result")) $("join_result").innerHTML = "";
   if ($("jb_distinct")) $("jb_distinct").checked = false;
   if ($("jb_limit")) $("jb_limit").value = "";
+  if ($("jb_result_bar")) $("jb_result_bar").style.display = "none";
+  if ($("jb_rows_info")) $("jb_rows_info").textContent = "";
+  JB_LAST = null;
+  JB_PATH_IDX = 0;
 }
 
 // Render the value input(s) for a filter row based on the selected operator.
@@ -438,9 +458,10 @@ function collectExtraSelects() {
   return out;
 }
 
-async function runBuild() {
+// Read the full join-builder form into a /api/joinpath request body.
+function collectJoinBody() {
   const limitRaw = $("jb_limit") ? $("jb_limit").value.trim() : "";
-  const body = {
+  return {
     connection_url: connUrl(),
     start: { table: $("start_table").value, column: $("start_col").value },
     target: { table: $("target_table").value, column: $("target_col").value },
@@ -451,39 +472,77 @@ async function runBuild() {
     order_by: collectOrderBy(),
     limit: limitRaw !== "" ? parseInt(limitRaw, 10) : null,
   };
+}
+
+// Selected output row count: 200/400, or null ("Alle" → server's hard cap).
+function jbSelectedMaxRows() {
+  const sel = $("jb_rows");
+  if (!sel) return 200;
+  return sel.value === "0" ? null : parseInt(sel.value, 10);
+}
+
+// Execute the SELECT for path `i` and render its rows into #join_result.
+async function renderJoinResult(i) {
+  if (!JB_LAST || !JB_LAST.paths[i]) return;
+  JB_PATH_IDX = i;
+  $("sql_out").textContent = JB_LAST.paths[i].sql;
+  highlightPath(JB_LAST.paths[i].edges || []);
+  const resultEl = $("join_result");
+  if (!resultEl) return;
+  resultEl.innerHTML = "<p class='hint'>lädt…</p>";
+  const info = $("jb_rows_info");
+  if (info) info.textContent = "";
+  try {
+    const runBody = Object.assign({}, JB_LAST.body,
+      { path_index: i, max_rows: jbSelectedMaxRows() });
+    const res = await postJSON("/api/joinpath/run", runBody);
+    if (!res.rows.length) {
+      resultEl.innerHTML = "<p class='hint'>keine Ergebniszeilen</p>";
+      return;
+    }
+    const thead = res.columns.map((c) => `<th>${esc(c)}</th>`).join("");
+    const tbody = res.rows.map((r) =>
+      "<tr>" + r.map((v) =>
+        `<td>${v === null ? "<i>NULL</i>" : esc(v)}</td>`).join("") + "</tr>"
+    ).join("");
+    resultEl.innerHTML =
+      `<table class="cols"><thead><tr>${thead}</tr></thead>` +
+      `<tbody>${tbody}</tbody></table>`;
+    if (info) {
+      const cap = res.row_cap || res.rows.length;
+      info.textContent = res.rows.length >= cap
+        ? `${res.rows.length} Zeilen (begrenzt auf ${cap})`
+        : `${res.rows.length} Zeilen`;
+    }
+  } catch (e) {
+    resultEl.innerHTML = `<p class='hint'>Fehler: ${esc(e.message)}</p>`;
+  }
+}
+
+// Build join paths from the current form. `preserveIndex` keeps the selected
+// path (used by "Aktualisieren" after a sort/column change); a fresh build
+// from "Join-Pfad bauen" resets to the first path.
+async function runBuild(preserveIndex = false) {
+  const body = collectJoinBody();
   try {
     const data = await postJSON("/api/joinpath", body);
+    JB_LAST = { body, paths: data.paths };
+    const prev = JB_PATH_IDX;
+    JB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
     const list = $("path_list");
     list.innerHTML = data.paths.map((p, i) =>
       `<li><a href="#" data-i="${i}">${p.tables.map(esc).join(" → ")}</a></li>`).join("");
-    const show = async (i) => {
-      $("sql_out").textContent = data.paths[i].sql;
-      highlightPath(data.paths[i].edges || []);
-      const resultEl = $("join_result");
-      if (!resultEl) return;
-      resultEl.innerHTML = "<p class='hint'>lädt…</p>";
-      try {
-        const runBody = Object.assign({}, body, { path_index: i });
-        const res = await postJSON("/api/joinpath/run", runBody);
-        if (!res.rows.length) {
-          resultEl.innerHTML = "<p class='hint'>keine Ergebniszeilen</p>";
-          return;
-        }
-        const thead = res.columns.map((c) => `<th>${esc(c)}</th>`).join("");
-        const tbody = res.rows.map((r) =>
-          "<tr>" + r.map((v) =>
-            `<td>${v === null ? "<i>NULL</i>" : esc(v)}</td>`).join("") + "</tr>"
-        ).join("");
-        resultEl.innerHTML =
-          `<table class="cols"><thead><tr>${thead}</tr></thead>` +
-          `<tbody>${tbody}</tbody></table>`;
-      } catch (e) {
-        resultEl.innerHTML = `<p class='hint'>Fehler: ${esc(e.message)}</p>`;
-      }
-    };
     list.querySelectorAll("a").forEach((a) =>
-      a.addEventListener("click", (ev) => { ev.preventDefault(); show(+a.dataset.i); }));
-    if (data.paths.length) show(0);
+      a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
+    const bar = $("jb_result_bar");
+    if (data.paths.length) {
+      if (bar) bar.style.display = "";
+      renderJoinResult(JB_PATH_IDX);
+    } else {
+      if (bar) bar.style.display = "none";
+      $("sql_out").textContent = "";
+      $("join_result").innerHTML = "";
+    }
   } catch (e) { alert(e.message); }
 }
 
@@ -595,6 +654,16 @@ function resetGraphSelection() {
   _updateGraphNodeMarkers();
 }
 
+// AP-8: the "Auswahl zurücksetzen" button must fully clean up — not just the
+// source/target markers, but also the highlighted join path in the graph and
+// the UML cards opened below it. (The internal reset above keeps the cards so
+// the user can click on a card to start a fresh selection.)
+function clearSelectionAndCards() {
+  resetGraphSelection();
+  if (CY) CY.elements().removeClass("hl");        // clear highlighted join path
+  if ($("uml_cards")) $("uml_cards").innerHTML = "";  // close the cards below
+}
+
 // ===== Schema graph =====
 async function drawGraph() {
   const g = await postJSON("/api/graph", {
@@ -616,6 +685,11 @@ async function drawGraph() {
   CY = cytoscape({
     container: $("graph"),
     elements,
+    // AP-7: finer mouse-wheel zoom (default 1 jumps too far) + zoom bounds
+    // that match the slider range (10 %–400 %).
+    wheelSensitivity: 0.2,
+    minZoom: 0.1,
+    maxZoom: 4,
     style: [
       { selector: "node", style: {
         label: "data(id)", "font-size": 9, color: "#fff",
@@ -637,14 +711,40 @@ async function drawGraph() {
   });
   // Register dbltap handler: opens the UML card for the clicked table node
   CY.on("dbltap", "node", (e) => showUmlCard(e.target.id()));
+  // AP-7: keep the zoom slider + % label in sync with wheel/pinch zoom
+  CY.on("zoom", updateZoomUI);
 
   const layout = CY.layout({
     name: "cose", animate: false, padding: 24, randomize: true,
     nodeRepulsion: 16000, idealEdgeLength: 110, nodeOverlap: 28, componentSpacing: 120,
   });
-  layout.one("layoutstop", () => CY.fit(undefined, 24));
+  layout.one("layoutstop", () => { CY.fit(undefined, 24); updateZoomUI(); });
   layout.run();
   window.CY = CY;  // expose for browser-console debugging and e2e checks
+}
+
+// ===== Graph zoom control (AP-7) =====
+function updateZoomUI() {
+  if (!CY) return;
+  const pct = Math.round(CY.zoom() * 100);
+  const slider = $("zoom_slider");
+  const label = $("zoom_pct");
+  if (slider) slider.value = Math.max(10, Math.min(400, pct));
+  if (label) label.textContent = pct + "%";
+}
+
+function setupZoomControl() {
+  const slider = $("zoom_slider");
+  if (!slider) return;
+  slider.addEventListener("input", () => {
+    if (!CY) return;
+    const level = parseInt(slider.value, 10) / 100;
+    const c = CY.container();
+    // Zoom around the viewport centre so the slider feels predictable.
+    CY.zoom({ level, renderedPosition: { x: c.clientWidth / 2, y: c.clientHeight / 2 } });
+    const label = $("zoom_pct");
+    if (label) label.textContent = Math.round(CY.zoom() * 100) + "%";
+  });
 }
 
 function highlightPath(edges) {
@@ -807,7 +907,7 @@ function openConnections() {
 // ===== Wiring =====
 $("btn_load").addEventListener("click", doConnect);
 $("btn_connections").addEventListener("click", openConnections);
-$("uml_reset").addEventListener("click", resetGraphSelection);
+$("uml_reset").addEventListener("click", clearSelectionAndCards);
 $("include_implied").addEventListener("change", () => {
   if (SCHEMA.tables.length) drawGraph().catch((e) => alert(e.message));
 });
@@ -815,3 +915,4 @@ $("include_implied").addEventListener("change", () => {
 setCurrentUrl(connUrl());   // show the prefilled demo connection
 renderSidebar();            // show Tools/Info even before connecting
 setupSplitter();
+setupZoomControl();         // AP-7: graph zoom slider

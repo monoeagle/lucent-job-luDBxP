@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.3.0] — 2026-06-26
+### Added
+- **AP-6 — Ausgabe-Steuerung im Join-Builder:** Auswahl der Ausgabezeilen
+  (200 / 400 / Alle) plus „Aktualisieren"-Button im Ergebnisbereich.
+  `/api/joinpath/run` akzeptiert nun `max_rows`; der Wert wird serverseitig
+  auf `config.MAX_RESULT_ROWS` (5000) geklemmt — „Alle" heißt „alle bis zur
+  Obergrenze" zum Schutz der Oberfläche. Die Antwort liefert `row_cap`; die
+  Info-Zeile zeigt „N Zeilen (begrenzt auf …)". „Aktualisieren" liest das
+  Formular neu (geänderte Sortierungen/Spalten) und behält den gewählten Pfad;
+  ein Zeilenwechsel führt nur das aktuelle SELECT neu aus. Der hervorgehobene
+  Join-Pfad im Graphen bleibt dabei stabil — Sortierungen/Zusatzspalten sind
+  auf die Pfad-Tabellen beschränkt und ändern den Pfad nicht.
+- **AP-7 — Feiner Graph-Zoom + Slider:** Mausrad-Zoom feinstufig
+  (`wheelSensitivity` 0.2 statt 1, Zoom-Grenzen 10 %–400 %). Neuer vertikaler
+  Zoom-Slider mit Prozent-Anzeige am rechten Graph-Rand, beidseitig
+  synchronisiert (Scrollen ↔ Slider).
+
+### Fixed
+- **AP-8 — „Auswahl zurücksetzen":** Der Button bereinigt jetzt zusätzlich den
+  hervorgehobenen Join-Pfad im Graphen (`hl`-Klassen) und schließt die
+  UML-Karten darunter (`#uml_cards`) — vorher blieb beides stehen. Die interne
+  Auswahl-Zurücksetzung (neue Selektion starten) lässt die Karten bewusst
+  bestehen.
+
 ## [0.2.0] — 2026-06-26
 ### Added
 - Join-Builder: tabellarischer **Ausgabebereich** unter dem generierten SELECT.

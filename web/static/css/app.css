@@ -38,9 +38,24 @@ body {
 .sidebar-bottom { margin-top: auto; }  /* Info pinned to the bottom */
 .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .graphpanel {
+  position: relative;
   border-left: 1px solid #ccc; display: flex; flex-direction: column;
   min-height: 0; overflow: hidden;
 }
+
+/* --- graph zoom control (AP-7: fine zoom + slider with %) --- */
+#zoom_ctrl {
+  position: absolute; top: 44px; right: 10px; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 6px 5px; background: rgba(255,255,255,.88);
+  border: 1px solid #ccc; border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+#zoom_slider {
+  writing-mode: vertical-lr; direction: rtl;   /* vertical, low at bottom */
+  width: 10px; height: 130px; cursor: pointer;
+}
+#zoom_pct { font-size: .72rem; color: #333; font-variant-numeric: tabular-nums; }
 .panelhead {
   flex: 0 0 auto; padding: .4rem .6rem; background: #f3f3f6;
   border-bottom: 1px solid #ddd; font-weight: 600; font-size: .9rem;
@@ -110,6 +125,10 @@ body {
 .path_list { padding-left: 1.2rem; }
 .sql_out { background: #1A1A2E; color: #eaeaea; padding: 1rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
+
+/* --- join result toolbar (AP-6: row count + refresh) --- */
+.jb-result-bar { margin-top: .6rem; }
+.jb-result-bar #jb_rows_info { margin-left: .4rem; }
 
 /* --- join result table --- */
 #join_result {

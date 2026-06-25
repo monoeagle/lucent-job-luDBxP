@@ -114,6 +114,23 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] DRY: `_parse_joinpath_params` + `_make_path_gen` von `api_joinpath` und Run-Endpoint geteilt
 - [x] 3 neue API-Tests (Spalten/Zeilen, Zeilen-Cap, unbekannte Spalte 400); 109 Tests grün
 
+## AP-6 — Ausgabe-Steuerung: Zeilen-Auswahl + Aktualisieren (v0.3.0)
+- [x] Zeilen-Auswahl 200 / 400 / Alle (`#jb_rows`) im Ergebnisbereich
+- [x] „Aktualisieren"-Button (`#jb_refresh`): liest Formular neu (Sortierung/Spalten), behält gewählten Pfad
+- [x] `/api/joinpath/run` nimmt `max_rows`, klemmt auf `config.MAX_RESULT_ROWS` (5000); „Alle" = bis Obergrenze; Antwort liefert `row_cap`
+- [x] Info-Zeile „N Zeilen (begrenzt auf …)"; Graph-Pfad bleibt stabil (Sortierung/Spalten ändern den Pfad nicht)
+- [x] 2 neue API-Tests (max_rows-Cap + row_cap); 111 Tests grün
+
+## AP-7 — Feiner Graph-Zoom + Zoom-Slider (v0.3.0)
+- [x] Mausrad-Zoom feinstufig (`wheelSensitivity` 0.2), Zoom-Grenzen 10 %–400 %
+- [x] Vertikaler Zoom-Slider mit %-Anzeige (`#zoom_ctrl`) am rechten Graph-Rand
+- [x] Beidseitige Synchronisation (Scrollen ↔ Slider) via `CY.on("zoom", …)` + Slider-`input`
+
+## AP-8 — Fix „Auswahl zurücksetzen" bereinigt Graph + Karten (v0.3.0)
+- [x] Button löscht jetzt Pfad-Highlight (`hl`) und schließt UML-Karten (`#uml_cards`)
+- [x] Interner Selektions-Reset (neue Auswahl) lässt Karten bewusst stehen
+- [x] Verifiziert (Playwright): 5 hl-Elemente + 1 Karte vor Reset → 0/0 nach Reset
+
 ## AP-3 — SQL-Optionen-Paket (Join-Builder)
 - [x] DISTINCT (Checkbox)
 - [x] ORDER BY (Tabelle.Spalte + ASC/DESC, mehrere; pro Pfad auf Pfad-Tabellen gefiltert)

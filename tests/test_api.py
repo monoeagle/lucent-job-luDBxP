@@ -398,6 +398,37 @@ def test_joinpath_run_rows_within_server_cap(client, demo_url):
     assert len(data["rows"]) <= 200  # hard server-side cap via fetchmany(200)
 
 
+def test_joinpath_run_respects_requested_max_rows(client, demo_url):
+    """A small max_rows caps the returned rows and is echoed in row_cap (AP-6)."""
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Network", "column": "VLAN"},
+        "target": {"table": "Cluster", "column": "Name"},
+        "filters": [],
+        "path_index": 0,
+        "max_rows": 1,
+    })
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["row_cap"] == 1
+    assert len(data["rows"]) <= 1
+
+
+def test_joinpath_run_all_rows_clamped_to_ceiling(client, demo_url):
+    """max_rows=None ("Alle") clamps to the configured hard ceiling (AP-6)."""
+    import config
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Network", "column": "VLAN"},
+        "target": {"table": "Cluster", "column": "Name"},
+        "filters": [],
+        "path_index": 0,
+        "max_rows": None,
+    })
+    assert resp.status_code == 200
+    assert resp.get_json()["row_cap"] == config.MAX_RESULT_ROWS
+
+
 def test_joinpath_run_unknown_column_returns_400(client, demo_url):
     """Unknown start column must be rejected with 400 before any SQL is run."""
     resp = client.post("/api/joinpath/run", json={
