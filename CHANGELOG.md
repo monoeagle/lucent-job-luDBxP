@@ -27,6 +27,17 @@
   Modell führen jetzt Primärschlüssel-Infos. Neue FK-lose Demo-DB
   (`demo_cmdb_nofk.db`) zum Ausprobieren.
 
+### Added
+- Verbindungs-Manager (Tools → Verbindungen): strukturiertes Formular mit
+  Datenbank-Typ-Auswahl (SQLite, PostgreSQL, MySQL/MariaDB, MS SQL Server) und
+  passenden Feldern (Host/Port/DB/Benutzer/Passwort bzw. Dateipfad). Das
+  Backend baut die SQLAlchemy-URL (`core.connection.build_url`) und testet die
+  Verbindung (`/api/connect`). Passwort-Feld versteckt; die echte URL liegt in
+  einem versteckten Feld, die Topbar zeigt sie maskiert. Benannte Verbindungen
+  sind in `config.json` speicherbar (`/api/connections`, ohne Passwort).
+  Treiber: psycopg2-binary, PyMySQL, pyodbc (MSSQL braucht zusätzlich System-
+  ODBC: unixODBC + msodbcsql).
+
 ### Changed
 - Info-Bereich in der Sidebar ans untere Ende gesetzt; die Info-Seite zeigt
   jetzt App-Metadaten (Name, Version, Ersteller) und den Technologie-Stack

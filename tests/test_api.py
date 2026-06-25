@@ -16,6 +16,34 @@ def test_schema_endpoint_returns_tables(client, inventory_url):
     assert "VirtualMachines" in names
 
 
+def test_connect_sqlite_returns_url(client, inventory_url):
+    path = inventory_url.replace("sqlite:///", "")
+    resp = client.post("/api/connect", json={"db_type": "sqlite", "filepath": path})
+    assert resp.status_code == 200
+    assert resp.get_json()["connection_url"].startswith("sqlite:///")
+
+
+def test_connect_missing_host_returns_400(client):
+    resp = client.post("/api/connect", json={"db_type": "postgresql", "database": "d"})
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+def test_connections_save_list_delete_without_password(client, tmp_path, monkeypatch):
+    import config
+    monkeypatch.setattr(config, "CONFIG_JSON", str(tmp_path / "settings.json"))
+    save = client.post("/api/connections", json={
+        "name": "prod", "db_type": "postgresql", "host": "h",
+        "database": "cmdb", "user": "admin", "password": "SECRET"})
+    assert save.status_code == 200
+    conns = client.get("/api/connections").get_json()["connections"]
+    saved = next(c for c in conns if c["name"] == "prod")
+    assert saved["host"] == "h" and saved["database"] == "cmdb"
+    assert "password" not in saved  # password is never persisted
+    client.delete("/api/connections", json={"name": "prod"})
+    assert client.get("/api/connections").get_json()["connections"] == []
+
+
 def test_info_endpoint_returns_metadata_and_stack(client):
     data = client.get("/api/info").get_json()
     assert data["name"] == "Lucent DB Explorer"

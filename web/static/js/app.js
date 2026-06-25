@@ -2,9 +2,26 @@
 
 let SCHEMA = { tables: [], views: [] };
 let CY = null;  // Cytoscape instance for the schema graph
+let SAVED_CONNS = [];  // saved connections (without passwords)
 const OPERATORS = ["=", "!=", "<", ">", "<=", ">=", "LIKE"];
+const DB_TYPES = [
+  { v: "sqlite", label: "SQLite (Datei)" },
+  { v: "postgresql", label: "PostgreSQL" },
+  { v: "mysql", label: "MySQL / MariaDB" },
+  { v: "mssql", label: "MS SQL Server" },
+];
+const PORT_DEFAULTS = { postgresql: 5432, mysql: 3306, mssql: 1433 };
 
 const $ = (id) => document.getElementById(id);
+
+// The real URL (with password) lives in a hidden field; show a masked form.
+function maskUrl(url) {
+  return url.replace(/(:\/\/[^:/@]+:)[^@]*@/, "$1***@");
+}
+function setCurrentUrl(url) {
+  $("connection_url").value = url;
+  $("current_conn").textContent = url ? maskUrl(url) : "(keine Verbindung)";
+}
 
 function esc(s) {
   const d = document.createElement("div");
@@ -78,7 +95,9 @@ function renderSidebar() {
   const objList = (items, kind) => items.map((o) =>
     `<li data-kind="${kind}" data-name="${esc(o.name)}">${esc(o.name)}</li>`).join("");
   $("objects").innerHTML =
-    `<h3>Tools</h3><ul class="objlist"><li data-action="joinbuilder">Join-Builder</li></ul>` +
+    `<h3>Tools</h3><ul class="objlist">` +
+    `<li data-action="connections">Verbindungen</li>` +
+    `<li data-action="joinbuilder">Join-Builder</li></ul>` +
     `<h3>Tabellen (${SCHEMA.tables.length})</h3>` +
     `<ul class="objlist">${objList(SCHEMA.tables, "table")}</ul>` +
     `<h3>Views (${SCHEMA.views.length})</h3>` +
@@ -88,6 +107,7 @@ function renderSidebar() {
   $("objects").querySelectorAll("li").forEach((li) => {
     li.addEventListener("click", () => {
       if (li.dataset.action === "joinbuilder") openJoinBuilder();
+      else if (li.dataset.action === "connections") openConnections();
       else if (li.dataset.action === "info") openInfo();
       else openDetail(li.dataset.kind, li.dataset.name);
     });
@@ -387,8 +407,8 @@ function setupSplitter() {
   });
 }
 
-// ===== Wiring =====
-$("btn_load").addEventListener("click", async () => {
+// ===== Connect with the current URL (hidden field) =====
+async function doConnect() {
   try {
     SCHEMA = await postJSON("/api/schema", { connection_url: connUrl() });
     document.querySelectorAll(".tab").forEach((t) => closeTab(t.dataset.tab));
@@ -403,11 +423,116 @@ $("btn_load").addEventListener("click", async () => {
     $("status").textContent = "";
     alert(e.message);
   }
-});
+}
 
+// ===== Connection manager tab =====
+function connFieldsHtml(dbType, c) {
+  c = c || {};
+  if (dbType === "sqlite") {
+    return `<div class="row"><label>Dateipfad</label>` +
+      `<input id="cf_filepath" type="text" placeholder="/pfad/zur.db" ` +
+      `value="${esc(c.filepath || "")}" style="flex:1"></div>`;
+  }
+  const port = c.port || PORT_DEFAULTS[dbType] || "";
+  return `<div class="row"><label>Host</label><input id="cf_host" type="text" ` +
+    `placeholder="localhost" value="${esc(c.host || "")}"></div>` +
+    `<div class="row"><label>Port</label><input id="cf_port" type="number" ` +
+    `value="${esc(port)}"></div>` +
+    `<div class="row"><label>Datenbank</label><input id="cf_database" type="text" ` +
+    `value="${esc(c.database || "")}"></div>` +
+    `<div class="row"><label>Benutzer</label><input id="cf_user" type="text" ` +
+    `value="${esc(c.user || "")}"></div>` +
+    `<div class="row"><label>Passwort</label><input id="cf_password" type="password"></div>`;
+}
+
+function renderConnFields(c) {
+  $("conn_fields").innerHTML = connFieldsHtml($("conn_type").value, c);
+}
+
+function formParams() {
+  const t = $("conn_type").value;
+  if (t === "sqlite") return { db_type: t, filepath: $("cf_filepath").value };
+  return {
+    db_type: t, host: $("cf_host").value, port: $("cf_port").value,
+    database: $("cf_database").value, user: $("cf_user").value,
+    password: $("cf_password").value,
+  };
+}
+
+async function refreshSavedConnections() {
+  try {
+    const r = await fetch("/api/connections");
+    SAVED_CONNS = (await r.json()).connections || [];
+  } catch (e) { SAVED_CONNS = []; }
+  $("conn_saved").innerHTML = `<option value="">— neu —</option>` +
+    SAVED_CONNS.map((c) => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join("");
+}
+
+function openConnections() {
+  const panel = ensureTab("connections", "Verbindungen", true);
+  if (panel.dataset.built) return;
+  panel.dataset.built = "1";
+  panel.innerHTML =
+    `<div class="detail conn-form"><h2>Verbindung</h2>` +
+    `<div class="row"><label>Gespeichert</label>` +
+    `<select id="conn_saved"></select>` +
+    `<button id="conn_load_saved" type="button">Laden</button>` +
+    `<button id="conn_delete_saved" type="button">Löschen</button></div>` +
+    `<div class="row"><label>Typ</label><select id="conn_type">` +
+    DB_TYPES.map((t) => `<option value="${t.v}">${t.label}</option>`).join("") +
+    `</select></div>` +
+    `<div id="conn_fields"></div>` +
+    `<div class="row"><button id="conn_connect" type="button">Verbinden</button>` +
+    `<input id="conn_name" type="text" placeholder="Name zum Speichern">` +
+    `<button id="conn_save" type="button">Speichern</button></div>` +
+    `<p class="hint" id="conn_msg"></p></div>`;
+
+  $("conn_type").addEventListener("change", () => renderConnFields());
+  renderConnFields();
+  $("conn_connect").addEventListener("click", async () => {
+    $("conn_msg").textContent = "verbinde…";
+    try {
+      const r = await postJSON("/api/connect", formParams());
+      setCurrentUrl(r.connection_url);
+      await doConnect();
+    } catch (e) { $("conn_msg").textContent = "Fehler: " + e.message; }
+  });
+  $("conn_save").addEventListener("click", async () => {
+    const name = $("conn_name").value.trim();
+    if (!name) { $("conn_msg").textContent = "Name zum Speichern angeben."; return; }
+    try {
+      await postJSON("/api/connections", Object.assign({ name }, formParams()));
+      await refreshSavedConnections();
+      $("conn_saved").value = name;
+      $("conn_msg").textContent = `„${name}" gespeichert (ohne Passwort).`;
+    } catch (e) { $("conn_msg").textContent = "Fehler: " + e.message; }
+  });
+  $("conn_load_saved").addEventListener("click", () => {
+    const c = SAVED_CONNS.find((x) => x.name === $("conn_saved").value);
+    if (!c) return;
+    $("conn_type").value = c.db_type;
+    renderConnFields(c);
+    $("conn_name").value = c.name;
+  });
+  $("conn_delete_saved").addEventListener("click", async () => {
+    const name = $("conn_saved").value;
+    if (!name) return;
+    await fetch("/api/connections", {
+      method: "DELETE", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    await refreshSavedConnections();
+  });
+  refreshSavedConnections();
+}
+
+// ===== Wiring =====
+$("btn_load").addEventListener("click", doConnect);
+$("btn_connections").addEventListener("click", openConnections);
 $("include_implied").addEventListener("change", () => {
   if (SCHEMA.tables.length) drawGraph().catch((e) => alert(e.message));
 });
 
-renderSidebar();   // show Tools/Info even before connecting
+setCurrentUrl(connUrl());   // show the prefilled demo connection
+renderSidebar();            // show Tools/Info even before connecting
 setupSplitter();

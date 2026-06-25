@@ -14,6 +14,10 @@ from core.sqlgen import generate_sql, Selection, Filter
 from core.settings import Settings
 from core.ddl import table_ddl
 from core.datapreview import fetch_rows
+from core.connection import build_url
+
+# Connection fields that may be persisted (never the password).
+_CONN_FIELDS = ("db_type", "host", "port", "database", "user", "filepath")
 
 _log = logging.getLogger("luDBxP")
 
@@ -56,6 +60,56 @@ def api_info():
             {"name": "Cytoscape.js", "version": config.CYTOSCAPE_VERSION},
         ],
     )
+
+
+@bp.post("/api/connect")
+def api_connect():
+    """Build a connection URL from structured params and test the connection."""
+    data = request.get_json(silent=True) or {}
+    try:
+        url = build_url(data)
+    except ValueError as exc:
+        return jsonify(error=str(exc)), 400
+    try:
+        SqlAlchemyLoader(url).load()
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+    return jsonify(connection_url=url)
+
+
+@bp.get("/api/connections")
+def api_connections_list():
+    """List saved connections (without passwords)."""
+    return jsonify(connections=Settings.load().get("connections") or [])
+
+
+@bp.post("/api/connections")
+def api_connections_save():
+    """Save a named connection (password is never persisted)."""
+    data = request.get_json(silent=True) or {}
+    name = (data.get("name") or "").strip()
+    if not name:
+        return jsonify(error="Verbindungsname fehlt."), 400
+    entry = {"name": name}
+    entry.update({k: data.get(k) for k in _CONN_FIELDS})
+    s = Settings.load()
+    conns = [c for c in (s.get("connections") or []) if c.get("name") != name]
+    conns.append(entry)
+    s.set("connections", conns)
+    s.save()
+    return jsonify(connections=conns)
+
+
+@bp.delete("/api/connections")
+def api_connections_delete():
+    """Delete a saved connection by name."""
+    data = request.get_json(silent=True) or {}
+    name = data.get("name") or ""
+    s = Settings.load()
+    conns = [c for c in (s.get("connections") or []) if c.get("name") != name]
+    s.set("connections", conns)
+    s.save()
+    return jsonify(connections=conns)
 
 
 @bp.post("/api/schema")

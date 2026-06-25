@@ -4,7 +4,7 @@ import os
 
 import config
 
-_DEFAULTS = {"language": "de", "default_connection": ""}
+_DEFAULTS = {"language": "de", "default_connection": "", "connections": []}
 
 
 class Settings:
@@ -19,15 +19,17 @@ class Settings:
         self._path = path
 
     @classmethod
-    def load(cls, path: str = config.CONFIG_JSON) -> "Settings":
+    def load(cls, path: str = None) -> "Settings":
         """Load settings from JSON file or create with defaults.
 
         Args:
-            path: File path to load settings from (defaults to config.CONFIG_JSON).
+            path: File path to load from; defaults to config.CONFIG_JSON
+                (resolved at call time so tests can redirect it).
 
         Returns:
             A new Settings instance with loaded or default values.
         """
+        path = path or config.CONFIG_JSON
         data = dict(_DEFAULTS)
         if os.path.exists(path):
             with open(path, encoding="utf-8") as fh:
@@ -44,6 +46,10 @@ class Settings:
             The setting value, or default if not found.
         """
         return self._data.get(key, _DEFAULTS.get(key))
+
+    def set(self, key: str, value) -> None:
+        """Set a setting value by key (call save() to persist)."""
+        self._data[key] = value
 
     def save(self) -> None:
         """Persist settings to JSON file."""
