@@ -19,7 +19,7 @@ Offen hier: **AP-12** (MSSQL real testbar).
 
 **Noch offen (braucht echte MSSQL-Instanz / heute Abend Linux):**
 - [ ] System-ODBC real einrichten (`unixODBC` + `msodbcsql18` Linux; ODBC Driver 18 Windows)
-- [ ] Optionaler Integrationstest gegen lokale MSSQL-Instanz (markiert, überspringbar wenn Treiber fehlt)
+- [x] **Optionaler Integrationstest** gegen lokale MSSQL-Instanz — `tests/test_mssql_integration.py`: läuft nur bei gesetztem `LUCENT_MSSQL_TEST_URL`, skippt sauber bei nicht erreichbar/Treiber fehlt (verifiziert: skip ohne ENV; Body grün gegen SQLite-Demo)
 - [ ] UI: MSSQL-Felder für `Encrypt`/`TrustServerCertificate` im Verbindungs-Tab (aktuell nur via API/`config.json` setzbar)
 
 ## AP-35 — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund aus AP-15)

@@ -40,6 +40,13 @@ Server listens at `http://127.0.0.1:5057`.
 ./venv/bin/python -m pytest -v       # verbose
 ```
 
+**Optional MSSQL integration test** (`tests/test_mssql_integration.py`) runs only when
+a reachable instance is provided; otherwise it skips:
+```bash
+LUCENT_MSSQL_TEST_URL='mssql+pyodbc://user:pw@host:1433/db?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes' \
+  ./venv/bin/python -m pytest tests/test_mssql_integration.py
+```
+
 ## Logging
 `core/log.py::init_logging` writes to stdout + a rotating `app.log`. Overridable per environment:
 - `LUCENT_LOG_DIR` — log directory (per-user path hook; full terminal-server wiring is AP-31)
