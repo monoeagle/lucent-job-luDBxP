@@ -53,9 +53,11 @@ Blockierend waren **5 kompilierte cp312-Wheels** (CPython-3.12-ABI):
 - [x] Python 3.14.6 via winget installiert; venv neu gebaut, offline-Install aus wheels/ ✓, `pip check` sauber, alle 5 C-Extensions importieren, **111 Tests grün**, App startet (HTTP 200)
 - [x] **psycopg2-Risiko entschärft:** cp314-Wheel existiert bereits (kein psycopg3-Fallback nötig)
 
-**Noch offen / Optimierungen (aus Wheel-Strategie-Analyse):**
-- [ ] **greenlet weglassen prüfen:** wird nur für SQLAlchemy-*async* gebraucht; App nutzt SQLAlchemy synchron → ein C-Wheel weniger pro Python-Version. Verifizieren, dass Reflection/SELECTs ohne greenlet laufen
-- [ ] **SQLAlchemy als `py3-none-any`** erwägen (existiert auf PyPI): versionsunabhängig, fällt aus dem „pro-Version neu ziehen"-Set; Performance-Verlust für read-only-Tool irrelevant
+**Wheel-Strategie-Optimierungen — geprüft 2026-06-26:**
+- [x] ~~greenlet weglassen~~ **verworfen:** SQLAlchemy 2.0.51 deklariert greenlet als **harte** Dependency auf AMD64/win (`Requires-Dist: greenlet>=1; platform_machine=="AMD64"…` — nicht nur `asyncio`-Extra), `pip show` listet es als `Requires`. `pip install -r requirements.txt` (run.ps1/run.sh) zieht es daher immer mit; Weglassen ginge nur über `--no-deps` + manuelle Dep-Liste (bricht das Offline-Setup). 240 KB Ersparnis rechtfertigt das nicht.
+- [x] ~~SQLAlchemy als `py3-none-any`~~ **verworfen:** macht nur SQLAlchemy versionsunabhängig; markupsafe/psycopg2/pyodbc/greenlet bleiben cp-spezifisch und binden das Wheelhouse weiter an genau eine Python-Version (die `run.ps1` ohnehin erzwingt) → kein praktischer Gewinn, aber Verlust der C-Speedups. Echte „ein Wheelhouse für alle 3.x"-Unabhängigkeit gäbe es erst mit komplettem Treiberwechsel (pg8000 / python-tds / markupsafe-sdist) = eigenes größeres AP.
+
+**Noch offen:**
 - [ ] Optional: explizite Lock-/Constraints-Datei mit exakten Versionen (Reproduzierbarkeit; requirements.txt hat aktuell nur `>=`-Untergrenzen)
 - [ ] **Linux/AppImage-Pfad auf 3.14:** `run.sh _bundle_python_standalone` bundelt System-Python → auf der Linux-Build-Maschine 3.14 bereitstellen und AppImage gegen 3.14 bauen (Windows-Wheelhouse gilt dort nicht)
 - [ ] Abschluss: `sync_version.py` (Versionsbump) + CHANGELOG + AP nach `todo-erledigt.md` + AP-Diagramm (auf Linux neu bauen)
