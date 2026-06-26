@@ -112,3 +112,23 @@ veröffentlichten Doku verhalten.
 - [ ] Klären: brauchen Insights einen **Index** (z. B. `docs/insights/README.md`) für Auffindbarkeit?
 - [ ] Abgrenzung definieren: was ist ein *Insight* (interne Erkenntnis/Reflexion) vs. was gehört in die **öffentliche** Doku (`referenz/`, `entwicklung/`) als Endnutzer-/Entwicklerwissen
 - [ ] Optional: aus reifen Insights neutralisierte Inhalte in die Zensical-Site überführen (ohne KI-Bezug)
+
+## AP-28 (UI-Fix) — Join-Builder: Contentbereich darf NICHT scrollen
+- [ ] Der obere Join-Builder-Bereich (Start/Ziel, Filter-/Sortier-/Spalten-Zeilen, Buttons, generiertes SELECT) bleibt **fix** — kein Scrollen
+- [ ] **Einzig** die Ergebnistabelle unten (`#join_result`) darf scrollen
+- [ ] Ursache aktuell: `.tabpanels { overflow-y: auto }` lässt den gesamten Panel-Inhalt scrollen; das Join-Builder-Panel muss die Panelhöhe füllen, ohne Außenscroll
+- [ ] Betroffen: `web/static/css/app.css` (`.tabpanels`, `.panel[data-tab=joinbuilder]`, `#join_result`), ggf. `web/static/js/app.js`
+
+## AP-29 — SQL-Dialekt umschalten (Oracle, MSSQL, PostgreSQL, MySQL, SQLite)
+**Frage/Recherche:** Gibt es syntaktische und elementare Unterschiede im generierten
+read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
+- [ ] Unterschiede sichten: Zeilenbegrenzung `LIMIT n` (Postgres/MySQL/SQLite) vs. `TOP n` (MSSQL) vs. `FETCH FIRST n ROWS ONLY` / `ROWNUM` (Oracle); Identifier-Quoting `"…"` (Standard/Oracle/Postgres) vs. `[…]` (MSSQL) vs. `` `…` `` (MySQL); Schema-/Owner-Präfix; Case-Sensitivity der Bezeichner
+- [ ] Ziel: Dropdown zur Dialektwahl → `core/sqlgen` rendert dialektabhängig (mind. LIMIT/TOP/FETCH + Identifier-Quoting); Default-Dialekt evtl. aus der aktiven Verbindung ableiten
+- [ ] Technik prüfen: `sqlglot` lokal gebündelt (NO-CDN) zum Transpilieren — **Überschneidung mit AP-25** (SQL-Analyzer), evtl. gemeinsam lösen
+- [ ] Betroffen: `core/sqlgen.py`, `web/static/js/app.js`/`index.html` (Dialekt-Dropdown), ggf. `core/connection.py`
+
+## AP-30 (Frage) — 1-N: ein Start, mehrere Zieltabellen in einem SELECT?
+- [ ] Frage: Gibt es den sinnvollen Fall, in **einem** SELECT von **einer** Start-Tabelle zu **mehreren** Ziel-Tabellen zu joinen (Stern-/1-N-Abfrage)?
+- [ ] Heute: genau **eine** Start- und **eine** Ziel-Tabelle (linearer Pfad); Zusatzspalten + Filter-Tabellen werden eingewebt, aber **kein** zweites unabhängiges Ziel (vgl. AP-18-Abgrenzung)
+- [ ] Abwägung: Mehrwert (breitere Abfrage in einem Schritt) vs. Komplexität (mehrere Pfade vereinen, Mehrdeutigkeit, kartesische Risiken bei 1-N-Fan-out)
+- [ ] Falls sinnvoll: als **Join-Baum** mit mehreren Ziel-Ästen modellieren (analog zum bestehenden Filter-Tabellen-Weaving in `find_paths`)
