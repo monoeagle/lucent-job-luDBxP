@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-06-26T23:29:16",
+  "generatedAt": "2026-06-26T23:35:05",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 64,
+      "commits": 65,
       "kinds": {
+        "other": 5,
         "docs": 33,
-        "other": 4,
         "fix": 6,
         "build": 5,
         "chore": 2,
@@ -17,6 +17,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "373bb91",
+          "subject": "backlog: AP-17 gestrichen (Releases), AP-22 (impl. FKs OFF) + AP-24 (KPIs dev-intern) entschieden, AP-30 als N-1-Stern zugeschnitten; Diagramme/Roadmap/Site nachgezogen",
+          "kind": "other"
+        },
         {
           "sha": "eb997a5",
           "subject": "docs: Doku-Drift nachgezogen (Testzahl 81->125, Wheelhouse/Python 3.12->3.14, run.sh-Menue 8 Optionen, korrekte conftest-Fixtures, Composite-FK seit AP-11); Site neu gebaut",
@@ -540,7 +545,7 @@
     }
   },
   "stats": {
-    "totalCommits": 101,
+    "totalCommits": 102,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
@@ -558,7 +563,7 @@
       },
       {
         "kind": "other",
-        "count": 5
+        "count": 6
       },
       {
         "kind": "build",

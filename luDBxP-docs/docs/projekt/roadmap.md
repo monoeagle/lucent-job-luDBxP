@@ -67,6 +67,10 @@ Doku/AppImage/Projektposter.
 - **AP-15** (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent — v0.12.0
 - **AP-33** — Logging sauber (Rotation · konfig. Level/Pfad · Request-Logging) — v0.13.0
 - **AP-14** (Teil 2, Linux) — Python-3.14-AppImage + AppRun-Update-/Browser-Fix — v0.14.0
+- **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
+- **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
+
+> **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:
 [Changelog](../entwicklung/changelog.md).
