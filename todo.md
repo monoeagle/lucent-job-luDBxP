@@ -126,6 +126,7 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] **Gemeinsame `config.json`** (Default- + gespeicherte Verbindungen) im App-Verzeichnis → Nutzer überschreiben sich gegenseitig
 - [ ] **Gemeinsames `Logs/`** → konkurrierende Schreibzugriffe
 - [ ] **Flask-Dev-Server** (`app.run`) ist kein Mehrbenutzer-Produktionsserver
+- [ ] **Port-Lebensdauer:** Port 5057 bleibt für die **gesamte Laufzeit** des Server-Prozesses gebunden und wird erst vom OS freigegeben, wenn der Prozess endet (Strg+C / Fenster schließen / Prozess beenden / Session-Ende) — **kein** Idle-Timeout. Browser schließen ≠ Port frei. Auf RDS blockiert ein „vergessener" laufender Prozess die anderen Nutzer
 **Nötig für Multi-User:**
 - [ ] **Pro-Session dynamischer Port** (freien Port wählen + URL dem Nutzer anzeigen) statt fix 5057
 - [ ] **Pro-Nutzer `config.json` + `Logs/`** (z. B. `%LOCALAPPDATA%\<AppName>\`) statt App-Verzeichnis
@@ -133,3 +134,15 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] Optional: lokaler WSGI-Server (z. B. `waitress`, NO-CDN-konform) statt Flask-Dev-Server
 - [ ] Betroffen: `config.py` (Port/Pfade), `app.py` (Port-Wahl), `core/settings.py` (config.json-Pfad), Logging-Pfad
 **Hinweis:** read-only begrenzt den Schaden (keine DB-Mutation); Verbindungen werden ohne Passwort gespeichert.
+
+## AP-33 — Logging: Status prüfen & sauber machen
+**Frage:** Haben wir bereits ein sauberes Logging?
+**Befund (vorhanden, aber minimal):**
+- [x] `core/log.py::init_logging` existiert: Logger `luDBxP`, Ausgabe nach **stdout + `Logs/app.log`**, Level **INFO**, Formatter mit Zeitstempel/Level/Name; wird im App-Factory (`web/__init__.py`) initialisiert
+**Offen / zu verbessern:**
+- [ ] **Geringe Abdeckung:** nur ~2 Log-Aufrufe (`web/routes.py`) — wichtige Aktionen/Fehler kaum geloggt; strukturiertes Error-Logging (Exceptions mit Stacktrace) ergänzen
+- [ ] **Keine Log-Rotation:** `app.log` wächst unbegrenzt → `RotatingFileHandler`/`TimedRotatingFileHandler` (Größe/Anzahl begrenzen)
+- [ ] **Level nicht konfigurierbar:** fix INFO → DEBUG-Schalter (ENV/config)
+- [ ] **Logpfad `Logs/` im App-Verzeichnis:** auf Terminal-Server geteilt/konkurrierend → **pro-Nutzer-Logpfad** (Bezug AP-31, z. B. `%LOCALAPPDATA%`)
+- [ ] Request-Logging (Methode/Pfad/Status/Dauer) erwägen; Werkzeug-Access-Log einordnen
+- [ ] Betroffen: `core/log.py`, `web/__init__.py`, `web/routes.py`, `config.py` (Level/Pfad)
