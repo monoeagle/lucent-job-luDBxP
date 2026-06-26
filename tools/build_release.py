@@ -24,9 +24,12 @@ import config  # noqa: E402
 PKG_BASENAME = "LucentTools-DB-Explorer"   # readable, ASCII (filename-safe)
 
 # Allow-list: ONLY what the app needs to run.
+# NB: run.ps1 (Windows) is deliberately NOT bundled — the *signed* launcher is
+# supplied separately and dropped into the folder by the operator. run.sh (Linux,
+# no code-signing gate) stays in the package.
 INCLUDE_FILES = [
     "app.py", "config.py", "strings.py", "config.json",
-    "requirements.txt", "run.ps1", "run.sh",
+    "requirements.txt", "run.sh",
 ]
 INCLUDE_DIRS = ["core", "web", "wheels", "sample_data"]
 
@@ -44,17 +47,18 @@ def _start_text(ver):
     return (
         f"LucentTools DB Explorer v{ver}\n"
         "==============================\n\n"
+        "Launcher: run.ps1 (Windows) ist NICHT enthalten - die signierte Version\n"
+        "wird separat bereitgestellt. Lege sie in diesen Ordner.\n\n"
         "Schnellstart (Windows):\n"
         "  1. Python 3.14 (64-bit) installieren (falls noch nicht vorhanden).\n"
-        "  2. In diesem Ordner eine PowerShell oeffnen.\n"
-        "  3. Ausfuehren:   .\\run.ps1        (oder:  .\\run.ps1 -Action start)\n"
+        "  2. Den separat bereitgestellten, signierten run.ps1 hier ablegen.\n"
+        "  3. In diesem Ordner eine PowerShell oeffnen und ausfuehren:  .\\run.ps1\n"
         "  4. Browser oeffnen:   http://127.0.0.1:5057\n\n"
         "Hinweise:\n"
         "  - Installation laeuft OFFLINE aus wheels\\ (kein Internet noetig).\n"
         "  - Port 5057 muss frei sein.\n"
-        "  - run.ps1 ist signiert; ExecutionPolicy RemoteSigned/AllSigned genuegt.\n"
         "  - Read-only: die App liest nur Schema-Metadaten und erzeugt SQL-Text.\n\n"
-        "Linux:  ./run.sh\n"
+        "Linux:  ./run.sh  (im Paket enthalten)\n"
     )
 
 
