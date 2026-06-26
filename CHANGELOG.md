@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.14.0] — 2026-06-26
+### Changed
+- **AP-14 (Teil 2, Linux) — Python-3.14-AppImage:** Der Linux-Pfad von AP-14 ist
+  abgeschlossen — venv und AppImage laufen jetzt gegen **Python 3.14.6**:
+  - **3.14 user-lokal** via `uv` beschafft (kein Root); alle 5 C-Extensions
+    (sqlalchemy, greenlet, markupsafe, psycopg2-binary, pyodbc) liegen als
+    **cp314-manylinux**-Wheels auf PyPI vor → venv-Neubau rein aus Wheels,
+    **125 Tests grün** auf 3.14.
+  - **AppImage gegen 3.14 gebaut & verifiziert** (HTTP 200; bundelt 3.14.6
+    standalone, direkt geprüft).
+- **AppImage-Fixes (`run.sh` AppRun):**
+  - **Versions-bewusstes App-Update:** Der AppRun kopierte den App-Code bisher
+    nur beim Erststart und aktualisierte nie → eine neuere AppImage führte stillen
+    Alt-Code aus (real beobachtet: 0.1.0 statt der gebauten Version). Jetzt wird
+    der Code bei Versionswechsel erneuert, **Nutzerdaten** (`config.json`, `Logs/`)
+    bleiben erhalten (`.app_version`-Stamp).
+  - **Browser:** AppRun öffnet bevorzugt **Chrome/Chromium** statt des
+    Default-Browsers (vorher `xdg-open` → ggf. Firefox).
+### Fixed
+- **`run.sh` unter Python 3.14:** `re.split(..., 1)` löste einen
+  `DeprecationWarning` aus (positionsbasiertes `maxsplit`) → auf `maxsplit=1`
+  umgestellt.
+
 ## [0.13.0] — 2026-06-26
 ### Changed
 - **AP-33 — Logging sauber gemacht:** `core/log.py` heilt das bisher minimale

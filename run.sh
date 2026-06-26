@@ -69,7 +69,7 @@ for line in open(sys.argv[1], encoding="utf-8"):
     line = line.strip()
     if not line or line.startswith("#"):
         continue
-    name = re.split(r"[<>=!~;\[\s]", line, 1)[0].strip()
+    name = re.split(r"[<>=!~;\[\s]", line, maxsplit=1)[0].strip()
     if not name:
         continue
     try:
@@ -391,14 +391,27 @@ for arg in "$@"; do
   esac
 done
 
-# Schreibbares Arbeitsverzeichnis: App-Sourcen beim Erststart kopieren
-# (AppDir ist read-only; config.py leitet BASE_DIR aus __file__ ab →
-#  läuft die App aus APP_WORK, ist config.json/Logs darin schreibbar)
+# Schreibbares Arbeitsverzeichnis: App-Code beim Erststart kopieren UND bei
+# Versionswechsel aktualisieren (AppDir ist read-only; config.py leitet BASE_DIR
+# aus __file__ ab → läuft die App aus APP_WORK, ist config.json/Logs darin
+# schreibbar). Ohne Versionsabgleich liefe sonst ein alter installierter Stand
+# weiter, obwohl eine neuere AppImage gestartet wird.
 APP_WORK="${DATA_DIR}/app"
-if [ ! -f "$APP_WORK/app.py" ]; then
-  echo "[AppImage] Erstinstallation: App-Dateien nach ${APP_WORK} kopieren..."
+BUNDLE_VER="$(grep -oE 'APP_VERSION *= *"[^"]+"' "${HERE}/app/config.py" 2>/dev/null \
+              | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
+INSTALLED_VER="$(cat "${APP_WORK}/.app_version" 2>/dev/null || true)"
+if [ ! -f "$APP_WORK/app.py" ] || [ "$BUNDLE_VER" != "$INSTALLED_VER" ]; then
+  echo "[AppImage] App-Code auf ${BUNDLE_VER:-?} setzen (installiert: ${INSTALLED_VER:-keine})..."
   mkdir -p "$APP_WORK"
-  cp -r "${HERE}/app/"* "$APP_WORK/"
+  # Nur Code-Bestandteile frisch aus dem Bundle; Nutzerdaten (config.json, Logs/)
+  # bleiben unangetastet.
+  for _item in app.py config.py strings.py core web sample_data; do
+    rm -rf "${APP_WORK:?}/${_item}"
+    [ -e "${HERE}/app/${_item}" ] && cp -r "${HERE}/app/${_item}" "$APP_WORK/"
+  done
+  # config.json nur beim Erststart aus dem Bundle übernehmen (Nutzer-Einstellungen behalten)
+  [ -f "$APP_WORK/config.json" ] || cp "${HERE}/app/config.json" "$APP_WORK/" 2>/dev/null || true
+  printf '%s\n' "$BUNDLE_VER" > "$APP_WORK/.app_version"
 fi
 
 mkdir -p "$APP_WORK/Logs"
@@ -425,7 +438,18 @@ for i in $(seq 1 40); do
   sleep 0.5
 done
 
-xdg-open "http://127.0.0.1:${PORT}/" 2>/dev/null || true
+# Browser oeffnen: Chrome/Chromium bevorzugen (Default-Browser kann Firefox
+# sein); nur zur Not auf xdg-open zurueckfallen.
+_url="http://127.0.0.1:${PORT}/"
+_opened=""
+for _b in google-chrome google-chrome-stable chromium chromium-browser; do
+  if command -v "$_b" >/dev/null 2>&1; then
+    "$_b" --new-window "$_url" >/dev/null 2>&1 &
+    _opened=1
+    break
+  fi
+done
+[ -n "$_opened" ] || xdg-open "$_url" >/dev/null 2>&1 || true
 
 wait "$SERVER_PID"
 RUNEOF

@@ -1,8 +1,8 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-13, AP-15 (Linux, v0.12.0), **AP-33** (Logging, v0.13.0). Offen hier:
-**AP-12** sowie der **Linux/AppImage-Rest von AP-14**.
+Zuletzt erledigt: AP-15 (Linux, v0.12.0), AP-33 (Logging, v0.13.0), **AP-14** (Linux/AppImage 3.14, v0.14.0).
+Offen hier: **AP-12** (MSSQL real testbar).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
@@ -21,30 +21,6 @@ Zuletzt erledigt: AP-13, AP-15 (Linux, v0.12.0), **AP-33** (Logging, v0.13.0). O
 - [ ] System-ODBC real einrichten (`unixODBC` + `msodbcsql18` Linux; ODBC Driver 18 Windows)
 - [ ] Optionaler Integrationstest gegen lokale MSSQL-Instanz (markiert, überspringbar wenn Treiber fehlt)
 - [ ] UI: MSSQL-Felder für `Encrypt`/`TrustServerCertificate` im Verbindungs-Tab (aktuell nur via API/`config.json` setzbar)
-
-## AP-14 — Python-3.14-Readiness (Wheel-ABI cp312 → cp314)
-**Analyse:** Von 20 Wheels sind 15 plattformunabhängig (`py3-none-any`) und 3.14-tauglich.
-Blockierend waren **5 kompilierte cp312-Wheels** (CPython-3.12-ABI):
-`sqlalchemy 2.0.51` (Core), `greenlet 3.5.2` (transitiv via SQLAlchemy),
-`markupsafe 3.0.3` (transitiv via Jinja2/Werkzeug), `psycopg2-binary 2.9.12` (PostgreSQL),
-`pyodbc 5.3.0` (MSSQL). Auf 3.14 lädt der Interpreter `cp312`-Wheels nicht → `cp314`-Builds nötig.
-
-**Stand 2026-06-26 — Windows-Pfad UMGESETZT & verifiziert:**
-- [x] cp314-win_amd64-Wheels für alle 5 Pakete existieren auf PyPI in **identischer Version** (kein Upgrade nötig) — gezogen & ins Wheelhouse eingespielt; alte cp312 entfernt
-- [x] `run.ps1`-Gate auf 3.14 (Kommentar Z27, Find-Python Z31-33 `@('3.14')`, Fehlermeldung Z42); `run.sh` pick_python um `python3.14` vorangestellt
-- [x] `wheels/README.md` von 3.12 → 3.14 (inkl. `pip download`-Beispiel mit `--abi cp314`)
-- [x] Python 3.14.6 via winget installiert; venv neu gebaut, offline-Install aus wheels/ ✓, `pip check` sauber, alle 5 C-Extensions importieren, **111 Tests grün**, App startet (HTTP 200)
-- [x] **psycopg2-Risiko entschärft:** cp314-Wheel existiert bereits (kein psycopg3-Fallback nötig)
-
-**Wheel-Strategie-Optimierungen — geprüft 2026-06-26:**
-- [x] ~~greenlet weglassen~~ **verworfen:** SQLAlchemy 2.0.51 deklariert greenlet als **harte** Dependency auf AMD64/win (`Requires-Dist: greenlet>=1; platform_machine=="AMD64"…` — nicht nur `asyncio`-Extra), `pip show` listet es als `Requires`. `pip install -r requirements.txt` (run.ps1/run.sh) zieht es daher immer mit; Weglassen ginge nur über `--no-deps` + manuelle Dep-Liste (bricht das Offline-Setup). 240 KB Ersparnis rechtfertigt das nicht.
-- [x] ~~SQLAlchemy als `py3-none-any`~~ **verworfen:** macht nur SQLAlchemy versionsunabhängig; markupsafe/psycopg2/pyodbc/greenlet bleiben cp-spezifisch und binden das Wheelhouse weiter an genau eine Python-Version (die `run.ps1` ohnehin erzwingt) → kein praktischer Gewinn, aber Verlust der C-Speedups. Echte „ein Wheelhouse für alle 3.x"-Unabhängigkeit gäbe es erst mit komplettem Treiberwechsel (pg8000 / python-tds / markupsafe-sdist) = eigenes größeres AP.
-
-**Noch offen:**
-- [ ] Optional: explizite Lock-/Constraints-Datei mit exakten Versionen (Reproduzierbarkeit; requirements.txt hat aktuell nur `>=`-Untergrenzen)
-- [ ] **Linux/AppImage-Pfad auf 3.14:** `run.sh _bundle_python_standalone` bundelt System-Python → auf der Linux-Build-Maschine 3.14 bereitstellen und AppImage gegen 3.14 bauen (Windows-Wheelhouse gilt dort nicht)
-- [ ] Abschluss: `sync_version.py` (Versionsbump) + CHANGELOG + AP nach `todo-erledigt.md` + AP-Diagramm (auf Linux neu bauen)
-- [ ] Betroffen (erledigt): `wheels/`, `wheels/README.md`, `run.ps1`, `run.sh` · (offen): `requirements.txt`, ggf. `core/connection.py`
 
 ## AP-35 — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund aus AP-15)
 **Bezug:** beim Linux-Spiegeln in AP-15 entdeckt — dieselbe latente Schwäche steckt in `run.ps1`.

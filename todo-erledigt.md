@@ -195,6 +195,15 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Test-first: 7 neue Tests in `tests/test_log.py`; **125 Tests grün**. Betroffen: `core/log.py`, `web/__init__.py`, `config.py`
 - [ ] **An AP-31 übergeben:** volle Terminal-Server-Verdrahtung des Pro-Nutzer-Logpfads (z. B. `%LOCALAPPDATA%`) — hier nur der ENV-Hook gebaut
 
+## AP-14 — Python-3.14-Readiness (v0.4.0 Windows · v0.14.0 Linux/AppImage)
+- [x] **Windows (v0.4.0):** alle 5 C-Ext als cp314-win_amd64-Wheels ins Wheelhouse; `run.ps1`/`run.sh` auf 3.14 gegated; 3.14.6 via winget; offline-Setup ✓
+- [x] **Linux/AppImage (v0.14.0):** Python 3.14.6 **user-lokal via `uv`** (kein Root); alle 5 C-Ext als **cp314-manylinux**-Wheels auf PyPI → venv-Neubau rein aus Wheels, **125 Tests grün** auf 3.14
+- [x] **AppImage gegen 3.14 gebaut & verifiziert:** HTTP 200, bundelt 3.14.6 standalone (direkt geprüft); via projekteigenem `run.sh --appimage` (dogfoodt AP-15-Adaptiv-Install)
+- [x] **AppRun-Fix — versions-bewusstes Update:** kopierte App bisher nur beim Erststart → führte stillen Alt-Code aus (real: 0.1.0 statt gebauter Version); jetzt Code-Refresh bei Versionswechsel, Nutzerdaten (`config.json`/`Logs/`) bleiben (`.app_version`-Stamp)
+- [x] **AppRun-Fix — Browser:** öffnet bevorzugt Chrome/Chromium statt `xdg-open`-Default (Firefox)
+- [x] **`run.sh`-Fix:** `re.split(...,1)` → `maxsplit=1` (3.14-DeprecationWarning)
+- [ ] **Optional (offen):** explizite Lock-/Constraints-Datei mit exakten Versionen (requirements.txt hat nur `>=`)
+
 ## AP-23 — Join-Builder-Maske vereinheitlicht (v0.11.0)
 - [x] Alle Dropdowns gleiche Breite (`--jb-ctrl-w: 150px`), alle Steuerelemente gleiche Höhe (`--jb-ctrl-h: 30px`); Start/Ziel/Filter/Sortier-/Spalten-Zeilen fluchten (Einrückung `padding-left`)
 - [x] Alle Aktions-Buttons gleich groß (`min-width: 140px`, einheitliche Höhe/Rand); Zeilen-Löschbuttons (`.f-del`/`.ob-del`/`.c-del`) als einheitliche kleine Quadrate
