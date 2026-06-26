@@ -1,20 +1,212 @@
 {
-  "generatedAt": "2026-06-26T02:49:19",
+  "generatedAt": "2026-06-26T21:32:58",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 18,
+      "commits": 56,
       "kinds": {
-        "docs": 8,
-        "fix": 2,
-        "build": 1,
-        "feat": 6,
+        "other": 2,
+        "docs": 27,
+        "fix": 6,
+        "build": 5,
+        "chore": 2,
+        "feat": 13,
         "style": 1
       },
       "list": [
+        {
+          "sha": "0233835",
+          "subject": "run.sh: AP-15 abbruchsicher+idempotent (Paritaet zu run.ps1); v0.12.0",
+          "kind": "other"
+        },
+        {
+          "sha": "05de9a5",
+          "subject": "docs: Resume-Prompt fuer Linux-Session (AP-15/14/12 + Zensical-Rebuild)",
+          "kind": "docs"
+        },
+        {
+          "sha": "6e3341a",
+          "subject": "docs: AP-34 im Session-4-Handoff-Backlog ergaenzt",
+          "kind": "docs"
+        },
+        {
+          "sha": "8af94e2",
+          "subject": "docs: Backlog AP-34 (Tray-Icon-Launcher: versteckte Konsole, Beenden/Info/Log, Auto-Chrome)",
+          "kind": "docs"
+        },
+        {
+          "sha": "f52571e",
+          "subject": "docs: Session-4-Handoff (2026-06-26 18:45) + Insight PS-5.1-Deployment/dagre",
+          "kind": "docs"
+        },
+        {
+          "sha": "5f596ed",
+          "subject": "docs: AP-31 um vollstaendigen Terminalserver-Massnahmenkatalog (Brainstorm) erweitert",
+          "kind": "docs"
+        },
+        {
+          "sha": "a8e47e5",
+          "subject": "fix: Start-Abbruch unter PowerShell 5.1 behoben + Debug-Schalter (v0.11.3)",
+          "kind": "fix"
+        },
+        {
+          "sha": "75553a8",
+          "subject": "build: run.ps1 wieder ins Release-Paket (unsigniert; Operator signiert nach dem Entpacken)",
+          "kind": "build"
+        },
+        {
+          "sha": "3fe30ef",
+          "subject": "fix: run.ps1 reines ASCII + UTF-8-BOM -> laeuft unter Windows PowerShell 5.1",
+          "kind": "fix"
+        },
+        {
+          "sha": "a3263d6",
+          "subject": "docs: Backlog AP-33 (Logging-Status/Verbesserung) + AP-31 Port-Lebensdauer-Notiz",
+          "kind": "docs"
+        },
+        {
+          "sha": "9e2af8d",
+          "subject": "build: run.ps1 nicht ins Release-Paket (signierter Launcher kommt separat)",
+          "kind": "build"
+        },
+        {
+          "sha": "a1d32c5",
+          "subject": "build: AP-17 Release-Packaging-Skript (sauberes Runtime-ZIP, keine Dev-/KI-Spuren)",
+          "kind": "build"
+        },
+        {
+          "sha": "5b89db0",
+          "subject": "docs: AP-27 Insights-Ort & -Prozess geklaert + Index (docs/insights/README.md)",
+          "kind": "docs"
+        },
+        {
+          "sha": "d6acf53",
+          "subject": "fix: AP-32 Zoom-Slider waagerecht in die Graph-Kopfzeile, ueberlappt Graph nicht mehr (v0.11.2)",
+          "kind": "fix"
+        },
+        {
+          "sha": "564f5d0",
+          "subject": "docs: Backlog AP-31 (Terminal-Server-Tauglichkeit) + AP-32 (Zoom-Slider in Kopfzeile)",
+          "kind": "docs"
+        },
+        {
+          "sha": "6c44396",
+          "subject": "chore: run.ps1 voller Entwickler-Header (comment-based help) + App-Name dynamisch",
+          "kind": "chore"
+        },
+        {
+          "sha": "5a07502",
+          "subject": "fix: AP-28 Join-Builder-Contentbereich scrollt nicht mehr, nur Ergebnistabelle (v0.11.1)",
+          "kind": "fix"
+        },
+        {
+          "sha": "93455a4",
+          "subject": "docs: Backlog AP-28 (UI-Fix Join-Builder-Scroll), AP-29 (SQL-Dialekt), AP-30 (1-N Mehrfach-Ziel)",
+          "kind": "docs"
+        },
+        {
+          "sha": "78544c9",
+          "subject": "docs: AP-18 Multi-Tabellen-Join geprueft (bereits implementiert) + UC-1 dokumentiert",
+          "kind": "docs"
+        },
+        {
+          "sha": "4954be8",
+          "subject": "docs: AP-26 Audit-Sessions — Prozess/Checkliste + erster Audit-Record",
+          "kind": "docs"
+        },
+        {
+          "sha": "9f91101",
+          "subject": "docs: AP-23/AP-16 nach todo-erledigt umgehaengt + Backlog AP-26/AP-27",
+          "kind": "docs"
+        },
+        {
+          "sha": "430c085",
+          "subject": "chore: App-Rename \"Lucent DB Explorer\" -> \"LucentTools DB Explorer\" + Version 0.11.0",
+          "kind": "chore"
+        },
+        {
+          "sha": "f7d2f77",
+          "subject": "feat: AP-23 Join-Builder vereinheitlicht, UI-Politur & AP-16 Graph-Layout (v0.11.0)",
+          "kind": "feat"
+        },
+        {
+          "sha": "985fea8",
+          "subject": "docs: Session-3-Handoff + KPI-Zeile (Sessionwechsel, v0.10.0)",
+          "kind": "docs"
+        },
+        {
+          "sha": "b048464",
+          "subject": "feat: AP-20 Copy-Icon am SELECT + AP-21 Balkenhoehe-Kosmetik (v0.10.0)",
+          "kind": "feat"
+        },
+        {
+          "sha": "1666b74",
+          "subject": "feat: AP-12 (Backend) MSSQL Treiber/Encrypt konfigurierbar + klare Treiber-Fehlermeldung (v0.9.0)",
+          "kind": "feat"
+        },
+        {
+          "sha": "e5b907e",
+          "subject": "feat: AP-15 (Windows) run.ps1 abbruchsicher + idempotent, NO-CDN (v0.8.0)",
+          "kind": "feat"
+        },
+        {
+          "sha": "bb66809",
+          "subject": "feat: AP-13 UI-Politur — Objektsuche, Sidebar-Splitter, Graph-Relayout (v0.7.0)",
+          "kind": "feat"
+        },
+        {
+          "sha": "903a647",
+          "subject": "feat: AP-10 Gespeicherte Verbindungen in der Topbar (v0.6.0)",
+          "kind": "feat"
+        },
+        {
+          "sha": "f583cb3",
+          "subject": "docs: AP-Diagramm-Quelle AP-11 von geplant -> erledigt (v0.5.0)",
+          "kind": "docs"
+        },
+        {
+          "sha": "5215ddc",
+          "subject": "feat: AP-11 Composite Foreign Keys voll unterstuetzt (v0.5.0)",
+          "kind": "feat"
+        },
+        {
+          "sha": "3e17d9a",
+          "subject": "docs: AP-14 Wheel-Optimierungen als geprueft/verworfen dokumentiert",
+          "kind": "docs"
+        },
+        {
+          "sha": "5019294",
+          "subject": "build: Python-3.14-Wheelhouse (cp312 -> cp314), v0.4.0",
+          "kind": "build"
+        },
+        {
+          "sha": "36ff3ca",
+          "subject": "docs: AP-10..AP-15 in todo.md + AP-Diagramm-Quelle (Geplant-Block S4)",
+          "kind": "docs"
+        },
+        {
+          "sha": "fdd01f7",
+          "subject": "docs: Handoff + Insight um Poster-Neugestaltung/-Orientierung ergänzt (§9)",
+          "kind": "docs"
+        },
+        {
+          "sha": "16170e1",
+          "subject": "poster: Layout neu (Architektur + AP-Band oben, Screenshots 4-spaltig, kein Gantt); Assets auf v0.3.1",
+          "kind": "other"
+        },
+        {
+          "sha": "b42996b",
+          "subject": "docs: Session-2-Handoff (Insight + Handoff-Datei + KPI-Zeile)",
+          "kind": "docs"
+        },
+        {
+          "sha": "37b8201",
+          "subject": "docs: AP-Band der Startseite auf Bandhöhe einpassen (kein Scrollen)",
+          "kind": "docs"
+        },
         {
           "sha": "f07a012",
           "subject": "docs: Startseite 2-spaltig (Architektur + AP-Band 3-spaltig); Doku-Version 0.3.1/111 Tests",
@@ -308,29 +500,33 @@
     }
   },
   "stats": {
-    "totalCommits": 55,
+    "totalCommits": 93,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
-        "kind": "feat",
-        "count": 23
+        "kind": "docs",
+        "count": 36
       },
       {
-        "kind": "docs",
-        "count": 17
+        "kind": "feat",
+        "count": 30
       },
       {
         "kind": "fix",
-        "count": 7
-      },
-      {
-        "kind": "chore",
-        "count": 3
+        "count": 11
       },
       {
         "kind": "build",
-        "count": 1
+        "count": 5
+      },
+      {
+        "kind": "chore",
+        "count": 5
+      },
+      {
+        "kind": "other",
+        "count": 3
       },
       {
         "kind": "style",
@@ -339,13 +535,9 @@
       {
         "kind": "test",
         "count": 1
-      },
-      {
-        "kind": "other",
-        "count": 1
       }
     ],
-    "testCount": 109
+    "testCount": 116
   },
   "phases": []
 }

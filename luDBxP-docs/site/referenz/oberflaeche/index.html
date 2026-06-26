@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.3.1">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.12.0">
       
       
         <meta name="author" content="LucentTools">
@@ -27,7 +27,7 @@
     
     
       
-        <title>Oberfläche - Lucent DB Explorer</title>
+        <title>Oberfläche - LucentTools DB Explorer</title>
       
     
     
@@ -95,7 +95,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
-    <a href="../.." title="Lucent DB Explorer" class="md-header__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-header__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
@@ -109,7 +109,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Lucent DB Explorer
+            LucentTools DB Explorer
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -194,13 +194,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Lucent DB Explorer" class="md-nav__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-nav__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
 
     </a>
-    Lucent DB Explorer
+    LucentTools DB Explorer
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -993,11 +993,16 @@
 <hr />
 <h2 id="startscreen-vor-der-verbindung">Startscreen — vor der Verbindung<a class="headerlink" href="#startscreen-vor-der-verbindung" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_01_luDBxP.jpg"
-     alt="Startscreen: Lucent DB Explorer vor dem Verbinden. Verbindungsfeld in der Topbar, leerer Objekt-Browser links, leerer Schema-Graph rechts."></p>
+     alt="Startscreen: LucentTools DB Explorer vor dem Verbinden. Verbindungsfeld in der Topbar, leerer Objekt-Browser links, leerer Schema-Graph rechts."></p>
 <p>Der Startscreen zeigt das 3-Panel-Grundgerüst: Topbar mit Verbindungsfeld und
 „Verbinden"-Button, leerer Objekt-Browser links (TABELLEN 0 / VIEWS 0), leeres
 Graph-Panel rechts. Das Verbindungsfeld ist mit dem Demo-Datenbankpfad
 <code>sqlite:///sample_data/demo_cmdb.db</code> vorbelegt.</p>
+<p>Direkt daneben liegt ein <strong>Dropdown für gespeicherte Verbindungen</strong> (SQL-Developer-typisch):
+Eine Auswahl daraus verbindet sofort mit der gewählten Verbindung. Das Dropdown
+ist mit dem Verbindungs-Tab synchronisiert (gleiche Liste, gespiegelte Auswahl);
+passwortlose Verbindungen (SQLite oder Server ohne Authentifizierung) verbinden
+direkt, sonst öffnet sich der Verbindungs-Tab vorbefüllt zum Ergänzen des Passworts.</p>
 <hr />
 <h2 id="3-panel-layout-nach-dem-verbinden">3-Panel-Layout nach dem Verbinden<a class="headerlink" href="#3-panel-layout-nach-dem-verbinden" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_02_luDBxP.jpg"
@@ -1006,6 +1011,11 @@ Graph-Panel rechts. Das Verbindungsfeld ist mit dem Demo-Datenbankpfad
 Schema-Graph gleichzeitig. Der Join-Builder-Tab ist standardmäßig aktiv.
 Der Graph zeigt alle Tabellen als Knoten und die Foreign-Key-Beziehungen als
 gerichtete Kanten.</p>
+<p>Ein <strong>Suchfeld</strong> über dem Objekt-Browser filtert die Tabellen-/View-Listen live
+nach Namen. Die <strong>Sidebar-Breite</strong> ist über einen linken Splitter per Drag
+verschiebbar (analog zum Graph-Splitter). Der Button <strong>„Neu anordnen"</strong> im
+Graph-Kopf würfelt das Layout neu; bei dichten Schemas vergrößern sich die
+Knotenabstände automatisch, damit sich Knoten weniger überlappen.</p>
 <hr />
 <h2 id="tabellen-detail-sub-tabs">Tabellen-Detail — Sub-Tabs<a class="headerlink" href="#tabellen-detail-sub-tabs" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_03_luDBxP.jpg"

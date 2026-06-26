@@ -8,7 +8,30 @@
 
 ## Offene Arbeitspakete
 
-_Aktuell keine offenen Arbeitspakete_ (`todo.md` ist leer).
+- **AP-12** — MSSQL real testbar machen (Backend ✓ in v0.9.0; offen: System-ODBC
+  real einrichten, optionaler Integrationstest gegen MSSQL-Instanz, UI-Felder für
+  `Encrypt`/`TrustServerCertificate`)
+- **AP-14** — Python-3.14-Readiness: Linux/AppImage-Rest (Windows-Wheelhouse ✓;
+  offen: 3.14 auf der Linux-Build-Maschine, AppImage gegen 3.14, optionale
+  Lock-/Constraints-Datei)
+- **AP-17** — Delivery-Verzeichnis bereinigen (nur Betriebsnotwendiges; keine
+  KI-/Entwickler-Spuren im Delivery)
+- **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
+  zusammenführen
+- **AP-22** (Frage) — Implizite FKs standardmäßig aktivieren? (mehr Join-Pfade vs.
+  falsch-positive Beziehungen)
+- **AP-24** (Frage) — Session-KPIs erheben & in die Doku aufnehmen?
+- **AP-25** — Tool: SQL-Statement-Analyzer (read-only Analyse beliebiger Statements,
+  ohne Ausführung; Tabellen/Join-Pfad markieren)
+- **AP-29** — SQL-Dialekt umschalten (Oracle/MSSQL/PostgreSQL/MySQL/SQLite;
+  LIMIT/TOP/FETCH + Identifier-Quoting)
+- **AP-30** (Frage) — 1-N: ein Start, mehrere Zieltabellen in einem SELECT?
+- **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
+  Pro-Nutzer-`config.json`/`Logs/`, WSGI-Server)
+- **AP-33** — Logging: Abdeckung, Rotation, konfigurierbares Level, Pro-Nutzer-Pfad
+- **AP-34** — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)
+- **AP-35** — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund
+  aus AP-15; Fix wie in `run.sh`, signiertes Skript → eigene Windows-Session)
 
 ---
 
@@ -30,6 +53,26 @@ Doku/AppImage/Projektposter.
 - **AP-7** — Feiner Graph-Zoom + Zoom-Slider mit %-Anzeige — v0.3.0
 - **AP-8** — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0
 - **AP-9** — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1
+
+**v0.4.0 – v0.12.0** (2026-06-26):
+
+- **AP-14** — Python-3.14-Readiness, Windows-Pfad (Wheelhouse cp312 → cp314) — v0.4.0
+- **AP-11** — Composite Foreign Keys voll unterstützt (`ON … AND …`) — v0.5.0
+- **AP-10** — Gespeicherte Verbindungen in der Topbar (Dropdown + Direkt-Connect) — v0.6.0
+- **AP-13** — UI-Politur (Suchfeld · linker Splitter · „Neu anordnen") — v0.7.0
+- **AP-15** (Teil 1, Windows) — `run.ps1` abbruchsicher + idempotent — v0.8.0
+- **AP-12** — MSSQL: ODBC Driver 18 + Encrypt/Trust, klare Treiber-Fehlermeldung (Backend) — v0.9.0
+- **AP-20** — Copy-Icon am generierten SELECT — v0.10.0
+- **AP-21** — Kosmetik: gleiche Höhe Schema-Graph-Balken & Tab-Linie — v0.10.0
+- **AP-16** — Graph entzerren: dagre (Sugiyama), minimale Linienkreuzungen — v0.11.0
+- **AP-18** — Verknüpfen mehrerer Tabellen (Status geprüft: voll implementiert) — v0.11.0
+- **AP-23** — Join-Builder-Maske vereinheitlicht — v0.11.0
+- **AP-26** — Audit-Sessions: Prozess + Checkliste — v0.11.0
+- **AP-28** — Fix: Join-Builder-Contentbereich scrollt nicht mehr — v0.11.1
+- **Server-Deployment-Fixes** (PowerShell 5.1: ASCII+BOM, Start-Abbruch, Debug) — v0.11.1–v0.11.3
+- **AP-32** — Zoom-%-Slider waagerecht in die Graph-Kopfzeile — v0.11.2
+- **AP-27** — Insights: Ort & Einbindung geklärt — v0.11.2
+- **AP-15** (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent — v0.12.0
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:
 [Changelog](../entwicklung/changelog.md).

@@ -1,5 +1,145 @@
 # Changelog
 
+## [0.12.0] — 2026-06-26
+
+### Geändert
+
+- **AP-15 (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent (Parität zu
+  `run.ps1`):** Der Linux-Launcher heilt sich nach abgebrochenen Läufen selbst.
+  Jeder Schritt prüft seine Vorbedingungen und meldet seinen Status
+  (`_ok`/`_warn`/`_info`/`_hdr`/`_fail`):
+  - **venv-Integrität statt nur Existenz** (`venv_healthy`: `python -c import sys`);
+    ein halbes/kaputtes venv wird automatisch neu gebaut.
+  - **Echter Paket-Vollständigkeits-Check:** `pip check` **plus** Vorhandensein
+    jeder in `requirements.txt` gelisteten Distribution (`importlib.metadata`) —
+    fängt sowohl abgebrochene Installs als auch ein frisch gebautes, leeres venv.
+  - **Atomarer Stamp:** `.req_stamp` wird erst **nach** erfolgreichem Install
+    geschrieben; ein abgebrochener Install wiederholt sich beim nächsten Lauf.
+  - **Port-/Instanz-Check** vor App-Start (5057 belegt via `ss`/`lsof` → klare
+    Abbruch-Meldung statt Crash).
+  - **Robustes Menü:** ein fehlgeschlagener Schritt beendet das Menü nicht mehr
+    (Subshell-Isolierung, bash-Pendant zum try/catch).
+  - **Exit-Codes nicht mehr verschluckt:** das `|| true` in `do_start`/
+    `do_skip_setup` entfernt; der App-Exit-Code wird sauber durchgereicht.
+  - **`--debug`-Flag** (Pendant zu `run.ps1 -DebugMode`, setzt `LUCENT_DEBUG=1`).
+- **AP-15 / NO-CDN auf Linux (adaptiv):** Installation versucht zuerst **strikt
+  offline** aus `wheels/` (`--no-index`-Dry-Run-Probe, kein Netz). Deckt das
+  Wheelhouse die Plattform ab → Offline-Install; sonst — z. B. die gebundelten
+  `win_amd64`/cp314-Wheels auf Linux — **lauter** Fallback auf Online-pip (kein
+  stilles Nachladen). Schaltet automatisch auf offline, sobald ein passendes
+  Linux-Wheelhouse vorliegt.
+
+### Behoben
+
+- **Leeres venv galt fälschlich als „vollständig":** `pip check` allein ist auf
+  einem frisch gebauten, paketleeren venv vacuously grün — in Kombination mit
+  einem noch passenden `.req_stamp` wäre der Install übersprungen worden (App
+  hätte beim Import gecrasht). Der Vollständigkeits-Check prüft jetzt zusätzlich
+  das tatsächliche Vorhandensein der Requirements. **Hinweis:** dieselbe latente
+  Schwäche steckt in `run.ps1` (Windows) — dort zur Behebung vorgemerkt (Skript
+  ist signiert, separate Session).
+
+## [0.10.0] — 2026-06-26
+
+### Hinzugefügt
+
+- **AP-20 — Copy-Icon am SELECT:** In der oberen rechten Ecke des generierten
+  SELECT sitzt ein Copy-Icon; ein Klick kopiert das SQL in die Zwischenablage
+  (`navigator.clipboard`) mit kurzem „kopiert"-Feedback.
+
+### Behoben
+
+- **AP-21 — Kosmetik:** Der „Schema-Graph"-Balken (`.panelhead`) und die Tab-Linie
+  (`.tabbar`) haben jetzt exakt dieselbe Höhe (gemeinsame `min-height` +
+  `box-sizing`), vorher war der Graph-Balken minimal höher.
+
+## [0.9.0] — 2026-06-26
+
+### Geändert
+
+- **AP-12 (Backend) — MS SQL Server: ODBC-Treiber & Verschlüsselung
+  konfigurierbar, klare Treiber-Fehlermeldung:** `build_url` nutzt jetzt
+  standardmäßig den aktuellen **ODBC Driver 18 for SQL Server** (überschreibbar
+  per `driver`) und unterstützt optionale `Encrypt`/`TrustServerCertificate`-
+  Parameter — nichts Unsicheres wird per Default angenommen. Fehlt der ODBC-
+  Treiber, meldet die App das klar (AP-2-Stil) statt einer rohen pyodbc-Exception
+  (`_odbc_driver_hint`: IM002 / „no default driver" / „Can't open lib"). Installations-
+  Doku ergänzt. 118 Tests grün. (Realer Integrationstest gegen eine MSSQL-Instanz
+  und UI-Felder für Encrypt/Trust folgen separat.)
+
+## [0.8.0] — 2026-06-26
+
+### Geändert
+
+- **AP-15 (Teil 1, Windows) — `run.ps1` abbruchsicher + idempotent:** Der
+  Windows-Launcher heilt sich nach abgebrochenen Läufen selbst. Jeder Schritt
+  prüft seine Vorbedingungen (Python, venv-Integrität per Funktionstest,
+  Paket-Vollständigkeit per `pip check`, freier Port) und zieht nur Fehlendes
+  nach; der Requirements-Stamp wird erst nach erfolgreichem Install geschrieben
+  (atomar). **NO-CDN / nur lokale Sourcen:** Installation strikt `--no-index`
+  aus `wheels\` mit `--dry-run`-Vorabprüfung — fehlt ein Wheel, steigt das Setup
+  mit Protokoll (welche Pakete fehlen) aus, **ohne etwas zu installieren oder
+  online nachzuladen**. Neu außerdem: durchgängige Status-Ausgaben, Port-Check
+  vor App-Start (5057 belegt → klare Meldung) und ein gegen Einzelfehler robustes
+  Menü. Verifiziert: idempotenter Lauf, fehlender Stamp, fehlendes Wheel, belegter
+  Port. (`run.sh`/Linux-Parität folgt separat.)
+
+## [0.7.0] — 2026-06-26
+
+### Hinzugefügt
+
+- **AP-13 — UI-Politur:** Drei Verbesserungen in Objekt-Browser und Graph-Panel:
+  (1) **Suchfeld** über dem Objekt-Browser filtert die Tabellen-/View-Listen live
+  nach Namen; (2) **linker Splitter** macht die Sidebar-Breite per Drag verschiebbar
+  (analog zum Graph-Splitter, via `--sidebar-width`); (3) **„Neu anordnen"-Button**
+  im Graph-Panel würfelt das cose-Layout neu, dessen Abstände jetzt für dichte
+  Schemas (> 12 Knoten) hochskalieren, damit Knoten weniger überlappen. Reines
+  Frontend (`index.html`/`app.js`/`app.css`). Im Browser verifiziert (Playwright);
+  115 Tests grün.
+
+## [0.6.0] — 2026-06-26
+
+### Hinzugefügt
+
+- **AP-10 — Gespeicherte Verbindungen in der Topbar:** Neues Dropdown in der
+  Topbar (neben „Verbinden") listet die in `config.json` gespeicherten
+  Verbindungen; eine Auswahl verbindet sofort — passwortlose Verbindungen
+  (SQLite oder Server ohne Auth) direkt, sonst öffnet sich der Verbindungs-Tab
+  vorbefüllt zum Ergänzen des Passworts. Beide Verbindungs-Picker (Topbar +
+  Verbindungs-Tab) teilen dieselbe Liste und spiegeln die Auswahl. Ein
+  Verbindungswechsel setzt den UI-Zustand zurück (Detail-Tabs schließen,
+  Graph-Highlight/UML-Karten leeren, Schema neu laden). Reines Frontend
+  (`index.html`/`app.js`/`app.css`); die `/api/connections`-API blieb unverändert.
+  Im Browser verifiziert (Playwright/Chromium); 114 Tests grün.
+
+## [0.5.0] — 2026-06-26
+
+### Geändert
+
+- **AP-11 — Composite Foreign Keys voll unterstützt:** Mehrspaltige FKs werden
+  nicht mehr nur auf dem ersten Spaltenpaar gejoint. Ein FK trägt jetzt alle
+  `(lokal, referenziert)`-Spaltenpaare (`ForeignKey.column_pairs`, mit Properties
+  `columns`/`ref_columns`/`is_composite`); der Join-Pfad-Generator emittiert
+  `JOIN … ON a.x = b.x AND a.y = b.y`. Zwei **separate** einspaltige FKs zwischen
+  denselben Tabellen bleiben weiterhin alternative Join-Wege (nicht mit AND
+  verschmolzen). Betroffen: Loader, FK-Graph (`JoinEdge`), Pathfinder
+  (`JoinStep.column_pairs`), SQL-Generator, DDL-Ansicht und `/api/schema`
+  (FKs jetzt als `columns`/`ref_columns`-Listen, Frontend angepasst). 112 Tests grün.
+
+## [0.4.0] — 2026-06-26
+
+### Geändert
+
+- **AP-14 — Python-3.14-Readiness (Windows):** Das Offline-Wheelhouse (`wheels/`)
+  wurde von der CPython-3.12- auf die **3.14-ABI** umgestellt. Die fünf
+  kompilierten Wheels (SQLAlchemy, psycopg2-binary, pyodbc, greenlet, MarkupSafe)
+  liegen jetzt als `cp314-win_amd64` vor — identische Paketversionen, nur neuer
+  ABI-Tag; die `py3-none-any`-Wheels bleiben versionsunabhängig. Die Launcher
+  `run.ps1` (Offline-Gate) und `run.sh` (Präferenzreihenfolge) verlangen bzw.
+  bevorzugen jetzt Python 3.14; `wheels/README.md` entsprechend aktualisiert.
+  Verifiziert: venv mit Python 3.14.6, Offline-Setup aus `wheels/`, `pip check`
+  sauber, alle **111 Tests grün**, App startet (HTTP 200).
+
 ## [0.3.1] — 2026-06-26
 
 ### Geändert

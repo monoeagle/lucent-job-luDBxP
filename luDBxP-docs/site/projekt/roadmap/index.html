@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.3.1">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.12.0">
       
       
         <meta name="author" content="LucentTools">
@@ -25,7 +25,7 @@
     
     
       
-        <title>Roadmap - Lucent DB Explorer</title>
+        <title>Roadmap - LucentTools DB Explorer</title>
       
     
     
@@ -93,7 +93,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
-    <a href="../.." title="Lucent DB Explorer" class="md-header__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-header__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
@@ -107,7 +107,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Lucent DB Explorer
+            LucentTools DB Explorer
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -192,13 +192,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Lucent DB Explorer" class="md-nav__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-nav__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
 
     </a>
-    Lucent DB Explorer
+    LucentTools DB Explorer
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -902,7 +902,32 @@
 <p><img src="../../images/mermaid/projekt-roadmap-1.svg" alt="Arbeitspaket-Roadmap (Gantt)"></p>
 <hr />
 <h2 id="offene-arbeitspakete">Offene Arbeitspakete<a class="headerlink" href="#offene-arbeitspakete" title="Permanent link">&para;</a></h2>
-<p><em>Aktuell keine offenen Arbeitspakete</em> (<code>todo.md</code> ist leer).</p>
+<ul>
+<li><strong>AP-12</strong> — MSSQL real testbar machen (Backend ✓ in v0.9.0; offen: System-ODBC
+  real einrichten, optionaler Integrationstest gegen MSSQL-Instanz, UI-Felder für
+  <code>Encrypt</code>/<code>TrustServerCertificate</code>)</li>
+<li><strong>AP-14</strong> — Python-3.14-Readiness: Linux/AppImage-Rest (Windows-Wheelhouse ✓;
+  offen: 3.14 auf der Linux-Build-Maschine, AppImage gegen 3.14, optionale
+  Lock-/Constraints-Datei)</li>
+<li><strong>AP-17</strong> — Delivery-Verzeichnis bereinigen (nur Betriebsnotwendiges; keine
+  KI-/Entwickler-Spuren im Delivery)</li>
+<li><strong>AP-19</strong> — <code>.pattern_transfer</code>: projektlokale Pattern sammeln und global
+  zusammenführen</li>
+<li><strong>AP-22</strong> (Frage) — Implizite FKs standardmäßig aktivieren? (mehr Join-Pfade vs.
+  falsch-positive Beziehungen)</li>
+<li><strong>AP-24</strong> (Frage) — Session-KPIs erheben &amp; in die Doku aufnehmen?</li>
+<li><strong>AP-25</strong> — Tool: SQL-Statement-Analyzer (read-only Analyse beliebiger Statements,
+  ohne Ausführung; Tabellen/Join-Pfad markieren)</li>
+<li><strong>AP-29</strong> — SQL-Dialekt umschalten (Oracle/MSSQL/PostgreSQL/MySQL/SQLite;
+  LIMIT/TOP/FETCH + Identifier-Quoting)</li>
+<li><strong>AP-30</strong> (Frage) — 1-N: ein Start, mehrere Zieltabellen in einem SELECT?</li>
+<li><strong>AP-31</strong> — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
+  Pro-Nutzer-<code>config.json</code>/<code>Logs/</code>, WSGI-Server)</li>
+<li><strong>AP-33</strong> — Logging: Abdeckung, Rotation, konfigurierbares Level, Pro-Nutzer-Pfad</li>
+<li><strong>AP-34</strong> — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)</li>
+<li><strong>AP-35</strong> — <code>run.ps1</code>: leeres venv gilt fälschlich als „vollständig" (Folgefund
+  aus AP-15; Fix wie in <code>run.sh</code>, signiertes Skript → eigene Windows-Session)</li>
+</ul>
 <hr />
 <h2 id="erledigte-arbeitspakete">Erledigte Arbeitspakete<a class="headerlink" href="#erledigte-arbeitspakete" title="Permanent link">&para;</a></h2>
 <p><strong>v0.1.0</strong> (2026-06-25): Core-Domänenmodell, Loader, FK-Graph, Pathfinder,
@@ -920,6 +945,26 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-7</strong> — Feiner Graph-Zoom + Zoom-Slider mit %-Anzeige — v0.3.0</li>
 <li><strong>AP-8</strong> — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0</li>
 <li><strong>AP-9</strong> — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1</li>
+</ul>
+<p><strong>v0.4.0 – v0.12.0</strong> (2026-06-26):</p>
+<ul>
+<li><strong>AP-14</strong> — Python-3.14-Readiness, Windows-Pfad (Wheelhouse cp312 → cp314) — v0.4.0</li>
+<li><strong>AP-11</strong> — Composite Foreign Keys voll unterstützt (<code>ON … AND …</code>) — v0.5.0</li>
+<li><strong>AP-10</strong> — Gespeicherte Verbindungen in der Topbar (Dropdown + Direkt-Connect) — v0.6.0</li>
+<li><strong>AP-13</strong> — UI-Politur (Suchfeld · linker Splitter · „Neu anordnen") — v0.7.0</li>
+<li><strong>AP-15</strong> (Teil 1, Windows) — <code>run.ps1</code> abbruchsicher + idempotent — v0.8.0</li>
+<li><strong>AP-12</strong> — MSSQL: ODBC Driver 18 + Encrypt/Trust, klare Treiber-Fehlermeldung (Backend) — v0.9.0</li>
+<li><strong>AP-20</strong> — Copy-Icon am generierten SELECT — v0.10.0</li>
+<li><strong>AP-21</strong> — Kosmetik: gleiche Höhe Schema-Graph-Balken &amp; Tab-Linie — v0.10.0</li>
+<li><strong>AP-16</strong> — Graph entzerren: dagre (Sugiyama), minimale Linienkreuzungen — v0.11.0</li>
+<li><strong>AP-18</strong> — Verknüpfen mehrerer Tabellen (Status geprüft: voll implementiert) — v0.11.0</li>
+<li><strong>AP-23</strong> — Join-Builder-Maske vereinheitlicht — v0.11.0</li>
+<li><strong>AP-26</strong> — Audit-Sessions: Prozess + Checkliste — v0.11.0</li>
+<li><strong>AP-28</strong> — Fix: Join-Builder-Contentbereich scrollt nicht mehr — v0.11.1</li>
+<li><strong>Server-Deployment-Fixes</strong> (PowerShell 5.1: ASCII+BOM, Start-Abbruch, Debug) — v0.11.1–v0.11.3</li>
+<li><strong>AP-32</strong> — Zoom-%-Slider waagerecht in die Graph-Kopfzeile — v0.11.2</li>
+<li><strong>AP-27</strong> — Insights: Ort &amp; Einbindung geklärt — v0.11.2</li>
+<li><strong>AP-15</strong> (Teil 2, Linux) — <code>run.sh</code> abbruchsicher + idempotent — v0.12.0</li>
 </ul>
 <p>Vollständige Liste in <code>todo-erledigt.md</code>; detaillierter Stand:
 <a href="../../entwicklung/changelog/">Changelog</a>.</p>

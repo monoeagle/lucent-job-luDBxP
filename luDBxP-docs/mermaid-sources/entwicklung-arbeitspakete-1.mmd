@@ -29,7 +29,7 @@ flowchart LR
         D9 ~~~ D10 ~~~ D11 ~~~ D12 ~~~ D13 ~~~ D14 ~~~ D15 ~~~ D16
     end
 
-    subgraph S3["✅  Features · v0.2.0–v0.5.0"]
+    subgraph S3["✅  Features · v0.2.0–v0.10.0"]
         direction TB
         D17["AP-4\nMehrere SELECT-Spalten"]
         D18["AP-3\nSQL-Optionen-Paket\nDISTINCT · ORDER BY · LIMIT · IN"]
@@ -46,16 +46,41 @@ flowchart LR
         D17 ~~~ D18 ~~~ D19 ~~~ D20 ~~~ D21 ~~~ D22 ~~~ D23 ~~~ D24 ~~~ D25 ~~~ D26 ~~~ D27 ~~~ D28
     end
 
-    subgraph S4["🗓️  Geplant — offene APs"]
+    subgraph S4["✅  Stabilisierung · v0.11.0–v0.12.0"]
         direction TB
-        P12["AP-12\nMSSQL Treiber/Encrypt + Fehler\nBackend ✓ · realer Test offen"]
-        P14["AP-14\nPython-3.14-Readiness\ncp314-Wheelhouse (Windows ✓)"]
-        P15["AP-15\nabbruchsicher + idempotent\nrun.ps1 ✓ · run.sh (Linux) offen"]
-        P12 ~~~ P14 ~~~ P15
+        E1["AP-16 · v0.11.0\nGraph dagre (Sugiyama)\nminimale Kreuzungen"]
+        E2["AP-18 · v0.11.0\nMulti-Tabellen-Join\n(Status: voll implementiert)"]
+        E3["AP-23 · v0.11.0\nJoin-Builder-Maske\nvereinheitlicht"]
+        E4["AP-26 · v0.11.0\nAudit-Prozess + Checkliste"]
+        E5["AP-28 · v0.11.1\nJoin-Builder scrollt nicht mehr"]
+        E6["Server-Deployment-Fixes\nv0.11.1–v0.11.3\nPowerShell 5.1 (ASCII+BOM)"]
+        E7["AP-32 · v0.11.2\nZoom-Slider in Kopfzeile"]
+        E8["AP-27 · v0.11.2\nInsights: Ort & Einbindung"]
+        E9["AP-15 · v0.12.0\nrun.sh abbruchsicher + idempotent"]
+        E1 ~~~ E2 ~~~ E3 ~~~ E4 ~~~ E5 ~~~ E6 ~~~ E7 ~~~ E8 ~~~ E9
+    end
+
+    subgraph S5["🗓️  Geplant — offene APs"]
+        direction TB
+        P12["AP-12\nMSSQL real testbar\nBackend ✓ · realer Test offen"]
+        P14["AP-14\nPython-3.14: Linux/AppImage-Rest"]
+        P17["AP-17\nDelivery-Verzeichnis bereinigen"]
+        P19["AP-19\n.pattern_transfer sammeln"]
+        P22["AP-22\nImplizite FKs default aktivieren?"]
+        P24["AP-24\nSession-KPIs erheben & dokumentieren?"]
+        P25["AP-25\nSQL-Statement-Analyzer (read-only)"]
+        P29["AP-29\nSQL-Dialekt umschalten"]
+        P30["AP-30\n1-N: mehrere Zieltabellen?"]
+        P31["AP-31\nTerminal-Server (Multi-User)"]
+        P33["AP-33\nLogging sauber machen"]
+        P34["AP-34\nTray-Icon-Launcher"]
+        P35["AP-35\nrun.ps1: leeres venv gilt als vollständig"]
+        P12 ~~~ P14 ~~~ P17 ~~~ P19 ~~~ P22 ~~~ P24 ~~~ P25 ~~~ P29 ~~~ P30 ~~~ P31 ~~~ P33 ~~~ P34 ~~~ P35
     end
 
     %% Subgraphs nebeneinander erzwingen (sonst stapelt dagre sie vertikal)
-    S1 ~~~ S2 ~~~ S3 ~~~ S4
+    S1 ~~~ S2 ~~~ S3 ~~~ S4 ~~~ S5
 
     class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28 done
-    class P12,P14,P15 plan
+    class E1,E2,E3,E4,E5,E6,E7,E8,E9 done
+    class P12,P14,P17,P19,P22,P24,P25,P29,P30,P31,P33,P34,P35 plan
