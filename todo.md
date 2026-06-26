@@ -104,15 +104,6 @@ passt zur Projekt-Grundausrichtung). Ziel: einschätzen, was ein Statement täte
 - [ ] Technik prüfen: SQL-Parser (z. B. `sqlglot`/`sqlparse`) lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
 - [ ] Betroffen: neue `core/`-Analyse (Parser), `web/routes.py` (read-only Analyse-Endpoint), `web/static/js/app.js`, `index.html`
 
-## AP-27 — Insights + Dokumentation: Ort & Einbindung klären
-**Ziel:** Festlegen, wo Insights leben, wie sie gepflegt werden und wie sie sich zur
-veröffentlichten Doku verhalten.
-- [ ] Bestandsaufnahme: `docs/insights/` existiert bereits (2 Dateien) — Format/Namensschema (datiert) bestätigen oder vereinheitlichen
-- [ ] **Doku-Ort (Vorschlag):** Insights bleiben **entwicklerintern** in `docs/insights/` (wie `handoffs/`), **nicht** in `luDBxP-docs/` (öffentliche Site), da sie KI-/Prozessspuren enthalten (AP-17)
-- [ ] Klären: brauchen Insights einen **Index** (z. B. `docs/insights/README.md`) für Auffindbarkeit?
-- [ ] Abgrenzung definieren: was ist ein *Insight* (interne Erkenntnis/Reflexion) vs. was gehört in die **öffentliche** Doku (`referenz/`, `entwicklung/`) als Endnutzer-/Entwicklerwissen
-- [ ] Optional: aus reifen Insights neutralisierte Inhalte in die Zensical-Site überführen (ohne KI-Bezug)
-
 ## AP-29 — SQL-Dialekt umschalten (Oracle, MSSQL, PostgreSQL, MySQL, SQLite)
 **Frage/Recherche:** Gibt es syntaktische und elementare Unterschiede im generierten
 read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?

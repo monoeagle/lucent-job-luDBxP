@@ -222,3 +222,11 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] `app.js` unverändert nötig (Slider-IDs/Logik gleich); Kopfzeilen-Höhe bleibt 34px (AP-21 unberührt)
 - [x] Verifiziert (Playwright): Slider in Kopfzeile, links vom Button, **keine** Graph-Überlappung; Zoom funktioniert (Slider 250 → CY-Zoom 250%); 118 Tests grün
 - [x] Betroffen: `web/templates/index.html`, `web/static/css/app.css`
+
+## AP-27 — Insights: Ort & Einbindung geklärt (v0.11.2)
+- [x] **Bestandsaufnahme:** vorhandene 2 Insights folgen bereits einheitlichem Schema (`YYYY-MM-DD-<slug>.md`, Überschrift `# Insight YYYY-MM-DD — <Titel> (Session N)`, nummerierte Erkenntnisse) — bestätigt, keine Vereinheitlichung nötig
+- [x] **Doku-Ort entschieden:** Insights bleiben entwicklerintern in `docs/insights/` (neben `handoffs/`, `audits/`), **nicht** im Delivery (AP-17) und **nicht** auf der öffentlichen Zensical-Site
+- [x] **Index + Prozess** angelegt: `docs/insights/README.md` (Zweck, Konvention/Namensschema, Wann-schreiben, Index der Insights)
+- [x] **Abgrenzung definiert** (Tabelle in README): Insight = *Warum*/Erkenntnis/Entscheidung (intern, Prozess-/KI-Bezug erlaubt) vs. öffentliche Doku = *Was*/*Wie benutze ich es* (`referenz/`/`grundlagen/`/`entwicklung/`, nie Prozess/KI)
+- [x] **Überführung dokumentiert:** reife Insights können *neutralisiert* (ohne KI-Bezug) in die Site wandern; Original bleibt intern
+- [x] Betroffen: `docs/insights/README.md` (neu)
