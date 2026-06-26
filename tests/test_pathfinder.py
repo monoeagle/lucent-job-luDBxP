@@ -29,7 +29,7 @@ def test_determinism(graph):
     assert [p.tables for p in a] == [p.tables for p in b]
 
 
-def test_filter_table_is_woven_in(graph):
+def test_required_table_is_woven_in(graph):
     # Start/target on the Networks<->Cluster axis, filter forces OperatingSystems in
     paths = find_paths(graph, "Networks", "VMwareCluster",
                        required_tables=("OperatingSystems",))
@@ -45,7 +45,7 @@ def test_no_path_raises():
         find_paths(g, "A", "B")
 
 
-def test_filter_weave_has_no_duplicate_tables(graph):
+def test_required_table_weave_has_no_duplicate_tables(graph):
     paths = find_paths(graph, "Networks", "VMwareCluster",
                        required_tables=("OperatingSystems",))
     p = paths[0]
@@ -69,7 +69,7 @@ def test_enumeration_cap_respected(graph):
 
 
 def test_step_to_one_when_ascending(graph):
-    # VirtualMachines hält den FK auf Networks → VM->Networks ist child->parent (N-1)
+    # VirtualMachines holds the FK to Networks → VM->Networks is child->parent (N-1)
     paths = find_paths(graph, "VirtualMachines", "Networks")
     step = paths[0].steps[0]
     assert step.left_table == "VirtualMachines" and step.right_table == "Networks"
@@ -77,7 +77,7 @@ def test_step_to_one_when_ascending(graph):
 
 
 def test_step_to_many_when_descending(graph):
-    # Networks->VirtualMachines steigt ab (ein Network, viele VMs) → Fan-out
+    # Networks->VirtualMachines descends (one Network, many VMs) → fan-out
     paths = find_paths(graph, "Networks", "VirtualMachines")
     step = paths[0].steps[0]
     assert step.left_table == "Networks" and step.right_table == "VirtualMachines"

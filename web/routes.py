@@ -313,6 +313,12 @@ def _make_path_gen(p, start: dict, target: dict,
             seen.add(key)
             selects_for_path.append(sel)
 
+    # AP-30 invariant: find_paths wove every referenced table into p, so each
+    # extra-select column resolves to a joined table. Guard against a future
+    # caller that forgets to pass required_tables (would emit invalid SQL).
+    assert all(sel.table in set(p.tables) for sel in extra_selections), \
+        "extra-select table missing from join path (required_tables not woven?)"
+
     # AP-30: every referenced table is now woven into the path, so order_by is
     # passed through unfiltered (no silent drop).
     order_by_for_path = tuple(order_by_validated)
