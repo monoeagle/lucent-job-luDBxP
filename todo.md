@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-9, AP-11, AP-10, AP-13, **AP-15** (Linux, v0.12.0). Offen hier:
+Zuletzt erledigt: AP-13, AP-15 (Linux, v0.12.0), **AP-33** (Logging, v0.13.0). Offen hier:
 **AP-12** sowie der **Linux/AppImage-Rest von AP-14**.
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
@@ -111,7 +111,7 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 **Befund — Single-User pro Maschine: ja; gleichzeitige Mehrbenutzung: aktuell NEIN.**
 - [ ] **Fester Port 5057 auf gemeinsamem Loopback:** Windows-RDS teilt `127.0.0.1` über alle Sessions → zweite Instanz kann 5057 nicht binden (run.ps1 bricht mit „Port belegt" ab); fremder Browser auf `127.0.0.1:5057` erreicht die fremde Instanz (keine Session-Isolation)
 - [ ] **Gemeinsame `config.json`** (Default- + gespeicherte Verbindungen) im App-Verzeichnis → Nutzer überschreiben sich gegenseitig
-- [ ] **Gemeinsames `Logs/`** → konkurrierende Schreibzugriffe
+- [ ] **Gemeinsames `Logs/`** → konkurrierende Schreibzugriffe — *Hook vorhanden seit AP-33: `LUCENT_LOG_DIR` setzt den Logpfad pro Nutzer; hier nur noch verdrahten (z. B. `%LOCALAPPDATA%`)*
 - [ ] **Flask-Dev-Server** (`app.run`) ist kein Mehrbenutzer-Produktionsserver
 - [ ] **Port-Lebensdauer:** Port 5057 bleibt für die **gesamte Laufzeit** des Server-Prozesses gebunden und wird erst vom OS freigegeben, wenn der Prozess endet (Strg+C / Fenster schließen / Prozess beenden / Session-Ende) — **kein** Idle-Timeout. Browser schließen ≠ Port frei. Auf RDS blockiert ein „vergessener" laufender Prozess die anderen Nutzer
 **Nötig für Multi-User:**
@@ -150,18 +150,6 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] Doku „Betrieb auf Terminalserver" (Admin-Setup, Pro-Nutzer-Pfade, Ports)
 
 **Risiko/Aufwand:** Punkte 1+2 sind die Pflicht-Basis (sonst Kollisionen); 3+4 erhöhen Robustheit; 5+6 sind Deployment/Betrieb. Schätzung: mittel-groß, am besten als eigener Meilenstein.
-
-## AP-33 — Logging: Status prüfen & sauber machen
-**Frage:** Haben wir bereits ein sauberes Logging?
-**Befund (vorhanden, aber minimal):**
-- [x] `core/log.py::init_logging` existiert: Logger `luDBxP`, Ausgabe nach **stdout + `Logs/app.log`**, Level **INFO**, Formatter mit Zeitstempel/Level/Name; wird im App-Factory (`web/__init__.py`) initialisiert
-**Offen / zu verbessern:**
-- [ ] **Geringe Abdeckung:** nur ~2 Log-Aufrufe (`web/routes.py`) — wichtige Aktionen/Fehler kaum geloggt; strukturiertes Error-Logging (Exceptions mit Stacktrace) ergänzen
-- [ ] **Keine Log-Rotation:** `app.log` wächst unbegrenzt → `RotatingFileHandler`/`TimedRotatingFileHandler` (Größe/Anzahl begrenzen)
-- [ ] **Level nicht konfigurierbar:** fix INFO → DEBUG-Schalter (ENV/config)
-- [ ] **Logpfad `Logs/` im App-Verzeichnis:** auf Terminal-Server geteilt/konkurrierend → **pro-Nutzer-Logpfad** (Bezug AP-31, z. B. `%LOCALAPPDATA%`)
-- [ ] Request-Logging (Methode/Pfad/Status/Dauer) erwägen; Werkzeug-Access-Log einordnen
-- [ ] Betroffen: `core/log.py`, `web/__init__.py`, `web/routes.py`, `config.py` (Level/Pfad)
 
 ## AP-34 — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)
 **Ziel:** Der Programmstart zeigt **keine** sichtbare `run.ps1`-Konsole mehr, sondern ein

@@ -186,6 +186,15 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Verifiziert auf Linux: idempotenter Lauf · Port belegt (sauberer Abbruch) · kaputtes/leeres venv (Self-Heal + Online-Fallback, manylinux-Wheels) · 118 Tests grün via `run.sh --tests`
 - [ ] **Linux-Doc-Schuld (gebündelt):** Zensical-Site-Rebuild (siehe AP-16-Rest)
 
+## AP-33 — Logging sauber gemacht (v0.13.0)
+- [x] **Rotation:** `RotatingFileHandler` (`config.LOG_MAX_BYTES` ≈ 1 MB · `LOG_BACKUP_COUNT` 5) statt unbegrenzter `app.log`
+- [x] **Level konfigurierbar:** `LUCENT_LOG_LEVEL`; `LUCENT_DEBUG` ⇒ DEBUG; sonst `config.LOG_LEVEL` (INFO)
+- [x] **Logpfad konfigurierbar:** `LUCENT_LOG_DIR` überschreibt `config.LOG_DIR` — Hook für Pro-Nutzer-Pfad
+- [x] **Abdeckung:** Startup-Zeile (App/Version/Level/Pfad) + **Request-Logging** (Methode·Pfad·Status·Dauer) via `after_request` in `web/`
+- [x] **Idempotent + reconfigurierbar** (Handler-Ersatz statt Early-Return); Layering gewahrt (`core/log.py` Flask-frei)
+- [x] Test-first: 7 neue Tests in `tests/test_log.py`; **125 Tests grün**. Betroffen: `core/log.py`, `web/__init__.py`, `config.py`
+- [ ] **An AP-31 übergeben:** volle Terminal-Server-Verdrahtung des Pro-Nutzer-Logpfads (z. B. `%LOCALAPPDATA%`) — hier nur der ENV-Hook gebaut
+
 ## AP-23 — Join-Builder-Maske vereinheitlicht (v0.11.0)
 - [x] Alle Dropdowns gleiche Breite (`--jb-ctrl-w: 150px`), alle Steuerelemente gleiche Höhe (`--jb-ctrl-h: 30px`); Start/Ziel/Filter/Sortier-/Spalten-Zeilen fluchten (Einrückung `padding-left`)
 - [x] Alle Aktions-Buttons gleich groß (`min-width: 140px`, einheitliche Höhe/Rand); Zeilen-Löschbuttons (`.f-del`/`.ob-del`/`.c-del`) als einheitliche kleine Quadrate

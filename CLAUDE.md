@@ -40,6 +40,13 @@ Server listens at `http://127.0.0.1:5057`.
 ./venv/bin/python -m pytest -v       # verbose
 ```
 
+## Logging
+`core/log.py::init_logging` writes to stdout + a rotating `app.log`. Overridable per environment:
+- `LUCENT_LOG_DIR` — log directory (per-user path hook; full terminal-server wiring is AP-31)
+- `LUCENT_LOG_LEVEL` — `DEBUG`/`INFO`/… (`LUCENT_DEBUG` truthy implies `DEBUG`)
+
+Request logging (method · path · status · duration) lives in the `web/` app factory — `core/` stays Flask-free.
+
 ## Bekannte Einschränkungen
 
 - **Database backends:** Postgres support is implemented via SQLAlchemy but is only covered by automated tests against SQLite in v1.

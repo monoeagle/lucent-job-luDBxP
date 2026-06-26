@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.13.0] — 2026-06-26
+### Changed
+- **AP-33 — Logging sauber gemacht:** `core/log.py` heilt das bisher minimale
+  Logging (fix INFO, unbegrenzte Datei) zu einem konfigurierbaren, rotierenden
+  Setup:
+  - **Rotation:** `RotatingFileHandler` (`config.LOG_MAX_BYTES` ≈ 1 MB,
+    `config.LOG_BACKUP_COUNT` = 5) statt unbegrenzt wachsender `app.log`.
+  - **Level konfigurierbar:** `LUCENT_LOG_LEVEL` (DEBUG/INFO/…); `LUCENT_DEBUG`
+    impliziert DEBUG; sonst `config.LOG_LEVEL` (INFO).
+  - **Logpfad konfigurierbar:** `LUCENT_LOG_DIR` überschreibt `config.LOG_DIR` —
+    der Hook für einen **Pro-Nutzer-Logpfad** (volle Terminal-Server-Verdrahtung
+    bleibt AP-31).
+  - **Idempotent + reconfigurierbar:** Handler werden bei jedem `init_logging`
+    sauber ersetzt (keine Duplikate); Startup-Zeile mit App/Version/Level/Pfad.
+  - **Request-Logging:** `web/`-App-Factory loggt jede Anfrage (Methode · Pfad ·
+    Status · Dauer) via `after_request` — deutlich höhere Abdeckung. Layering
+    gewahrt: `core/log.py` bleibt Flask-frei, der Hook liegt in `web/`.
+  - 125 Tests grün (7 neue in `tests/test_log.py`, test-first).
+
 ## [0.12.0] — 2026-06-26
 ### Changed
 - **AP-15 (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent (Parität zu
