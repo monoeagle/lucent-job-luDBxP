@@ -8,9 +8,6 @@
 
 ## Offene Arbeitspakete
 
-- **AP-12** — MSSQL real testbar machen (Backend ✓ in v0.9.0; offen: System-ODBC
-  real einrichten, optionaler Integrationstest gegen MSSQL-Instanz, UI-Felder für
-  `Encrypt`/`TrustServerCertificate`)
 - **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
   zusammenführen
 - **AP-25** — Tool: SQL-Statement-Analyzer (read-only Analyse beliebiger Statements,
@@ -44,7 +41,7 @@ Doku/AppImage/Projektposter.
 - **AP-8** — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0
 - **AP-9** — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1
 
-**v0.4.0 – v0.15.0** (2026-06-26):
+**v0.4.0 – v0.16.0** (2026-06-26 … 27):
 
 - **AP-14** — Python-3.14-Readiness, Windows-Pfad (Wheelhouse cp312 → cp314) — v0.4.0
 - **AP-11** — Composite Foreign Keys voll unterstützt (`ON … AND …`) — v0.5.0
@@ -66,6 +63,7 @@ Doku/AppImage/Projektposter.
 - **AP-33** — Logging sauber (Rotation · konfig. Level/Pfad · Request-Logging) — v0.13.0
 - **AP-14** (Teil 2, Linux) — Python-3.14-AppImage + AppRun-Update-/Browser-Fix — v0.14.0
 - **AP-29** — SQL-Dialekt umschalten (Quoting + LIMIT/TOP/FETCH je Dialekt) — v0.15.0
+- **AP-12** (Abschluss) — MSSQL real getestet (ODBC 18 + Integrationstest) + UI-Felder Encrypt/Trust — v0.16.0
 - **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
 - **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
 

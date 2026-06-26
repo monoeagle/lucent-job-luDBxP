@@ -1,15 +1,33 @@
 {
-  "generatedAt": "2026-06-26T23:55:00",
+  "generatedAt": "2026-06-27T00:26:47",
   "range": {
-    "from": "2025-06-27",
-    "to": "2026-06-26"
+    "from": "2025-06-28",
+    "to": "2026-06-27"
   },
   "byDay": {
-    "2026-06-26": {
-      "commits": 66,
+    "2026-06-27": {
+      "commits": 2,
       "kinds": {
-        "other": 6,
-        "docs": 33,
+        "other": 2
+      },
+      "list": [
+        {
+          "sha": "8bd2a91",
+          "subject": "AP-12: MSSQL-Integrationstest real verifiziert (provisioniert Parent/Child, prueft FK-Reflection)",
+          "kind": "other"
+        },
+        {
+          "sha": "b33c4cc",
+          "subject": "AP-12 (Teilstueck): skip-guarded MSSQL-Integrationstest (LUCENT_MSSQL_TEST_URL); test-only, kein Bump",
+          "kind": "other"
+        }
+      ]
+    },
+    "2026-06-26": {
+      "commits": 68,
+      "kinds": {
+        "docs": 34,
+        "other": 7,
         "fix": 6,
         "build": 5,
         "chore": 2,
@@ -17,6 +35,16 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "d3555b0",
+          "subject": "docs: AP-29 nach erledigt (Baum/Gantt/Roadmap), Badges v0.15.0/137, Changelog-Mirror, Site neu gebaut",
+          "kind": "docs"
+        },
+        {
+          "sha": "0b283ab",
+          "subject": "AP-29: SQL-Dialekt umschalten (Quoting + LIMIT/TOP/FETCH je Dialekt); v0.15.0",
+          "kind": "other"
+        },
         {
           "sha": "f038f2d",
           "subject": "roadmap/baum: AP-22 + AP-24 als erledigt (Entscheidungen) gefuehrt, AP-17 raus (gestrichen)",
@@ -550,13 +578,13 @@
     }
   },
   "stats": {
-    "totalCommits": 103,
-    "activeDays": 2,
-    "longestStreak": 2,
+    "totalCommits": 107,
+    "activeDays": 3,
+    "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 42
+        "count": 43
       },
       {
         "kind": "feat",
@@ -568,7 +596,7 @@
       },
       {
         "kind": "other",
-        "count": 7
+        "count": 10
       },
       {
         "kind": "build",
@@ -587,7 +615,7 @@
         "count": 1
       }
     ],
-    "testCount": 135
+    "testCount": 137
   },
   "phases": []
 }

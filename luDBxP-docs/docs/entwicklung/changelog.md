@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.16.0] — 2026-06-27
+### Hinzugefügt
+- **AP-12 (Abschluss) — MSSQL-Verschlüsselungsfelder in der UI:** Verbindungs-Tab
+  hat für MS SQL Server zwei Tri-State-Dropdowns **Verschlüsselung** (`Encrypt`)
+  und **Server-Zertifikat vertrauen** (`TrustServerCertificate`) — Standard/ja/nein;
+  „Standard" lässt den Parameter weg. Persistiert mit gespeicherten Verbindungen.
+- **AP-12 real verifiziert:** skip-guardeter Integrationstest gegen SQL Server 2022
+  (`tests/test_mssql_integration.py`, `LUCENT_MSSQL_TEST_URL`) — provisioniert ein
+  Schema mit FK und prüft die Reflection (ODBC Driver 18 / `msodbcsql18`).
+
 ## [0.15.0] — 2026-06-26
 ### Hinzugefügt
 - **AP-29 — SQL-Dialekt umschalten:** Dialekt-Dropdown im Join-Builder
