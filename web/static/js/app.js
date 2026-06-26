@@ -288,7 +288,12 @@ function openJoinBuilder() {
     ` placeholder="–" style="width:72px;margin-left:4px"></label>` +
     `<button id="btn_build" style="margin-left:12px">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
-    `<pre class="sql_out" id="sql_out"></pre>` +
+    `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
+    `title="SELECT in die Zwischenablage kopieren" aria-label="SELECT kopieren">` +
+    `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" ` +
+    `stroke-width="1.4"><rect x="4" y="3" width="9" height="11" rx="1.5"/>` +
+    `<path d="M6 3V2.2A1.2 1.2 0 0 1 7.2 1h2.6A1.2 1.2 0 0 1 11 2.2V3"/></svg></button>` +
+    `<pre class="sql_out" id="sql_out"></pre></div>` +
     `<div class="row jb-result-bar" id="jb_result_bar" style="display:none">` +
     `<label>Zeilen</label>` +
     `<select id="jb_rows">` +
@@ -1019,3 +1024,19 @@ setupSplitter();
 setupLeftSplitter();        // AP-13: resizable sidebar width
 setupObjectSearch();        // AP-13: object-browser name filter
 setupZoomControl();         // AP-7: graph zoom slider
+setupSqlCopy();             // AP-20: copy generated SELECT to clipboard
+
+// AP-20: copy the generated SELECT to the clipboard via the icon in its corner.
+function setupSqlCopy() {
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest ? e.target.closest("#sql_copy") : null;
+    if (!btn) return;
+    const sql = $("sql_out") ? $("sql_out").textContent : "";
+    if (!sql.trim()) return;
+    try {
+      await navigator.clipboard.writeText(sql);
+      btn.classList.add("copied");
+      setTimeout(() => btn.classList.remove("copied"), 1200);
+    } catch (err) { /* clipboard unavailable — ignore */ }
+  });
+}

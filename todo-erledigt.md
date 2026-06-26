@@ -161,6 +161,15 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Frontend `index.html`/`app.js`/`app.css`; `/api/connections`-API unverändert (war bereits vorhanden)
 - [x] Tests: DOM-Picker + connect-from-saved-Round-Trip (114 grün); UI im echten Browser verifiziert (Playwright/Chromium, Screenshot)
 
+## AP-20 — Copy-Icon am SELECT (v0.10.0)
+- [x] Copy-Icon (inline-SVG) oben rechts in der Ecke des generierten SELECT (`.sql-wrap`/`#sql_copy`)
+- [x] Klick → SELECT in die Zwischenablage (`navigator.clipboard.writeText`); kurzes „copied"-Feedback; Event-Delegation (überlebt Re-Render)
+- [x] Im Browser verifiziert (Playwright: Clipboard-Inhalt == SELECT)
+
+## AP-21 — Kosmetik: gleiche Höhe Schema-Graph-Balken & Tab-Linie (v0.10.0)
+- [x] `.panelhead` und `.tabbar` exakt gleich hoch (gemeinsame `min-height: 34px` + `box-sizing: border-box`)
+- [x] Im Browser verifiziert (Playwright: panelhead == tabbar == 34px, Differenz 0)
+
 ## AP-13 — UI-Politur (v0.7.0)
 - [x] Suchfeld `#obj_search` über dem Objekt-Browser filtert Tabellen/Views live nach Namen (`applyObjectFilter`, überlebt `renderSidebar`)
 - [x] Linker Splitter `#splitter_left` macht die Sidebar-Breite verschiebbar (`--sidebar-width`, analog Graph-Splitter)

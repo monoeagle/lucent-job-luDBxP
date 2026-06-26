@@ -62,7 +62,8 @@ body {
 }
 #zoom_pct { font-size: .72rem; color: #333; font-variant-numeric: tabular-nums; }
 .panelhead {
-  flex: 0 0 auto; padding: .4rem .6rem; background: #f3f3f6;
+  flex: 0 0 auto; min-height: 34px; box-sizing: border-box;
+  padding: .25rem .6rem; background: #f3f3f6;
   border-bottom: 1px solid #ddd; font-weight: 600; font-size: .9rem;
   display: flex; align-items: center; justify-content: space-between;
 }
@@ -110,7 +111,8 @@ body {
 
 /* --- tabs --- */
 .tabbar {
-  flex: 0 0 auto; display: flex; gap: 2px; background: #e9e9ef;
+  flex: 0 0 auto; min-height: 34px; box-sizing: border-box;
+  display: flex; gap: 2px; background: #e9e9ef;
   overflow-x: auto; border-bottom: 1px solid #ccc;
 }
 .tab {
@@ -132,6 +134,15 @@ body {
 .path_list { padding-left: 1.2rem; }
 .sql_out { background: #1A1A2E; color: #eaeaea; padding: 1rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
+/* AP-20: copy icon in the SELECT's top-right corner */
+.sql-wrap { position: relative; }
+.sql-copy { position: absolute; top: 6px; right: 6px; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 22px; padding: 0; cursor: pointer;
+  background: rgba(255, 255, 255, .12); color: #cdd;
+  border: 1px solid rgba(255, 255, 255, .25); border-radius: 4px; }
+.sql-copy:hover { background: rgba(255, 255, 255, .22); color: #fff; }
+.sql-copy.copied { color: #2ecc71; border-color: #2ecc71; }
 
 /* --- join result toolbar (AP-6: row count + refresh) --- */
 .jb-result-bar { margin-top: .6rem; }

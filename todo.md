@@ -87,16 +87,6 @@ Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meld
 - [ ] Verzeichnis `.pattern_transfer` im Projekt: Sammelstelle für Pattern, die im aktiven Projekt entstehen
 - [ ] In einer globalen Claude-Session werden alle projektlokalen Pattern eingesammelt und — wo sinnvoll — ins globale `.pattern` zusammengeführt
 
-## AP-20 — Copy-Icon am SELECT-Feld
-- [ ] Kleines **Copy-Icon** oben rechts in der Ecke des generierten SELECT
-- [ ] Klick aufs Icon → SELECT landet im Zwischenspeicher (Clipboard)
-- [ ] Betroffen: `web/static/js/app.js`, `web/static/css/app.css`
-
-## AP-21 — Kosmetik: gleiche Höhe „Schema-Graph"-Balken & Tab-Linie
-- [ ] Der Balken „Schema-Graph" (`.panelhead`) ist aktuell leicht höher als die Tab-Linie links daneben → untere Kante tiefer, stört das Auge
-- [ ] Höhen angleichen (`.panelhead` ↔ `.tabbar`)
-- [ ] Betroffen: `web/static/css/app.css`
-
 ## AP-22 (Frage) — Implizite FKs immer aktivieren?
 - [ ] Klären: macht es Sinn, implizite FKs **standardmäßig** zu aktivieren? Was spricht dagegen?
 - [ ] Abwägung: mehr Join-Pfade out-of-the-box vs. falsch-positive (geratene) Beziehungen, die zu fragwürdigen Joins führen können
@@ -111,3 +101,21 @@ Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meld
 - [ ] Erheben wir beim Sessionwechsel bereits KPIs für dieses Projekt? (vgl. `docs/session-kennzahlen.md`)
 - [ ] Sind diese KPIs Teil der (Projekt-)Dokumentation?
 - [ ] Falls lückenhaft: KPI-Erhebung beim Handoff festlegen + in die Doku aufnehmen
+
+## AP-25 — Tool: SQL-Statement-Analyzer (read-only Analyse)
+**Idee:** Neuer Tab, in dem der Nutzer ein beliebiges SQL-Statement in ein Freitextfeld
+einfügt; das Tool **analysiert** es (egal ob lesend, schreibend oder Update) und zeigt
+die **Auswirkungen**, **ohne irgendeine Aktion auf der DB auszuführen** (strikt read-only,
+passt zur Projekt-Grundausrichtung). Ziel: einschätzen, was ein Statement täte.
+- [ ] Neuer Tab „SQL-Analyzer" mit Freitextfeld zum Einfügen eines Statements
+- [ ] Statement parsen/analysieren (SELECT/INSERT/UPDATE/DELETE/DDL, Views) — **keine** Ausführung auf der DB
+- [ ] Im Graphenbereich die **beteiligten Tabellen markieren** (geändert / beteiligt unterscheiden)
+- [ ] Bei Joins den **Pfad markieren** (wie im Join-Builder)
+- [ ] Button **„an Join-Builder übertragen"** → wechselt zum Join-Builder, füllt die Felder und zeigt die Alternativen
+- [ ] Views sowie eigene/fremde Statements analysieren können, nur zur Wirkungsabschätzung
+- [ ] **Brainstorm:** wie lässt sich das AP weiter sinnvoll gestalten (für den Einsatzzweck)?
+      Ideen: betroffene Spalten/PK-FK hervorheben · geschätzte Treffermenge (EXPLAIN read-only, falls vertretbar) ·
+      Warnungen (fehlendes WHERE bei UPDATE/DELETE, kartesische Joins) · Lesbarkeits-/Formatierungs-Ansicht ·
+      Abhängigkeiten einer View aufzeigen
+- [ ] Technik prüfen: SQL-Parser (z. B. `sqlglot`/`sqlparse`) lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
+- [ ] Betroffen: neue `core/`-Analyse (Parser), `web/routes.py` (read-only Analyse-Endpoint), `web/static/js/app.js`, `index.html`

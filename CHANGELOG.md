@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0] — 2026-06-26
+### Added
+- **AP-20 — Copy-Icon am SELECT:** In der oberen rechten Ecke des generierten
+  SELECT sitzt ein Copy-Icon; ein Klick kopiert das SQL in die Zwischenablage
+  (`navigator.clipboard`) mit kurzem „kopiert"-Feedback.
+
+### Fixed
+- **AP-21 — Kosmetik:** Der „Schema-Graph"-Balken (`.panelhead`) und die Tab-Linie
+  (`.tabbar`) haben jetzt exakt dieselbe Höhe (gemeinsame `min-height` +
+  `box-sizing`), vorher war der Graph-Balken minimal höher.
+
 ## [0.9.0] — 2026-06-26
 ### Changed
 - **AP-12 (Backend) — MS SQL Server: ODBC-Treiber & Verschlüsselung
