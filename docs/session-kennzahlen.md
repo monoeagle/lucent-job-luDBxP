@@ -7,6 +7,7 @@ Macht den Projektverlauf auswertbar (Tokens/Commit, Tokens/Feature, Tests-Δ je 
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 2026-06-25 | Opus 4.8 (1M) Hauptschleife; Subagenten haiku/sonnet/opus | 664.8k (`/context` Endstand; Messages 644.9k / Tools 13.2k) | 30 (1 FF-Merge) | 0 → 81 | (neu) → 0.1.0 | ~28 (v1-SDD: ~10 Implementer + ~10 Reviewer + ~6 Fixer + 1 Final-Review/opus) | 16 / 5 | 5065 / 64 | Browser (Chrome) + Playwright e2e ✓ | Session 1: neues Projekt von Null; Flask-Web statt PyQt6-Pattern |
 | 2 | 2026-06-26 | Opus 4.8 (1M) Hauptschleife; Subagenten sonnet (Verify/Screenshots) + general-purpose/opus (Deploy) | ~800k (Schätzung; Session lief in Auto-Compaction, `/context`-Endstand nicht abgerufen) | 26 (31→56; 1 fremd: 9d55a9c) | 81 → 111 | 0.1.0 → 0.3.1 | ~25 (Pre-Compaction: AP-1/2-SDD + Wheelhouse + Docs; Post-Compaction ~7: Verify + Screenshots + 4× Deploy) | 7 / 1 (Commit-Ebene; AP-8/AP-2-Fixes gebündelt) | 11267 / 98 (inkl. gener. SVG/JSON/Screenshots/Wheels) | Playwright e2e (21/21 + 7 Screenshots) + Chrome ✓ | Session 2: AP-1…AP-9; read-only-Ausführung eingeführt; Doku-Versions-Drift (icon-rail.js/zensical/poster) behoben; Startseite 2-spaltig + AP-Band 3-spaltig |
+| 3 | 2026-06-26 | Opus 4.8 (1M) Hauptschleife; **keine Subagenten** (alles inline); Playwright/Chromium zur UI-Verifikation | ~640k (Schätzung; letzter `/context` 584.7k bei 58 %) | 10 eigene (56→69; +7 Session-2-Commits beim Rebase integriert) | 111 → 118 | 0.3.1 → 0.10.0 | 0 | 6 / 1 (+ 8 docs, 1 build) | ~1419 ins. / 101 Dateien (inkl. der integrierten Session-2-Commits) | Playwright/Chromium (AP-10/13/20/21: Clipboard-, Höhen-, Filter-, Splitter-Checks) ✓ | Session 3: Remote-Divergenz → Rebase + AP-Umnummerierung; Python-3.14-Wheelhouse (cp314); AP-10/11/13/20/21 komplett + AP-12-Backend/AP-15-Windows; Backlog AP-16…25 dokumentiert; **Windows-only** (Linux abends) |
 
 ## Details Session 1
 
@@ -54,3 +55,20 @@ Macht den Projektverlauf auswertbar (Tokens/Commit, Tokens/Feature, Tests-Δ je 
   **30 Test-Δ / 800k Token ≈ 3,8 Tests je 100k Token** (deutlich niedriger als
   Session 1 — Session 2 war feature-/UI-/doku-lastig statt test-getriebener
   Kernaufbau), **fix/feat-Quote ≈ 0,14** (Commit-Ebene).
+
+## Details Session 3
+
+- **Modell-Mix:** Hauptschleife Opus 4.8 (1M), **ohne Subagenten/Workflows** — alle
+  APs inline umgesetzt. UI-Verifikation mit **Playwright + Chromium** (ad-hoc ins
+  venv installiert, nicht in `requirements`).
+- **Remote-Divergenz:** Lokal v0.3.0, Remote bereits v0.3.1 (Session 2). Erst beim
+  Push erkannt → Rebase der 2 lokalen Commits auf `origin/master` + **Umnummerierung**
+  der geplanten APs (AP-9 war remote schon anders vergeben). Lehre als Memory:
+  vor Arbeit `git fetch` + Divergenz prüfen.
+- **Arbeitspakete:** AP-14 (Python-3.14-Wheelhouse cp314), AP-11 (Composite FK voll),
+  AP-10 (Topbar-Verbindungen), AP-13 (UI-Politur), AP-15 (`run.ps1` abbruchsicher/NO-CDN),
+  AP-12 (MSSQL-Backend), AP-20 (Copy-Icon), AP-21 (Balkenhöhe). Backlog AP-16…25 dokumentiert.
+- **Tests:** 111 → 118 (Δ +7; viel UI-/Infra-Arbeit ohne pytest-Abdeckung → per Playwright verifiziert).
+- **Versionierung:** 0.3.1 → 0.10.0. Regel etabliert: **1.0.0 nur auf Ansage**, sonst Feature → minor / Fix → patch.
+- **Geräte-Scope:** Windows-only; Linux-Arbeiten (Doku-Site bauen, `run.sh`, AppImage,
+  realer MSSQL-Test) bewusst auf die Abend-Session am anderen Rechner verschoben.
