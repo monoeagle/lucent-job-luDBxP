@@ -21,9 +21,15 @@
   </header>
 
   <div class="layout">
-    <aside class="sidebar" id="objects">
-      <p class="hint">Verbinden, um Tabellen und Views zu laden.</p>
+    <aside class="sidebar">
+      <input type="search" id="obj_search" class="obj-search"
+             placeholder="Tabellen/Views filtern…" autocomplete="off">
+      <div id="objects" class="objects">
+        <p class="hint">Verbinden, um Tabellen und Views zu laden.</p>
+      </div>
     </aside>
+
+    <div class="splitter splitter-left" id="splitter_left" title="Ziehen zum Verschieben (Sidebar-Breite)"></div>
 
     <main class="main">
       <div class="tabbar" id="tabbar"></div>
@@ -33,7 +39,9 @@
     <div class="splitter" id="splitter" title="Ziehen zum Verschieben"></div>
 
     <section class="graphpanel">
-      <div class="panelhead">Schema-Graph</div>
+      <div class="panelhead">Schema-Graph
+        <button id="graph_relayout" type="button" title="Graph neu anordnen">Neu anordnen</button>
+      </div>
       <div id="graph"></div>
       <div id="zoom_ctrl" title="Zoom (Scrollen zoomt feinstufig)">
         <input id="zoom_slider" type="range" min="10" max="400" step="5" value="100"

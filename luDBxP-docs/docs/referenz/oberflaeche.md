@@ -33,6 +33,12 @@ Schema-Graph gleichzeitig. Der Join-Builder-Tab ist standardmäßig aktiv.
 Der Graph zeigt alle Tabellen als Knoten und die Foreign-Key-Beziehungen als
 gerichtete Kanten.
 
+Ein **Suchfeld** über dem Objekt-Browser filtert die Tabellen-/View-Listen live
+nach Namen. Die **Sidebar-Breite** ist über einen linken Splitter per Drag
+verschiebbar (analog zum Graph-Splitter). Der Button **„Neu anordnen"** im
+Graph-Kopf würfelt das Layout neu; bei dichten Schemas vergrößern sich die
+Knotenabstände automatisch, damit sich Knoten weniger überlappen.
+
 ---
 
 ## Tabellen-Detail — Sub-Tabs

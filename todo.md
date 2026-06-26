@@ -1,8 +1,8 @@
 # Arbeitspakete — Lucent DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-9, AP-11, AP-10. Offen hier: **AP-12, AP-13, AP-14** (nur noch
-Linux/AppImage-Rest) und **AP-15**.
+Zuletzt erledigt: AP-9, AP-11, AP-10, AP-13. Offen hier: **AP-12** und **AP-15**
+sowie der **Linux/AppImage-Rest von AP-14**.
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
@@ -17,12 +17,6 @@ Linux/AppImage-Rest) und **AP-15**.
 - [ ] Setup-Doku in `wheels/README.md` / Installations-Doku ergänzen
 - [ ] Optionaler Integrationstest gegen lokale MSSQL-Instanz (markiert, überspringbar wenn Treiber fehlt)
 - [ ] Betroffen: `core/connection.py` (URL/Driver-Param), Doku, ggf. `run.ps1`/`run.sh`
-
-## AP-13 — UI-Politur
-- [ ] Suchfeld im Objekt-Browser (Tabellen/Views filtern)
-- [ ] Linker Splitter: Sidebar-/Objekt-Browser-Breite verschiebbar (analog Graph-Splitter)
-- [ ] Graph-Auto-Layout bei dichten Schemas entzerren (Layout-Parameter/Alternativ-Layout)
-- [ ] Betroffen: `web/static/js/app.js`, `web/static/css/app.css`, `web/templates/index.html`
 
 ## AP-14 — Python-3.14-Readiness (Wheel-ABI cp312 → cp314)
 **Analyse:** Von 20 Wheels sind 15 plattformunabhängig (`py3-none-any`) und 3.14-tauglich.

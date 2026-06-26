@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.7.0] — 2026-06-26
+### Added
+- **AP-13 — UI-Politur:** Drei Verbesserungen in Objekt-Browser und Graph-Panel:
+  (1) **Suchfeld** über dem Objekt-Browser filtert die Tabellen-/View-Listen live
+  nach Namen; (2) **linker Splitter** macht die Sidebar-Breite per Drag verschiebbar
+  (analog zum Graph-Splitter, via `--sidebar-width`); (3) **„Neu anordnen"-Button**
+  im Graph-Panel würfelt das cose-Layout neu, dessen Abstände jetzt für dichte
+  Schemas (> 12 Knoten) hochskalieren, damit Knoten weniger überlappen. Reines
+  Frontend (`index.html`/`app.js`/`app.css`). Im Browser verifiziert (Playwright);
+  115 Tests grün.
+
 ## [0.6.0] — 2026-06-26
 ### Added
 - **AP-10 — Gespeicherte Verbindungen in der Topbar:** Neues Dropdown in der

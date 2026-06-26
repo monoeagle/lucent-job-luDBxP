@@ -129,6 +129,22 @@ function renderSidebar() {
       else openDetail(li.dataset.kind, li.dataset.name);
     });
   });
+  applyObjectFilter();  // re-apply any active search filter to the rebuilt list
+}
+
+// AP-13: filter the table/view lists in the object browser by name.
+function applyObjectFilter() {
+  const inp = $("obj_search");
+  if (!inp) return;
+  const q = inp.value.trim().toLowerCase();
+  $("objects").querySelectorAll("li[data-name]").forEach((li) => {
+    li.style.display = li.dataset.name.toLowerCase().includes(q) ? "" : "none";
+  });
+}
+
+function setupObjectSearch() {
+  const inp = $("obj_search");
+  if (inp) inp.addEventListener("input", applyObjectFilter);
 }
 
 // ===== Info tab =====
@@ -714,13 +730,24 @@ async function drawGraph() {
   // AP-7: keep the zoom slider + % label in sync with wheel/pinch zoom
   CY.on("zoom", updateZoomUI);
 
+  window.CY = CY;  // expose for browser-console debugging and e2e checks
+  runGraphLayout();
+}
+
+// AP-13: cose layout whose spacing scales up for dense schemas so nodes don't
+// overlap; also reused by the "Neu anordnen" button to re-roll the layout.
+function runGraphLayout() {
+  if (!CY) return;
+  const dense = CY.nodes().length > 12;
   const layout = CY.layout({
     name: "cose", animate: false, padding: 24, randomize: true,
-    nodeRepulsion: 16000, idealEdgeLength: 110, nodeOverlap: 28, componentSpacing: 120,
+    nodeRepulsion: dense ? 30000 : 16000,
+    idealEdgeLength: dense ? 150 : 110,
+    nodeOverlap: dense ? 42 : 28,
+    componentSpacing: dense ? 200 : 120,
   });
   layout.one("layoutstop", () => { CY.fit(undefined, 24); updateZoomUI(); });
   layout.run();
-  window.CY = CY;  // expose for browser-console debugging and e2e checks
 }
 
 // ===== Graph zoom control (AP-7) =====
@@ -775,6 +802,29 @@ function setupSplitter() {
     const w = window.innerWidth - e.clientX;
     const clamped = Math.max(220, Math.min(w, window.innerWidth - 420));
     document.documentElement.style.setProperty("--graph-width", clamped + "px");
+    if (CY) CY.resize();
+  });
+  window.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false; splitter.classList.remove("dragging");
+    document.body.style.userSelect = "";
+    if (CY) { CY.resize(); CY.fit(undefined, 24); }
+  });
+}
+
+// AP-13: left splitter resizes the sidebar (object-browser) width.
+function setupLeftSplitter() {
+  const splitter = $("splitter_left");
+  if (!splitter) return;
+  let dragging = false;
+  splitter.addEventListener("mousedown", (e) => {
+    dragging = true; splitter.classList.add("dragging");
+    document.body.style.userSelect = "none"; e.preventDefault();
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    const clamped = Math.max(160, Math.min(e.clientX, 520));
+    document.documentElement.style.setProperty("--sidebar-width", clamped + "px");
     if (CY) CY.resize();
   });
   window.addEventListener("mouseup", () => {
@@ -958,6 +1008,7 @@ $("include_implied").addEventListener("change", () => {
 $("topbar_conn").addEventListener("change", (e) => {
   if (e.target.value) connectSaved(e.target.value);
 });
+$("graph_relayout").addEventListener("click", runGraphLayout);  // AP-13: re-roll layout
 
 // AP-10: populate the topbar connection picker on initial load.
 refreshSavedConnections();
@@ -965,4 +1016,6 @@ refreshSavedConnections();
 setCurrentUrl(connUrl());   // show the prefilled demo connection
 renderSidebar();            // show Tools/Info even before connecting
 setupSplitter();
+setupLeftSplitter();        // AP-13: resizable sidebar width
+setupObjectSearch();        // AP-13: object-browser name filter
 setupZoomControl();         // AP-7: graph zoom slider
