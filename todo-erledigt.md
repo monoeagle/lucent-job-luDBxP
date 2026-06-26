@@ -1,4 +1,4 @@
-# Erledigte Arbeitspakete — Lucent DB Explorer
+# Erledigte Arbeitspakete — LucentTools DB Explorer
 
 Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
@@ -97,7 +97,7 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 ## AP-2 — „Verbinden" liefert „failed to fetch" (untersucht + entschärft)
 - [x] Systematisch reproduziert (Playwright, beide Verbinden-Wege): bei laufendem Server fehlerfrei — **kein Code-Bug**
 - [x] Root Cause: nicht erreichbarer Dev-Server (beim Session-Handoff gestoppt) → `fetch()` wirft die rohe Meldung „Failed to fetch"
-- [x] Defense-in-depth-Fix: `postJSON` fängt den Netzwerkfehler ab und zeigt „Server nicht erreichbar — läuft Lucent DB Explorer? Starte die App mit bash run.sh …" statt „Failed to fetch"
+- [x] Defense-in-depth-Fix: `postJSON` fängt den Netzwerkfehler ab und zeigt „Server nicht erreichbar — läuft LucentTools DB Explorer? Starte die App mit bash run.sh …" statt „Failed to fetch"
 - [x] Verifiziert via Playwright (`route.abort`): klare Meldung statt „Failed to fetch"; 81 Tests grün
 
 ## AP-4 — Mehrere SELECT-Spalten
@@ -175,3 +175,22 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Linker Splitter `#splitter_left` macht die Sidebar-Breite verschiebbar (`--sidebar-width`, analog Graph-Splitter)
 - [x] „Neu anordnen"-Button im Graph-Panel (`runGraphLayout`); cose-Abstände skalieren für dichte Schemas (> 12 Knoten) hoch (weniger Überlappung)
 - [x] Frontend `index.html`/`app.js`/`app.css`; im Browser verifiziert (Playwright: Filter, Splitter 240→392px, Re-Layout), 115 Tests grün
+
+## AP-23 — Join-Builder-Maske vereinheitlicht (v0.11.0)
+- [x] Alle Dropdowns gleiche Breite (`--jb-ctrl-w: 150px`), alle Steuerelemente gleiche Höhe (`--jb-ctrl-h: 30px`); Start/Ziel/Filter/Sortier-/Spalten-Zeilen fluchten (Einrückung `padding-left`)
+- [x] Alle Aktions-Buttons gleich groß (`min-width: 140px`, einheitliche Höhe/Rand); Zeilen-Löschbuttons (`.f-del`/`.ob-del`/`.c-del`) als einheitliche kleine Quadrate
+- [x] Inline-Styles aus `app.js` entfernt (Margins/Breiten zentral ins CSS); Aktions- und Optionsleiste in zwei klare Zeilen aufgeteilt; Label „Weitere Spalten +" → „Spalten +"
+- [x] Wertfelder je Operator (`=`, `IN`, `BETWEEN` zwei Boxen, `IS NULL` ohne) bleiben einheitlich ausgerichtet
+- [x] `web/static/js/app.js` + `web/static/css/app.css`; im Browser verifiziert (Playwright, Demo-CMDB, Screenshots), 118 Tests grün
+- [x] **Politur (gleiche Runde):** Copy-Icon liegt jetzt *in* der SELECT-Box statt im pre-Default-Margin auf dem Rand (`.sql_out { margin:0 }`, Abstand auf `.sql-wrap`, Icon-Inset 10/12px)
+- [x] **Politur:** Default-Graphbreite `--graph-width` 50vw → 38vw, damit das mittlere Panel mehr Platz hat
+- [x] **Politur:** Graph zentriert/füllt zuverlässig — Fenster-Resize-Autofit (`setupGraphAutofit`), kleineres Fit-Padding (`GRAPH_FIT_PAD=16`), engeres `componentSpacing` (FK-lose Einzelknoten dehnen die Bounding-Box nicht mehr auf)
+
+## AP-16 — Graph entzerren: minimale Linienkreuzungen (v0.11.0)
+- [x] Layout von force-directed `cose` auf **hierarchisches dagre** (Sugiyama, layered) umgestellt — der FK-Graph ist gerichtet, dagre minimiert Kantenkreuzungen
+- [x] `dagre` 0.8.5 **lokal gebündelt** unter `web/static/lib/` (NO-CDN: kein Laufzeit-CDN; `<script>` cytoscape → dagre → app). `runGraphLayout` treibt **`window.dagre` direkt** (Graph bauen, `dagre.layout`, Knotenpositionen setzen) — der Adapter `cytoscape-dagre` wurde evaluiert und wieder **entfernt** (ungenutzt)
+- [x] **Sicherheits-Audit der Lib** (auf Wunsch): kein `fetch`/XHR/WebSocket/EventSource/sendBeacon, kein `eval`/`Function()`/Blob/Worker, keine externen String-URLs (nur Doku-Kommentare), `require` nur Browserify-intern — reine lokale Layout-Berechnung
+- [x] Parameter: `rankdir:"BT"` (referenzierte Tabellen oben), `ranker:"network-simplex"`, adaptive `nodesep`/`ranksep`; deterministisch → „Neu anordnen" setzt nach manuellem Ziehen zurück
+- [x] **Entscheidung gerade vs. geknickte Kanten:** Routing rang-überspringender Kanten über dagres Knickpunkte (`curve-style:segments`) erreicht **0 Kreuzungen**, lässt die Verbindungen aber als Zickzack schlechter aussehen → **verworfen**. Bewusst **gerade Linien** mit **1 Kreuzung** (`Cluster→Host × Datacenter→Network`, topologiebedingte transitive Kante) — bessere Lesbarkeit (Nutzerwunsch)
+- [x] Verifiziert (Playwright, Demo-CMDB): Kreuzungen **6 (Grid-Fallback) → 1** (Polylinien-Schnitt-Zähler), keine Konsolen-/Page-Fehler, sauberes Schichten-Layout; 118 Tests grün
+- [ ] **Linux-Rest:** AP-Diagramm + Zensical-Site neu bauen (Konvention: nur Linux)

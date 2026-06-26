@@ -1,4 +1,4 @@
-# Arbeitspakete — Lucent DB Explorer
+# Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
 Zuletzt erledigt: AP-9, AP-11, AP-10, AP-13. Offen hier: **AP-12** und **AP-15**
@@ -68,11 +68,6 @@ Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meld
 - [ ] Funktionale Verifikation beider Skripte auf Linux (simulierte Abbrüche)
 - [ ] Betroffen: `run.sh` (· `run.ps1` erledigt)
 
-## AP-16 — Graph entzerren: minimale Linienkreuzungen
-- [ ] Layout so wählen/tunen, dass sich möglichst **wenige Kanten kreuzen** (lesbarerer Schema-Graph)
-- [ ] Ansatz prüfen: crossing-reduction-Layouts (z. B. dagre/elk hierarchisch) statt/neben `cose`
-- [ ] Betroffen: `web/static/js/app.js` (Graph-Layout)
-
 ## AP-17 — Delivery-Verzeichnis bereinigen
 - [ ] Ein Auslieferungs-Verzeichnis, das **nur** enthält, was zum Betrieb explizit benötigt wird
 - [ ] **Keine Rückschlüsse auf Claude-/AI-Einsatz** (keine CLAUDE.md, Handoffs, `.pattern`, Insights, AI-Spuren im Delivery)
@@ -90,12 +85,6 @@ Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meld
 ## AP-22 (Frage) — Implizite FKs immer aktivieren?
 - [ ] Klären: macht es Sinn, implizite FKs **standardmäßig** zu aktivieren? Was spricht dagegen?
 - [ ] Abwägung: mehr Join-Pfade out-of-the-box vs. falsch-positive (geratene) Beziehungen, die zu fragwürdigen Joins führen können
-
-## AP-23 — Join-Builder-Maske: einheitliche Button-/Dropdown-Größen
-- [ ] Alle **Buttons** im Join-Builder gleich groß
-- [ ] Alle **Dropdowns** gleiche Länge (Breite)
-- [ ] Maske ggf. neu entwerfen (konsistentes, aufgeräumtes Layout)
-- [ ] Betroffen: `web/static/js/app.js` (Join-Builder-Rendering), `web/static/css/app.css`
 
 ## AP-24 (Frage) — Session-KPIs erheben & dokumentieren?
 - [ ] Erheben wir beim Sessionwechsel bereits KPIs für dieses Projekt? (vgl. `docs/session-kennzahlen.md`)
@@ -119,3 +108,23 @@ passt zur Projekt-Grundausrichtung). Ziel: einschätzen, was ein Statement täte
       Abhängigkeiten einer View aufzeigen
 - [ ] Technik prüfen: SQL-Parser (z. B. `sqlglot`/`sqlparse`) lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
 - [ ] Betroffen: neue `core/`-Analyse (Parser), `web/routes.py` (read-only Analyse-Endpoint), `web/static/js/app.js`, `index.html`
+
+## AP-26 — Audit-Sessions: unerwünschtes Verhalten ausschließen
+**Ziel:** Wiederkehrender, dokumentierter Audit, der ausschließt, dass eingebundener Code
+(insb. extern bezogene/gebündelte Libs oder KI-erzeugter Code) unerwünschtes Verhalten zeigt
+— Netzwerk-Nachladen, Exfiltration, dynamische Codeausführung, CDN-Verstöße.
+- [ ] **Audit-Checkliste** definieren: kein `fetch`/XHR/WebSocket/EventSource/sendBeacon · kein `eval`/`Function()`/Blob/Worker/`document.write` · keine externen String-URLs · NO-CDN eingehalten · nur lokale Sourcen · `require` nur bundle-intern
+- [ ] **Auslöser** festlegen: vor jedem Einbinden einer neuen Lib + stichprobenartig bei KI-erzeugtem Code; Ergebnis verpflichtend dokumentieren
+- [ ] **Reproduzierbar** machen: Audit-Schritte als Skript/Snippet (z. B. gezielte Grep-Muster) ablegen, damit der Audit wiederholbar ist
+- [ ] **Doku-Ort (Vorschlag):** neues internes Verzeichnis `docs/audits/` (eine datierte Datei je Audit-Session, analog `docs/handoffs/` & `docs/insights/`) — bleibt **entwicklerintern** (KI-/Prozessspur, **nicht** ins Delivery, vgl. AP-17)
+- [ ] **Optional öffentlich:** neutrale Sicherheits-Notiz auf der Zensical-Site (`referenz/architektur.md` oder eigene Seite „Sicherheit/Vertrauen": alle Assets lokal, kein CDN, kein Laufzeit-Netzwerk) — **ohne** KI-Bezug
+- [ ] Rückwirkend: den bereits erfolgten dagre/cytoscape-dagre-Audit (AP-16) als erste `docs/audits/`-Datei festhalten
+
+## AP-27 — Insights + Dokumentation: Ort & Einbindung klären
+**Ziel:** Festlegen, wo Insights leben, wie sie gepflegt werden und wie sie sich zur
+veröffentlichten Doku verhalten.
+- [ ] Bestandsaufnahme: `docs/insights/` existiert bereits (2 Dateien) — Format/Namensschema (datiert) bestätigen oder vereinheitlichen
+- [ ] **Doku-Ort (Vorschlag):** Insights bleiben **entwicklerintern** in `docs/insights/` (wie `handoffs/`), **nicht** in `luDBxP-docs/` (öffentliche Site), da sie KI-/Prozessspuren enthalten (AP-17)
+- [ ] Klären: brauchen Insights einen **Index** (z. B. `docs/insights/README.md`) für Auffindbarkeit?
+- [ ] Abgrenzung definieren: was ist ein *Insight* (interne Erkenntnis/Reflexion) vs. was gehört in die **öffentliche** Doku (`referenz/`, `entwicklung/`) als Endnutzer-/Entwicklerwissen
+- [ ] Optional: aus reifen Insights neutralisierte Inhalte in die Zensical-Site überführen (ohne KI-Bezug)
