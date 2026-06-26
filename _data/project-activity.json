@@ -1,23 +1,34 @@
 {
-  "generatedAt": "2026-06-26T02:25:24",
+  "generatedAt": "2026-06-26T02:42:55",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 15,
+      "commits": 17,
       "kinds": {
+        "docs": 7,
         "fix": 2,
-        "docs": 6,
+        "build": 1,
         "feat": 6,
         "style": 1
       },
       "list": [
         {
-          "sha": "b59f361",
+          "sha": "bbf070e",
+          "subject": "docs: AP-9 in Diagramm/Roadmap/Changelog; Oberflaechen-Screenshots neu (v0.3.1); Site neu gebaut",
+          "kind": "docs"
+        },
+        {
+          "sha": "8133bc4",
           "subject": "fix: AP-9 Ergebnisliste im Join-Builder maximieren (vollen Platz nach unten) — v0.3.1",
           "kind": "fix"
+        },
+        {
+          "sha": "9d55a9c",
+          "subject": "build: Offline-Wheelhouse vervollstaendigen (colorama + pytest-Stack)",
+          "kind": "build"
         },
         {
           "sha": "cbc74aa",
@@ -292,7 +303,7 @@
     }
   },
   "stats": {
-    "totalCommits": 52,
+    "totalCommits": 54,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
@@ -302,7 +313,7 @@
       },
       {
         "kind": "docs",
-        "count": 15
+        "count": 16
       },
       {
         "kind": "fix",
@@ -311,6 +322,10 @@
       {
         "kind": "chore",
         "count": 3
+      },
+      {
+        "kind": "build",
+        "count": 1
       },
       {
         "kind": "style",
@@ -322,10 +337,6 @@
       },
       {
         "kind": "other",
-        "count": 1
-      },
-      {
-        "kind": "refactor",
         "count": 1
       }
     ],
