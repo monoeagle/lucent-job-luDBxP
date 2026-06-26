@@ -1,19 +1,29 @@
 {
-  "generatedAt": "2026-06-26T02:03:51",
+  "generatedAt": "2026-06-26T02:25:24",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 13,
+      "commits": 15,
       "kinds": {
+        "fix": 2,
+        "docs": 6,
         "feat": 6,
-        "docs": 5,
-        "style": 1,
-        "fix": 1
+        "style": 1
       },
       "list": [
+        {
+          "sha": "b59f361",
+          "subject": "fix: AP-9 Ergebnisliste im Join-Builder maximieren (vollen Platz nach unten) — v0.3.1",
+          "kind": "fix"
+        },
+        {
+          "sha": "cbc74aa",
+          "subject": "docs: AP-Diagramm + Roadmap + Changelog auf v0.3.0 (AP-5..AP-8); Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "af845b3",
           "subject": "feat: AP-6 Ausgabe-Steuerung, AP-7 feiner Graph-Zoom, AP-8 Reset-Fix — v0.3.0",
@@ -282,7 +292,7 @@
     }
   },
   "stats": {
-    "totalCommits": 50,
+    "totalCommits": 52,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
@@ -292,11 +302,11 @@
       },
       {
         "kind": "docs",
-        "count": 14
+        "count": 15
       },
       {
         "kind": "fix",
-        "count": 6
+        "count": 7
       },
       {
         "kind": "chore",
