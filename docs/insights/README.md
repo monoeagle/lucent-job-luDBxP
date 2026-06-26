@@ -36,3 +36,4 @@ Reift ein Insight zu allgemein gültigem Nutzer-/Entwicklerwissen, kann der
 ## Index
 - [2026-06-25 — Aufbau (Session 1)](2026-06-25-lucent-db-explorer-aufbau.md) — Filter-Baum, Pfad-Validierung u. a.
 - [2026-06-26 — Erweiterungen + Doku-Drift (Session 2)](2026-06-26-erweiterungen-und-doku-drift.md) — Versions-Drift jenseits von `sync_version.py` u. a.
+- [2026-06-26 — PS-5.1-Deployment + dagre-Kanten (Session 4)](2026-06-26-ps51-deployment-und-dagre.md) — BOM/cp1252-Falle, stderr+Stop, dagre-Knickpunkte u. a.
