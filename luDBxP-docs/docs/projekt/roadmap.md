@@ -28,7 +28,6 @@
 - **AP-30** (Frage) — 1-N: ein Start, mehrere Zieltabellen in einem SELECT?
 - **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
   Pro-Nutzer-`config.json`/`Logs/`, WSGI-Server)
-- **AP-33** — Logging: Abdeckung, Rotation, konfigurierbares Level, Pro-Nutzer-Pfad
 - **AP-34** — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)
 - **AP-35** — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund
   aus AP-15; Fix wie in `run.sh`, signiertes Skript → eigene Windows-Session)
@@ -54,7 +53,7 @@ Doku/AppImage/Projektposter.
 - **AP-8** — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0
 - **AP-9** — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1
 
-**v0.4.0 – v0.12.0** (2026-06-26):
+**v0.4.0 – v0.13.0** (2026-06-26):
 
 - **AP-14** — Python-3.14-Readiness, Windows-Pfad (Wheelhouse cp312 → cp314) — v0.4.0
 - **AP-11** — Composite Foreign Keys voll unterstützt (`ON … AND …`) — v0.5.0
@@ -73,6 +72,7 @@ Doku/AppImage/Projektposter.
 - **AP-32** — Zoom-%-Slider waagerecht in die Graph-Kopfzeile — v0.11.2
 - **AP-27** — Insights: Ort & Einbindung geklärt — v0.11.2
 - **AP-15** (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent — v0.12.0
+- **AP-33** — Logging sauber (Rotation · konfig. Level/Pfad · Request-Logging) — v0.13.0
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:
 [Changelog](../entwicklung/changelog.md).

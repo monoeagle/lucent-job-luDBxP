@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-06-26T21:57:53",
+  "generatedAt": "2026-06-26T22:32:32",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 57,
+      "commits": 59,
       "kinds": {
-        "docs": 28,
-        "other": 2,
+        "other": 3,
+        "docs": 29,
         "fix": 6,
         "build": 5,
         "chore": 2,
@@ -17,6 +17,16 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "f833b8e",
+          "subject": "AP-33: Logging sauber gemacht (Rotation, Level/Pfad konfigurierbar, Request-Logging); v0.13.0",
+          "kind": "other"
+        },
+        {
+          "sha": "1b2e168",
+          "subject": "docs: Startseite als thematischer AP-Baum, Gantt bis AP-35, Heatmap-Toggle, Architektur-Badge",
+          "kind": "docs"
+        },
         {
           "sha": "6e132ef",
           "subject": "docs: Zensical-Site auf v0.12.0 nachgezogen + neu gebaut",
@@ -505,13 +515,13 @@
     }
   },
   "stats": {
-    "totalCommits": 94,
+    "totalCommits": 96,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 37
+        "count": 38
       },
       {
         "kind": "feat",
@@ -531,7 +541,7 @@
       },
       {
         "kind": "other",
-        "count": 3
+        "count": 4
       },
       {
         "kind": "style",
@@ -542,7 +552,7 @@
         "count": 1
       }
     ],
-    "testCount": 116
+    "testCount": 123
   },
   "phases": []
 }

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.13.0] — 2026-06-26
+### Geändert
+- **AP-33 — Logging sauber gemacht:** `core/log.py` rotiert jetzt (`RotatingFileHandler`,
+  ~1 MB × 5) statt unbegrenzter `app.log`; Level via `LUCENT_LOG_LEVEL`
+  (`LUCENT_DEBUG` ⇒ DEBUG), Logpfad via `LUCENT_LOG_DIR` (Pro-Nutzer-Hook;
+  volle Terminal-Server-Verdrahtung bleibt AP-31). `init_logging` ist idempotent
+  + reconfigurierbar (Handler-Ersatz) mit Startup-Zeile. Neu: **Request-Logging**
+  (Methode · Pfad · Status · Dauer) in der `web/`-App-Factory — Layering gewahrt
+  (`core/log.py` bleibt Flask-frei). 125 Tests grün (7 neue, test-first).
+
 ## [0.12.0] — 2026-06-26
 
 ### Geändert
