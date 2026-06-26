@@ -226,3 +226,4 @@ body {
   border-radius: 3px; }
 .viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
+.path-warn { color: #b26a00; font-size: 0.85em; margin: 2px 0 6px 1em; }

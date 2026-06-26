@@ -574,8 +574,12 @@ async function runBuild(preserveIndex = false) {
     const prev = JB_PATH_IDX;
     JB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
     const list = $("path_list");
-    list.innerHTML = data.paths.map((p, i) =>
-      `<li><a href="#" data-i="${i}">${p.tables.map(esc).join(" → ")}</a></li>`).join("");
+    list.innerHTML = data.paths.map((p, i) => {
+      const warn = (p.warnings && p.warnings.length)
+        ? `<div class="path-warn">⚠ ${p.warnings.map(esc).join(" ")}</div>`
+        : "";
+      return `<li><a href="#" data-i="${i}">${p.tables.map(esc).join(" → ")}</a>${warn}</li>`;
+    }).join("");
     list.querySelectorAll("a").forEach((a) =>
       a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
     const bar = $("jb_result_bar");
