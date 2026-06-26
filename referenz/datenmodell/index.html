@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.3.1">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.14.0">
       
       
         <meta name="author" content="LucentTools">
@@ -27,7 +27,7 @@
     
     
       
-        <title>Datenmodell - Lucent DB Explorer</title>
+        <title>Datenmodell - LucentTools DB Explorer</title>
       
     
     
@@ -95,7 +95,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
-    <a href="../.." title="Lucent DB Explorer" class="md-header__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-header__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
@@ -109,7 +109,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Lucent DB Explorer
+            LucentTools DB Explorer
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -194,13 +194,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Lucent DB Explorer" class="md-nav__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-nav__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
 
     </a>
-    Lucent DB Explorer
+    LucentTools DB Explorer
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -1023,7 +1023,7 @@
 
 <h1 id="datenmodell">Datenmodell<a class="headerlink" href="#datenmodell" title="Permanent link">&para;</a></h1>
 <h2 id="interne-modell-klassen-coremodelpy">Interne Modell-Klassen (<code>core/model.py</code>)<a class="headerlink" href="#interne-modell-klassen-coremodelpy" title="Permanent link">&para;</a></h2>
-<p>Lucent DB Explorer arbeitet mit einem rein im Speicher gehaltenen Modell der
+<p>LucentTools DB Explorer arbeitet mit einem rein im Speicher gehaltenen Modell der
 Datenbankstruktur. Es gibt keine persistente eigene Datenbank — alles wird bei
 jedem API-Aufruf frisch aus der Zieldatenbank reflektiert.</p>
 <p><img src="../../images/mermaid/referenz-datenmodell-1.svg" alt="Diagramm 1 aus referenz/datenmodell.md"></p>
@@ -1089,37 +1089,48 @@ jedem API-Aufruf frisch aus der Zieldatenbank reflektiert.</p>
 </tbody>
 </table>
 <h3 id="foreignkey">ForeignKey<a class="headerlink" href="#foreignkey" title="Permanent link">&para;</a></h3>
+<p>Trägt <strong>ein oder mehrere</strong> Spaltenpaare — einspaltige und zusammengesetzte
+(composite) FKs haben dieselbe Form.</p>
 <table>
 <thead>
 <tr>
-<th>Attribut</th>
+<th>Attribut / Property</th>
 <th>Typ</th>
 <th>Beschreibung</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>column</code></td>
-<td><code>str</code></td>
-<td>Quellspalte</td>
-</tr>
-<tr>
 <td><code>ref_table</code></td>
 <td><code>str</code></td>
 <td>Referenzierte Tabelle</td>
 </tr>
 <tr>
-<td><code>ref_column</code></td>
-<td><code>str</code></td>
-<td>Referenzierte Spalte</td>
+<td><code>column_pairs</code></td>
+<td><code>tuple[tuple[str, str], ...]</code></td>
+<td><code>(Quellspalte, Zielspalte)</code>-Paare; 1 = einspaltig, n = composite</td>
 </tr>
 <tr>
-<td><code>implied</code></td>
+<td><code>columns</code></td>
+<td><code>tuple[str, ...]</code></td>
+<td>Quellspalten (Property)</td>
+</tr>
+<tr>
+<td><code>ref_columns</code></td>
+<td><code>tuple[str, ...]</code></td>
+<td>Zielspalten (Property)</td>
+</tr>
+<tr>
+<td><code>is_composite</code></td>
 <td><code>bool</code></td>
-<td><code>True</code> wenn heuristisch erkannt</td>
+<td><code>True</code> bei mehr als einem Paar (Property)</td>
 </tr>
 </tbody>
 </table>
+<p><code>ForeignKey.single(column, ref_table, ref_column)</code> baut einen einspaltigen FK.
+Ein composite FK wird als <code>JOIN … ON a.x = b.x AND a.y = b.y</code> gejoint; zwei
+<em>separate</em> einspaltige FKs zwischen denselben Tabellen bleiben alternative
+Join-Wege.</p>
 <h3 id="view">View<a class="headerlink" href="#view" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1166,7 +1177,7 @@ Er enthält keine Views — nur Tabellen mit FK-Beziehungen.</p>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;customer_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INTEGER&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;pk&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">}</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">      </span><span class="p">],</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">&quot;foreign_keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="p">{</span><span class="nt">&quot;column&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;customer_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ref_table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ref_column&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="p">{</span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;customer_id&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;ref_table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ref_columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]}</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="p">],</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="nt">&quot;ddl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE TABLE orders (...)&quot;</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="p">}</span>

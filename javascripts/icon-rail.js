@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   Icon-Rail + Flyout-Panel — für Lucent DB Explorer adaptiert (2026-06-25).
+   Icon-Rail + Flyout-Panel — für LucentTools DB Explorer adaptiert (2026-06-25).
 
    Basis: .pattern/prereqs/docs/icon-rail.js (neutrale Vorlage).
    Portiert aus: adb-control-docs → libredrive-docs → luDBxP-docs.
@@ -14,10 +14,10 @@
   'use strict';
 
   // ── Versionen ──────────────────────────────────────────────────────────
-  const APP_VERSION   = '0.3.1';                        // ADAPT: bei Release anpassen
-  const TEST_COUNT    = '111';                          // ADAPT: bei Release anpassen
+  const APP_VERSION   = '0.14.0';                       // ADAPT: bei Release anpassen
+  const TEST_COUNT    = '125';                          // ADAPT: bei Release anpassen
   const TEST_DATE     = '2026-06-26';                   // ADAPT: bei Release anpassen
-  const HEADER_PREFIX = `Lucent DB Explorer v${APP_VERSION}`;
+  const HEADER_PREFIX = `LucentTools DB Explorer v${APP_VERSION}`;
 
   // ── Icon-Map: Titel-Schluesselwort → Emoji ─────────────────────────────
   const ICON_MAP = [
@@ -267,7 +267,7 @@
       '<section class="adb-info-block">' +
         '<h4>Stack</h4>' +
         '<table class="adb-info-stack">' +
-          '<tr><td>Lucent DB Explorer</td><td>v' + APP_VERSION + '</td></tr>' +
+          '<tr><td>LucentTools DB Explorer</td><td>v' + APP_VERSION + '</td></tr>' +
           '<tr><td>Python</td><td>3.x</td></tr>' +
           '<tr><td>Flask</td><td>≥ 3.0</td></tr>' +
           '<tr><td>SQLAlchemy</td><td>≥ 2.0</td></tr>' +
@@ -345,7 +345,7 @@
       pageTitle = h1.textContent.replace(/[¶#]\s*$/, '').trim();
     }
 
-    // Startseite: H1 enthält "Lucent DB Explorer" → nur Prefix ohne Doppelnennung
+    // Startseite: H1 enthält "LucentTools DB Explorer" → nur Prefix ohne Doppelnennung
     const isHomePage = /lucent db explorer|ludbxp/i.test(pageTitle);  // ADAPT
 
     if (!pageTitle || isHomePage) {
@@ -448,6 +448,60 @@
     ov.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
+  // ── Architektur-Badge im Header → Architekturbild im Modal ────────────
+  function archSvgUrl() {
+    const s = document.querySelector('script[src*="javascripts/icon-rail.js"]');
+    const base = s ? s.src.replace(/javascripts\/icon-rail\.js.*$/, '') : '/';
+    return base + 'images/mermaid/referenz-architektur-3.svg';
+  }
+  function closeArch() {
+    const ov = document.getElementById('adb-arch-overlay');
+    if (!ov) return;
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  function openArch() {
+    let ov = document.getElementById('adb-arch-overlay');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'adb-arch-overlay';
+      ov.className = 'adb-lightbox-overlay';
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      ov.innerHTML =
+        '<button class="adb-lightbox-close" aria-label="Schliessen">&times;</button>' +
+        '<div class="adb-lightbox-content"><img class="adb-lightbox-img" src="' +
+        archSvgUrl() + '" alt="Systemüberblick: UI · Flask-API · Core-Layer"></div>' +
+        '<div class="adb-lightbox-caption">Architektur — UI · Flask-API · Core-Layer</div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', function (e) {
+        if (e.target === ov || e.target.classList.contains('adb-lightbox-close')) {
+          closeArch();
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && ov.classList.contains('open')) closeArch();
+      });
+    }
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function addArchBadge() {
+    const search = document.querySelector('.md-search');
+    if (!search || !search.parentNode) return;
+    if (document.querySelector('.adb-arch-badge')) return;  // idempotent
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'adb-status-badge adb-arch-badge';
+    btn.title = 'Architekturbild (Systemüberblick) öffnen';
+    btn.innerHTML =
+      '<span class="adb-status-badge__dot" aria-hidden="true"></span>Architektur';
+    btn.addEventListener('click', openArch);
+    search.parentNode.insertBefore(btn, search);
+  }
+
   function addRoadmapBadge() {
     const search = document.querySelector('.md-search');
     if (!search || !search.parentNode) return;
@@ -469,7 +523,7 @@
     if (document.querySelector('.adb-status-badge')) return;
     const badge = document.createElement('span');
     badge.className = 'adb-status-badge';
-    badge.title = `Lucent DB Explorer v${APP_VERSION} — ${TEST_COUNT} Tests grün (pytest, Stand ${TEST_DATE}). ` +
+    badge.title = `LucentTools DB Explorer v${APP_VERSION} — ${TEST_COUNT} Tests grün (pytest, Stand ${TEST_DATE}). ` +
       'SQLite/PostgreSQL/MySQL/MSSQL via SQLAlchemy. FK-Graph (NetworkX), Join-Pfad-Builder (k-kürzeste Pfade), ' +
       'Cytoscape.js-Graph-Visualisierung, Implizite-FK-Heuristik, Datenvorschau, Verbindungs-Manager. ' +
       'Demo-CMDB deckt Diamant-Pfade, zusammengesetzte FKs, isolierte Tabellen, Selbstreferenzen ab.';
@@ -481,6 +535,7 @@
   function init() {
     updateHeaderTitle();
     addStatusBadge();
+    addArchBadge();
     addRoadmapBadge();
 
     const sections = parseSections();

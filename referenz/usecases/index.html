@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.3.1">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.14.0">
       
       
         <meta name="author" content="LucentTools">
@@ -27,7 +27,7 @@
     
     
       
-        <title>UseCases - Lucent DB Explorer</title>
+        <title>UseCases - LucentTools DB Explorer</title>
       
     
     
@@ -95,7 +95,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
-    <a href="../.." title="Lucent DB Explorer" class="md-header__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-header__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
@@ -109,7 +109,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Lucent DB Explorer
+            LucentTools DB Explorer
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -194,13 +194,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Lucent DB Explorer" class="md-nav__button md-logo" aria-label="Lucent DB Explorer" data-md-component="logo">
+    <a href="../.." title="LucentTools DB Explorer" class="md-nav__button md-logo" aria-label="LucentTools DB Explorer" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-book-open" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
 
     </a>
-    Lucent DB Explorer
+    LucentTools DB Explorer
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -979,6 +979,14 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.</p>
 </ol>
 <p><strong>Ausgabe:</strong> Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative
 Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.</p>
+<blockquote>
+<p><strong>Mehr als zwei Tabellen:</strong> Ein Pfad verbindet Start und Ziel über <strong>beliebig viele
+Zwischentabellen</strong> (mehrere Join-Stationen) — z. B. in der Demo-CMDB
+<code>Network → Datacenter → Host → VirtualMachine → VMDisk → Datastore → Replication</code>
+(6 JOINs). Über „Filter +" benötigte Tabellen werden als zusätzliche Stationen in den
+Pfad eingewebt (siehe UC-2). Eine Abfrage hat dabei genau <strong>eine</strong> Start- und <strong>eine</strong>
+Ziel-Tabelle; mehrere voneinander unabhängige Ziele in einer Abfrage sind nicht vorgesehen.</p>
+</blockquote>
 <p><img src="../../images/screenshots/Screenshot_04_luDBxP.jpg"
      alt="Join-Builder-Ergebnis: VirtualMachine → Datacenter, 5 Pfade, SQL-Block, Graph-Highlight in Rot."></p>
 <hr />
