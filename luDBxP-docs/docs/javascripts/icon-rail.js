@@ -14,7 +14,9 @@
   'use strict';
 
   // ── Versionen ──────────────────────────────────────────────────────────
-  const APP_VERSION   = '0.1.0';                        // ADAPT: bei Release anpassen
+  const APP_VERSION   = '0.3.1';                        // ADAPT: bei Release anpassen
+  const TEST_COUNT    = '111';                          // ADAPT: bei Release anpassen
+  const TEST_DATE     = '2026-06-26';                   // ADAPT: bei Release anpassen
   const HEADER_PREFIX = `Lucent DB Explorer v${APP_VERSION}`;
 
   // ── Icon-Map: Titel-Schluesselwort → Emoji ─────────────────────────────
@@ -271,7 +273,7 @@
           '<tr><td>SQLAlchemy</td><td>≥ 2.0</td></tr>' +
           '<tr><td>NetworkX</td><td>≥ 3.0</td></tr>' +
           '<tr><td>Cytoscape.js</td><td>3.30.2</td></tr>' +
-          '<tr><td>pytest</td><td>81 Tests</td></tr>' +
+          '<tr><td>pytest</td><td>' + TEST_COUNT + ' Tests</td></tr>' +
           '<tr><td>Mermaid</td><td>11.x</td></tr>' +
           '<tr><td>Zensical</td><td>Docs</td></tr>' +
         '</table>' +
@@ -467,11 +469,11 @@
     if (document.querySelector('.adb-status-badge')) return;
     const badge = document.createElement('span');
     badge.className = 'adb-status-badge';
-    badge.title = `Lucent DB Explorer v${APP_VERSION} — 81 Tests grün (pytest, Stand 2026-06-25). ` +
+    badge.title = `Lucent DB Explorer v${APP_VERSION} — ${TEST_COUNT} Tests grün (pytest, Stand ${TEST_DATE}). ` +
       'SQLite/PostgreSQL/MySQL/MSSQL via SQLAlchemy. FK-Graph (NetworkX), Join-Pfad-Builder (k-kürzeste Pfade), ' +
       'Cytoscape.js-Graph-Visualisierung, Implizite-FK-Heuristik, Datenvorschau, Verbindungs-Manager. ' +
       'Demo-CMDB deckt Diamant-Pfade, zusammengesetzte FKs, isolierte Tabellen, Selbstreferenzen ab.';
-    badge.innerHTML = '<span class="adb-status-badge__dot" aria-hidden="true"></span>v0.1.0 · 81 Tests';
+    badge.innerHTML = '<span class="adb-status-badge__dot" aria-hidden="true"></span>v' + APP_VERSION + ' · ' + TEST_COUNT + ' Tests';
     search.parentNode.insertBefore(badge, search);
   }
 

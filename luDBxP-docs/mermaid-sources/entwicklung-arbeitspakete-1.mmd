@@ -3,31 +3,45 @@ flowchart LR
     classDef wip  fill:#7a5c00,color:#fff,stroke:#5e4600
     classDef plan fill:#2c3550,color:#fff,stroke:#1e2538
 
-    subgraph DONE["✅  Erledigt — Stand v0.3.1"]
+    subgraph S1["✅  Fundament · v0.1.0"]
         direction TB
         D1["Core-Domänenmodell\nSchema / Table / Column / FK"]
         D2["SQLAlchemy-Loader\n(live reflection, read-only)"]
         D3["FK-Graph\n(NetworkX DiGraph)"]
         D4["Pathfinder\n(k-kürzeste Pfade, BFS)"]
         D5["SQL-Generator\n(read-only, parametrisiert)"]
-        D6["Flask-API\n/api/schema · joinpath · graph · data"]
-        D7["Filter-UI\n(Tabelle / Spalte / Operator / Wert)"]
-        D8["Graph-Visualisierung\n(Cytoscape.js, lokal gebundelt)"]
-        D9["Implizite FKs\n(SchemaSpy-Heuristik, gestrichelt)"]
-        D10["3-Panel-Layout\n+ Detail-Sub-Tabs"]
-        D11["Datenvorschau\n(erste 100 Zeilen / View)"]
-        D12["Verbindungs-Manager\n(SQLite · PostgreSQL · MySQL · MSSQL)"]
-        D13["Demo-CMDB\n+ run.sh · run.ps1"]
-        D14["Doku · AppImage · Projektposter"]
-        D15["AP-1\nGraph-Interaktion\nDoppelklick → UML-Karte → Pfad-Auswahl"]
-        D16["AP-2\nVerbinden-Fehler entschärft\nklare Meldung statt failed-to-fetch"]
-        D17["AP-4\nMehrere SELECT-Spalten\nWeitere-Spalten-Bereich"]
-        D18["AP-3\nSQL-Optionen-Paket\nDISTINCT · ORDER BY · LIMIT · IS NULL/IN/BETWEEN"]
-        D19["AP-5 · v0.2.0\nAusgabebereich Join-Builder\nSELECT ausführen → Ergebnistabelle"]
-        D20["AP-6 · v0.3.0\nAusgabe-Steuerung\nZeilen 200/400/Alle · Aktualisieren"]
-        D21["AP-7 · v0.3.0\nFeiner Graph-Zoom\nMausrad-Feinschritt + Slider mit %"]
-        D22["AP-8 · v0.3.0\nFix Auswahl-Reset\nHighlight + UML-Karten leeren"]
-        D23["AP-9 · v0.3.1\nErgebnisliste maximiert\nvoller Platz nach unten"]
+        D6["Flask-API\nschema · joinpath · graph · data"]
+        D7["Filter-UI\nTabelle / Spalte / Operator / Wert"]
+        D8["Graph-Visualisierung\n(Cytoscape.js, lokal)"]
+        D1 ~~~ D2 ~~~ D3 ~~~ D4 ~~~ D5 ~~~ D6 ~~~ D7 ~~~ D8
     end
+
+    subgraph S2["✅  UI · Daten · AP-1/2"]
+        direction TB
+        D9["Implizite FKs\n(SchemaSpy-Heuristik)"]
+        D10["3-Panel-Layout\n+ Detail-Sub-Tabs"]
+        D11["Datenvorschau\n(erste 100 Zeilen)"]
+        D12["Verbindungs-Manager\nSQLite · PG · MySQL · MSSQL"]
+        D13["Demo-CMDB\n+ run.sh · run.ps1"]
+        D14["Doku · AppImage · Poster"]
+        D15["AP-1\nGraph-Interaktion\nUML-Karte → Pfad-Auswahl"]
+        D16["AP-2\nVerbinden-Fehler entschärft"]
+        D9 ~~~ D10 ~~~ D11 ~~~ D12 ~~~ D13 ~~~ D14 ~~~ D15 ~~~ D16
+    end
+
+    subgraph S3["✅  Features · v0.2.0–v0.3.1"]
+        direction TB
+        D17["AP-4\nMehrere SELECT-Spalten"]
+        D18["AP-3\nSQL-Optionen-Paket\nDISTINCT · ORDER BY · LIMIT · IN"]
+        D19["AP-5 · v0.2.0\nAusgabebereich\nSELECT ausführen → Tabelle"]
+        D20["AP-6 · v0.3.0\nAusgabe-Steuerung\nZeilen 200/400/Alle · Refresh"]
+        D21["AP-7 · v0.3.0\nFeiner Graph-Zoom\n+ Slider mit %"]
+        D22["AP-8 · v0.3.0\nFix Auswahl-Reset"]
+        D23["AP-9 · v0.3.1\nErgebnisliste maximiert"]
+        D17 ~~~ D18 ~~~ D19 ~~~ D20 ~~~ D21 ~~~ D22 ~~~ D23
+    end
+
+    %% Subgraphs nebeneinander erzwingen (sonst stapelt dagre sie vertikal)
+    S1 ~~~ S2 ~~~ S3
 
     class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23 done

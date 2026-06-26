@@ -28,8 +28,8 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT          = "/home/meagle/Dokumente/_Projects/lucent-job-luDBxP"
 DISPLAY_NAME  = "Lucent DB Explorer"               # Titel + Schriftfeld-Kopf
 SUBTITLE_BASE = "FK-Graph · Join-Pfad-Builder · read-only SQL · Python/Flask"  # vor „ vX.Y.Z · … · Stand …"
-APP_VERSION   = "0.1.0"                            # bei jedem Bump anpassen
-POSTER_DATE   = "2026-06-25"
+APP_VERSION   = "0.3.1"                            # bei jedem Bump anpassen
+POSTER_DATE   = "2026-06-26"
 AUTHOR        = "Tobias Philipp"
 GITHUB        = "github.com/monoeagle"
 SCREENSHOT_GLOB = "Screenshot_*luDBxP.jpg"         # Querformat-Browser-Screenshots
