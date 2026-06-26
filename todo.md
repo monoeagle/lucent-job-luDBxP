@@ -113,12 +113,6 @@ veröffentlichten Doku verhalten.
 - [ ] Abgrenzung definieren: was ist ein *Insight* (interne Erkenntnis/Reflexion) vs. was gehört in die **öffentliche** Doku (`referenz/`, `entwicklung/`) als Endnutzer-/Entwicklerwissen
 - [ ] Optional: aus reifen Insights neutralisierte Inhalte in die Zensical-Site überführen (ohne KI-Bezug)
 
-## AP-28 (UI-Fix) — Join-Builder: Contentbereich darf NICHT scrollen
-- [ ] Der obere Join-Builder-Bereich (Start/Ziel, Filter-/Sortier-/Spalten-Zeilen, Buttons, generiertes SELECT) bleibt **fix** — kein Scrollen
-- [ ] **Einzig** die Ergebnistabelle unten (`#join_result`) darf scrollen
-- [ ] Ursache aktuell: `.tabpanels { overflow-y: auto }` lässt den gesamten Panel-Inhalt scrollen; das Join-Builder-Panel muss die Panelhöhe füllen, ohne Außenscroll
-- [ ] Betroffen: `web/static/css/app.css` (`.tabpanels`, `.panel[data-tab=joinbuilder]`, `#join_result`), ggf. `web/static/js/app.js`
-
 ## AP-29 — SQL-Dialekt umschalten (Oracle, MSSQL, PostgreSQL, MySQL, SQLite)
 **Frage/Recherche:** Gibt es syntaktische und elementare Unterschiede im generierten
 read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
@@ -132,3 +126,4 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] Heute: genau **eine** Start- und **eine** Ziel-Tabelle (linearer Pfad); Zusatzspalten + Filter-Tabellen werden eingewebt, aber **kein** zweites unabhängiges Ziel (vgl. AP-18-Abgrenzung)
 - [ ] Abwägung: Mehrwert (breitere Abfrage in einem Schritt) vs. Komplexität (mehrere Pfade vereinen, Mehrdeutigkeit, kartesische Risiken bei 1-N-Fan-out)
 - [ ] Falls sinnvoll: als **Join-Baum** mit mehreren Ziel-Ästen modellieren (analog zum bestehenden Filter-Tabellen-Weaving in `find_paths`)
+- [ ] **Erkenntnis (Anwendungsfälle):** wertvoll v. a. für **N-1-Äste** (Stern-/Report-Abfrage: Start zieht Attribute aus mehreren Eltern-/Lookup-Tabellen, z. B. VM + Host-Name + OS-Name + VLAN) — kein Zeilen-Fan-out. Mehrere **1-N-Kind**-Äste gleichzeitig blähen quasi-kartesisch auf → eher **warnen** statt anbieten

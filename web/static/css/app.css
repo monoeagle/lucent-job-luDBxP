@@ -195,16 +195,18 @@ body {
 .jb-result-bar { margin-top: .6rem; }
 .jb-result-bar #jb_rows_info { margin-left: .4rem; }
 
-/* --- join result table (AP-9: fill remaining vertical space) --- */
-/* Scoped to the join-builder panel so detail tabs keep normal block flow. */
+/* --- join result table (AP-9 / AP-28: fill remaining vertical space) --- */
+/* Scoped to the join-builder panel so detail tabs keep normal block flow.
+   AP-28: the panel is fixed to the viewport height and never scrolls itself —
+   the form/SELECT stay put and ONLY #join_result scrolls. */
 .panel[data-tab="joinbuilder"].active {
-  display: flex; flex-direction: column; min-height: 100%;
+  display: flex; flex-direction: column; height: 100%; overflow: hidden;
 }
 .panel[data-tab="joinbuilder"] .joinbuilder {
   display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto;
 }
 #join_result {
-  flex: 1 1 auto; min-height: 200px; overflow: auto; margin-top: .6rem;
+  flex: 1 1 auto; min-height: 0; overflow: auto; margin-top: .6rem;
 }
 
 /* --- sub-tabs inside a detail tab --- */

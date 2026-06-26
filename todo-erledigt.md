@@ -209,3 +209,9 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] **Verifiziert** (gegen Demo-CMDB): 7-Tabellen-Join `Network→Datacenter→Host→VirtualMachine→VMDisk→Datastore→Replication` (6 JOINs) + Filter-Weaving-Beispiel; bestehende Tests decken es ab (`test_sqlgen::test_basic_select_join` = 3 Tabellen/2 JOINs, `test_pathfinder`/`test_demo_db_cases` = Filter-Weaving)
 - [x] **Abgrenzung dokumentiert** (`luDBxP-docs/docs/referenz/usecases.md`, UC-1): beliebig viele Zwischentabellen ja; eine Abfrage hat aber genau **eine** Start- und **eine** Ziel-Tabelle — mehrere unabhängige Ziele sind nicht vorgesehen
 - [ ] **Linux-Rest:** Zensical-Site mit der UC-1-Ergänzung neu bauen (Konvention: nur Linux)
+
+## AP-28 (UI-Fix) — Join-Builder: Contentbereich scrollt nicht mehr (v0.11.1)
+- [x] Join-Builder-Panel auf feste Viewport-Höhe (`height: 100%` + `overflow: hidden`) statt `min-height: 100%` → Formular/Filter/SELECT bleiben fix, kein Außenscroll der `.tabpanels`
+- [x] `#join_result` ist der **einzige** Scroller (`min-height: 0` statt 200px → kann im festen Panel schrumpfen/scrollen)
+- [x] Verifiziert (Playwright, 1400×900): `.tabpanels`/Panel kein Overflow, `#join_result` scrollt (client ~202px); Detail-Tabs unberührt (Regel bleibt auf `[data-tab=joinbuilder]` beschränkt)
+- [x] Betroffen: `web/static/css/app.css`
