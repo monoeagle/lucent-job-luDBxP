@@ -22,6 +22,9 @@ class JoinStep:
     # One (left_col, right_col) pair per key column; >1 pair = composite FK,
     # all combined with AND in the emitted JOIN ... ON clause.
     column_pairs: tuple[tuple[str, str], ...]
+    # True when this step descends a foreign key (left=parent -> right=child,
+    # i.e. right holds the FK): a one-to-many edge that can multiply rows.
+    to_many: bool = False
 
 
 @dataclass(frozen=True)
@@ -56,8 +59,13 @@ def _join_step(graph: nx.Graph, a: str, b: str) -> JoinStep:
         chosen foreign key.
     """
     options = graph[a][b]["joins"]
-    pairs = min(_oriented_pairs(o, a) for o in options)
-    return JoinStep(a, b, pairs)
+    # Deterministic choice: the option whose a-oriented pairs sort smallest.
+    chosen = min(options, key=lambda o: _oriented_pairs(o, a))
+    pairs = _oriented_pairs(chosen, a)
+    # The chosen FK is held by chosen.table_a (the child/many side). Stepping
+    # a -> b descends (one-to-many) exactly when b is that FK holder.
+    to_many = chosen.table_a == b
+    return JoinStep(a, b, pairs, to_many)
 
 
 def find_paths(

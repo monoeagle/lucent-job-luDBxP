@@ -66,3 +66,19 @@ def test_enumeration_cap_respected(graph):
     assert len(paths) <= config.MAX_PATH_ENUMERATION
     # Shortest path from the test schema is the two-hop Networks -> VirtualMachines -> VMwareCluster
     assert paths[0].tables == ("Networks", "VirtualMachines", "VMwareCluster")
+
+
+def test_step_to_one_when_ascending(graph):
+    # VirtualMachines hält den FK auf Networks → VM->Networks ist child->parent (N-1)
+    paths = find_paths(graph, "VirtualMachines", "Networks")
+    step = paths[0].steps[0]
+    assert step.left_table == "VirtualMachines" and step.right_table == "Networks"
+    assert step.to_many is False
+
+
+def test_step_to_many_when_descending(graph):
+    # Networks->VirtualMachines steigt ab (ein Network, viele VMs) → Fan-out
+    paths = find_paths(graph, "Networks", "VirtualMachines")
+    step = paths[0].steps[0]
+    assert step.left_table == "Networks" and step.right_table == "VirtualMachines"
+    assert step.to_many is True
