@@ -15,8 +15,6 @@
   zusammenführen
 - **AP-25** — Tool: SQL-Statement-Analyzer (read-only Analyse beliebiger Statements,
   ohne Ausführung; Tabellen/Join-Pfad markieren)
-- **AP-29** — SQL-Dialekt umschalten (Oracle/MSSQL/PostgreSQL/MySQL/SQLite;
-  LIMIT/TOP/FETCH + Identifier-Quoting)
 - **AP-30** — N-1-Stern-Abfrage (ein Start, mehrere Lookup-/Eltern-Ziele; kein
   Zeilen-Fan-out — 1-N-Mehrfach-Ziele werden gewarnt)
 - **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
@@ -46,7 +44,7 @@ Doku/AppImage/Projektposter.
 - **AP-8** — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0
 - **AP-9** — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1
 
-**v0.4.0 – v0.14.0** (2026-06-26):
+**v0.4.0 – v0.15.0** (2026-06-26):
 
 - **AP-14** — Python-3.14-Readiness, Windows-Pfad (Wheelhouse cp312 → cp314) — v0.4.0
 - **AP-11** — Composite Foreign Keys voll unterstützt (`ON … AND …`) — v0.5.0
@@ -67,6 +65,7 @@ Doku/AppImage/Projektposter.
 - **AP-15** (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent — v0.12.0
 - **AP-33** — Logging sauber (Rotation · konfig. Level/Pfad · Request-Logging) — v0.13.0
 - **AP-14** (Teil 2, Linux) — Python-3.14-AppImage + AppRun-Update-/Browser-Fix — v0.14.0
+- **AP-29** — SQL-Dialekt umschalten (Quoting + LIMIT/TOP/FETCH je Dialekt) — v0.15.0
 - **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
 - **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
 

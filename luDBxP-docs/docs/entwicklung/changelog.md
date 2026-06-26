@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.15.0] — 2026-06-26
+### Hinzugefügt
+- **AP-29 — SQL-Dialekt umschalten:** Dialekt-Dropdown im Join-Builder
+  (SQLite · PostgreSQL · MySQL · MSSQL · Oracle). Das read-only SELECT wird
+  dialekt-treu gerendert — **Identifier-Quoting** (`"x"` / `` `x` `` / `[x]`)
+  und **Zeilenlimit** (`LIMIT n` / `SELECT TOP n` / `FETCH FIRST n ROWS ONLY`).
+  Default aus der Verbindung; **Anzeige** nutzt den gewählten Dialekt, die
+  **Ausführung** den der echten Verbindung. Hand-gerollte `Dialect`-Schicht in
+  `core/sqlgen.py` (keine neue Abhängigkeit), test-first, 137 Tests grün.
+### Geändert
+- **Identifier werden jetzt immer quotiert** (auch im SQLite-Default):
+  `SELECT "VirtualMachine"."VMID"` statt `SELECT VirtualMachine.VMID`.
+
 ## [0.14.0] — 2026-06-26
 ### Geändert
 - **AP-14 (Teil 2, Linux) — Python-3.14-AppImage:** venv und AppImage laufen jetzt
