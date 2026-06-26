@@ -127,3 +127,23 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] Abwägung: Mehrwert (breitere Abfrage in einem Schritt) vs. Komplexität (mehrere Pfade vereinen, Mehrdeutigkeit, kartesische Risiken bei 1-N-Fan-out)
 - [ ] Falls sinnvoll: als **Join-Baum** mit mehreren Ziel-Ästen modellieren (analog zum bestehenden Filter-Tabellen-Weaving in `find_paths`)
 - [ ] **Erkenntnis (Anwendungsfälle):** wertvoll v. a. für **N-1-Äste** (Stern-/Report-Abfrage: Start zieht Attribute aus mehreren Eltern-/Lookup-Tabellen, z. B. VM + Host-Name + OS-Name + VLAN) — kein Zeilen-Fan-out. Mehrere **1-N-Kind**-Äste gleichzeitig blähen quasi-kartesisch auf → eher **warnen** statt anbieten
+
+## AP-31 — Terminal-Server-Tauglichkeit (Multi-User)
+**Frage:** Läuft die App korrekt für **mehrere gleichzeitige** Nutzer auf einem (RDS-)Terminal-Server?
+**Befund — Single-User pro Maschine: ja; gleichzeitige Mehrbenutzung: aktuell NEIN.**
+- [ ] **Fester Port 5057 auf gemeinsamem Loopback:** Windows-RDS teilt `127.0.0.1` über alle Sessions → zweite Instanz kann 5057 nicht binden (run.ps1 bricht mit „Port belegt" ab); fremder Browser auf `127.0.0.1:5057` erreicht die fremde Instanz (keine Session-Isolation)
+- [ ] **Gemeinsame `config.json`** (Default- + gespeicherte Verbindungen) im App-Verzeichnis → Nutzer überschreiben sich gegenseitig
+- [ ] **Gemeinsames `Logs/`** → konkurrierende Schreibzugriffe
+- [ ] **Flask-Dev-Server** (`app.run`) ist kein Mehrbenutzer-Produktionsserver
+**Nötig für Multi-User:**
+- [ ] **Pro-Session dynamischer Port** (freien Port wählen + URL dem Nutzer anzeigen) statt fix 5057
+- [ ] **Pro-Nutzer `config.json` + `Logs/`** (z. B. `%LOCALAPPDATA%\<AppName>\`) statt App-Verzeichnis
+- [ ] Session-Isolation prüfen (RDS-Loopback geteilt) — pro Nutzer getrennte Ports; ggf. Bind-Strategie dokumentieren
+- [ ] Optional: lokaler WSGI-Server (z. B. `waitress`, NO-CDN-konform) statt Flask-Dev-Server
+- [ ] Betroffen: `config.py` (Port/Pfade), `app.py` (Port-Wahl), `core/settings.py` (config.json-Pfad), Logging-Pfad
+**Hinweis:** read-only begrenzt den Schaden (keine DB-Mutation); Verbindungen werden ohne Passwort gespeichert.
+
+## AP-32 (UI-Fix) — Zoom-%-Slider waagerecht in die Graph-Kopfzeile
+- [ ] Aktuell: vertikaler Zoom-Slider (`#zoom_ctrl`) liegt absolut positioniert oben rechts **über** dem Graphen → verdeckt/behindert die Darstellung
+- [ ] Soll: Slider **waagerecht** in die Panel-Kopfzeile („Schema-Graph"-Leiste, `.panelhead`), **links neben** den Button „Neu anordnen" → stört den Graphen nicht mehr
+- [ ] Betroffen: `web/templates/index.html` (`#zoom_ctrl` in die `.panelhead` verschieben), `web/static/css/app.css` (`#zoom_ctrl`/`#zoom_slider` von vertikal auf horizontal, absolute Positionierung raus), ggf. `web/static/js/app.js` (`orient`/Slider-Logik)
