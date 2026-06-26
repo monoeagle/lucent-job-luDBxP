@@ -1,26 +1,13 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-33 (Logging, v0.13.0), AP-14 (Linux/AppImage 3.14, v0.14.0), **AP-29** (SQL-Dialekt, v0.15.0).
-Offen hier: **AP-12** (MSSQL real testbar).
+Zuletzt erledigt: AP-14 (v0.14.0), AP-29 (SQL-Dialekt, v0.15.0), **AP-12** (MSSQL komplett, v0.16.0).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
 `todo-erledigt.md` umhängen · AP-Diagramm + Site **auf Linux** neu bauen.
 
 ---
-
-## AP-12 — MSSQL real testbar machen
-**Backend UMGESETZT (v0.9.0):**
-- [x] **ODBC Driver 18 als Default** + `Encrypt`/`TrustServerCertificate`-Parameter in der Connection-URL; Treibername überschreibbar (`core/connection.py::_mssql_query`)
-- [x] **Klare Fehlermeldung bei fehlendem Treiber** (AP-2-Stil, statt roher pyodbc-Exception) — `_odbc_driver_hint` im Loader (IM002 / „no default driver" / „Can't open lib")
-- [x] Setup-Doku in `grundlagen/installation.md` (Driver 18, TrustServerCertificate, überschreibbar)
-- [x] Tests: Default-Driver 18, Custom-Driver + Encrypt/Trust, Treiber-Hinweis-Erkennung (118 grün, gegen SQLite)
-
-**Stand 2026-06-27 — real gegen MSSQL verifiziert:**
-- [x] **System-ODBC eingerichtet** (Linux-Devbox): `msodbcsql18` + „ODBC Driver 18 for SQL Server" registriert; MSSQL-Instanz via **rootless podman** (`mcr.microsoft.com/mssql/server:2022`) für den Test
-- [x] **Integrationstest real grün** — `tests/test_mssql_integration.py` (`LUCENT_MSSQL_TEST_URL`): provisioniert ein Parent/Child-Schema, reflektiert es über den App-Loader und prüft die **FK-Kante**; skippt sauber ohne ENV/Treiber. Verifiziert: ODBC Driver 18 → pyodbc → SQLAlchemy-Reflection → Core-Modell (Tabellen/Spalten/PK/FK) auf echtem SQL Server 2022
-- [ ] **Letztes Teilstück:** UI-Felder für `Encrypt`/`TrustServerCertificate` im Verbindungs-Tab (Backend kann's seit v0.9.0; aktuell nur via API/`config.json` setzbar)
 
 ## AP-35 — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund aus AP-15)
 **Bezug:** beim Linux-Spiegeln in AP-15 entdeckt — dieselbe latente Schwäche steckt in `run.ps1`.

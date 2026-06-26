@@ -195,6 +195,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Test-first: 7 neue Tests in `tests/test_log.py`; **125 Tests grün**. Betroffen: `core/log.py`, `web/__init__.py`, `config.py`
 - [ ] **An AP-31 übergeben:** volle Terminal-Server-Verdrahtung des Pro-Nutzer-Logpfads (z. B. `%LOCALAPPDATA%`) — hier nur der ENV-Hook gebaut
 
+## AP-12 — MS SQL Server real testbar (Backend v0.9.0 · Abschluss v0.16.0)
+- [x] **Backend (v0.9.0):** ODBC Driver 18 als Default + `Encrypt`/`TrustServerCertificate` in der URL (`_mssql_query`); klare Treiber-Fehlermeldung (`_odbc_driver_hint`); Setup-Doku
+- [x] **System-ODBC (Linux-Devbox):** `msodbcsql18` + ODBC Driver 18 registriert; MSSQL via **rootless podman** (SQL Server 2022) — Docker/containerd-Konflikt umgangen
+- [x] **Integrationstest real grün** (`tests/test_mssql_integration.py`, `LUCENT_MSSQL_TEST_URL`): provisioniert Parent/Child + FK, reflektiert via App-Loader, prüft die FK-Kante; skippt sauber ohne ENV. Voller Pfad ODBC 18 → pyodbc → SQLAlchemy → Core-Modell verifiziert
+- [x] **UI-Felder (v0.16.0):** Verbindungs-Tab hat für MSSQL Tri-State-Dropdowns Verschlüsselung/Server-Zertifikat-vertrauen (Standard/ja/nein); `formParams` reicht durch; persistiert in `_CONN_FIELDS`. Test-first (Persistenz-Test), Playwright-verifiziert: ohne „vertrauen" Cert-Fehler, mit „ja" verbindet → 5 Tabellen aus `master` reflektiert. 138 grün
+- [x] **Einschränkung „MSSQL nur gegen SQLite getestet" aufgehoben**
+
 ## AP-29 — SQL-Dialekt umschalten (v0.15.0)
 - [x] **Dialect-Schicht** in `core/sqlgen.py` (hand-gerollt, keine neue Dependency): 5 Dialekte SQLite/PostgreSQL/MySQL/MSSQL/Oracle
 - [x] **Identifier-Quoting** je Dialekt (`"…"` / `` `…` `` / `[…]`) mit Escaping (schließendes Zeichen verdoppeln); `dialect_for(db_type)`-Resolver, SQLite-Fallback

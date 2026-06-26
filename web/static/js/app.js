@@ -917,7 +917,8 @@ function connFieldsHtml(dbType, c) {
       `value="${esc(c.filepath || "")}" style="flex:1"></div>`;
   }
   const port = c.port || PORT_DEFAULTS[dbType] || "";
-  return `<div class="row"><label>Host</label><input id="cf_host" type="text" ` +
+  let html =
+    `<div class="row"><label>Host</label><input id="cf_host" type="text" ` +
     `placeholder="localhost" value="${esc(c.host || "")}"></div>` +
     `<div class="row"><label>Port</label><input id="cf_port" type="number" ` +
     `value="${esc(port)}"></div>` +
@@ -926,6 +927,19 @@ function connFieldsHtml(dbType, c) {
     `<div class="row"><label>Benutzer</label><input id="cf_user" type="text" ` +
     `value="${esc(c.user || "")}"></div>` +
     `<div class="row"><label>Passwort</label><input id="cf_password" type="password"></div>`;
+  // AP-12: MSSQL-Verschlüsselungsoptionen. Tri-State — "Standard" lässt den
+  // Parameter weg (build_url nimmt nichts Unsicheres an).
+  if (dbType === "mssql") {
+    const tri = (id, label, val) => {
+      const opt = (v, t) =>
+        `<option value="${v}"${(val || "") === v ? " selected" : ""}>${t}</option>`;
+      return `<div class="row"><label>${label}</label><select id="${id}">` +
+        opt("", "Standard") + opt("yes", "ja") + opt("no", "nein") + `</select></div>`;
+    };
+    html += tri("cf_encrypt", "Verschlüsselung", c.encrypt) +
+            tri("cf_trust", "Server-Zertifikat vertrauen", c.trust_server_certificate);
+  }
+  return html;
 }
 
 function renderConnFields(c) {
@@ -935,11 +949,16 @@ function renderConnFields(c) {
 function formParams() {
   const t = $("conn_type").value;
   if (t === "sqlite") return { db_type: t, filepath: $("cf_filepath").value };
-  return {
+  const p = {
     db_type: t, host: $("cf_host").value, port: $("cf_port").value,
     database: $("cf_database").value, user: $("cf_user").value,
     password: $("cf_password").value,
   };
+  if (t === "mssql") {
+    p.encrypt = $("cf_encrypt") ? $("cf_encrypt").value : "";
+    p.trust_server_certificate = $("cf_trust") ? $("cf_trust").value : "";
+  }
+  return p;
 }
 
 // AP-10: keep both connection pickers (topbar dropdown + connection tab) fed

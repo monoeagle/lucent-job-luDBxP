@@ -50,6 +50,23 @@ def test_connections_save_list_delete_without_password(client, tmp_path, monkeyp
     assert saved["host"] == "h" and saved["database"] == "cmdb"
     assert "password" not in saved  # password is never persisted
     client.delete("/api/connections", json={"name": "prod"})
+
+
+def test_mssql_connection_persists_encrypt_and_trust(client, tmp_path, monkeypatch):
+    """AP-12: MSSQL Encrypt/TrustServerCertificate are saved with the connection."""
+    import config
+    monkeypatch.setattr(config, "CONFIG_JSON", str(tmp_path / "settings.json"))
+    save = client.post("/api/connections", json={
+        "name": "mssql_prod", "db_type": "mssql", "host": "h", "port": 1433,
+        "database": "cmdb", "user": "sa", "password": "SECRET",
+        "encrypt": "yes", "trust_server_certificate": "yes"})
+    assert save.status_code == 200
+    conns = client.get("/api/connections").get_json()["connections"]
+    saved = next(c for c in conns if c["name"] == "mssql_prod")
+    assert saved.get("encrypt") == "yes"
+    assert saved.get("trust_server_certificate") == "yes"
+    assert "password" not in saved
+    client.delete("/api/connections", json={"name": "mssql_prod"})
     assert client.get("/api/connections").get_json()["connections"] == []
 
 

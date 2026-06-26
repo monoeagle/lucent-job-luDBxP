@@ -17,7 +17,8 @@ from core.datapreview import fetch_rows, execute_select
 from core.connection import build_url
 
 # Connection fields that may be persisted (never the password).
-_CONN_FIELDS = ("db_type", "host", "port", "database", "user", "filepath")
+_CONN_FIELDS = ("db_type", "host", "port", "database", "user", "filepath",
+                "encrypt", "trust_server_certificate")
 
 _log = logging.getLogger("luDBxP")
 
