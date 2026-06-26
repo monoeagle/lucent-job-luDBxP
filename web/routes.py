@@ -328,7 +328,7 @@ def _path_warnings(p) -> list[str]:
     """Non-blocking warnings for a join path: one per descending (1-N) step,
     which can multiply result rows (quasi-cartesian fan-out)."""
     return [
-        f'Ast „{s.right_table}" ist 1-N (absteigend) — kann Zeilen vervielfachen.'
+        f'Ast „{s.right_table}“ ist 1-N (absteigend) — kann Zeilen vervielfachen.'
         for s in p.steps if s.to_many
     ]
 
