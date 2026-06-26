@@ -324,6 +324,15 @@ def _make_path_gen(p, start: dict, target: dict,
                         dialect=dialect)
 
 
+def _path_warnings(p) -> list[str]:
+    """Non-blocking warnings for a join path: one per descending (1-N) step,
+    which can multiply result rows (quasi-cartesian fan-out)."""
+    return [
+        f"Ast \"{s.right_table}\" ist 1-N (absteigend) - kann Zeilen vervielfachen."
+        for s in p.steps if s.to_many
+    ]
+
+
 @bp.post("/api/joinpath")
 def api_joinpath():
     """Find join paths between two columns and return the generated SQL."""
@@ -370,6 +379,7 @@ def api_joinpath():
                 "edges": [[s.left_table, s.right_table] for s in p.steps],
                 "sql": gen.sql,
                 "params": gen.params,
+                "warnings": _path_warnings(p),
             })
     except ValueError as exc:
         return jsonify(error=str(exc)), 400

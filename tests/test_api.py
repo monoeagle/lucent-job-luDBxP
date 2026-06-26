@@ -515,3 +515,34 @@ def test_joinpath_n1_star_multi_lookup(client, inventory_url):
     assert '"Networks"."VLAN"' in p["sql"]
     assert '"OperatingSystems"."OS_Family"' in p["sql"]
     assert '"VMwareCluster"."ClusterName"' in p["sql"]
+
+
+def test_joinpath_descending_branch_warns(client, inventory_url):
+    """AP-30: a descending (1-N) step yields a non-blocking fan-out warning,
+    but SQL is still generated."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VirtualMachines", "column": "VMID"},
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert "SELECT" in p["sql"]            # generation still succeeds
+    assert any("VirtualMachines" in w for w in p["warnings"])
+
+
+def test_joinpath_ascending_star_has_no_warning(client, inventory_url):
+    """AP-30: a pure N-1 star (all branches ascend) carries no fan-out warning."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "VirtualMachines", "column": "VMID"},
+        "target": {"table": "Networks", "column": "VLAN"},
+        "extra_selects": [
+            {"table": "OperatingSystems", "column": "OS_Family"},
+            {"table": "VMwareCluster", "column": "ClusterName"},
+        ],
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    assert resp.get_json()["paths"][0]["warnings"] == []
