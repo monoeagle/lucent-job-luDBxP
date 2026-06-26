@@ -202,3 +202,10 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] **Doku-Ort entschieden:** `docs/audits/` (entwicklerintern, **nicht** ins Delivery — AP-17); öffentliche Site nur neutrale Aussage ohne KI-Bezug
 - [x] **Erster Record:** `docs/audits/2026-06-26-dagre-cytoscape-dagre.md` (dagre/cytoscape-dagre, AP-16) — Ergebnis unbedenklich
 - [ ] **Optional offen:** neutrale Sicherheits-Notiz auf der Zensical-Site (alle Assets lokal, kein CDN, kein Laufzeit-Netzwerk) — beim nächsten Linux-Doku-Build mitnehmen
+
+## AP-18 — Verknüpfen mehrerer Tabellen (Status geprüft) (v0.11.0)
+- [x] **Ergebnis: bereits voll implementiert.** `core/pathfinder.find_paths` erzeugt Multi-Station-Pfade (beliebig viele Zwischentabellen) via `nx.shortest_simple_paths`; `core/sqlgen.generate_sql` emittiert `FROM tables[0]` + ein `JOIN` je Step → N Tabellen = N-1 JOINs
+- [x] **Filter-Tabellen** werden zusätzlich als Pfad-Zweige eingewebt (nächster erreichbarer Anker, deterministisch) — weitere Join-Stationen ohne Duplikat-Tabellen
+- [x] **Verifiziert** (gegen Demo-CMDB): 7-Tabellen-Join `Network→Datacenter→Host→VirtualMachine→VMDisk→Datastore→Replication` (6 JOINs) + Filter-Weaving-Beispiel; bestehende Tests decken es ab (`test_sqlgen::test_basic_select_join` = 3 Tabellen/2 JOINs, `test_pathfinder`/`test_demo_db_cases` = Filter-Weaving)
+- [x] **Abgrenzung dokumentiert** (`luDBxP-docs/docs/referenz/usecases.md`, UC-1): beliebig viele Zwischentabellen ja; eine Abfrage hat aber genau **eine** Start- und **eine** Ziel-Tabelle — mehrere unabhängige Ziele sind nicht vorgesehen
+- [ ] **Linux-Rest:** Zensical-Site mit der UC-1-Ergänzung neu bauen (Konvention: nur Linux)

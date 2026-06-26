@@ -73,11 +73,6 @@ Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meld
 - [ ] **Keine Rückschlüsse auf Claude-/AI-Einsatz** (keine CLAUDE.md, Handoffs, `.pattern`, Insights, AI-Spuren im Delivery)
 - [ ] Abgrenzen: was gehört ins Delivery vs. nur ins Entwickler-Repo
 
-## AP-18 — Verknüpfen mehrerer Tabellen (Status prüfen)
-- [ ] Frage: ist das Verknüpfen von **mehr als zwei** Tabellen (mehrere Join-Stationen) schon umgesetzt?
-- [ ] Falls ja: dokumentieren/verifizieren; falls nein: umsetzen
-- [ ] (Hinweis: Filter-Tabellen werden bereits in den Pfad eingewebt — Mehrfach-Ziel/-Quelle prüfen)
-
 ## AP-19 — `.pattern_transfer` (projektlokale Pattern sammeln)
 - [ ] Verzeichnis `.pattern_transfer` im Projekt: Sammelstelle für Pattern, die im aktiven Projekt entstehen
 - [ ] In einer globalen Claude-Session werden alle projektlokalen Pattern eingesammelt und — wo sinnvoll — ins globale `.pattern` zusammengeführt

@@ -16,6 +16,13 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.
 **Ausgabe:** Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative
 Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.
 
+> **Mehr als zwei Tabellen:** Ein Pfad verbindet Start und Ziel über **beliebig viele
+> Zwischentabellen** (mehrere Join-Stationen) — z. B. in der Demo-CMDB
+> `Network → Datacenter → Host → VirtualMachine → VMDisk → Datastore → Replication`
+> (6 JOINs). Über „Filter +" benötigte Tabellen werden als zusätzliche Stationen in den
+> Pfad eingewebt (siehe UC-2). Eine Abfrage hat dabei genau **eine** Start- und **eine**
+> Ziel-Tabelle; mehrere voneinander unabhängige Ziele in einer Abfrage sind nicht vorgesehen.
+
 <img src="../images/screenshots/Screenshot_04_luDBxP.jpg"
      alt="Join-Builder-Ergebnis: VirtualMachine → Datacenter, 5 Pfade, SQL-Block, Graph-Highlight in Rot.">
 
