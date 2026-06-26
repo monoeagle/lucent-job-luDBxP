@@ -31,7 +31,7 @@ body {
   flex: 1 1 auto; min-height: 0;
   display: grid;
   grid-template-columns:
-    var(--sidebar-width, 240px) 5px minmax(0, 1fr) 5px var(--graph-width, 50vw);
+    var(--sidebar-width, 240px) 5px minmax(0, 1fr) 5px var(--graph-width, 38vw);
 }
 .splitter { background: #ccc; cursor: col-resize; }
 .splitter:hover, .splitter.dragging { background: #2E6FAE; }
@@ -126,17 +126,64 @@ body {
 .panel { display: none; }
 .panel.active { display: block; }
 
-/* --- join builder --- */
-.joinbuilder .row { display: flex; gap: .4rem; align-items: center; margin: .4rem 0; }
+/* --- join builder (AP-23: einheitliche Steuerelement-Größen) --- */
+.joinbuilder {
+  --jb-ctrl-w: 150px;   /* gemeinsame Breite aller Dropdowns/Eingaben */
+  --jb-ctrl-h: 30px;    /* gemeinsame Höhe aller Steuerelemente/Buttons */
+}
+.joinbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .4rem 0; }
 .joinbuilder label { min-width: 3rem; }
-.filter-row { display: flex; gap: .4rem; align-items: center; margin: .3rem 0; }
-.filter-row .f-del { padding: 0 .5rem; }
+.filter-row, .orderby-row, .col-row {
+  display: flex; gap: .4rem; align-items: center; margin: .3rem 0;
+  padding-left: calc(3rem + .4rem);   /* unter Start/Ziel einrücken */
+}
+
+/* Jeder Dropdown gleich breit; Text-Eingaben fluchten mit. */
+.joinbuilder select,
+.joinbuilder .f-val {
+  width: var(--jb-ctrl-w); height: var(--jb-ctrl-h);
+  padding: 0 .4rem; border: 1px solid #bcbcc6; border-radius: 4px;
+  background: #fff; font-size: .85rem;
+}
+.f-val-wrap { display: inline-flex; gap: .25rem; }
+.joinbuilder .f-val-lo, .joinbuilder .f-val-hi {
+  width: calc((var(--jb-ctrl-w) - .25rem) / 2); height: var(--jb-ctrl-h);
+  padding: 0 .4rem; border: 1px solid #bcbcc6; border-radius: 4px;
+  background: #fff; font-size: .85rem;
+}
+#jb_limit {
+  width: 72px; height: var(--jb-ctrl-h); padding: 0 .4rem;
+  border: 1px solid #bcbcc6; border-radius: 4px; background: #fff; font-size: .85rem;
+}
+
+/* Aktions-Buttons: alle gleich groß. */
+.joinbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy) {
+  min-width: 140px; height: var(--jb-ctrl-h); padding: 0 .8rem;
+  border: 1px solid #bcbcc6; border-radius: 4px; background: #f3f3f6;
+  cursor: pointer; font-size: .85rem; white-space: nowrap;
+}
+.joinbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy):hover {
+  background: #e8e8ef;
+}
+
+/* Zeilen-Löschbuttons: einheitliche kleine Quadrate. */
+.f-del, .ob-del, .c-del {
+  width: var(--jb-ctrl-h); height: var(--jb-ctrl-h); padding: 0; flex: 0 0 auto;
+  border: 1px solid #bcbcc6; border-radius: 4px; background: #fff;
+  color: #a00; cursor: pointer; line-height: 1;
+}
+.f-del:hover, .ob-del:hover, .c-del:hover { background: #fde8e8; }
+
+/* Optionszeile: DISTINCT/LIMIT kompakt. */
+.jb-check, .jb-limit { display: inline-flex; align-items: center; gap: .3rem; }
 .path_list { padding-left: 1.2rem; }
 .sql_out { background: #1A1A2E; color: #eaeaea; padding: 1rem; overflow-x: auto;
-  white-space: pre; border-radius: 4px; }
+  white-space: pre; border-radius: 4px; margin: 0; }
 /* AP-20: copy icon in the SELECT's top-right corner */
-.sql-wrap { position: relative; }
-.sql-copy { position: absolute; top: 6px; right: 6px; z-index: 2;
+/* Spacing lives on the wrapper so the <pre>'s top edge == the box edge —
+   otherwise the icon floats in the pre's default margin, above the box. */
+.sql-wrap { position: relative; margin: .6rem 0; }
+.sql-copy { position: absolute; top: 10px; right: 12px; z-index: 2;
   display: flex; align-items: center; justify-content: center;
   width: 26px; height: 22px; padding: 0; cursor: pointer;
   background: rgba(255, 255, 255, .12); color: #cdd;

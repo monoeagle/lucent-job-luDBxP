@@ -16,6 +16,10 @@ const PORT_DEFAULTS = { postgresql: 5432, mysql: 3306, mssql: 1433 };
 // ===== Graph selection state (AP-1: interactive join-path selection) =====
 let GRAPH_SEL = { source: null, target: null };
 
+// Padding (px) around the graph's bounding box on fit — small so the graph
+// fills the panel and stays centered after layout/resize.
+const GRAPH_FIT_PAD = 16;
+
 // ===== Join-builder state (AP-6: result refresh + row-count selection) =====
 let JB_LAST = null;     // { body, paths } from the last successful build
 let JB_PATH_IDX = 0;    // currently selected path index
@@ -49,7 +53,7 @@ async function postJSON(url, body) {
     // fetch() throws a TypeError ("Failed to fetch") only when the server is
     // unreachable — translate it into an actionable message.
     throw new Error(
-      "Server nicht erreichbar — läuft Lucent DB Explorer? " +
+      "Server nicht erreichbar — läuft LucentTools DB Explorer? " +
       "Starte die App mit „bash run.sh“ und lade die Seite neu.");
   }
   const data = await r.json();
@@ -174,7 +178,7 @@ async function openInfo() {
 
   panel.innerHTML =
     `<div class="detail">` +
-    `<h2>${esc(meta ? meta.name : "Lucent DB Explorer")}</h2>` +
+    `<h2>${esc(meta ? meta.name : "LucentTools DB Explorer")}</h2>` +
     `<table class="cols"><tbody>` +
     `<tr><td>Version</td><td>${esc(meta ? meta.version : "?")}</td></tr>` +
     `<tr><td>Ersteller</td><td>${esc(meta ? meta.author : "?")}</td></tr>` +
@@ -279,14 +283,14 @@ function openJoinBuilder() {
     `<div class="filters" id="filters"></div>` +
     `<div class="filters" id="order_bys"></div>` +
     `<div class="filters" id="extra_cols"></div>` +
-    `<div class="row">` +
+    `<div class="row jb-actions">` +
     `<button id="btn_add_filter" title="Filterbedingung (mit UND verknüpft)">Filter +</button>` +
     `<button id="btn_add_orderby" title="Sortierungsspalte hinzufügen">Sortierung +</button>` +
-    `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Weitere Spalten +</button>` +
-    `<label style="margin-left:8px"><input type="checkbox" id="jb_distinct"> DISTINCT</label>` +
-    `<label style="margin-left:12px">LIMIT <input id="jb_limit" type="number" min="1"` +
-    ` placeholder="–" style="width:72px;margin-left:4px"></label>` +
-    `<button id="btn_build" style="margin-left:12px">Join-Pfad bauen</button></div>` +
+    `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Spalten +</button></div>` +
+    `<div class="row jb-options">` +
+    `<label class="jb-check"><input type="checkbox" id="jb_distinct"> DISTINCT</label>` +
+    `<label class="jb-limit">LIMIT <input id="jb_limit" type="number" min="1" placeholder="–"></label>` +
+    `<button id="btn_build">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
     `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
     `title="SELECT in die Zwischenablage kopieren" aria-label="SELECT kopieren">` +
@@ -350,11 +354,11 @@ function _updateFilterValueField(row) {
     wrap.innerHTML = "";
   } else if (op === "BETWEEN") {
     wrap.innerHTML =
-      `<input class="f-val-lo" type="text" placeholder="von" style="width:80px">` +
-      `<input class="f-val-hi" type="text" placeholder="bis" style="width:80px;margin-left:4px">`;
+      `<input class="f-val-lo" type="text" placeholder="von">` +
+      `<input class="f-val-hi" type="text" placeholder="bis">`;
   } else if (op === "IN") {
     wrap.innerHTML =
-      `<input class="f-val" type="text" placeholder="Wert1, Wert2, …" style="width:180px">`;
+      `<input class="f-val" type="text" placeholder="Wert1, Wert2, …">`;
   } else {
     wrap.innerHTML = `<input class="f-val" type="text" placeholder="Wert">`;
   }
@@ -739,20 +743,47 @@ async function drawGraph() {
   runGraphLayout();
 }
 
-// AP-13: cose layout whose spacing scales up for dense schemas so nodes don't
-// overlap; also reused by the "Neu anordnen" button to re-roll the layout.
+// AP-16: hierarchical (dagre) layout — the FK graph is directional, so a layered
+// Sugiyama layout minimizes edge crossings far better than force-directed cose.
+// rankDir BT puts referenced (parent) tables above their children. Deterministic,
+// so "Neu anordnen" resets to this clean layout after manual node dragging.
+//
+// We drive dagre directly via the bundled window.dagre. Edges are drawn as straight
+// lines (cytoscape's default): a deliberate trade-off — routing rank-skipping edges
+// through dagre's bend points removes the last 1 crossing but makes the connections
+// look noticeably worse (zig-zags). Clean straight lines + at most a crossing or two
+// read better, so we only position nodes here and leave edges straight.
 function runGraphLayout() {
-  if (!CY) return;
+  if (!CY || !window.dagre) return;
+  const dagre = window.dagre;
   const dense = CY.nodes().length > 12;
-  const layout = CY.layout({
-    name: "cose", animate: false, padding: 24, randomize: true,
-    nodeRepulsion: dense ? 30000 : 16000,
-    idealEdgeLength: dense ? 150 : 110,
-    nodeOverlap: dense ? 42 : 28,
-    componentSpacing: dense ? 200 : 120,
+  const g = new dagre.graphlib.Graph({ multigraph: true })
+    .setGraph({
+      rankdir: "BT",                 // referenced tables on top
+      ranker: "network-simplex",     // tighter, crossing-minimized ranks
+      nodesep: dense ? 24 : 18,      // separation within a rank
+      ranksep: dense ? 120 : 90,     // separation between ranks (fills panel height)
+      edgesep: 10,
+    })
+    .setDefaultEdgeLabel(() => ({}));
+
+  CY.nodes().forEach((n) => {
+    const bb = n.layoutDimensions({});
+    g.setNode(n.id(), { width: bb.w, height: bb.h });
   });
-  layout.one("layoutstop", () => { CY.fit(undefined, 24); updateZoomUI(); });
-  layout.run();
+  CY.edges().forEach((e) =>
+    g.setEdge(e.source().id(), e.target().id(), {}, e.id()));
+
+  dagre.layout(g);
+
+  CY.batch(() => {
+    CY.nodes().forEach((n) => {
+      const dn = g.node(n.id());
+      if (dn) n.position({ x: dn.x, y: dn.y });
+    });
+  });
+  CY.fit(undefined, GRAPH_FIT_PAD);
+  updateZoomUI();
 }
 
 // ===== Graph zoom control (AP-7) =====
@@ -813,7 +844,7 @@ function setupSplitter() {
     if (!dragging) return;
     dragging = false; splitter.classList.remove("dragging");
     document.body.style.userSelect = "";
-    if (CY) { CY.resize(); CY.fit(undefined, 24); }
+    if (CY) { CY.resize(); CY.fit(undefined, GRAPH_FIT_PAD); }
   });
 }
 
@@ -836,7 +867,7 @@ function setupLeftSplitter() {
     if (!dragging) return;
     dragging = false; splitter.classList.remove("dragging");
     document.body.style.userSelect = "";
-    if (CY) { CY.resize(); CY.fit(undefined, 24); }
+    if (CY) { CY.resize(); CY.fit(undefined, GRAPH_FIT_PAD); }
   });
 }
 
@@ -1025,6 +1056,18 @@ setupLeftSplitter();        // AP-13: resizable sidebar width
 setupObjectSearch();        // AP-13: object-browser name filter
 setupZoomControl();         // AP-7: graph zoom slider
 setupSqlCopy();             // AP-20: copy generated SELECT to clipboard
+setupGraphAutofit();        // keep the graph centered + space-filling on resize
+
+// Re-center and re-fit the graph whenever the window size changes, so it always
+// maximizes the graph panel (splitter drags already re-fit on mouseup).
+function setupGraphAutofit() {
+  let timer = null;
+  window.addEventListener("resize", () => {
+    if (!CY) return;
+    clearTimeout(timer);
+    timer = setTimeout(() => { CY.resize(); CY.fit(undefined, GRAPH_FIT_PAD); }, 120);
+  });
+}
 
 // AP-20: copy the generated SELECT to the clipboard via the icon in its corner.
 function setupSqlCopy() {
