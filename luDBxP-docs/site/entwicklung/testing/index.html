@@ -971,13 +971,13 @@
 <thead>
 <tr>
 <th>Metrik</th>
-<th>Wert (Stand v0.1.0)</th>
+<th>Wert (Stand v0.14.0)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Gesamt-Tests</td>
-<td><strong>81</strong></td>
+<td><strong>125</strong></td>
 </tr>
 <tr>
 <td>Framework</td>
@@ -1069,6 +1069,10 @@
 <td><code>test_loader_interface.py</code></td>
 <td>Abstrakte Loader-Schnittstelle</td>
 </tr>
+<tr>
+<td><code>test_log.py</code></td>
+<td><code>init_logging()</code> — Rotation, Level/Pfad via ENV, Request-Logging (AP-33)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="playwright-verifikation">Playwright-Verifikation<a class="headerlink" href="#playwright-verifikation" title="Permanent link">&para;</a></h2>
@@ -1077,14 +1081,16 @@ verifiziert (3-Panel-Layout, Graph-Rendering, Join-Builder-Flow,
 Filter-Hinzufügen, Datenvorschau-Tab).</p>
 <h2 id="test-fixtures-conftestpy">Test-Fixtures (<code>conftest.py</code>)<a class="headerlink" href="#test-fixtures-conftestpy" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>test_schema</code> — minimales In-Memory-Schema (orders → customers, mit FKs)</li>
-<li><code>app_client</code> — Flask-Testclient mit der App im Test-Modus</li>
-<li><code>demo_db_path</code> — Pfad zur eingecheckten <code>demo_cmdb.db</code></li>
+<li><code>inventory_url</code> — datei-basierte SQLite-URL aus dem Inventory-Schema (Reflection sieht FKs)</li>
+<li><code>inventory_nofk_url</code> — gleiche Form ohne deklarierte FKs (für Implied-FK-Tests)</li>
+<li><code>sqlite_engine</code> — SQLAlchemy-Engine auf <code>inventory_url</code></li>
 </ul>
+<p>(Der Flask-Testclient <code>client</code> und die <code>demo_url</code>-Fixture werden lokal in den
+jeweiligen Testdateien definiert, z. B. <code>test_api.py</code>.)</p>
 <h2 id="demo-cmdb-test-abdeckung">Demo-CMDB — Test-Abdeckung<a class="headerlink" href="#demo-cmdb-test-abdeckung" title="Permanent link">&para;</a></h2>
 <p>Die Demo-CMDB (<code>sample_data/build_demo_db.py</code>) ist gezielt auf Edge-Cases ausgelegt:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Diamant-Pfad:     A → B → D  und  A → C → D  (2 alternative Routen)
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Zusammenges. FK:  (col1, col2) → ref_table(pk1, pk2)  — in v1 nur col1 genutzt
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Zusammenges. FK:  (col1, col2) → ref_table(pk1, pk2)  — seit AP-11 voll: ON a.x=b.x AND a.y=b.y
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Selbstreferenz:   node.parent_id → node.id
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Mehrfach-FK:      tabelle hat 2 FKs auf dieselbe Zieltabelle
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>Isolierte Tabelle: keine FKs (taucht im Graph als isolierter Knoten auf)

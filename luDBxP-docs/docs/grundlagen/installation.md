@@ -39,16 +39,16 @@ Unter Windows übernimmt `run.ps1` dieselbe Rolle wie `run.sh` (gleiches Menü):
 
 Für Maschinen **ohne PyPI-/Internet-Freigabe** liegt ein **Offline-Wheelhouse**
 bei: der Ordner `wheels/` enthält alle Laufzeit-Abhängigkeiten als Windows-Wheels
-(`cp312-win_amd64`, ~7,8 MB). Ist `wheels/` vorhanden, installiert `run.ps1`
+(`cp314-win_amd64`, ~7,8 MB). Ist `wheels/` vorhanden, installiert `run.ps1`
 **automatisch offline** (`pip --no-index --find-links wheels`):
 
 ```powershell
 .\run.ps1 -Action setup-venv   # läuft ohne Internet aus wheels\
 ```
 
-- **Voraussetzung:** Python **3.12 (64-bit)** muss installiert sein (Installer von
+- **Voraussetzung:** Python **3.14 (64-bit)** muss installiert sein (Installer von
   python.org, ~30 MB — einmalig, kein pip-Nachladen). Die kompilierten Wheels sind
-  `cp312`; `run.ps1` verlangt im Offline-Modus daher Python 3.12.
+  `cp314`; `run.ps1` verlangt im Offline-Modus daher Python 3.14.
 - Andere Python-Version oder Aktualisierung: siehe `wheels/README.md`
   (`pip download …`-Rezept).
 - **Linux:** für einen vollständig offline-fähigen Build dient das AppImage

@@ -2,9 +2,9 @@
 
 ## Übersicht
 
-| Metrik | Wert (Stand v0.1.0) |
+| Metrik | Wert (Stand v0.14.0) |
 |---|---|
-| Gesamt-Tests | **81** |
+| Gesamt-Tests | **125** |
 | Framework | pytest |
 | Laufzeit | < 10 s |
 | Abdeckung | Unit + Integrationstests |
@@ -38,6 +38,7 @@ bash run.sh --tests
 | `test_index_page.py` | Startseite lädt, enthält erwartete HTML-Strukturen |
 | `test_sync_version.py` | `sync_version.py` — Versions-Bump-Logik |
 | `test_loader_interface.py` | Abstrakte Loader-Schnittstelle |
+| `test_log.py` | `init_logging()` — Rotation, Level/Pfad via ENV, Request-Logging (AP-33) |
 
 ## Playwright-Verifikation
 
@@ -47,9 +48,12 @@ Filter-Hinzufügen, Datenvorschau-Tab).
 
 ## Test-Fixtures (`conftest.py`)
 
-- `test_schema` — minimales In-Memory-Schema (orders → customers, mit FKs)
-- `app_client` — Flask-Testclient mit der App im Test-Modus
-- `demo_db_path` — Pfad zur eingecheckten `demo_cmdb.db`
+- `inventory_url` — datei-basierte SQLite-URL aus dem Inventory-Schema (Reflection sieht FKs)
+- `inventory_nofk_url` — gleiche Form ohne deklarierte FKs (für Implied-FK-Tests)
+- `sqlite_engine` — SQLAlchemy-Engine auf `inventory_url`
+
+(Der Flask-Testclient `client` und die `demo_url`-Fixture werden lokal in den
+jeweiligen Testdateien definiert, z. B. `test_api.py`.)
 
 ## Demo-CMDB — Test-Abdeckung
 
@@ -57,7 +61,7 @@ Die Demo-CMDB (`sample_data/build_demo_db.py`) ist gezielt auf Edge-Cases ausgel
 
 ```
 Diamant-Pfad:     A → B → D  und  A → C → D  (2 alternative Routen)
-Zusammenges. FK:  (col1, col2) → ref_table(pk1, pk2)  — in v1 nur col1 genutzt
+Zusammenges. FK:  (col1, col2) → ref_table(pk1, pk2)  — seit AP-11 voll: ON a.x=b.x AND a.y=b.y
 Selbstreferenz:   node.parent_id → node.id
 Mehrfach-FK:      tabelle hat 2 FKs auf dieselbe Zieltabelle
 Isolierte Tabelle: keine FKs (taucht im Graph als isolierter Knoten auf)

@@ -87,9 +87,13 @@ Foreign Keys** — ideal zum Testen der Implizite-FK-Heuristik.
 ```
 bash run.sh              # Interaktives Menü
 
-  [1] App starten        → http://127.0.0.1:5057
-  [2] Setup              → venv anlegen, Abhängigkeiten installieren
-  [3] Tests              → pytest (81 Tests)
-  [4] Demo-DB            → sample_data/ neu generieren
-  [5] Version            → aktuelle App-Version anzeigen
+  [1] App starten (Setup, falls nötig)   → http://127.0.0.1:5057
+  [2] Nur Umgebung einrichten (venv + pip)
+  [3] App schnell starten (ohne Setup-Check)
+  [4] Umgebung neu aufbauen (clean)
+  [5] Tests ausführen                    → pytest (125 Tests)
+  [6] Demo-DB neu erzeugen               → sample_data/
+  [7] Version anzeigen
+  [8] AppImage bauen                     → Linux-Standalone (Python gebündelt)
+  [0] Beenden
 ```
