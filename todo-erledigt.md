@@ -215,3 +215,10 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] `#join_result` ist der **einzige** Scroller (`min-height: 0` statt 200px → kann im festen Panel schrumpfen/scrollen)
 - [x] Verifiziert (Playwright, 1400×900): `.tabpanels`/Panel kein Overflow, `#join_result` scrollt (client ~202px); Detail-Tabs unberührt (Regel bleibt auf `[data-tab=joinbuilder]` beschränkt)
 - [x] Betroffen: `web/static/css/app.css`
+
+## AP-32 (UI-Fix) — Zoom-%-Slider waagerecht in die Graph-Kopfzeile (v0.11.2)
+- [x] Slider aus absoluter Position **über** dem Graphen in die Panel-Kopfzeile (`.panelhead`) verschoben — **waagerecht**, links neben „Neu anordnen" (neue `.panelhead-tools`-Gruppe)
+- [x] CSS: `#zoom_ctrl` von vertikal/absolut (writing-mode, box/shadow, `position:absolute`) auf `inline-flex` row; `#zoom_slider` horizontal (110×12px); `orient="vertical"` aus dem Markup entfernt
+- [x] `app.js` unverändert nötig (Slider-IDs/Logik gleich); Kopfzeilen-Höhe bleibt 34px (AP-21 unberührt)
+- [x] Verifiziert (Playwright): Slider in Kopfzeile, links vom Button, **keine** Graph-Überlappung; Zoom funktioniert (Slider 250 → CY-Zoom 250%); 118 Tests grün
+- [x] Betroffen: `web/templates/index.html`, `web/static/css/app.css`

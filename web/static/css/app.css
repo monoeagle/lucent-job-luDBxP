@@ -49,24 +49,23 @@ body {
 }
 
 /* --- graph zoom control (AP-7: fine zoom + slider with %) --- */
+/* AP-32: horizontal, inside the panel header left of "Neu anordnen", so it no
+   longer overlaps the graph. */
 #zoom_ctrl {
-  position: absolute; top: 44px; right: 10px; z-index: 5;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  padding: 6px 5px; background: rgba(255,255,255,.88);
-  border: 1px solid #ccc; border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  display: inline-flex; flex-direction: row; align-items: center; gap: 6px;
 }
 #zoom_slider {
-  writing-mode: vertical-lr; direction: rtl;   /* vertical, low at bottom */
-  width: 10px; height: 130px; cursor: pointer;
+  width: 110px; height: 12px; cursor: pointer;
 }
-#zoom_pct { font-size: .72rem; color: #333; font-variant-numeric: tabular-nums; }
+#zoom_pct { font-size: .72rem; color: #333; font-variant-numeric: tabular-nums;
+  min-width: 2.6em; text-align: right; }
 .panelhead {
   flex: 0 0 auto; min-height: 34px; box-sizing: border-box;
   padding: .25rem .6rem; background: #f3f3f6;
   border-bottom: 1px solid #ddd; font-weight: 600; font-size: .9rem;
   display: flex; align-items: center; justify-content: space-between;
 }
+.panelhead-tools { display: flex; align-items: center; gap: .6rem; }
 #graph_relayout { font-weight: normal; font-size: .76rem; padding: .15rem .45rem; }
 #graph { flex: 1 1 auto; min-height: 0; }  /* fills panel, never scrolls the page */
 

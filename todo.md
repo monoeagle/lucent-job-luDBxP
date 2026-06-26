@@ -142,8 +142,3 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] Optional: lokaler WSGI-Server (z. B. `waitress`, NO-CDN-konform) statt Flask-Dev-Server
 - [ ] Betroffen: `config.py` (Port/Pfade), `app.py` (Port-Wahl), `core/settings.py` (config.json-Pfad), Logging-Pfad
 **Hinweis:** read-only begrenzt den Schaden (keine DB-Mutation); Verbindungen werden ohne Passwort gespeichert.
-
-## AP-32 (UI-Fix) — Zoom-%-Slider waagerecht in die Graph-Kopfzeile
-- [ ] Aktuell: vertikaler Zoom-Slider (`#zoom_ctrl`) liegt absolut positioniert oben rechts **über** dem Graphen → verdeckt/behindert die Darstellung
-- [ ] Soll: Slider **waagerecht** in die Panel-Kopfzeile („Schema-Graph"-Leiste, `.panelhead`), **links neben** den Button „Neu anordnen" → stört den Graphen nicht mehr
-- [ ] Betroffen: `web/templates/index.html` (`#zoom_ctrl` in die `.panelhead` verschieben), `web/static/css/app.css` (`#zoom_ctrl`/`#zoom_slider` von vertikal auf horizontal, absolute Positionierung raus), ggf. `web/static/js/app.js` (`orient`/Slider-Logik)

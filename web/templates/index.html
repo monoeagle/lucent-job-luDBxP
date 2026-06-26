@@ -39,15 +39,18 @@
     <div class="splitter" id="splitter" title="Ziehen zum Verschieben"></div>
 
     <section class="graphpanel">
-      <div class="panelhead">Schema-Graph
-        <button id="graph_relayout" type="button" title="Graph neu anordnen">Neu anordnen</button>
+      <div class="panelhead">
+        <span>Schema-Graph</span>
+        <div class="panelhead-tools">
+          <span id="zoom_ctrl" title="Zoom (Scrollen zoomt feinstufig)">
+            <input id="zoom_slider" type="range" min="10" max="400" step="5" value="100"
+                   aria-label="Zoom">
+            <span id="zoom_pct">100%</span>
+          </span>
+          <button id="graph_relayout" type="button" title="Graph neu anordnen">Neu anordnen</button>
+        </div>
       </div>
       <div id="graph"></div>
-      <div id="zoom_ctrl" title="Zoom (Scrollen zoomt feinstufig)">
-        <input id="zoom_slider" type="range" min="10" max="400" step="5" value="100"
-               orient="vertical" aria-label="Zoom">
-        <span id="zoom_pct">100%</span>
-      </div>
       <div id="uml_area">
         <div id="uml_bar">
           <span id="uml_status"></span>
