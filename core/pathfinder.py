@@ -72,15 +72,15 @@ def find_paths(
     graph,
     start_table,
     target_table,
-    filter_tables=(),
+    required_tables=(),
     k=config.MAX_JOIN_PATHS,
 ):
     """Find up to k join paths from start_table to target_table.
 
     Paths are returned shortest-first.  Ties are broken deterministically by
     lexicographic node sequence so that identical inputs always produce
-    identical output.  Filter tables not already on a candidate path are
-    woven in as branches of a join tree: each missing filter table is attached
+    identical output.  Required tables not already on a candidate path are
+    woven in as branches of a join tree: each missing required table is attached
     to the nearest already-included node via the shortest connecting sub-path,
     adding only new nodes.  No table ever appears more than once in the
     resulting JoinPath, making every step safe to emit as a SQL JOIN clause.
@@ -93,15 +93,16 @@ def find_paths(
         graph: A NetworkX Graph produced by build_graph().
         start_table: Name of the starting table.
         target_table: Name of the target table.
-        filter_tables: Optional sequence of table names that must appear in
-            every returned path.
+        required_tables: Optional sequence of table names that must appear in
+            every returned path (filter, selected-column and order-by tables),
+            woven in as branches of a join tree.
         k: Maximum number of paths to return.
 
     Returns:
         A list of JoinPath instances, shortest-first.
 
     Raises:
-        NoPathError: If start_table, target_table, or any filter_table is
+        NoPathError: If start_table, target_table, or any required_table is
             unknown or not reachable.
     """
     if start_table not in graph or target_table not in graph:
@@ -132,7 +133,7 @@ def find_paths(
             for i in range(len(node_seq) - 1)
         ]
 
-        for ftable in filter_tables:
+        for ftable in required_tables:
             if ftable in included_set:
                 continue
             # Find the nearest included node that reaches ftable
@@ -145,7 +146,7 @@ def find_paths(
                     conn = min(nx.all_shortest_paths(graph, node, ftable))
                 except (nx.NetworkXNoPath, nx.NodeNotFound) as exc:
                     raise NoPathError(
-                        f"Filter table {ftable} is not connected"
+                        f"Required table {ftable} is not connected"
                     ) from exc
                 if best is None or (len(conn), conn) < (len(best), best):
                     best = conn

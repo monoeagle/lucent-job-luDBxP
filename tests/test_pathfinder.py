@@ -32,7 +32,7 @@ def test_determinism(graph):
 def test_filter_table_is_woven_in(graph):
     # Start/target on the Networks<->Cluster axis, filter forces OperatingSystems in
     paths = find_paths(graph, "Networks", "VMwareCluster",
-                       filter_tables=("OperatingSystems",))
+                       required_tables=("OperatingSystems",))
     assert "OperatingSystems" in paths[0].tables
 
 
@@ -47,7 +47,7 @@ def test_no_path_raises():
 
 def test_filter_weave_has_no_duplicate_tables(graph):
     paths = find_paths(graph, "Networks", "VMwareCluster",
-                       filter_tables=("OperatingSystems",))
+                       required_tables=("OperatingSystems",))
     p = paths[0]
     # every table appears exactly once (valid for single-alias SQL joins)
     assert len(p.tables) == len(set(p.tables))
@@ -82,3 +82,12 @@ def test_step_to_many_when_descending(graph):
     step = paths[0].steps[0]
     assert step.left_table == "Networks" and step.right_table == "VirtualMachines"
     assert step.to_many is True
+
+
+def test_required_table_unreachable_raises(graph):
+    # OperatingSystems is reachable; an isolated bogus table is not.
+    import networkx as nx
+    g = nx.Graph(graph)
+    g.add_node("Orphan")
+    with pytest.raises(NoPathError):
+        find_paths(g, "Networks", "VMwareCluster", required_tables=("Orphan",))

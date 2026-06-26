@@ -76,7 +76,7 @@ def test_isolated_table_raises_no_path(demo_graph):
 
 def test_filter_weave_on_real_schema_has_no_duplicate_tables(demo_graph):
     path = find_paths(
-        demo_graph, "Network", "Cluster", filter_tables=("OperatingSystem",)
+        demo_graph, "Network", "Cluster", required_tables=("OperatingSystem",)
     )[0]
     assert "OperatingSystem" in path.tables
     assert len(path.tables) == len(set(path.tables))  # each table joined once
