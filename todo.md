@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-15 (Linux, v0.12.0), AP-33 (Logging, v0.13.0), **AP-14** (Linux/AppImage 3.14, v0.14.0).
+Zuletzt erledigt: AP-33 (Logging, v0.13.0), AP-14 (Linux/AppImage 3.14, v0.14.0), **AP-29** (SQL-Dialekt, v0.15.0).
 Offen hier: **AP-12** (MSSQL real testbar).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
@@ -52,14 +52,6 @@ passt zur Projekt-Grundausrichtung). Ziel: einschätzen, was ein Statement täte
       Abhängigkeiten einer View aufzeigen
 - [ ] Technik prüfen: SQL-Parser (z. B. `sqlglot`/`sqlparse`) lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
 - [ ] Betroffen: neue `core/`-Analyse (Parser), `web/routes.py` (read-only Analyse-Endpoint), `web/static/js/app.js`, `index.html`
-
-## AP-29 — SQL-Dialekt umschalten (Oracle, MSSQL, PostgreSQL, MySQL, SQLite)
-**Frage/Recherche:** Gibt es syntaktische und elementare Unterschiede im generierten
-read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
-- [ ] Unterschiede sichten: Zeilenbegrenzung `LIMIT n` (Postgres/MySQL/SQLite) vs. `TOP n` (MSSQL) vs. `FETCH FIRST n ROWS ONLY` / `ROWNUM` (Oracle); Identifier-Quoting `"…"` (Standard/Oracle/Postgres) vs. `[…]` (MSSQL) vs. `` `…` `` (MySQL); Schema-/Owner-Präfix; Case-Sensitivity der Bezeichner
-- [ ] Ziel: Dropdown zur Dialektwahl → `core/sqlgen` rendert dialektabhängig (mind. LIMIT/TOP/FETCH + Identifier-Quoting); Default-Dialekt evtl. aus der aktiven Verbindung ableiten
-- [ ] Technik prüfen: `sqlglot` lokal gebündelt (NO-CDN) zum Transpilieren — **Überschneidung mit AP-25** (SQL-Analyzer), evtl. gemeinsam lösen
-- [ ] Betroffen: `core/sqlgen.py`, `web/static/js/app.js`/`index.html` (Dialekt-Dropdown), ggf. `core/connection.py`
 
 ## AP-30 — N-1-Stern-Abfrage (ein Start, mehrere Lookup-Ziele)
 **Entschieden 2026-06-26 (war Frage):** Umsetzen — aber zugeschnitten auf den **N-1-Stern-Fall**; eigenes Feature-AP, Umsetzung separat (nicht jetzt).

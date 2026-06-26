@@ -195,6 +195,15 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Test-first: 7 neue Tests in `tests/test_log.py`; **125 Tests grün**. Betroffen: `core/log.py`, `web/__init__.py`, `config.py`
 - [ ] **An AP-31 übergeben:** volle Terminal-Server-Verdrahtung des Pro-Nutzer-Logpfads (z. B. `%LOCALAPPDATA%`) — hier nur der ENV-Hook gebaut
 
+## AP-29 — SQL-Dialekt umschalten (v0.15.0)
+- [x] **Dialect-Schicht** in `core/sqlgen.py` (hand-gerollt, keine neue Dependency): 5 Dialekte SQLite/PostgreSQL/MySQL/MSSQL/Oracle
+- [x] **Identifier-Quoting** je Dialekt (`"…"` / `` `…` `` / `[…]`) mit Escaping (schließendes Zeichen verdoppeln); `dialect_for(db_type)`-Resolver, SQLite-Fallback
+- [x] **Zeilenlimit** je Dialekt: `LIMIT n` · `SELECT TOP n …` (MSSQL) · `FETCH FIRST n ROWS ONLY` (Oracle)
+- [x] **Web:** `/api/joinpath` akzeptiert `dialect`; Default aus der Verbindung abgeleitet (`_dialect_from_url`). **Ausführung** (`/api/joinpath/run`) nutzt den Dialekt der echten Verbindung → generiertes SQL läuft immer. UI-Dropdown in der Optionszeile, re-rendert bei Änderung
+- [x] **Verhaltensänderung:** Identifier werden jetzt immer quotiert (auch SQLite-Default); bestehende `test_sqlgen`/`test_api`-Assertions nachgezogen
+- [x] Test-first: `tests/test_sqlgen_dialect.py` (12 Tests); **137 grün**. Playwright-verifiziert (SQLite/MSSQL/Oracle/MySQL-Ausgabe + Ausführung). Betroffen: `core/sqlgen.py`, `web/routes.py`, `web/static/js/app.js`
+- [x] sqlglot **nicht** nötig (Unterschiede klein & bounded) — für AP-25 (Analyzer/Parsing) aufgehoben
+
 ## AP-17 — Delivery-Verzeichnis bereinigen · VERWORFEN (2026-06-26)
 - [x] **Gestrichen:** Auslieferung läuft über **GitHub-Releases** (`tools/build_release.py` → bereinigtes ZIP ohne Dev-/KI-Spuren; Releases v0.11.2/v0.11.3). Ein separates Delivery-Verzeichnis ist damit obsolet.
 

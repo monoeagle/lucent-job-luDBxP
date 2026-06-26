@@ -290,6 +290,13 @@ function openJoinBuilder() {
     `<div class="row jb-options">` +
     `<label class="jb-check"><input type="checkbox" id="jb_distinct"> DISTINCT</label>` +
     `<label class="jb-limit">LIMIT <input id="jb_limit" type="number" min="1" placeholder="–"></label>` +
+    `<label class="jb-dialect" title="SQL-Dialekt der generierten Abfrage">Dialekt ` +
+    `<select id="jb_dialect">` +
+    `<option value="sqlite">SQLite</option>` +
+    `<option value="postgresql">PostgreSQL</option>` +
+    `<option value="mysql">MySQL</option>` +
+    `<option value="mssql">MSSQL</option>` +
+    `<option value="oracle">Oracle</option></select></label>` +
     `<button id="btn_build">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
     `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
@@ -317,6 +324,9 @@ function openJoinBuilder() {
   // changing the row count only re-fetches the current path (path is unaffected).
   $("jb_refresh").addEventListener("click", () => runBuild(true));
   $("jb_rows").addEventListener("change", () => renderJoinResult(JB_PATH_IDX));
+  // AP-29: default the dialect to the connected backend; re-render SQL on change.
+  $("jb_dialect").value = dialectFromUrl(connUrl());
+  $("jb_dialect").addEventListener("change", () => runBuild(true));
   if (SCHEMA.tables.length) refillJoinBuilder();
 }
 
@@ -496,7 +506,16 @@ function collectJoinBody() {
     distinct: $("jb_distinct") ? $("jb_distinct").checked : false,
     order_by: collectOrderBy(),
     limit: limitRaw !== "" ? parseInt(limitRaw, 10) : null,
+    dialect: $("jb_dialect") ? $("jb_dialect").value : "sqlite",
   };
+}
+
+// AP-29: derive the default SQL dialect from the active connection URL
+// (e.g. "postgresql+psycopg2://…" → postgresql). SQLite is the fallback.
+function dialectFromUrl(url) {
+  const scheme = (url || "").split("://")[0].split("+")[0].toLowerCase();
+  return ["sqlite", "postgresql", "mysql", "mssql", "oracle"].includes(scheme)
+    ? scheme : "sqlite";
 }
 
 // Selected output row count: 200/400, or null ("Alle" → server's hard cap).

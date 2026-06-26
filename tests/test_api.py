@@ -256,10 +256,10 @@ def test_joinpath_extra_selects_appear_in_sql(client, inventory_url):
     assert paths
     # VirtualMachines is always on this path, so VMID must appear in every path's SQL
     for p in paths:
-        assert "VirtualMachines.VMID" in p["sql"]
+        assert '"VirtualMachines"."VMID"' in p["sql"]
     # Start and target columns must still be present
-    assert "Networks.VLAN" in paths[0]["sql"]
-    assert "VMwareCluster.ClusterID" in paths[0]["sql"]
+    assert '"Networks"."VLAN"' in paths[0]["sql"]
+    assert '"VMwareCluster"."ClusterID"' in paths[0]["sql"]
 
 
 def test_joinpath_extra_select_off_path_excluded(client, inventory_url):
@@ -322,7 +322,7 @@ def test_joinpath_ap3_distinct_orderby_limit_in(client, inventory_url):
     assert ":p0_2" in sql
     # ORDER BY
     assert "ORDER BY" in sql
-    assert "VirtualMachines.VMID DESC" in sql
+    assert '"VirtualMachines"."VMID" DESC' in sql
     # LIMIT
     assert "LIMIT 50" in sql
     # ORDER BY before LIMIT
@@ -349,7 +349,7 @@ def test_joinpath_ap3_is_null_filter(client, inventory_url):
     paths = resp.get_json()["paths"]
     assert paths
     sql = paths[0]["sql"]
-    assert "VirtualMachines.OSID IS NULL" in sql
+    assert '"VirtualMachines"."OSID" IS NULL' in sql
     assert not paths[0]["params"]  # no params for IS NULL
 
 
@@ -476,4 +476,4 @@ def test_joinpath_ap3_orderby_offpath_excluded(client, inventory_url):
     sql = resp.get_json()["paths"][0]["sql"]
     # OperatingSystems is off-path → excluded; VirtualMachines is on-path → included
     assert "OperatingSystems" not in sql or "ORDER BY" not in sql.split("OperatingSystems")[0]
-    assert "VirtualMachines.VMID DESC" in sql
+    assert '"VirtualMachines"."VMID" DESC' in sql

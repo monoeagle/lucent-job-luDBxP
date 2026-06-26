@@ -19,9 +19,9 @@ def test_basic_select_join():
                      selects=(Selection("Networks", "VLAN"),
                               Selection("VMwareCluster", "ClusterID")))
     assert "SELECT" in g.sql
-    assert "FROM Networks" in g.sql
-    assert "JOIN VirtualMachines ON Networks.NetworkID = VirtualMachines.NetworkID" in g.sql
-    assert "JOIN VMwareCluster ON VirtualMachines.ClusterID = VMwareCluster.ClusterID" in g.sql
+    assert 'FROM "Networks"' in g.sql
+    assert 'JOIN "VirtualMachines" ON "Networks"."NetworkID" = "VirtualMachines"."NetworkID"' in g.sql
+    assert 'JOIN "VMwareCluster" ON "VirtualMachines"."ClusterID" = "VMwareCluster"."ClusterID"' in g.sql
     assert g.params == {}
 
 
@@ -34,16 +34,16 @@ def test_composite_join_renders_all_pairs_with_and():
                         (("ClusterID", "ClusterID"), ("PoolKey", "PoolKey"))),),
     )
     g = generate_sql(path, selects=(Selection("ResourcePool", "Name"),))
-    assert ("JOIN ResourcePool ON "
-            "VMPlacement.ClusterID = ResourcePool.ClusterID AND "
-            "VMPlacement.PoolKey = ResourcePool.PoolKey") in g.sql
+    assert ('JOIN "ResourcePool" ON '
+            '"VMPlacement"."ClusterID" = "ResourcePool"."ClusterID" AND '
+            '"VMPlacement"."PoolKey" = "ResourcePool"."PoolKey"') in g.sql
 
 
 def test_filter_uses_named_placeholder():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      filters=(Filter("VirtualMachines", "OSID", "=", 7),))
-    assert "WHERE VirtualMachines.OSID = :p0" in g.sql
+    assert 'WHERE "VirtualMachines"."OSID" = :p0' in g.sql
     assert g.params == {"p0": 7}
     # value must never be inlined
     assert "= 7" not in g.sql
@@ -73,14 +73,14 @@ def test_three_selections():
                      selects=(Selection("Networks", "VLAN"),
                               Selection("VMwareCluster", "ClusterID"),
                               Selection("VirtualMachines", "VMID")))
-    assert "Networks.VLAN" in g.sql
-    assert "VMwareCluster.ClusterID" in g.sql
-    assert "VirtualMachines.VMID" in g.sql
+    assert '"Networks"."VLAN"' in g.sql
+    assert '"VMwareCluster"."ClusterID"' in g.sql
+    assert '"VirtualMachines"."VMID"' in g.sql
     # All three must appear on the same SELECT line
     select_line = g.sql.splitlines()[0]
-    assert "Networks.VLAN" in select_line
-    assert "VMwareCluster.ClusterID" in select_line
-    assert "VirtualMachines.VMID" in select_line
+    assert '"Networks"."VLAN"' in select_line
+    assert '"VMwareCluster"."ClusterID"' in select_line
+    assert '"VirtualMachines"."VMID"' in select_line
 
 
 # ===== AP-3: DISTINCT =====
@@ -104,14 +104,14 @@ def test_order_by_desc():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      order_by=(("VirtualMachines", "VMID", "DESC"),))
-    assert "ORDER BY VirtualMachines.VMID DESC" in g.sql
+    assert 'ORDER BY "VirtualMachines"."VMID" DESC' in g.sql
 
 
 def test_order_by_asc():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      order_by=(("Networks", "VLAN", "ASC"),))
-    assert "ORDER BY Networks.VLAN ASC" in g.sql
+    assert 'ORDER BY "Networks"."VLAN" ASC' in g.sql
 
 
 def test_order_by_multiple_cols():
@@ -119,7 +119,7 @@ def test_order_by_multiple_cols():
                      selects=(Selection("Networks", "VLAN"),),
                      order_by=(("Networks", "VLAN", "ASC"),
                                ("VirtualMachines", "VMID", "DESC")))
-    assert "ORDER BY Networks.VLAN ASC, VirtualMachines.VMID DESC" in g.sql
+    assert 'ORDER BY "Networks"."VLAN" ASC, "VirtualMachines"."VMID" DESC' in g.sql
 
 
 def test_order_by_invalid_direction_raises():
@@ -156,7 +156,7 @@ def test_is_null_no_placeholder():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      filters=(Filter("VirtualMachines", "OSID", "IS NULL", None),))
-    assert "VirtualMachines.OSID IS NULL" in g.sql
+    assert '"VirtualMachines"."OSID" IS NULL' in g.sql
     assert not g.params  # no placeholder generated
 
 
@@ -164,7 +164,7 @@ def test_is_not_null_no_placeholder():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      filters=(Filter("VirtualMachines", "OSID", "IS NOT NULL", None),))
-    assert "VirtualMachines.OSID IS NOT NULL" in g.sql
+    assert '"VirtualMachines"."OSID" IS NOT NULL' in g.sql
     assert not g.params
 
 
@@ -172,7 +172,7 @@ def test_in_multiple_placeholders():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      filters=(Filter("VirtualMachines", "VMID", "IN", [1, 2, 3]),))
-    assert "VirtualMachines.VMID IN (:p0_0, :p0_1, :p0_2)" in g.sql
+    assert '"VirtualMachines"."VMID" IN (:p0_0, :p0_1, :p0_2)' in g.sql
     assert g.params == {"p0_0": 1, "p0_1": 2, "p0_2": 3}
 
 
@@ -192,7 +192,7 @@ def test_between_two_placeholders():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),),
                      filters=(Filter("VirtualMachines", "VMID", "BETWEEN", (1, 10)),))
-    assert "VirtualMachines.VMID BETWEEN :p0_lo AND :p0_hi" in g.sql
+    assert '"VirtualMachines"."VMID" BETWEEN :p0_lo AND :p0_hi' in g.sql
     assert g.params == {"p0_lo": 1, "p0_hi": 10}
 
 
@@ -212,7 +212,7 @@ def test_combined_distinct_orderby_limit():
                      order_by=(("VirtualMachines", "VMID", "DESC"),),
                      limit=100)
     assert "SELECT DISTINCT" in g.sql
-    assert "ORDER BY VirtualMachines.VMID DESC" in g.sql
+    assert 'ORDER BY "VirtualMachines"."VMID" DESC' in g.sql
     assert "LIMIT 100" in g.sql
     # ORDER BY must come before LIMIT
     assert g.sql.index("ORDER BY") < g.sql.index("LIMIT")

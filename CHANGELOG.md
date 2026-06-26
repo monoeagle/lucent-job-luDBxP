@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.15.0] — 2026-06-26
+### Added
+- **AP-29 — SQL-Dialekt umschalten:** Der Join-Builder hat ein **Dialekt-Dropdown**
+  (SQLite · PostgreSQL · MySQL · MSSQL · Oracle); das generierte read-only SELECT
+  wird dialekt-treu gerendert:
+  - **Identifier-Quoting** je Dialekt: `"x"` (SQLite/PG/Oracle), `` `x` `` (MySQL),
+    `[x]` (MSSQL) — mit korrektem Escaping (schließendes Zeichen verdoppelt).
+  - **Zeilenlimit** je Dialekt: `LIMIT n` (SQLite/PG/MySQL), `SELECT TOP n …`
+    (MSSQL), `FETCH FIRST n ROWS ONLY` (Oracle).
+  - Default-Dialekt aus der aktiven Verbindung abgeleitet; bei Änderung wird das
+    SQL neu gerendert.
+  - **Anzeige vs. Ausführung getrennt:** Das angezeigte SQL nutzt den gewählten
+    Dialekt (zum Kopieren), die **Ausführung** (`/api/joinpath/run`) nutzt den
+    Dialekt der *echten* Verbindung — generiertes SQL läuft also immer.
+  - Umgesetzt als kleine `Dialect`-Schicht in `core/sqlgen.py` (keine neue
+    Abhängigkeit); test-first, 12 neue Tests; **137 Tests grün**.
+### Changed
+- **Identifier werden jetzt immer quotiert** (auch im SQLite-Default): aus
+  `SELECT VirtualMachine.VMID` wird `SELECT "VirtualMachine"."VMID"`. Korrekt und
+  reserved-word-/case-sicher; Ausführung gegen SQLite unverändert gültig.
+
 ## [0.14.0] — 2026-06-26
 ### Changed
 - **AP-14 (Teil 2, Linux) — Python-3.14-AppImage:** Der Linux-Pfad von AP-14 ist

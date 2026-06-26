@@ -10,7 +10,7 @@ import config
 from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
 from core.graph import build_graph
 from core.pathfinder import find_paths, NoPathError
-from core.sqlgen import generate_sql, Selection, Filter
+from core.sqlgen import generate_sql, Selection, Filter, dialect_for, SQLITE
 from core.settings import Settings
 from core.ddl import table_ddl
 from core.datapreview import fetch_rows, execute_select
@@ -277,12 +277,19 @@ def _parse_joinpath_params(data: dict, schema):
             distinct, limit, order_by_validated, filter_tables)
 
 
+def _dialect_from_url(url: str):
+    """Map a SQLAlchemy connection URL to its SQL Dialect (SQLite fallback)."""
+    scheme = url.split("://", 1)[0].split("+", 1)[0]
+    return dialect_for(scheme)
+
+
 def _make_path_gen(p, start: dict, target: dict,
                    extra_selections: tuple,
                    filters: tuple,
                    distinct: bool,
                    limit,
-                   order_by_validated: list):
+                   order_by_validated: list,
+                   dialect=SQLITE):
     """Build a GeneratedSQL for a single join path.
 
     Filters extra_selections and order_by to only the tables actually present
@@ -312,7 +319,8 @@ def _make_path_gen(p, start: dict, target: dict,
     return generate_sql(p, tuple(selects_for_path), filters,
                         distinct=distinct,
                         order_by=order_by_for_path,
-                        limit=limit)
+                        limit=limit,
+                        dialect=dialect)
 
 
 @bp.post("/api/joinpath")
@@ -346,11 +354,16 @@ def api_joinpath():
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
 
+    # Display dialect: the client's chosen SQL dialect (dropdown); falls back to
+    # the connected DB's dialect when unspecified.
+    dialect = (dialect_for(data["dialect"]) if data.get("dialect")
+               else _dialect_from_url(url))
+
     out = []
     try:
         for p in paths:
             gen = _make_path_gen(p, start, target, extra_selections, filters,
-                                 distinct, limit, order_by_validated)
+                                 distinct, limit, order_by_validated, dialect)
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],
@@ -411,9 +424,13 @@ def api_joinpath_run():
     if path_index < 0 or path_index >= len(paths):
         path_index = 0
 
+    # Execution must match the real backend → use the connection's own dialect
+    # (not any client display choice), so the quoted SQL actually runs.
+    run_dialect = _dialect_from_url(url)
     try:
         gen = _make_path_gen(paths[path_index], start, target, extra_selections,
-                             filters, distinct, limit, order_by_validated)
+                             filters, distinct, limit, order_by_validated,
+                             run_dialect)
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
 
