@@ -8,39 +8,27 @@
 
 ## Offene Arbeitspakete
 
-### AP-1 — Interaktive Pfad-Auswahl direkt im Graph
-
-**Idee:** Im Schema-Graph **Doppelklick** auf eine Tabelle → eingebettete
-**UML-Tabellenansicht** (Spalten/Typen/PK). Dort eine Spalte als **Quelle**
-wählen, in einer zweiten Tabelle die **Ziel-Spalte** — danach aktualisiert
-sich der Graph live und zeigt den Join-Pfad.
-
-**Nebeneffekt:** Der Join-Builder-Tab öffnet sich automatisch und füllt
-Start-/Ziel-Felder aus der Graph-Auswahl (Zweiweg-Sync Graph ↔ Join-Builder).
-
-**Betroffene Dateien:**
-
-- `web/static/js/app.js` — Doppelklick-Handler, UML-Karte, Sync-Logik
-- CSS für die eingebettete UML-Karte
+_Aktuell keine offenen Arbeitspakete_ (`todo.md` ist leer).
 
 ---
 
-### AP-2 — Bug: „Verbinden" liefert „failed to fetch" (zu verifizieren)
+## Erledigte Arbeitspakete
 
-**Symptom:** Klick auf „Verbinden" → Browser zeigt nur „failed to fetch".
+**v0.1.0** (2026-06-25): Core-Domänenmodell, Loader, FK-Graph, Pathfinder,
+SQL-Generator, Flask-API, Filter-UI, Graph-Visualisierung, implizite FKs,
+3-Panel-Layout, Datenvorschau, Views, Verbindungs-Manager, Demo-CMDB,
+Doku/AppImage/Projektposter.
 
-**Verdacht:** Dev-Server lief nicht (bei Session-Handoff gestoppt) → offenes
-Browser-Tab erreicht `127.0.0.1:5057` nicht → generisches Fehlerbild.
+**v0.2.0 – v0.3.0** (2026-06-26):
 
-**Vorgehen:**
-1. Server neu starten (`bash run.sh --start`)
-2. Im Browser neu verbinden
-3. Falls weiterhin reproduzierbar: Netzwerk-Tab (URL/Status), CORS prüfen,
-   Exception im `/api/connect`-Endpoint eingrenzen
+- **AP-1** — Interaktive Pfad-Auswahl im Graph (Doppelklick → UML-Karte → Sync)
+- **AP-2** — Fix „Verbinden": klare Meldung statt „failed to fetch"
+- **AP-3** — SQL-Optionen-Paket (DISTINCT · ORDER BY · LIMIT · IS NULL/IN/BETWEEN)
+- **AP-4** — Mehrere SELECT-Spalten
+- **AP-5** — Tabellarischer Ausgabebereich (generiertes SELECT ausführen) — v0.2.0
+- **AP-6** — Ausgabe-Steuerung: Zeilen-Auswahl (200/400/Alle) + „Aktualisieren" — v0.3.0
+- **AP-7** — Feiner Graph-Zoom + Zoom-Slider mit %-Anzeige — v0.3.0
+- **AP-8** — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0
 
----
-
-## Erledigte Arbeitspakete (v0.1.0)
-
-Alle in v0.1.0 implementierten Features sind in `todo-erledigt.md` aufgelistet.
-Detaillierter Stand: [Changelog](../entwicklung/changelog.md).
+Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:
+[Changelog](../entwicklung/changelog.md).

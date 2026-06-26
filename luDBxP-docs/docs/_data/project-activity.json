@@ -1,19 +1,34 @@
 {
-  "generatedAt": "2026-06-26T01:19:47",
+  "generatedAt": "2026-06-26T02:03:51",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 10,
+      "commits": 13,
       "kinds": {
-        "feat": 4,
+        "feat": 6,
+        "docs": 5,
         "style": 1,
-        "docs": 4,
         "fix": 1
       },
       "list": [
+        {
+          "sha": "af845b3",
+          "subject": "feat: AP-6 Ausgabe-Steuerung, AP-7 feiner Graph-Zoom, AP-8 Reset-Fix — v0.3.0",
+          "kind": "feat"
+        },
+        {
+          "sha": "7f2d3cb",
+          "subject": "feat: AP-5 Ausgabebereich im Join-Builder (Select ausführen) — v0.2.0",
+          "kind": "feat"
+        },
+        {
+          "sha": "6032cc3",
+          "subject": "docs: AP-Diagramm um AP-3 + AP-4 (erledigt) + Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "c0fe6bb",
           "subject": "feat: AP-3 SQL-Optionen-Paket (DISTINCT, ORDER BY, LIMIT, IS NULL/IN/BETWEEN)",
@@ -267,17 +282,17 @@
     }
   },
   "stats": {
-    "totalCommits": 47,
+    "totalCommits": 50,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "feat",
-        "count": 21
+        "count": 23
       },
       {
         "kind": "docs",
-        "count": 13
+        "count": 14
       },
       {
         "kind": "fix",
@@ -304,7 +319,7 @@
         "count": 1
       }
     ],
-    "testCount": 104
+    "testCount": 109
   },
   "phases": []
 }
