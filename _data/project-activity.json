@@ -1,16 +1,82 @@
 {
-  "generatedAt": "2026-06-27T00:26:47",
+  "generatedAt": "2026-06-27T01:36:28",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 2,
+      "commits": 15,
       "kinds": {
-        "other": 2
+        "other": 10,
+        "docs": 5
       },
       "list": [
+        {
+          "sha": "93fb5aa",
+          "subject": "AP-30: Fan-out-Warnungen in der Pfadliste anzeigen (Frontend)",
+          "kind": "other"
+        },
+        {
+          "sha": "1b3cdba",
+          "subject": "AP-30: schließendes deutsches Anführungszeichen “ (U+201C) im Warn-Text",
+          "kind": "other"
+        },
+        {
+          "sha": "f2b266c",
+          "subject": "AP-30: Fix Warn-Text (deutsche Typografie „ \" —) + Test auf Wortlaut verschärft",
+          "kind": "other"
+        },
+        {
+          "sha": "2066a61",
+          "subject": "AP-30: Fan-out-Warnungen pro Pfad in /api/joinpath-Antwort",
+          "kind": "other"
+        },
+        {
+          "sha": "6a1c5db",
+          "subject": "AP-30: required_tables-Vereinigung weben, stilles Verwerfen von Select/OrderBy entfernen",
+          "kind": "other"
+        },
+        {
+          "sha": "90ca6c4",
+          "subject": "AP-30: find_paths-Parameter filter_tables -> required_tables (verallgemeinertes Weaving)",
+          "kind": "other"
+        },
+        {
+          "sha": "3e4b20d",
+          "subject": "AP-30: JoinStep.to_many + FK-Orientierung in _join_step (Fan-out-Erkennung)",
+          "kind": "other"
+        },
+        {
+          "sha": "2bf253e",
+          "subject": "docs(AP-30): Plan-Fix — kein roter Task-3-Commit (Warnungs-Assert nach Task 4)",
+          "kind": "docs"
+        },
+        {
+          "sha": "09a925f",
+          "subject": "docs(AP-30): Implementierungsplan N-1-Stern (6 Tasks, TDD-Schritte)",
+          "kind": "docs"
+        },
+        {
+          "sha": "bc39535",
+          "subject": "docs(AP-30): Design-Spec N-1-Stern (Auto-Weaving der Select-/OrderBy-/Filter-Tabellen, Fan-out-Warnung)",
+          "kind": "docs"
+        },
+        {
+          "sha": "2152c34",
+          "subject": "docs: Session-5-Handoff + Insight (AppImage-Selbstupdate/Dialekt-Trennung/podman) + KPI-Zeile #5",
+          "kind": "docs"
+        },
+        {
+          "sha": "0606cec",
+          "subject": "docs: AP-12 nach erledigt (Baum/Gantt/Roadmap), Badges v0.16.0/138, Changelog-Mirror, Site neu gebaut",
+          "kind": "docs"
+        },
+        {
+          "sha": "85bf4a7",
+          "subject": "AP-12 (Abschluss): MSSQL-UI-Felder Encrypt/TrustServerCertificate; v0.16.0",
+          "kind": "other"
+        },
         {
           "sha": "8bd2a91",
           "subject": "AP-12: MSSQL-Integrationstest real verifiziert (provisioniert Parent/Child, prueft FK-Reflection)",
@@ -578,25 +644,25 @@
     }
   },
   "stats": {
-    "totalCommits": 107,
+    "totalCommits": 120,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 43
+        "count": 48
       },
       {
         "kind": "feat",
         "count": 30
       },
       {
-        "kind": "fix",
-        "count": 11
+        "kind": "other",
+        "count": 18
       },
       {
-        "kind": "other",
-        "count": 10
+        "kind": "fix",
+        "count": 11
       },
       {
         "kind": "build",
@@ -615,7 +681,7 @@
         "count": 1
       }
     ],
-    "testCount": 137
+    "testCount": 143
   },
   "phases": []
 }
