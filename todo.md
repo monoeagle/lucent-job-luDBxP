@@ -135,6 +135,35 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] Betroffen: `config.py` (Port/Pfade), `app.py` (Port-Wahl), `core/settings.py` (config.json-Pfad), Logging-Pfad
 **Hinweis:** read-only begrenzt den Schaden (keine DB-Mutation); Verbindungen werden ohne Passwort gespeichert.
 
+### Brainstorm — vollständiger Maßnahmenkatalog (Terminalserver-Tauglichkeit)
+**1. Server-Binding / Port (Kernproblem)**
+- [ ] **Pro-Session dynamischer Port:** Port `0` binden → OS vergibt freien Port; gewählten Port ermitteln und dem Nutzer anzeigen/Browser automatisch öffnen
+- [ ] Alternativ Port-Range/Offset pro Session; Kollision von 5057 auf geteiltem RDS-Loopback vermeiden
+- [ ] Weiter nur an `127.0.0.1` binden (kein `0.0.0.0`) — kein Zugriff von außen
+- [ ] Optional **Session-Token** in der URL, damit ein anderer Nutzer den fremden Port nicht „errät" (read-only mindert das Risiko, aber sauberer)
+
+**2. Pro-Nutzer-Daten statt App-Verzeichnis**
+- [ ] `config.json` (Default- + gespeicherte Verbindungen) nach `%LOCALAPPDATA%\LucentTools DB Explorer\` pro Nutzer
+- [ ] `Logs/` pro Nutzer am selben Ort (Bezug AP-33)
+- [ ] `.req_stamp`/State pro Nutzer; App-Verzeichnis als **read-only** behandeln (Program Files → keine Schreibrechte)
+
+**3. Produktions-Server statt Flask-Dev**
+- [ ] `waitress` (rein lokal, NO-CDN, als Wheel ins Wheelhouse) statt `app.run()` → multithread-stabil, keine Dev-Warnung, kein Reloader
+
+**4. Prozess-Lebenszyklus / Port-Freigabe**
+- [ ] Sauberes Beenden (Port wird erst bei Prozess-Ende frei — siehe oben); „Stop"-Aktion / Tray
+- [ ] **Idle-Shutdown:** Server beendet sich nach X Minuten ohne Requests → gibt Port + RAM frei (RDS-freundlich)
+
+**5. Mehrere Instanzen nebeneinander / Deployment**
+- [ ] **Shared venv read-only** (Admin richtet einmal ein); Nutzer nur `skip-setup`/`start`, kein Schreibzugriff ins venv
+- [ ] Installation nach Program Files (read-only) + signierte `run.ps1` (AllSigned); Startmenü-Verknüpfung pro Nutzer
+
+**6. Ressourcen & Betrieb**
+- [ ] Lastabschätzung: N Nutzer × je 1 Python-Prozess (RAM/CPU); Idle-Shutdown begrenzt das
+- [ ] Doku „Betrieb auf Terminalserver" (Admin-Setup, Pro-Nutzer-Pfade, Ports)
+
+**Risiko/Aufwand:** Punkte 1+2 sind die Pflicht-Basis (sonst Kollisionen); 3+4 erhöhen Robustheit; 5+6 sind Deployment/Betrieb. Schätzung: mittel-groß, am besten als eigener Meilenstein.
+
 ## AP-33 — Logging: Status prüfen & sauber machen
 **Frage:** Haben wir bereits ein sauberes Logging?
 **Befund (vorhanden, aber minimal):**
