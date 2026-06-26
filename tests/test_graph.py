@@ -14,7 +14,10 @@ def test_graph_has_fk_edges_with_join_columns(inventory_url):
     assert g.has_edge("VirtualMachines", "Networks")
     joins = g["VirtualMachines"]["Networks"]["joins"]
     # normalize to a set of frozensets so edge direction doesn't matter
-    pairs = {frozenset(((lt, lc), (rt, rc))) for (lt, lc, rt, rc) in joins}
+    pairs = {
+        frozenset(((j.table_a, lc), (j.table_b, rc)))
+        for j in joins for (lc, rc) in j.pairs
+    }
     assert frozenset((("VirtualMachines", "NetworkID"), ("Networks", "NetworkID"))) in pairs
 
 

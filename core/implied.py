@@ -43,7 +43,8 @@ def find_implied_fks(schema: Schema) -> tuple[ImpliedFK, ...]:
 
     implied: list[ImpliedFK] = []
     for t in schema.tables:
-        declared = {(fk.column, fk.ref_table) for fk in t.foreign_keys}
+        declared = {(local, fk.ref_table)
+                    for fk in t.foreign_keys for local in fk.columns}
         for c in t.columns:
             for target in pk_targets.get(c.name, []):
                 if target == t.name:

@@ -17,14 +17,6 @@ Letzte erledigte Nummer: **AP-9** (v0.3.1). Neue offene APs ab **AP-10**.
 - [ ] Betroffen: `web/templates/index.html`, `web/static/js/app.js`, ggf. `core/settings.py` (Liste der Verbindungen)
 - [ ] Tests: API liefert gespeicherte Verbindungen; UI-Verifikation (Playwright)
 
-## AP-11 — Composite-FK voll umsetzen (echtes `ON … AND …`)
-- [ ] Aktuell wird nur das erste Spaltenpaar gejoint (dokumentierte v1-Einschränkung)
-- [ ] FK-Kanten tragen alle Spaltenpaare; `_join_step`/Pathfinder reicht volle Paar-Liste durch
-- [ ] `core/sqlgen.py`: JOIN-`ON` über alle Paare mit `AND` verknüpfen (read-only, parametrisiert bleibt)
-- [ ] Betroffen: `core/graph.py` (Kanten-Metadaten), `core/pathfinder.py` (`_join_step`), `core/sqlgen.py`
-- [ ] Tests: Demo-CMDB hat zusammengesetzte FKs — Test nagelt `ON a.x=b.x AND a.y=b.y` fest; v1-Einschränkungs-Test ersetzen
-- [ ] **Doku:** CLAUDE.md „Bekannte Einschränkungen" + Zensical-Doku (`luDBxP-docs/docs/referenz/datenmodell.md`, ggf. `usecases.md`) aktualisieren
-
 ## AP-12 — MSSQL real testbar machen
 - [ ] System-ODBC einrichten/dokumentieren (`unixODBC` + `msodbcsql17` Linux; ODBC Driver 17/18 Windows)
 - [ ] **ODBC Driver 18 verschlüsselt per Default** → `Encrypt`/`TrustServerCertificate=yes`-Parameter in der Connection-URL unterstützen; Driver-Name konfigurierbar

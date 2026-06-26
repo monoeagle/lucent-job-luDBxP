@@ -6,7 +6,7 @@ def test_table_ddl_renders_columns_pk_and_fks():
     t = Table(
         "VM",
         (Column("VMID", "INTEGER"), Column("NetworkID", "INTEGER")),
-        (ForeignKey("NetworkID", "Networks", "NetworkID"),),
+        (ForeignKey.single("NetworkID", "Networks", "NetworkID"),),
         ("VMID",),
     )
     sql = table_ddl(t)

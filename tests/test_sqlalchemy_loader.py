@@ -12,10 +12,10 @@ def test_load_reflects_tables_and_columns(inventory_url):
 def test_load_reflects_foreign_keys(inventory_url):
     schema = SqlAlchemyLoader(inventory_url).load()
     vm = schema.table("VirtualMachines")
-    fk_targets = {(fk.column, fk.ref_table, fk.ref_column) for fk in vm.foreign_keys}
-    assert ("NetworkID", "Networks", "NetworkID") in fk_targets
-    assert ("OSID", "OperatingSystems", "OSID") in fk_targets
-    assert ("ClusterID", "VMwareCluster", "ClusterID") in fk_targets
+    fk_targets = {(fk.columns, fk.ref_table, fk.ref_columns) for fk in vm.foreign_keys}
+    assert (("NetworkID",), "Networks", ("NetworkID",)) in fk_targets
+    assert (("OSID",), "OperatingSystems", ("OSID",)) in fk_targets
+    assert (("ClusterID",), "VMwareCluster", ("ClusterID",)) in fk_targets
 
 
 def test_load_reflects_views(inventory_url):

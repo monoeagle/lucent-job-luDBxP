@@ -18,9 +18,10 @@ class NoPathError(Exception):
 @dataclass(frozen=True)
 class JoinStep:
     left_table: str
-    left_col: str
     right_table: str
-    right_col: str
+    # One (left_col, right_col) pair per key column; >1 pair = composite FK,
+    # all combined with AND in the emitted JOIN ... ON clause.
+    column_pairs: tuple[tuple[str, str], ...]
 
 
 @dataclass(frozen=True)
@@ -29,8 +30,21 @@ class JoinPath:
     steps: tuple[JoinStep, ...]
 
 
+def _oriented_pairs(option, a: str) -> tuple[tuple[str, str], ...]:
+    """Return option.pairs oriented so each pair reads (a_column, other_column)."""
+    if option.table_a == a:
+        return option.pairs
+    return tuple((b_col, a_col) for a_col, b_col in option.pairs)
+
+
 def _join_step(graph: nx.Graph, a: str, b: str) -> JoinStep:
-    """Pick the first join pair for edge (a,b), oriented a -> b deterministically.
+    """Pick a join option for edge (a, b), oriented a -> b deterministically.
+
+    When several foreign keys connect a and b (alternative routes), the
+    lexicographically smallest oriented pair-set is chosen so identical input
+    always yields identical SQL. The chosen option may be single-column or
+    composite; all its column pairs are carried into the JoinStep and later
+    rendered as ``ON p1 AND p2 …``.
 
     Args:
         graph: The FK graph produced by build_graph.
@@ -38,14 +52,12 @@ def _join_step(graph: nx.Graph, a: str, b: str) -> JoinStep:
         b: Target table name.
 
     Returns:
-        A JoinStep with left_table == a.
+        A JoinStep with left_table == a, carrying all column pairs of the
+        chosen foreign key.
     """
-    joins = graph[a][b]["joins"]
-    # Deterministic: sort the candidate join tuples, take the first.
-    lt, lc, rt, rc = sorted(joins)[0]
-    if lt == a:
-        return JoinStep(lt, lc, rt, rc)
-    return JoinStep(rt, rc, lt, lc)
+    options = graph[a][b]["joins"]
+    pairs = min(_oriented_pairs(o, a) for o in options)
+    return JoinStep(a, b, pairs)
 
 
 def find_paths(

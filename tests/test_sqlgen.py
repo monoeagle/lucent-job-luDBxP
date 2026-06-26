@@ -8,8 +8,8 @@ def _path():
     return JoinPath(
         tables=("Networks", "VirtualMachines", "VMwareCluster"),
         steps=(
-            JoinStep("Networks", "NetworkID", "VirtualMachines", "NetworkID"),
-            JoinStep("VirtualMachines", "ClusterID", "VMwareCluster", "ClusterID"),
+            JoinStep("Networks", "VirtualMachines", (("NetworkID", "NetworkID"),)),
+            JoinStep("VirtualMachines", "VMwareCluster", (("ClusterID", "ClusterID"),)),
         ),
     )
 
@@ -23,6 +23,20 @@ def test_basic_select_join():
     assert "JOIN VirtualMachines ON Networks.NetworkID = VirtualMachines.NetworkID" in g.sql
     assert "JOIN VMwareCluster ON VirtualMachines.ClusterID = VMwareCluster.ClusterID" in g.sql
     assert g.params == {}
+
+
+def test_composite_join_renders_all_pairs_with_and():
+    # A composite FK (multiple column pairs in one JoinStep) must join on every
+    # pair, combined with AND, in path order.
+    path = JoinPath(
+        tables=("VMPlacement", "ResourcePool"),
+        steps=(JoinStep("VMPlacement", "ResourcePool",
+                        (("ClusterID", "ClusterID"), ("PoolKey", "PoolKey"))),),
+    )
+    g = generate_sql(path, selects=(Selection("ResourcePool", "Name"),))
+    assert ("JOIN ResourcePool ON "
+            "VMPlacement.ClusterID = ResourcePool.ClusterID AND "
+            "VMPlacement.PoolKey = ResourcePool.PoolKey") in g.sql
 
 
 def test_filter_uses_named_placeholder():

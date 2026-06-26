@@ -23,8 +23,10 @@ def table_ddl(table: Table) -> str:
     if len(table.primary_key) > 1:
         lines.append(f"    PRIMARY KEY ({', '.join(table.primary_key)})")
     for fk in table.foreign_keys:
+        cols = ", ".join(fk.columns)
+        ref_cols = ", ".join(fk.ref_columns)
         lines.append(
-            f"    FOREIGN KEY ({fk.column}) "
-            f"REFERENCES {fk.ref_table}({fk.ref_column})"
+            f"    FOREIGN KEY ({cols}) "
+            f"REFERENCES {fk.ref_table}({ref_cols})"
         )
     return f"CREATE TABLE {table.name} (\n" + ",\n".join(lines) + "\n);"

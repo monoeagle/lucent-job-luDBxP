@@ -74,7 +74,10 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
     lines = [f"SELECT {distinct_kw}{select_cols}", f"FROM {base}"]
 
     for step in path.steps:
-        on = f"{step.left_table}.{step.left_col} = {step.right_table}.{step.right_col}"
+        on = " AND ".join(
+            f"{step.left_table}.{lc} = {step.right_table}.{rc}"
+            for lc, rc in step.column_pairs
+        )
         lines.append(f"JOIN {step.right_table} ON {on}")
 
     params: dict = {}

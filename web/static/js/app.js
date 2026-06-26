@@ -206,7 +206,7 @@ function openDetail(kind, name) {
     const t = tableByName(name);
     const fks = t.foreign_keys.length
       ? "<ul>" + t.foreign_keys.map((f) =>
-          `<li>${esc(f.column)} → ${esc(f.ref_table)}.${esc(f.ref_column)}</li>`).join("") + "</ul>"
+          `<li>${esc(f.columns.join(", "))} → ${esc(f.ref_table)}.${esc(f.ref_columns.join(", "))}</li>`).join("") + "</ul>"
       : "<p class='hint'>keine Foreign Keys</p>";
     defHtml = `<h2>Tabelle: ${esc(t.name)}</h2>` +
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +

@@ -131,8 +131,8 @@ def api_schema():
                 for c in t.columns
             ],
             "foreign_keys": [
-                {"column": fk.column, "ref_table": fk.ref_table,
-                 "ref_column": fk.ref_column}
+                {"columns": list(fk.columns), "ref_table": fk.ref_table,
+                 "ref_columns": list(fk.ref_columns)}
                 for fk in t.foreign_keys
             ],
             "ddl": table_ddl(t),

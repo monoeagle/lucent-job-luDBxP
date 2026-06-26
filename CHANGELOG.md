@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0] — 2026-06-26
+### Changed
+- **AP-11 — Composite Foreign Keys voll unterstützt:** Mehrspaltige FKs werden
+  nicht mehr nur auf dem ersten Spaltenpaar gejoint. Ein FK trägt jetzt alle
+  `(lokal, referenziert)`-Spaltenpaare (`ForeignKey.column_pairs`, mit Properties
+  `columns`/`ref_columns`/`is_composite`); der Join-Pfad-Generator emittiert
+  `JOIN … ON a.x = b.x AND a.y = b.y`. Zwei **separate** einspaltige FKs zwischen
+  denselben Tabellen bleiben weiterhin alternative Join-Wege (nicht mit AND
+  verschmolzen). Betroffen: Loader, FK-Graph (`JoinEdge`), Pathfinder
+  (`JoinStep.column_pairs`), SQL-Generator, DDL-Ansicht und `/api/schema`
+  (FKs jetzt als `columns`/`ref_columns`-Listen, Frontend angepasst). 112 Tests grün.
+
 ## [0.4.0] — 2026-06-26
 ### Changed
 - **AP-14 — Python-3.14-Readiness (Windows):** Das Offline-Wheelhouse (`wheels/`)

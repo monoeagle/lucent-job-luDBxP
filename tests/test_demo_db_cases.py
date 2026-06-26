@@ -36,24 +36,31 @@ def test_diamond_path_order_is_deterministic(demo_graph):
     assert a == b
 
 
-def test_composite_fk_joins_only_first_column_pair(demo_graph):
-    # Documented v1 limitation: VMPlacement -> ResourcePool is a composite FK
-    # (ClusterID, PoolKey) but only one column pair is emitted in the JOIN.
+def test_composite_fk_joins_all_column_pairs(demo_graph):
+    # VMPlacement -> ResourcePool is a composite FK (ClusterID, PoolKey): it is
+    # ONE join option spanning BOTH column pairs, emitted as ON ... AND ...
+    options = demo_graph["VMPlacement"]["ResourcePool"]["joins"]
+    assert len(options) == 1                 # one composite FK, not two alternatives
+    assert len(options[0].pairs) == 2        # both column pairs in a single edge
+
     path = find_paths(demo_graph, "VirtualMachine", "ResourcePool")[0]
     sql = generate_sql(
         path, (Selection("VirtualMachine", "Name"), Selection("ResourcePool", "Name"))
     ).sql
     join_line = next(ln for ln in sql.splitlines() if ln.startswith("JOIN ResourcePool"))
-    assert join_line.count("=") == 1
-    assert " AND " not in join_line  # would mean PoolKey was also joined
+    assert join_line.count("=") == 2         # both column pairs joined
+    assert " AND " in join_line              # combined with AND
+    assert "ClusterID" in join_line and "PoolKey" in join_line
 
 
-def test_multiple_fks_between_two_tables_accumulate(demo_graph):
-    # Replication has two FKs to Datastore (Primary + Secondary).
-    joins = demo_graph["Replication"]["Datastore"]["joins"]
-    assert len(joins) == 2
-    cols = {edge[1] for edge in joins}
-    assert cols == {"PrimaryDatastoreID", "SecondaryDatastoreID"}
+def test_multiple_fks_between_two_tables_stay_alternative(demo_graph):
+    # Replication has two SEPARATE FKs to Datastore (Primary + Secondary).
+    # These are alternative single-column join routes, never merged into AND.
+    options = demo_graph["Replication"]["Datastore"]["joins"]
+    assert len(options) == 2                  # two distinct join options
+    assert all(len(o.pairs) == 1 for o in options)  # each single-column
+    local_cols = {o.pairs[0][0] for o in options}
+    assert local_cols == {"PrimaryDatastoreID", "SecondaryDatastoreID"}
 
 
 def test_self_referencing_fk_is_a_self_loop(demo_graph):

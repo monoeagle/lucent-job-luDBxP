@@ -39,10 +39,11 @@ Server listens at `http://127.0.0.1:5057`.
 ./venv/bin/python -m pytest -v       # verbose
 ```
 
-## Bekannte Einschränkungen (v1)
+## Bekannte Einschränkungen
 
-- **Composite foreign keys:** Schemas with multi-column FKs are joined on only the first column pair in v1; single-column FKs are fully supported.
 - **Database backends:** Postgres support is implemented via SQLAlchemy but is only covered by automated tests against SQLite in v1.
+
+> **Composite foreign keys** are fully supported since AP-11 (v0.5.0): a multi-column FK is carried as one `ForeignKey` with all `(local, ref)` column pairs and emitted as `JOIN … ON a.x = b.x AND a.y = b.y`. Two *separate* single-column FKs between the same tables stay distinct alternative join routes.
 
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:

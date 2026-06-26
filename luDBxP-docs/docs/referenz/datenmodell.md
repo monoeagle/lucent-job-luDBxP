@@ -34,12 +34,21 @@ Das Wurzelobjekt nach einer Reflection-Operation. Enthält:
 
 ### ForeignKey
 
-| Attribut | Typ | Beschreibung |
+Trägt **ein oder mehrere** Spaltenpaare — einspaltige und zusammengesetzte
+(composite) FKs haben dieselbe Form.
+
+| Attribut / Property | Typ | Beschreibung |
 |---|---|---|
-| `column` | `str` | Quellspalte |
 | `ref_table` | `str` | Referenzierte Tabelle |
-| `ref_column` | `str` | Referenzierte Spalte |
-| `implied` | `bool` | `True` wenn heuristisch erkannt |
+| `column_pairs` | `tuple[tuple[str, str], ...]` | `(Quellspalte, Zielspalte)`-Paare; 1 = einspaltig, n = composite |
+| `columns` | `tuple[str, ...]` | Quellspalten (Property) |
+| `ref_columns` | `tuple[str, ...]` | Zielspalten (Property) |
+| `is_composite` | `bool` | `True` bei mehr als einem Paar (Property) |
+
+`ForeignKey.single(column, ref_table, ref_column)` baut einen einspaltigen FK.
+Ein composite FK wird als `JOIN … ON a.x = b.x AND a.y = b.y` gejoint; zwei
+*separate* einspaltige FKs zwischen denselben Tabellen bleiben alternative
+Join-Wege.
 
 ### View
 
@@ -72,7 +81,7 @@ Er enthält keine Views — nur Tabellen mit FK-Beziehungen.
         {"name": "customer_id", "type": "INTEGER", "pk": false}
       ],
       "foreign_keys": [
-        {"column": "customer_id", "ref_table": "customers", "ref_column": "id"}
+        {"columns": ["customer_id"], "ref_table": "customers", "ref_columns": ["id"]}
       ],
       "ddl": "CREATE TABLE orders (...)"
     }

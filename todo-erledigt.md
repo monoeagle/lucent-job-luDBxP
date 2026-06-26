@@ -143,3 +143,12 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] WHERE-Erweiterungen: IS NULL / IS NOT NULL (kein Wert), IN (n parametrisierte Werte), BETWEEN (2 Werte)
 - [x] UI rendert Wertfelder je Operator dynamisch; read-only + Named-Placeholder
 - [x] 20 neue Tests (sqlgen + API); 106 Tests grün
+
+## AP-11 — Composite Foreign Keys voll unterstützt (v0.5.0)
+- [x] `ForeignKey` trägt alle Spaltenpaare (`column_pairs`; Properties `columns`/`ref_columns`/`is_composite`); `ForeignKey.single()` für einspaltige FKs
+- [x] Loader: ein `ForeignKey` pro Constraint (composite intakt) statt Zerlegung pro Spalte
+- [x] FK-Graph: `JoinEdge`-Objekte je FK — separate FKs bleiben alternative Join-Optionen (nicht verschmolzen)
+- [x] Pathfinder `JoinStep.column_pairs` (deterministisch orientiert); SQL-Generator emittiert `ON … AND …` über alle Paare
+- [x] DDL-Ansicht + `/api/schema` (FK als `columns`/`ref_columns`-Listen) + `app.js`-Anzeige angepasst
+- [x] Tests: composite joint alle Paare (sqlgen-Unit + Demo-CMDB end-to-end), Mehrfach-FK bleibt alternativ (Regressionsschutz), API-Format; 112 grün
+- [x] Doku: CLAUDE.md „Bekannte Einschränkungen" + Zensical `referenz/datenmodell.md`

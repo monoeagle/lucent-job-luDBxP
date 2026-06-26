@@ -7,7 +7,7 @@ def _sample() -> Schema:
         Table("Networks", (Column("NetworkID", "INTEGER"), Column("VLAN", "INTEGER")), ()),
         Table("VirtualMachines",
               (Column("VMID", "INTEGER"), Column("NetworkID", "INTEGER")),
-              (ForeignKey("NetworkID", "Networks", "NetworkID"),)),
+              (ForeignKey.single("NetworkID", "Networks", "NetworkID"),)),
     ))
 
 

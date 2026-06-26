@@ -40,12 +40,13 @@ class SqlAlchemyLoader(SchemaLoader):
                 )
                 fks = []
                 for fk in insp.get_foreign_keys(tname):
-                    # SQLAlchemy returns parallel lists for composite keys;
-                    # v1 models each column pair as its own ForeignKey edge.
-                    for local, remote in zip(
+                    # Keep composite keys intact: one ForeignKey per constraint,
+                    # carrying all (local, referred) column pairs. Two separate
+                    # FKs between the same tables stay separate ForeignKey objects.
+                    pairs = tuple(zip(
                         fk["constrained_columns"], fk["referred_columns"]
-                    ):
-                        fks.append(ForeignKey(local, fk["referred_table"], remote))
+                    ))
+                    fks.append(ForeignKey(fk["referred_table"], pairs))
                 pk = tuple(insp.get_pk_constraint(tname).get("constrained_columns", []))
                 tables.append(Table(tname, columns, tuple(fks), pk))
             views = []

@@ -67,7 +67,9 @@ def test_schema_returns_column_details_fks_and_views(client, inventory_url):
     vm = next(t for t in data["tables"] if t["name"] == "VirtualMachines")
     vmid = next(c for c in vm["columns"] if c["name"] == "VMID")
     assert vmid["pk"] is True and vmid["type"]
-    assert any(fk["ref_table"] == "Networks" for fk in vm["foreign_keys"])
+    net_fk = next(fk for fk in vm["foreign_keys"] if fk["ref_table"] == "Networks")
+    assert net_fk["columns"] == ["NetworkID"]        # list form (composite-ready)
+    assert net_fk["ref_columns"] == ["NetworkID"]
     views = {v["name"] for v in data["views"]}
     assert "VMNetworks" in views
     vmn = next(v for v in data["views"] if v["name"] == "VMNetworks")
