@@ -53,6 +53,22 @@ def test_connections_save_list_delete_without_password(client, tmp_path, monkeyp
     assert client.get("/api/connections").get_json()["connections"] == []
 
 
+def test_connect_from_saved_sqlite_round_trip(client, demo_url, tmp_path, monkeypatch):
+    # AP-10: the topbar picker connects directly from a saved (passwordless)
+    # connection. Round-trip: save -> list -> connect using the saved entry
+    # verbatim (exactly what connectSaved() posts to /api/connect).
+    import config
+    monkeypatch.setattr(config, "CONFIG_JSON", str(tmp_path / "settings.json"))
+    path = demo_url.replace("sqlite:///", "")
+    client.post("/api/connections", json={
+        "name": "demo", "db_type": "sqlite", "filepath": path})
+    saved = next(c for c in client.get("/api/connections").get_json()["connections"]
+                 if c["name"] == "demo")
+    resp = client.post("/api/connect", json=saved)
+    assert resp.status_code == 200
+    assert resp.get_json()["connection_url"] == demo_url
+
+
 def test_info_endpoint_returns_metadata_and_stack(client):
     data = client.get("/api/info").get_json()
     assert data["name"] == "Lucent DB Explorer"

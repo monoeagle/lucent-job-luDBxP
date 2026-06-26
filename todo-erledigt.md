@@ -152,3 +152,11 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] DDL-Ansicht + `/api/schema` (FK als `columns`/`ref_columns`-Listen) + `app.js`-Anzeige angepasst
 - [x] Tests: composite joint alle Paare (sqlgen-Unit + Demo-CMDB end-to-end), Mehrfach-FK bleibt alternativ (Regressionsschutz), API-Format; 112 grün
 - [x] Doku: CLAUDE.md „Bekannte Einschränkungen" + Zensical `referenz/datenmodell.md`
+
+## AP-10 — Gespeicherte Verbindungen in der Topbar (v0.6.0)
+- [x] Dropdown `#topbar_conn` in der Topbar (neben „Verbinden") listet die gespeicherten Verbindungen
+- [x] Auswahl verbindet direkt (`connectSaved` → `/api/connect`); passwortlos sofort, sonst Verbindungs-Tab vorbefüllt + Hinweis
+- [x] Zweiweg-Sync: beide Picker (Topbar + Verbindungs-Tab) teilen die Liste (`refreshSavedConnections`) und spiegeln die Auswahl (`syncConnSelectors`)
+- [x] Verbindungswechsel setzt UI zurück (Detail-Tabs, Graph-Highlight, UML-Karten, Schema) — über bestehendes `doConnect`/`drawGraph`
+- [x] Frontend `index.html`/`app.js`/`app.css`; `/api/connections`-API unverändert (war bereits vorhanden)
+- [x] Tests: DOM-Picker + connect-from-saved-Round-Trip (114 grün); UI im echten Browser verifiziert (Playwright/Chromium, Screenshot)

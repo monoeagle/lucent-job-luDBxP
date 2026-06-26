@@ -15,6 +15,12 @@ Der Startscreen zeigt das 3-Panel-Grundgerüst: Topbar mit Verbindungsfeld und
 Graph-Panel rechts. Das Verbindungsfeld ist mit dem Demo-Datenbankpfad
 `sqlite:///sample_data/demo_cmdb.db` vorbelegt.
 
+Direkt daneben liegt ein **Dropdown für gespeicherte Verbindungen** (SQL-Developer-typisch):
+Eine Auswahl daraus verbindet sofort mit der gewählten Verbindung. Das Dropdown
+ist mit dem Verbindungs-Tab synchronisiert (gleiche Liste, gespiegelte Auswahl);
+passwortlose Verbindungen (SQLite oder Server ohne Authentifizierung) verbinden
+direkt, sonst öffnet sich der Verbindungs-Tab vorbefüllt zum Ergänzen des Passworts.
+
 ---
 
 ## 3-Panel-Layout nach dem Verbinden

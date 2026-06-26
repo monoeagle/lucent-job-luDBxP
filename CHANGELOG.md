@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0] — 2026-06-26
+### Added
+- **AP-10 — Gespeicherte Verbindungen in der Topbar:** Neues Dropdown in der
+  Topbar (neben „Verbinden") listet die in `config.json` gespeicherten
+  Verbindungen; eine Auswahl verbindet sofort — passwortlose Verbindungen
+  (SQLite oder Server ohne Auth) direkt, sonst öffnet sich der Verbindungs-Tab
+  vorbefüllt zum Ergänzen des Passworts. Beide Verbindungs-Picker (Topbar +
+  Verbindungs-Tab) teilen dieselbe Liste und spiegeln die Auswahl. Ein
+  Verbindungswechsel setzt den UI-Zustand zurück (Detail-Tabs schließen,
+  Graph-Highlight/UML-Karten leeren, Schema neu laden). Reines Frontend
+  (`index.html`/`app.js`/`app.css`); die `/api/connections`-API blieb unverändert.
+  Im Browser verifiziert (Playwright/Chromium); 114 Tests grün.
+
 ## [0.5.0] — 2026-06-26
 ### Changed
 - **AP-11 — Composite Foreign Keys voll unterstützt:** Mehrspaltige FKs werden

@@ -11,6 +11,9 @@
     <span class="brand">Lucent DB Explorer</span>
     <input type="hidden" id="connection_url" value="{{ default_connection or '' }}">
     <span id="current_conn" class="current-conn"></span>
+    <select id="topbar_conn" class="topbar-conn" title="Gespeicherte Verbindung wählen und verbinden">
+      <option value="">— gespeicherte Verbindung —</option>
+    </select>
     <button id="btn_load">Verbinden</button>
     <button id="btn_connections">Verbindungen…</button>
     <label class="impl"><input type="checkbox" id="include_implied"> implizite FKs</label>

@@ -837,13 +837,57 @@ function formParams() {
   };
 }
 
+// AP-10: keep both connection pickers (topbar dropdown + connection tab) fed
+// from the same saved-connections list, preserving each one's current value.
 async function refreshSavedConnections() {
   try {
     const r = await fetch("/api/connections");
     SAVED_CONNS = (await r.json()).connections || [];
   } catch (e) { SAVED_CONNS = []; }
-  $("conn_saved").innerHTML = `<option value="">— neu —</option>` +
+  const options = (placeholder) =>
+    `<option value="">${placeholder}</option>` +
     SAVED_CONNS.map((c) => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join("");
+  const tb = $("topbar_conn");
+  if (tb) { const keep = tb.value; tb.innerHTML = options("— gespeicherte Verbindung —"); tb.value = keep; }
+  const cs = $("conn_saved");
+  if (cs) { const keep = cs.value; cs.innerHTML = options("— neu —"); cs.value = keep; }
+}
+
+// Mirror the active saved-connection name into both pickers (two-way sync).
+function syncConnSelectors(name) {
+  const tb = $("topbar_conn"); if (tb) tb.value = name || "";
+  const cs = $("conn_saved"); if (cs) cs.value = name || "";
+}
+
+// Prefill the connection-tab form from a saved connection (never a password).
+function prefillConnForm(c) {
+  if (!$("conn_type")) return;
+  $("conn_type").value = c.db_type || "sqlite";
+  renderConnFields(c);
+  if ($("conn_name")) $("conn_name").value = c.name || "";
+}
+
+// AP-10: connect directly from a saved connection chosen in the topbar.
+// Passwordless connections (SQLite, or servers without auth) connect straight
+// away; if the server rejects the empty password, fall back to the connection
+// tab prefilled so the user can add it.
+async function connectSaved(name) {
+  const c = SAVED_CONNS.find((x) => x.name === name);
+  if (!c) return;
+  $("status").textContent = `verbinde mit „${name}“…`;
+  try {
+    const r = await postJSON("/api/connect", c);  // build_url ignores extra "name"
+    setCurrentUrl(r.connection_url);
+    await doConnect();
+    syncConnSelectors(name);
+  } catch (e) {
+    $("status").textContent = "";
+    openConnections();
+    prefillConnForm(c);
+    syncConnSelectors(name);
+    alert(`„${name}“ konnte nicht direkt verbunden werden:\n${e.message}\n\n` +
+          `Im Verbindungs-Tab ggf. das Passwort ergänzen und „Verbinden“ klicken.`);
+  }
 }
 
 function openConnections() {
@@ -911,6 +955,12 @@ $("uml_reset").addEventListener("click", clearSelectionAndCards);
 $("include_implied").addEventListener("change", () => {
   if (SCHEMA.tables.length) drawGraph().catch((e) => alert(e.message));
 });
+$("topbar_conn").addEventListener("change", (e) => {
+  if (e.target.value) connectSaved(e.target.value);
+});
+
+// AP-10: populate the topbar connection picker on initial load.
+refreshSavedConnections();
 
 setCurrentUrl(connUrl());   // show the prefilled demo connection
 renderSidebar();            // show Tools/Info even before connecting

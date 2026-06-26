@@ -32,3 +32,9 @@ def test_index_has_three_panel_shell(client):
     assert 'id="objects"' in html
     assert 'id="tabbar"' in html
     assert 'id="graph"' in html
+
+
+def test_index_has_topbar_connection_picker(client):
+    # AP-10: a saved-connection dropdown sits in the topbar next to "Verbinden".
+    html = client.get("/").get_data(as_text=True)
+    assert 'id="topbar_conn"' in html

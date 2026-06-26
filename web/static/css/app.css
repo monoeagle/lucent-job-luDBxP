@@ -16,6 +16,7 @@ body {
 .topbar .impl { font-size: .85rem; display: flex; align-items: center; gap: .25rem; }
 .topbar .current-conn { font-size: .82rem; color: #cdd; font-family: monospace;
   max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar .topbar-conn { padding: .25rem .4rem; max-width: 200px; }
 .topbar .status { font-size: .85rem; color: #9bd; margin-left: auto; }
 
 /* --- connection form --- */

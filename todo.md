@@ -1,21 +1,14 @@
 # Arbeitspakete — Lucent DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Letzte erledigte Nummer: **AP-9** (v0.3.1). Neue offene APs ab **AP-10**.
+Zuletzt erledigt: AP-9, AP-11, AP-10. Offen hier: **AP-12, AP-13, AP-14** (nur noch
+Linux/AppImage-Rest) und **AP-15**.
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
 `todo-erledigt.md` umhängen · AP-Diagramm + Site **auf Linux** neu bauen.
 
 ---
-
-## AP-10 — Gespeicherte Verbindungen in der Topbar auswählbar
-- [ ] Dropdown oben (neben „Verbinden") listet die in `config.json` gespeicherten Verbindungen — wie ein SQL Developer
-- [ ] Auswahl füllt das Verbindungsformular vor / verbindet direkt; Passwort bleibt versteckt (wird wie bisher nicht gespeichert)
-- [ ] Zweiweg-Sync mit dem Verbindungs-Tab (Auswahl dort ↔ Topbar)
-- [ ] **Verbindungswechsel setzt UI-Zustand zurück:** offene Detail-Tabs, Graph-Highlight/UML-Karten und Reflection-Cache leeren — sonst bleibt das Schema der alten DB stehen
-- [ ] Betroffen: `web/templates/index.html`, `web/static/js/app.js`, ggf. `core/settings.py` (Liste der Verbindungen)
-- [ ] Tests: API liefert gespeicherte Verbindungen; UI-Verifikation (Playwright)
 
 ## AP-12 — MSSQL real testbar machen
 - [ ] System-ODBC einrichten/dokumentieren (`unixODBC` + `msodbcsql17` Linux; ODBC Driver 17/18 Windows)
