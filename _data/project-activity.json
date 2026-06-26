@@ -1,20 +1,25 @@
 {
-  "generatedAt": "2026-06-26T02:42:55",
+  "generatedAt": "2026-06-26T02:49:19",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 17,
+      "commits": 18,
       "kinds": {
-        "docs": 7,
+        "docs": 8,
         "fix": 2,
         "build": 1,
         "feat": 6,
         "style": 1
       },
       "list": [
+        {
+          "sha": "f07a012",
+          "subject": "docs: Startseite 2-spaltig (Architektur + AP-Band 3-spaltig); Doku-Version 0.3.1/111 Tests",
+          "kind": "docs"
+        },
         {
           "sha": "bbf070e",
           "subject": "docs: AP-9 in Diagramm/Roadmap/Changelog; Oberflaechen-Screenshots neu (v0.3.1); Site neu gebaut",
@@ -303,7 +308,7 @@
     }
   },
   "stats": {
-    "totalCommits": 54,
+    "totalCommits": 55,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
@@ -313,7 +318,7 @@
       },
       {
         "kind": "docs",
-        "count": 16
+        "count": 17
       },
       {
         "kind": "fix",
