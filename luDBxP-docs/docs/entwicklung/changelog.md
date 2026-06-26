@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.17.0] — 2026-06-27
+### Hinzugefügt
+- **AP-30 — N-1-Stern (Auto-Weaving, Fan-out-Warnung):** Select-/ORDER-BY-/Filter-
+  Tabellen werden automatisch in den Join-Baum gewebt — stilles Verwerfen entfällt.
+  Unerreichbare Tabellen lösen einen `NoPathError` aus. Absteigende (1-N) Äste
+  erzeugen eine **nicht-blockierende Fan-out-Warnung** pro Pfad (`warnings`-Feld
+  in `/api/joinpath`); das Frontend zeigt diese als `.path-warn`-Box am betroffenen
+  Pfad an. 144 Tests grün, 1 skipped.
+
 ## [0.16.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-12 (Abschluss) — MSSQL-Verschlüsselungsfelder in der UI:** Verbindungs-Tab

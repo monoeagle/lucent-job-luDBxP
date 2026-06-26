@@ -40,12 +40,13 @@ passt zur Projekt-Grundausrichtung). Ziel: einschätzen, was ein Statement täte
 - [ ] Technik prüfen: SQL-Parser (z. B. `sqlglot`/`sqlparse`) lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
 - [ ] Betroffen: neue `core/`-Analyse (Parser), `web/routes.py` (read-only Analyse-Endpoint), `web/static/js/app.js`, `index.html`
 
-## AP-30 — N-1-Stern-Abfrage (ein Start, mehrere Lookup-Ziele)
+## AP-30 — N-1-Stern-Abfrage (ein Start, mehrere Lookup-Ziele) ✓ v0.17.0
 **Entschieden 2026-06-26 (war Frage):** Umsetzen — aber zugeschnitten auf den **N-1-Stern-Fall**; eigenes Feature-AP, Umsetzung separat (nicht jetzt).
-- [ ] **Scope = N-1-Stern:** Start zieht Attribute aus mehreren **Eltern-/Lookup-Tabellen** (z. B. VM + Host-Name + OS-Name + VLAN) — **kein** Zeilen-Fan-out, ein erweiterter Report in einem SELECT
-- [ ] Modell: **Join-Baum** mit mehreren Ziel-Ästen (analog zum Filter-Tabellen-Weaving in `find_paths`)
-- [ ] **1-N-Kind-Äste** (mehrere absteigende Ziele): nicht anbieten bzw. **vor quasi-kartesischem Fan-out warnen**
-- [ ] Betroffen: `core/pathfinder.py`, `core/sqlgen.py`, `web/static/js/app.js`/`index.html` (mehrere Ziel-Zeilen)
+Design-Spec: `docs/superpowers/specs/2026-06-27-ap30-n1-stern-design.md` · Plan: `docs/superpowers/plans/2026-06-27-ap30-n1-stern.md`
+- [x] **Scope = N-1-Stern:** Start zieht Attribute aus mehreren **Eltern-/Lookup-Tabellen** (z. B. VM + Host-Name + OS-Name + VLAN) — **kein** Zeilen-Fan-out, ein erweiterter Report in einem SELECT
+- [x] Modell: **Join-Baum** mit mehreren Ziel-Ästen (analog zum Filter-Tabellen-Weaving in `find_paths`)
+- [x] **1-N-Kind-Äste** (mehrere absteigende Ziele): nicht anbieten bzw. **vor quasi-kartesischem Fan-out warnen**
+- [x] Betroffen: `core/pathfinder.py`, `core/sqlgen.py`, `web/static/js/app.js`/`index.html` (mehrere Ziel-Zeilen)
 
 ## AP-31 — Terminal-Server-Tauglichkeit (Multi-User)
 **Frage:** Läuft die App korrekt für **mehrere gleichzeitige** Nutzer auf einem (RDS-)Terminal-Server?
