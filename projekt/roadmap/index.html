@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.14.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.15.0">
       
       
         <meta name="author" content="LucentTools">
@@ -910,8 +910,6 @@
   zusammenführen</li>
 <li><strong>AP-25</strong> — Tool: SQL-Statement-Analyzer (read-only Analyse beliebiger Statements,
   ohne Ausführung; Tabellen/Join-Pfad markieren)</li>
-<li><strong>AP-29</strong> — SQL-Dialekt umschalten (Oracle/MSSQL/PostgreSQL/MySQL/SQLite;
-  LIMIT/TOP/FETCH + Identifier-Quoting)</li>
 <li><strong>AP-30</strong> — N-1-Stern-Abfrage (ein Start, mehrere Lookup-/Eltern-Ziele; kein
   Zeilen-Fan-out — 1-N-Mehrfach-Ziele werden gewarnt)</li>
 <li><strong>AP-31</strong> — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
@@ -938,7 +936,7 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-8</strong> — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0</li>
 <li><strong>AP-9</strong> — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1</li>
 </ul>
-<p><strong>v0.4.0 – v0.14.0</strong> (2026-06-26):</p>
+<p><strong>v0.4.0 – v0.15.0</strong> (2026-06-26):</p>
 <ul>
 <li><strong>AP-14</strong> — Python-3.14-Readiness, Windows-Pfad (Wheelhouse cp312 → cp314) — v0.4.0</li>
 <li><strong>AP-11</strong> — Composite Foreign Keys voll unterstützt (<code>ON … AND …</code>) — v0.5.0</li>
@@ -959,6 +957,7 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-15</strong> (Teil 2, Linux) — <code>run.sh</code> abbruchsicher + idempotent — v0.12.0</li>
 <li><strong>AP-33</strong> — Logging sauber (Rotation · konfig. Level/Pfad · Request-Logging) — v0.13.0</li>
 <li><strong>AP-14</strong> (Teil 2, Linux) — Python-3.14-AppImage + AppRun-Update-/Browser-Fix — v0.14.0</li>
+<li><strong>AP-29</strong> — SQL-Dialekt umschalten (Quoting + LIMIT/TOP/FETCH je Dialekt) — v0.15.0</li>
 <li><strong>AP-22</strong> — Implizite FKs: Default geklärt → bleibt <strong>opt-in</strong> (Entscheidung)</li>
 <li><strong>AP-24</strong> — Session-KPIs: erhoben &amp; dev-intern dokumentiert (<code>session-kennzahlen.md</code>) (Entscheidung)</li>
 </ul>

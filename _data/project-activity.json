@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-26T23:35:05",
+  "generatedAt": "2026-06-26T23:55:00",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 65,
+      "commits": 66,
       "kinds": {
-        "other": 5,
+        "other": 6,
         "docs": 33,
         "fix": 6,
         "build": 5,
@@ -17,6 +17,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "f038f2d",
+          "subject": "roadmap/baum: AP-22 + AP-24 als erledigt (Entscheidungen) gefuehrt, AP-17 raus (gestrichen)",
+          "kind": "other"
+        },
         {
           "sha": "373bb91",
           "subject": "backlog: AP-17 gestrichen (Releases), AP-22 (impl. FKs OFF) + AP-24 (KPIs dev-intern) entschieden, AP-30 als N-1-Stern zugeschnitten; Diagramme/Roadmap/Site nachgezogen",
@@ -545,7 +550,7 @@
     }
   },
   "stats": {
-    "totalCommits": 102,
+    "totalCommits": 103,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
@@ -563,7 +568,7 @@
       },
       {
         "kind": "other",
-        "count": 6
+        "count": 7
       },
       {
         "kind": "build",
@@ -582,7 +587,7 @@
         "count": 1
       }
     ],
-    "testCount": 123
+    "testCount": 135
   },
   "phases": []
 }
