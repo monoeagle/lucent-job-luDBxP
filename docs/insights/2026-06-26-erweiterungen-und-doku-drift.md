@@ -62,3 +62,22 @@ beginnt**, dann bleibt Version ↔ AP 1:1.
 `nohup ./venv/bin/python app.py &` in einem Bash-Tool-Call wird beendet, sobald
 der Call zurückkehrt. Persistenter Dev-Server braucht `run_in_background`
 (eigener Task), nicht `&`.
+
+## 7. `origin/master` bekommt Fremd-Commits → immer fetch+rebase vor dem Push
+Mehrfach wurde der `git push origin master` **abgelehnt** (non-fast-forward),
+weil zwischendurch ein Commit von außerhalb der Session auf dem Remote landete
+(z. B. `9d55a9c build: Offline-Wheelhouse vervollstaendigen`). Lösung: vor jedem
+master-Push `git fetch origin master && git rebase origin/master` (disjunkte
+Dateien → konfliktfrei), **nie** force-pushen. Im Deploy-Subagenten als fester
+Schritt verankert. Lehre: Das Repo ist nicht exklusiv — der Remote-Stand kann
+sich zwischen zwei eigenen Commits ändern.
+
+## 8. Deploy-Workflow (master + gh-pages) — der eingespielte Pfad
+gh-pages trägt den **Inhalt von `site/` im Root** + `.nojekyll` (kein
+`site/`-Unterordner). Sauberer Deploy ohne Working-Tree-Störung: temporärer
+`git worktree add -B gh-pages origin/gh-pages`, Inhalt durch frische `site/`
+ersetzen (`find … -mindepth 1 ! -name .git -exec rm -rf` + `cp -a site/.`),
+`touch .nojekyll`, committen, pushen, Worktree entfernen. Die generierte `site/`
+ist **auch in master** getrackt (bewusst, damit Kollegen sie ohne Pages sehen).
+Doku-Build immer über `bash run_luDBxP_docs.sh --build` (eigene `.venv-docs` mit
+Zensical; rendert Mermaid via mmdc, regeneriert Activity-JSON, baut `site/`).

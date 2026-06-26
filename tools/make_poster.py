@@ -47,7 +47,7 @@ W, H = 4967, 7022
 MARGIN = 120
 FRAME = 46
 GAP = 44
-COLS = 3  # Querformat-Browser-Screenshots: 3 Spalten (1400x900 Viewport)
+COLS = 4  # Querformat-Browser-Screenshots: 4 Spalten (1400x900 Viewport)
 
 # Browser-App (kein Android): keine System-Leisten zu croppen
 CROP_TOP = 0
@@ -124,8 +124,8 @@ def paste_framed(img, bx, by, bw, bh):
 # --- Bilder einsammeln ---
 shots = sorted(glob.glob(os.path.join(MAIL, SCREENSHOT_GLOB)))
 diagrams = [
-    (os.path.join(MAIL, "diagramm-ap-ueberblick.jpg"), "Arbeitspakete im Überblick · Bereiche & Reihenfolge (Pfeile)"),
-    (os.path.join(MAIL, "diagramm-gantt-zeitleiste.jpg"), "Entwicklungs-Timeline (Gantt · Meilensteine)"),
+    (os.path.join(MAIL, "diagramm-architektur.jpg"), "Systemüberblick · UI → Flask-API → Core-Layer"),
+    (os.path.join(MAIL, "diagramm-ap-ueberblick.jpg"), "Arbeitspakete im Überblick · 3 Phasen (Fundament · UI/Daten · Features)"),
 ]
 diagrams = [(p, c) for p, c in diagrams if os.path.exists(p)]
 
@@ -134,18 +134,33 @@ tb_w, tb_h = 2180, 660
 tb_x1, tb_y1 = cx1, H - MARGIN
 tb_x0, tb_y0 = tb_x1 - tb_w, tb_y1 - tb_h
 
-# --- Diagramme: natuerliche Hoehe vorab (volle Inhaltsbreite) ---
+# --- Diagramme OBEN: Architektur (volle Breite) + AP-Band darunter ---
 cap_h = 60
 DIAG_GAP = 70
+cap_font = f(FB, 46)
 loaded = [(Image.open(p), cap) for p, cap in diagrams]
-diag_natural = sum(int(content_w * im.size[1] / im.size[0]) + cap_h for im, _ in loaded)
+diag_top = heading_bottom + 54
+diag_bottom = diag_top
 if loaded:
-    diag_natural += 60 * len(loaded)  # Zwischenabstaende
-diag_reserve = (diag_natural + DIAG_GAP) if loaded else 0
+    # Volle Inhaltsbreite; nur skalieren, falls die Bänder zu hoch würden, damit
+    # das Screenshot-Raster darunter Platz behält (max. ~62% der Restfläche).
+    diag_natural = sum(cap_h + int(content_w * im.size[1] / im.size[0]) for im, _ in loaded) + 60 * len(loaded)
+    diag_band_max = int((tb_y0 - diag_top) * 0.62)
+    scale = min(1.0, diag_band_max / diag_natural) if diag_natural > 0 else 1.0
+    dw = int(content_w * scale)
+    dx = cx0 + (content_w - dw) // 2
+    dy = diag_top
+    for im, cap in loaded:
+        d.text((dx, dy), cap, font=cap_font, fill=INK)
+        dyc = dy + cap_h
+        dh = int(dw * im.size[1] / im.size[0])
+        paste_framed(im, dx, dyc, dw, dh)
+        dy = dyc + dh + 60
+    diag_bottom = dy
 
-# --- Screenshot-Raster (auto-skaliert, damit Grid + Diagramme ins A0 passen) ---
-grid_top = heading_bottom + 54
-grid_band_h = (tb_y0 - DIAG_GAP - diag_reserve) - grid_top
+# --- Screenshot-Raster DARUNTER (4-spaltig, füllt bis zum Titelblock) ---
+grid_top = diag_bottom + DIAG_GAP
+grid_band_h = tb_y0 - DIAG_GAP - grid_top
 grid_bottom = grid_top
 if shots:
     col_w = (content_w - (COLS - 1) * GAP) // COLS
@@ -174,21 +189,7 @@ if shots:
         d.text((px + 9, py + 4), badge, font=idx_font, fill="white")
     grid_bottom = grid_top + rows * cell_h + (rows - 1) * GAP
 
-# --- Diagramme gross (zwischen Raster und Titelblock, auto-fit) ---
-if loaded:
-    cap_font = f(FB, 46)
-    diag_top = grid_bottom + DIAG_GAP
-    avail_h = (tb_y0 - DIAG_GAP) - diag_top
-    total_full = diag_natural
-    scale = min(1.0, avail_h / total_full) if total_full > 0 else 1.0
-    dw = int(content_w * scale)
-    dy = diag_top
-    for im, cap in loaded:
-        d.text((cx0 + (content_w - dw) // 2, dy), cap, font=cap_font, fill=INK)
-        dyc = dy + cap_h
-        dh = int(dw * im.size[1] / im.size[0])
-        paste_framed(im, cx0 + (content_w - dw) // 2, dyc, dw, dh)
-        dy = dyc + dh + 60
+# (Diagramme werden jetzt OBEN gezeichnet — siehe Block vor dem Screenshot-Raster)
 
 # --- Insights (KACHEL-RASTER: jede Kennzahl eine eigene Kachel) unten links ---
 # KANON: Insights IMMER als gefülltes Kachel-Raster — Headline-Kennzahlen
