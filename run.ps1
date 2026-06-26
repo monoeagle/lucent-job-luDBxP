@@ -74,7 +74,11 @@ function Do-Clean      {
 function Do-Version    { & $VenvPy -c 'import config; print(config.APP_VERSION)' }
 function Do-Tests {
     Setup-Venv
-    & $VenvPip install -q -r requirements-dev.txt
+    if (Test-Path $Wheels) {
+        & $VenvPip install -q --no-index --find-links $Wheels -r requirements-dev.txt
+    } else {
+        & $VenvPip install -q -r requirements-dev.txt
+    }
     & $VenvPy -m pytest
 }
 function Do-DemoDb {
