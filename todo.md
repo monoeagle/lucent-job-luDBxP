@@ -175,3 +175,20 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] **Logpfad `Logs/` im App-Verzeichnis:** auf Terminal-Server geteilt/konkurrierend → **pro-Nutzer-Logpfad** (Bezug AP-31, z. B. `%LOCALAPPDATA%`)
 - [ ] Request-Logging (Methode/Pfad/Status/Dauer) erwägen; Werkzeug-Access-Log einordnen
 - [ ] Betroffen: `core/log.py`, `web/__init__.py`, `web/routes.py`, `config.py` (Level/Pfad)
+
+## AP-34 — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)
+**Ziel:** Der Programmstart zeigt **keine** sichtbare `run.ps1`-Konsole mehr, sondern ein
+**Tray-Icon**. Darüber wird die Instanz gesteuert; der Browser (Chrome) öffnet sich beim
+ersten Start automatisch, sobald der Webserver steht.
+- [ ] **Tray-Icon** beim Start (statt sichtbarer Konsole); Kontextmenü mit:
+  - [ ] **Beenden** — Instanz sauber stoppen (Server-Prozess beenden → **Port wird frei**, Bezug AP-31)
+  - [ ] **Info** — App-Info öffnen (Version, URL/Port, aktive Verbindung)
+  - [ ] **Debug/Log/Ausgabe-Fenster** — Fenster mit Live-Ausgabe/Logtail (Bezug AP-33; da die Konsole versteckt ist, braucht es diese Sicht)
+  - [ ] (optional) **Im Browser öffnen** — URL erneut öffnen
+- [ ] **Konsole verstecken:** Start ohne sichtbares Fenster (z. B. via `pythonw.exe`/verstecktem Launcher bzw. `-WindowStyle Hidden`); die signierte `run.ps1` soll im Normalbetrieb nicht als Konsole erscheinen
+- [ ] **Auto-Browser:** beim **ersten** Start nach kurzem Delay **pollen**, bis der Webserver antwortet (`HTTP 200` auf `127.0.0.1:<Port>`), dann **Chrome** öffnen (Fallback: Standardbrowser, falls Chrome fehlt)
+- [ ] **Ansatz prüfen (NO-CDN!):**
+  - Variante A (Python): Launcher via `pythonw.exe` (keine Konsole) startet Flask + Tray via `pystray`+`Pillow`; Log-Fenster via Tkinter (stdlib). → `pystray`/`Pillow` als Wheels ins Wheelhouse aufnehmen.
+  - Variante B (PowerShell/.NET): `System.Windows.Forms.NotifyIcon` (keine Extra-Abhängigkeit) startet `app.py` versteckt; Tray + Log-Fenster in PowerShell. → berührt das **signierte** Skript (Re-Signatur) — ggf. eigener signierter Launcher.
+- [ ] **Bezug:** AP-31 (sauberes Beenden gibt den Port frei; pro Session) · AP-33 (Log-Fenster braucht ordentliches Logging) · Port-Lebensdauer-Notiz
+- [ ] Betroffen: neuer Launcher (`tray`/`launcher`), `run.ps1` (versteckter Start), ggf. `wheels/` (pystray/Pillow), `app.py`/`config.py` (Port/URL bereitstellen)
