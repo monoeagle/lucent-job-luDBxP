@@ -1,6 +1,6 @@
 name: luDBxP
 display_name: "LucentTools DB Explorer"
-version: "0.11.3"
+version: "0.12.0"
 description: "Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL."
 theme_color: "#2E6FAE"
 category: "Datenbank"

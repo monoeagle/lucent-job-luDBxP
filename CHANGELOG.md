@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.12.0] — 2026-06-26
+### Changed
+- **AP-15 (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent (Parität zu
+  `run.ps1`):** Der Linux-Launcher heilt sich nach abgebrochenen Läufen selbst.
+  Jeder Schritt prüft seine Vorbedingungen und meldet seinen Status
+  (`_ok`/`_warn`/`_info`/`_hdr`/`_fail`):
+  - **venv-Integrität statt nur Existenz** (`venv_healthy`: `python -c import sys`);
+    ein halbes/kaputtes venv wird automatisch neu gebaut.
+  - **Echter Paket-Vollständigkeits-Check:** `pip check` **plus** Vorhandensein
+    jeder in `requirements.txt` gelisteten Distribution (`importlib.metadata`) —
+    fängt sowohl abgebrochene Installs als auch ein frisch gebautes, leeres venv.
+  - **Atomarer Stamp:** `.req_stamp` wird erst **nach** erfolgreichem Install
+    geschrieben; ein abgebrochener Install wiederholt sich beim nächsten Lauf.
+  - **Port-/Instanz-Check** vor App-Start (5057 belegt via `ss`/`lsof` → klare
+    Abbruch-Meldung statt Crash).
+  - **Robustes Menü:** ein fehlgeschlagener Schritt beendet das Menü nicht mehr
+    (Subshell-Isolierung, bash-Pendant zum try/catch).
+  - **Exit-Codes nicht mehr verschluckt:** das `|| true` in `do_start`/
+    `do_skip_setup` entfernt; der App-Exit-Code wird sauber durchgereicht.
+  - **`--debug`-Flag** (Pendant zu `run.ps1 -DebugMode`, setzt `LUCENT_DEBUG=1`).
+- **AP-15 / NO-CDN auf Linux (adaptiv):** Installation versucht zuerst **strikt
+  offline** aus `wheels/` (`--no-index`-Dry-Run-Probe, kein Netz). Deckt das
+  Wheelhouse die Plattform ab → Offline-Install; sonst — z. B. die gebundelten
+  `win_amd64`/cp314-Wheels auf Linux — **lauter** Fallback auf Online-pip (kein
+  stilles Nachladen). Schaltet automatisch auf offline, sobald ein passendes
+  Linux-Wheelhouse vorliegt.
+
+### Fixed
+- **Leeres venv galt fälschlich als „vollständig":** `pip check` allein ist auf
+  einem frisch gebauten, paketleeren venv vacuously grün — in Kombination mit
+  einem noch passenden `.req_stamp` wäre der Install übersprungen worden (App
+  hätte beim Import gecrasht). Der Vollständigkeits-Check prüft jetzt zusätzlich
+  das tatsächliche Vorhandensein der Requirements. **Hinweis:** dieselbe latente
+  Schwäche steckt in `run.ps1` (Windows) — dort zur Behebung vorgemerkt (Skript
+  ist signiert, separate Session).
+
 ## [0.10.0] — 2026-06-26
 ### Added
 - **AP-20 — Copy-Icon am SELECT:** In der oberen rechten Ecke des generierten

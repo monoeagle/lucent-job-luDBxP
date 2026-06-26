@@ -176,6 +176,16 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] „Neu anordnen"-Button im Graph-Panel (`runGraphLayout`); cose-Abstände skalieren für dichte Schemas (> 12 Knoten) hoch (weniger Überlappung)
 - [x] Frontend `index.html`/`app.js`/`app.css`; im Browser verifiziert (Playwright: Filter, Splitter 240→392px, Re-Layout), 115 Tests grün
 
+## AP-15 (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent (v0.12.0)
+- [x] **Parität zu `run.ps1`:** Prereq-Check pro Schritt, durchgängige Status-Helfer (`_ok`/`_warn`/`_info`/`_hdr`/`_fail` waren schon da, jetzt im ganzen Setup-Pfad genutzt)
+- [x] **venv-Integrität statt nur `[ -d ]`** (`venv_healthy`: `python -c import sys`); halbes/kaputtes venv wird automatisch neu gebaut (Stamp dabei invalidiert)
+- [x] **Echter Paket-Vollständigkeits-Check:** `pip check` **plus** `importlib.metadata`-Prüfung jeder `requirements.txt`-Distribution; atomarer Stamp (erst nach Erfolg)
+- [x] **NO-CDN adaptiv:** `--no-index`-Dry-Run-Probe gegen `wheels/`; offline wenn plattform-kompatibel, sonst **lauter** Online-Fallback (kein stilles Nachladen). win_amd64/cp314-Wheels greifen auf Linux nicht → Online; schaltet automatisch auf offline, sobald ein Linux-Wheelhouse vorliegt
+- [x] **Port-/Instanz-Check** (`ss`/`lsof`) vor App-Start; **`|| true` entfernt** → App-Exit-Code wird durchgereicht; **robustes Menü** (Subshell-Isolierung); **`--debug`-Flag** (= `-DebugMode`)
+- [x] **Bug gefunden+gefixt:** leeres venv galt via vacuous `pip check` fälschlich als „vollständig" → Install übersprungen, App-Crash. (Gleiche Schwäche in `run.ps1` → **AP-35** vorgemerkt.)
+- [x] Verifiziert auf Linux: idempotenter Lauf · Port belegt (sauberer Abbruch) · kaputtes/leeres venv (Self-Heal + Online-Fallback, manylinux-Wheels) · 118 Tests grün via `run.sh --tests`
+- [ ] **Linux-Doc-Schuld (gebündelt):** Zensical-Site-Rebuild (siehe AP-16-Rest)
+
 ## AP-23 — Join-Builder-Maske vereinheitlicht (v0.11.0)
 - [x] Alle Dropdowns gleiche Breite (`--jb-ctrl-w: 150px`), alle Steuerelemente gleiche Höhe (`--jb-ctrl-h: 30px`); Start/Ziel/Filter/Sortier-/Spalten-Zeilen fluchten (Einrückung `padding-left`)
 - [x] Alle Aktions-Buttons gleich groß (`min-width: 140px`, einheitliche Höhe/Rand); Zeilen-Löschbuttons (`.f-del`/`.ob-del`/`.c-del`) als einheitliche kleine Quadrate

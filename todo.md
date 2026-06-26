@@ -1,8 +1,8 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-9, AP-11, AP-10, AP-13. Offen hier: **AP-12** und **AP-15**
-sowie der **Linux/AppImage-Rest von AP-14**.
+Zuletzt erledigt: AP-9, AP-11, AP-10, AP-13, **AP-15** (Linux, v0.12.0). Offen hier:
+**AP-12** sowie der **Linux/AppImage-Rest von AP-14**.
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
@@ -46,27 +46,14 @@ Blockierend waren **5 kompilierte cp312-Wheels** (CPython-3.12-ABI):
 - [ ] Abschluss: `sync_version.py` (Versionsbump) + CHANGELOG + AP nach `todo-erledigt.md` + AP-Diagramm (auf Linux neu bauen)
 - [ ] Betroffen (erledigt): `wheels/`, `wheels/README.md`, `run.ps1`, `run.sh` · (offen): `requirements.txt`, ggf. `core/connection.py`
 
-## AP-15 — `run.sh` & `run.ps1` abbruchsicher + idempotent machen
-**Ziel:** Egal an welcher Stelle ein vorheriger Lauf abgebrochen wurde (Strg-C, Fehler,
-halbes venv, halber pip-Install) — der nächste Lauf erkennt den Zustand, zieht fehlende
-Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meldet seinen Status.
-
-**Stand 2026-06-26 — `run.ps1` (Windows) UMGESETZT & verifiziert:**
-- [x] **Prereq-Check pro Schritt** (Python, venv-Integrität, Paket-Vollständigkeit, Port) vor jeder Aktion
-- [x] **venv-Integrität statt nur Existenz** (`Test-VenvHealthy`: `python -c import sys`); kaputtes/halbes venv wird automatisch neu gebaut
-- [x] **Idempotenter, selbstheilender Install:** `pip check` erkennt unvollständige Installation und repariert; Stamp erst nach Erfolg (atomar)
-- [x] **NO-CDN / nur lokale Sourcen:** Install strikt `--no-index` aus `wheels\`; **--dry-run-Vorabprüfung** listet fehlende Wheels und steigt mit **Protokoll** aus — KEINE (Teil-)Installation, kein Online-Nachladen
-- [x] **Statusausgabebereich:** durchgängige Helfer `_ok`/`_warn`/`_info`/`_hdr`/`_fail`
-- [x] **Port-/Instanz-Check** vor App-Start (5057 belegt → klare Abbruch-Meldung)
-- [x] **Robustes Menü** (`_fail` beendet das Menü nicht mehr; try/catch)
-- [x] Verifiziert: idempotenter Lauf · fehlender Stamp (Selbstheilung) · fehlendes Wheel (Protokoll + Abbruch) · Port belegt
-
-**Noch offen — `run.sh` (Linux, heute Abend):**
-- [ ] `run.sh` mit identischer Logik spiegeln (venv-Integrität, idempotent + `pip check`, Status-Helfer, Port-Check via `ss`/`lsof`); **Parität** halten
-- [ ] **`run.sh`-Fehler nicht mehr verschlucken:** `do_start`/`do_skip_setup` enden auf `|| true` → Exit-Code sauber durchreichen
-- [ ] **NO-CDN auf Linux:** braucht ein **Linux-Wheelhouse** (manylinux-cp314); die aktuellen `wheels/` sind `win_amd64`. Quelle/Strategie auf Linux entscheiden
-- [ ] Funktionale Verifikation beider Skripte auf Linux (simulierte Abbrüche)
-- [ ] Betroffen: `run.sh` (· `run.ps1` erledigt)
+## AP-35 — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund aus AP-15)
+**Bezug:** beim Linux-Spiegeln in AP-15 entdeckt — dieselbe latente Schwäche steckt in `run.ps1`.
+- [ ] `Test-RequirementsInstalled` prüft nur `pip check`; das ist auf einem frisch gebauten,
+      paketleeren venv **vacuously grün**. Mit noch passendem `.req_stamp` würde der Install
+      übersprungen (App crasht beim Import). Fix wie in `run.sh`: zusätzlich das tatsächliche
+      Vorhandensein der `requirements.txt`-Distributionen prüfen (`importlib.metadata`).
+- [ ] **Constraint:** `run.ps1` ist signiert → ASCII + UTF-8-BOM-Pattern beachten (PS 5.1),
+      nicht blind mit dem Edit-Tool bearbeiten. Eigene Windows-Session.
 
 ## AP-17 — Delivery-Verzeichnis bereinigen
 - [ ] Ein Auslieferungs-Verzeichnis, das **nur** enthält, was zum Betrieb explizit benötigt wird

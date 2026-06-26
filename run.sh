@@ -9,6 +9,16 @@ SCRIPT_DIR="$(pwd)"
 VENV=venv
 PY=python3
 STAMP=.req_stamp
+VENV_PY="$VENV/bin/python"
+VENV_PIP="$VENV/bin/pip"
+PORT=5057
+
+# Offline-Wheelhouse (gebundelte Wheels). run.ps1 installiert daraus STRIKT
+# offline (Windows-Ziel = air-gapped RDS, Python 3.14 → cp314/win_amd64-Wheels).
+# Auf Linux sind diese Wheels nicht nutzbar; daher hier adaptiv (siehe
+# install_requirements): offline, wenn ein plattform-kompatibles Wheelhouse
+# vorliegt, sonst Online-Install mit deutlicher Warnung.
+WHEELS="$SCRIPT_DIR/wheels"
 
 # ── AppImage-Variablen ────────────────────────────────────────────────────────
 APPIMAGE_BUILD="$SCRIPT_DIR/build/appimage"
@@ -35,30 +45,175 @@ pick_python() {
   done
 }
 
-setup_venv() {
-  pick_python
-  [ -d "$VENV" ] || "$PY" -m venv "$VENV"
-  NEW_HASH="$(md5sum requirements.txt | cut -d' ' -f1)"
-  if [ ! -f "$STAMP" ] || [ "$(cat "$STAMP")" != "$NEW_HASH" ]; then
-    ./"$VENV"/bin/pip install -r requirements.txt
-    echo "$NEW_HASH" > "$STAMP"
+# AP-15: venv-Integritaet pruefen, nicht nur Existenz. Ein mittendrin
+# abgebrochenes `python -m venv` hinterlaesst ggf. ein Verzeichnis ohne
+# funktionsfaehigen Interpreter — das wuerde ein blosses [ -d ] uebersehen.
+venv_healthy() {
+  [ -x "$VENV_PY" ] && "$VENV_PY" -c 'import sys' >/dev/null 2>&1
+}
+
+# AP-15: sind alle Laufzeit-Pakete installiert und konsistent?
+# Zweistufig, weil `pip check` allein nicht ausreicht: es prueft nur die
+# Konsistenz des bereits Installierten und ist auf einem LEEREN venv vacuously
+# gruen. Daher zusaetzlich pruefen, dass jede in requirements.txt gelistete
+# Distribution wirklich vorhanden ist (importlib.metadata, PEP-503-normalisiert).
+# Faengt sowohl einen abgebrochenen pip-Install (Stamp fehlt) als auch ein
+# frisch gebautes, noch leeres venv mit passendem Alt-Stamp.
+requirements_installed() {
+  [ -x "$VENV_PIP" ] || return 1
+  "$VENV_PIP" check >/dev/null 2>&1 || return 1
+  "$VENV_PY" - requirements.txt <<'PY'
+import sys, re, importlib.metadata as md
+ok = True
+for line in open(sys.argv[1], encoding="utf-8"):
+    line = line.strip()
+    if not line or line.startswith("#"):
+        continue
+    name = re.split(r"[<>=!~;\[\s]", line, 1)[0].strip()
+    if not name:
+        continue
+    try:
+        md.version(name)
+    except md.PackageNotFoundError:
+        ok = False
+        break
+sys.exit(0 if ok else 1)
+PY
+}
+
+# AP-15: Port-Check (Paritaet zu run.ps1 Test-PortFree). 0 = frei.
+port_free() {
+  local p="$1"
+  if command -v ss >/dev/null 2>&1; then
+    ! ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE ":${p}\$"
+  elif command -v lsof >/dev/null 2>&1; then
+    ! lsof -iTCP:"$p" -sTCP:LISTEN >/dev/null 2>&1
+  else
+    return 0   # kein Check moeglich → Port als frei annehmen
   fi
 }
 
+# AP-15 / NO-CDN (adaptiv): Erst STRIKT offline aus dem lokalen Wheelhouse
+# versuchen (--no-index --dry-run-Probe, kein Netz). Deckt das Wheelhouse die
+# Anforderungen fuer diese Plattform ab → Offline-Install. Sonst — z. B.
+# win_amd64-Wheels auf Linux — lauter Fallback auf Online-pip. So bleibt der
+# NO-CDN-Pfad erhalten und schaltet automatisch, sobald ein passendes
+# Linux-Wheelhouse vorliegt; kein stilles Online-Nachladen.
+install_requirements() {
+  local reqfile="$1"
+  if [ -d "$WHEELS" ]; then
+    _info "Pruefe lokales Wheelhouse fuer $reqfile (--no-index Dry-Run, kein Netz)..."
+    if "$VENV_PIP" install --no-index --find-links "$WHEELS" --dry-run -r "$reqfile" >/dev/null 2>&1; then
+      _ok "alle benoetigten Wheels lokal vorhanden — Offline-Install (kein Netz): $reqfile"
+      "$VENV_PIP" install --no-index --find-links "$WHEELS" -r "$reqfile"
+      return
+    fi
+    _warn "Wheelhouse deckt $reqfile auf dieser Plattform nicht ab (z. B. win_amd64-Wheels auf Linux)."
+  else
+    _warn "Kein Wheelhouse (wheels/) vorhanden."
+  fi
+  _warn "Fallback: Online-Install aus PyPI fuer $reqfile (Offline-Pfad nicht verfuegbar)."
+  "$VENV_PIP" install -r "$reqfile"
+}
+
+# AP-15: idempotenter, selbstheilender Setup-Schritt. Prueft jede Vorbedingung
+# und zieht nur das Fehlende nach. Der Stamp wird erst NACH erfolgreichem
+# Install + pip-check geschrieben (atomar): bricht der Install ab, bleibt der
+# Stamp aus, sodass der naechste Lauf ihn wiederholt.
+ensure_venv() {
+  _hdr "Umgebung pruefen"
+
+  if venv_healthy; then
+    _ok "venv funktionsfaehig"
+  else
+    if [ -d "$VENV" ]; then
+      _warn "venv unvollstaendig/kaputt — wird neu aufgebaut"
+      rm -rf "$VENV"
+    fi
+    pick_python
+    _info "venv anlegen ($PY)..."
+    "$PY" -m venv "$VENV"
+    venv_healthy || _fail "venv-Erstellung fehlgeschlagen."
+    # Frisches venv hat keine Pakete: alten Stamp invalidieren, sonst greift
+    # unten faelschlich der "Stamp passt"-Zweig (pip check ist auf einem leeren
+    # venv vacuously gruen) und es wird NICHT installiert.
+    rm -f "$STAMP"
+    _ok "venv angelegt"
+  fi
+
+  local new_hash old_hash need_install=0
+  new_hash="$(md5sum requirements.txt | cut -d' ' -f1)"
+  old_hash=""
+  [ -f "$STAMP" ] && old_hash="$(tr -d '[:space:]' < "$STAMP")"
+  if [ "$new_hash" != "$old_hash" ]; then
+    _info "requirements.txt geaendert (oder Erstinstallation)"
+    need_install=1
+  elif ! requirements_installed; then
+    _warn "Pakete unvollstaendig (pip check) — Reparatur-Install"
+    need_install=1
+  else
+    _ok "Laufzeit-Pakete vollstaendig"
+  fi
+
+  if [ "$need_install" -eq 1 ]; then
+    rm -f "$STAMP"   # erst nach Erfolg wieder schreiben
+    install_requirements requirements.txt
+    requirements_installed || _fail "Pakete nach Install weiterhin inkonsistent (pip check)."
+    echo "$new_hash" > "$STAMP"
+    _ok "Laufzeit-Pakete installiert"
+  fi
+}
+
+start_app() {
+  _hdr "App starten"
+  venv_healthy || _fail "venv nicht funktionsfaehig — bitte zuerst 'bash run.sh --setup-venv'."
+  if ! port_free "$PORT"; then
+    _warn "Port $PORT ist bereits belegt — laeuft schon eine Instanz? Start abgebrochen."
+    return 0
+  fi
+  if [ "${DEBUG_MODE:-0}" = "1" ]; then
+    export LUCENT_DEBUG=1
+    _info "Debug-Modus aktiv (LUCENT_DEBUG=1)"
+  fi
+  _info "Starte http://127.0.0.1:$PORT/  (Strg+C zum Beenden)"
+  local code=0
+  "$VENV_PY" app.py || code=$?
+  [ "$code" -ne 0 ] && _warn "App beendet mit Exit-Code $code"
+  return "$code"
+}
+
 # --- Actions (shared by the flags and the menu) ---------------------------
-do_start()      { setup_venv; ./"$VENV"/bin/python app.py || true; }
-do_setup_venv() { setup_venv; }
-do_skip_setup() { ./"$VENV"/bin/python app.py || true; }
-do_clean()      { rm -rf "$VENV" "$STAMP"; setup_venv; }
-do_version()    { ./"$VENV"/bin/python -c "import config; print(config.APP_VERSION)"; }
+do_start()      { ensure_venv; start_app; }
+do_setup_venv() { ensure_venv; _ok "Umgebung bereit."; }
+do_skip_setup() {
+  venv_healthy || _fail "venv fehlt/kaputt — bitte zuerst 'bash run.sh --setup-venv'."
+  start_app
+}
+do_clean() {
+  _hdr "Umgebung neu aufbauen"
+  [ -d "$VENV" ] && { _info "venv entfernen..."; rm -rf "$VENV"; }
+  rm -f "$STAMP"
+  ensure_venv
+  _ok "Umgebung neu aufgebaut."
+}
+do_version() {
+  venv_healthy || _fail "venv nicht funktionsfaehig — bitte zuerst 'setup-venv'."
+  "$VENV_PY" -c "import config; print(config.APP_VERSION)"
+}
 
 do_tests() {
-  setup_venv
-  ./"$VENV"/bin/pip install -q -r requirements-dev.txt
-  ./"$VENV"/bin/python -m pytest
+  ensure_venv
+  _hdr "Tests"
+  if "$VENV_PY" -c 'import pytest' >/dev/null 2>&1; then
+    _ok "Test-Abhaengigkeiten vorhanden"
+  else
+    install_requirements requirements-dev.txt
+  fi
+  "$VENV_PY" -m pytest
 }
 
 do_demo_db() {
+  _hdr "Demo-DB erzeugen"
   pick_python
   "$PY" sample_data/build_demo_db.py
 }
@@ -322,15 +477,18 @@ menu_loop() {
   while true; do
     show_menu
     read -rp "  Auswahl: " choice || { echo; exit 0; }
+    # AP-15: ein fehlgeschlagener Schritt (_fail → exit) darf das Menue nicht
+    # beenden. Die Aktion laeuft in einer Subshell; deren Abbruch faengt das
+    # `|| _warn` ab (bash-Pendant zum try/catch in run.ps1).
     case "$choice" in
-      1) do_start ;;
-      2) do_setup_venv; echo "  Umgebung bereit." ;;
-      3) do_skip_setup ;;
-      4) do_clean; echo "  Umgebung neu aufgebaut." ;;
-      5) do_tests ;;
-      6) do_demo_db ;;
-      7) do_version ;;
-      8) cmd_appimage ;;
+      1) ( do_start )      || _warn "Abgebrochen." ;;
+      2) ( do_setup_venv ) || _warn "Abgebrochen." ;;
+      3) ( do_skip_setup ) || _warn "Abgebrochen." ;;
+      4) ( do_clean )      || _warn "Abgebrochen." ;;
+      5) ( do_tests )      || _warn "Abgebrochen." ;;
+      6) ( do_demo_db )    || _warn "Abgebrochen." ;;
+      7) ( do_version )    || _warn "Abgebrochen." ;;
+      8) ( cmd_appimage )  || _warn "Abgebrochen." ;;
       0) exit 0 ;;
       *) echo "  Ungültige Auswahl: $choice" ;;
     esac
@@ -338,6 +496,18 @@ menu_loop() {
 }
 
 # --- Dispatch -------------------------------------------------------------
+# --debug (Pendant zu run.ps1 -DebugMode) ist mit --start/--skip-setup
+# kombinierbar; aus der Argumentliste herausfiltern, Rest = Aktion.
+DEBUG_MODE=0
+ARGS=()
+for a in "$@"; do
+  case "$a" in
+    --debug|-d) DEBUG_MODE=1 ;;
+    *)          ARGS+=("$a") ;;
+  esac
+done
+set -- "${ARGS[@]+"${ARGS[@]}"}"
+
 case "${1:-MENU}" in
   --appimage)   cmd_appimage ;;
   --setup-venv) do_setup_venv ;;
@@ -349,8 +519,9 @@ case "${1:-MENU}" in
   --start|"")   do_start ;;
   MENU)         menu_loop ;;
   --help|-h)
-    echo "Usage: run.sh [--start|--setup-venv|--skip-setup|--clean|--tests|--demo-db|--version|--appimage]"
-    echo "       run.sh            (no argument: interactive menu)"
+    echo "Usage: run.sh [--start|--setup-venv|--skip-setup|--clean|--tests|--demo-db|--version|--appimage] [--debug]"
+    echo "       run.sh            (kein Argument: interaktives Menue)"
+    echo "       --debug           Flask-Debug-Modus (LUCENT_DEBUG=1), mit --start/--skip-setup"
     ;;
   *) echo "Unbekannte Option: $1 (siehe --help)"; exit 1 ;;
 esac

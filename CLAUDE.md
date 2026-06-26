@@ -30,6 +30,7 @@ All JavaScript, CSS, and font dependencies are bundled locally under `web/assets
 bash run.sh            # creates venv if needed, installs deps, starts server
 bash run.sh --version  # print current version
 bash run.sh --skip-setup  # skip venv/dep check, just launch (for hub use)
+bash run.sh --debug    # Flask debug mode (LUCENT_DEBUG=1); combine with --start/--skip-setup
 ```
 Server listens at `http://127.0.0.1:5057`.
 
