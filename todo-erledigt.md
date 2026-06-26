@@ -194,3 +194,11 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] **Entscheidung gerade vs. geknickte Kanten:** Routing rang-überspringender Kanten über dagres Knickpunkte (`curve-style:segments`) erreicht **0 Kreuzungen**, lässt die Verbindungen aber als Zickzack schlechter aussehen → **verworfen**. Bewusst **gerade Linien** mit **1 Kreuzung** (`Cluster→Host × Datacenter→Network`, topologiebedingte transitive Kante) — bessere Lesbarkeit (Nutzerwunsch)
 - [x] Verifiziert (Playwright, Demo-CMDB): Kreuzungen **6 (Grid-Fallback) → 1** (Polylinien-Schnitt-Zähler), keine Konsolen-/Page-Fehler, sauberes Schichten-Layout; 118 Tests grün
 - [ ] **Linux-Rest:** AP-Diagramm + Zensical-Site neu bauen (Konvention: nur Linux)
+
+## AP-26 — Audit-Sessions: unerwünschtes Verhalten ausschließen (v0.11.0)
+- [x] **Audit-Prozess + Checkliste** in `docs/audits/README.md`: Kriterien (kein Netzwerk/`eval`/`Function()`/Blob/Worker/externe URLs/Storage/DOM-Inject; `require` nur bundle-intern; NO-CDN; dokumentierte Globals)
+- [x] **Auslöser** festgelegt: vor jedem Lib-Einbinden + stichprobenartig bei KI-Code; Ergebnis verpflichtend als datierte Datei `docs/audits/YYYY-MM-DD-<thema>.md`
+- [x] **Reproduzierbar:** drei ripgrep-Snippets dokumentiert und gegen den Ist-Stand validiert (`dagre.min.js` → 0 Treffer, Template → 0 CDN-Referenzen)
+- [x] **Doku-Ort entschieden:** `docs/audits/` (entwicklerintern, **nicht** ins Delivery — AP-17); öffentliche Site nur neutrale Aussage ohne KI-Bezug
+- [x] **Erster Record:** `docs/audits/2026-06-26-dagre-cytoscape-dagre.md` (dagre/cytoscape-dagre, AP-16) — Ergebnis unbedenklich
+- [ ] **Optional offen:** neutrale Sicherheits-Notiz auf der Zensical-Site (alle Assets lokal, kein CDN, kein Laufzeit-Netzwerk) — beim nächsten Linux-Doku-Build mitnehmen

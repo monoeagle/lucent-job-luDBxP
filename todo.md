@@ -109,17 +109,6 @@ passt zur Projekt-Grundausrichtung). Ziel: einschätzen, was ein Statement täte
 - [ ] Technik prüfen: SQL-Parser (z. B. `sqlglot`/`sqlparse`) lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
 - [ ] Betroffen: neue `core/`-Analyse (Parser), `web/routes.py` (read-only Analyse-Endpoint), `web/static/js/app.js`, `index.html`
 
-## AP-26 — Audit-Sessions: unerwünschtes Verhalten ausschließen
-**Ziel:** Wiederkehrender, dokumentierter Audit, der ausschließt, dass eingebundener Code
-(insb. extern bezogene/gebündelte Libs oder KI-erzeugter Code) unerwünschtes Verhalten zeigt
-— Netzwerk-Nachladen, Exfiltration, dynamische Codeausführung, CDN-Verstöße.
-- [ ] **Audit-Checkliste** definieren: kein `fetch`/XHR/WebSocket/EventSource/sendBeacon · kein `eval`/`Function()`/Blob/Worker/`document.write` · keine externen String-URLs · NO-CDN eingehalten · nur lokale Sourcen · `require` nur bundle-intern
-- [ ] **Auslöser** festlegen: vor jedem Einbinden einer neuen Lib + stichprobenartig bei KI-erzeugtem Code; Ergebnis verpflichtend dokumentieren
-- [ ] **Reproduzierbar** machen: Audit-Schritte als Skript/Snippet (z. B. gezielte Grep-Muster) ablegen, damit der Audit wiederholbar ist
-- [ ] **Doku-Ort (Vorschlag):** neues internes Verzeichnis `docs/audits/` (eine datierte Datei je Audit-Session, analog `docs/handoffs/` & `docs/insights/`) — bleibt **entwicklerintern** (KI-/Prozessspur, **nicht** ins Delivery, vgl. AP-17)
-- [ ] **Optional öffentlich:** neutrale Sicherheits-Notiz auf der Zensical-Site (`referenz/architektur.md` oder eigene Seite „Sicherheit/Vertrauen": alle Assets lokal, kein CDN, kein Laufzeit-Netzwerk) — **ohne** KI-Bezug
-- [ ] Rückwirkend: den bereits erfolgten dagre/cytoscape-dagre-Audit (AP-16) als erste `docs/audits/`-Datei festhalten
-
 ## AP-27 — Insights + Dokumentation: Ort & Einbindung klären
 **Ziel:** Festlegen, wo Insights leben, wie sie gepflegt werden und wie sie sich zur
 veröffentlichten Doku verhalten.
