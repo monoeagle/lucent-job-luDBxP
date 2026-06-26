@@ -279,9 +279,10 @@ def test_joinpath_extra_selects_appear_in_sql(client, inventory_url):
     assert '"VMwareCluster"."ClusterID"' in paths[0]["sql"]
 
 
-def test_joinpath_extra_select_off_path_excluded(client, inventory_url):
-    """Extra selects from a table not on this join path are silently excluded."""
-    # Path Networks -> VirtualMachines -> VMwareCluster does NOT include OperatingSystems
+def test_joinpath_extra_select_off_path_now_woven(client, inventory_url):
+    """AP-30: an extra-select from an off-axis lookup table is now woven into
+    the join tree and its column appears in the SELECT (no silent drop)."""
+    # Path Networks -> VirtualMachines -> VMwareCluster did NOT include OperatingSystems
     resp = client.post("/api/joinpath", json={
         "connection_url": inventory_url,
         "start": {"table": "Networks", "column": "VLAN"},
@@ -293,8 +294,8 @@ def test_joinpath_extra_select_off_path_excluded(client, inventory_url):
     paths = resp.get_json()["paths"]
     assert paths
     for p in paths:
-        assert "OperatingSystems" not in p["tables"]
-        assert "OperatingSystems.OS_Family" not in p["sql"]
+        assert "OperatingSystems" in p["tables"]
+        assert '"OperatingSystems"."OS_Family"' in p["sql"]
 
 
 def test_joinpath_extra_select_unknown_column_returns_400(client, inventory_url):
@@ -476,9 +477,9 @@ def test_joinpath_run_unknown_column_returns_400(client, demo_url):
     assert "error" in resp.get_json()
 
 
-def test_joinpath_ap3_orderby_offpath_excluded(client, inventory_url):
-    """ORDER BY column from a table not on the path is silently excluded."""
-    # Path Networks -> VirtualMachines -> VMwareCluster does NOT include OperatingSystems
+def test_joinpath_ap3_orderby_offpath_now_woven(client, inventory_url):
+    """AP-30: an ORDER BY column from an off-axis table is now woven in and
+    appears in the ORDER BY clause."""
     resp = client.post("/api/joinpath", json={
         "connection_url": inventory_url,
         "start": {"table": "Networks", "column": "VLAN"},
@@ -491,6 +492,26 @@ def test_joinpath_ap3_orderby_offpath_excluded(client, inventory_url):
     })
     assert resp.status_code == 200
     sql = resp.get_json()["paths"][0]["sql"]
-    # OperatingSystems is off-path → excluded; VirtualMachines is on-path → included
-    assert "OperatingSystems" not in sql or "ORDER BY" not in sql.split("OperatingSystems")[0]
+    assert "OperatingSystems" in sql
+    assert '"OperatingSystems"."OS_Family" ASC' in sql
     assert '"VirtualMachines"."VMID" DESC' in sql
+
+
+def test_joinpath_n1_star_multi_lookup(client, inventory_url):
+    """AP-30: one start (VirtualMachines) pulls attributes from three lookup
+    tables in a single SELECT — all woven, no fan-out warning."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "VirtualMachines", "column": "VMID"},
+        "target": {"table": "Networks", "column": "VLAN"},
+        "extra_selects": [
+            {"table": "OperatingSystems", "column": "OS_Family"},
+            {"table": "VMwareCluster", "column": "ClusterName"},
+        ],
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert '"Networks"."VLAN"' in p["sql"]
+    assert '"OperatingSystems"."OS_Family"' in p["sql"]
+    assert '"VMwareCluster"."ClusterName"' in p["sql"]

@@ -199,7 +199,7 @@ def _parse_joinpath_params(data: dict, schema):
 
     Returns a 8-tuple:
     ``(start, target, filters, extra_selections, distinct, limit,
-       order_by_validated, filter_tables)``
+       order_by_validated, required_tables)``
 
     Raises:
         KeyError: If a required field is absent.
@@ -273,9 +273,16 @@ def _parse_joinpath_params(data: dict, schema):
         if not schema.has_column(tbl, col):
             raise ValueError(f"unknown column: {tbl}.{col}")
 
-    filter_tables = tuple(f.table for f in filters)
+    # AP-30: every table whose column is referenced (filter, extra select or
+    # ORDER BY) must be woven into the join tree. Order-preserving dedup keeps
+    # path-finding deterministic (no set iteration).
+    required_tables = tuple(dict.fromkeys(
+        [f.table for f in filters]
+        + [s.table for s in extra_selections]
+        + [tbl for tbl, _col, _dir in order_by_validated]
+    ))
     return (start, target, filters, extra_selections,
-            distinct, limit, order_by_validated, filter_tables)
+            distinct, limit, order_by_validated, required_tables)
 
 
 def _dialect_from_url(url: str):
@@ -293,29 +300,22 @@ def _make_path_gen(p, start: dict, target: dict,
                    dialect=SQLITE):
     """Build a GeneratedSQL for a single join path.
 
-    Filters extra_selections and order_by to only the tables actually present
-    on *p*, mirroring the behaviour of api_joinpath.
+    All extra selects and order_by entries are included; AP-30 guarantees
+    their tables are woven into *p*.
     """
-    path_tables = set(p.tables)
     seen: set[tuple[str, str]] = set()
     selects_for_path: list[Selection] = []
     for sel in (Selection(start["table"], start["column"]),
-                Selection(target["table"], target["column"])):
+                Selection(target["table"], target["column"]),
+                *extra_selections):
         key = (sel.table, sel.column)
         if key not in seen:
             seen.add(key)
             selects_for_path.append(sel)
-    for sel in extra_selections:
-        key = (sel.table, sel.column)
-        if sel.table in path_tables and key not in seen:
-            seen.add(key)
-            selects_for_path.append(sel)
 
-    order_by_for_path = tuple(
-        (tbl, col, direction)
-        for tbl, col, direction in order_by_validated
-        if tbl in path_tables
-    )
+    # AP-30: every referenced table is now woven into the path, so order_by is
+    # passed through unfiltered (no silent drop).
+    order_by_for_path = tuple(order_by_validated)
 
     return generate_sql(p, tuple(selects_for_path), filters,
                         distinct=distinct,
@@ -346,8 +346,8 @@ def api_joinpath():
     try:
         (start, target, filters, extra_selections,
          distinct, limit, order_by_validated,
-         filter_tables) = _parse_joinpath_params(data, schema)
-        paths = find_paths(graph, start["table"], target["table"], filter_tables)
+         required_tables) = _parse_joinpath_params(data, schema)
+        paths = find_paths(graph, start["table"], target["table"], required_tables)
     except KeyError as exc:
         return jsonify(error=f"missing field: {exc}"), 400
     except NoPathError as exc:
@@ -408,8 +408,8 @@ def api_joinpath_run():
     try:
         (start, target, filters, extra_selections,
          distinct, limit, order_by_validated,
-         filter_tables) = _parse_joinpath_params(data, schema)
-        paths = find_paths(graph, start["table"], target["table"], filter_tables)
+         required_tables) = _parse_joinpath_params(data, schema)
+        paths = find_paths(graph, start["table"], target["table"], required_tables)
     except KeyError as exc:
         return jsonify(error=f"missing field: {exc}"), 400
     except NoPathError as exc:
