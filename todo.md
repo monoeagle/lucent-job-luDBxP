@@ -17,10 +17,10 @@ Offen hier: **AP-12** (MSSQL real testbar).
 - [x] Setup-Doku in `grundlagen/installation.md` (Driver 18, TrustServerCertificate, überschreibbar)
 - [x] Tests: Default-Driver 18, Custom-Driver + Encrypt/Trust, Treiber-Hinweis-Erkennung (118 grün, gegen SQLite)
 
-**Noch offen (braucht echte MSSQL-Instanz / heute Abend Linux):**
-- [ ] System-ODBC real einrichten (`unixODBC` + `msodbcsql18` Linux; ODBC Driver 18 Windows)
-- [x] **Optionaler Integrationstest** gegen lokale MSSQL-Instanz — `tests/test_mssql_integration.py`: läuft nur bei gesetztem `LUCENT_MSSQL_TEST_URL`, skippt sauber bei nicht erreichbar/Treiber fehlt (verifiziert: skip ohne ENV; Body grün gegen SQLite-Demo)
-- [ ] UI: MSSQL-Felder für `Encrypt`/`TrustServerCertificate` im Verbindungs-Tab (aktuell nur via API/`config.json` setzbar)
+**Stand 2026-06-27 — real gegen MSSQL verifiziert:**
+- [x] **System-ODBC eingerichtet** (Linux-Devbox): `msodbcsql18` + „ODBC Driver 18 for SQL Server" registriert; MSSQL-Instanz via **rootless podman** (`mcr.microsoft.com/mssql/server:2022`) für den Test
+- [x] **Integrationstest real grün** — `tests/test_mssql_integration.py` (`LUCENT_MSSQL_TEST_URL`): provisioniert ein Parent/Child-Schema, reflektiert es über den App-Loader und prüft die **FK-Kante**; skippt sauber ohne ENV/Treiber. Verifiziert: ODBC Driver 18 → pyodbc → SQLAlchemy-Reflection → Core-Modell (Tabellen/Spalten/PK/FK) auf echtem SQL Server 2022
+- [ ] **Letztes Teilstück:** UI-Felder für `Encrypt`/`TrustServerCertificate` im Verbindungs-Tab (Backend kann's seit v0.9.0; aktuell nur via API/`config.json` setzbar)
 
 ## AP-35 — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund aus AP-15)
 **Bezug:** beim Linux-Spiegeln in AP-15 entdeckt — dieselbe latente Schwäche steckt in `run.ps1`.
