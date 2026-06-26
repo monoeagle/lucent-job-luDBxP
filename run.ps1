@@ -1,16 +1,66 @@
 <#
-  LucentTools DB Explorer launcher (Windows / PowerShell).
-  Run with no argument for an interactive menu; pass a flag for direct,
-  non-interactive actions. Mirrors run.sh.
+.SYNOPSIS
+    LucentTools DB Explorer - Launcher & Offline-Setup (Windows / PowerShell).
 
-  AP-15: abbruchsicher + idempotent. Jeder Schritt prueft seine Vorbedingungen
-  (Python, venv-Integritaet, Paket-Vollstaendigkeit, Port) und zieht Fehlendes
-  nach, sodass ein zuvor abgebrochener Lauf (halbes venv, halber pip-Install)
-  beim naechsten Mal sauber zu Ende gefuehrt wird. Jeder Schritt meldet Status.
+.DESCRIPTION
+    Startet die Anwendung und richtet bei Bedarf die Python-Umgebung (venv) ein.
+    Ohne Argument: interaktives Menue. Mit -Action: direkte, nicht-interaktive
+    Aktion. Pendant zu run.sh (Linux).
 
-  Usage:
-    .\run.ps1                 # interactive menu
-    .\run.ps1 -Action start | setup-venv | skip-setup | clean | tests | demo-db | version
+    Eigenschaften (AP-15): abbruchsicher + idempotent. Jeder Schritt prueft seine
+    Vorbedingungen (Python, venv-Integritaet, Paket-Vollstaendigkeit, Port) und
+    zieht nur Fehlendes nach, sodass ein zuvor abgebrochener Lauf (halbes venv,
+    halber pip-Install) beim naechsten Mal sauber zu Ende laeuft. Jeder Schritt
+    meldet seinen Status.
+
+    NO-CDN / Offline: Installation strikt aus dem lokalen Wheelhouse (wheels\)
+    via 'pip --no-index'; kein Online-Nachladen. Voraus geht eine --dry-run-
+    Pruefung, die fehlende Wheels protokolliert und ohne Teil-Installation
+    abbricht.
+
+.PARAMETER Action
+    Auszufuehrende Aktion. Ohne Angabe: 'menu' (interaktiv).
+      menu        - interaktives Menue (Default)
+      start       - Setup falls noetig, dann Server starten
+      setup-venv  - nur venv + Pakete einrichten/reparieren
+      skip-setup  - Server starten ohne Setup-Check (schnell)
+      clean       - venv entfernen und neu aufbauen
+      tests       - Test-Abhaengigkeiten sichern und pytest ausfuehren
+      demo-db     - Demo-CMDB (sample_data) neu erzeugen
+      version     - APP_VERSION aus config.py ausgeben
+
+.EXAMPLE
+    .\run.ps1
+    Startet das interaktive Menue.
+
+.EXAMPLE
+    .\run.ps1 -Action start
+    Richtet bei Bedarf die venv ein und startet den Server (http://127.0.0.1:5057).
+
+.EXAMPLE
+    .\run.ps1 -Action clean
+    Baut die virtuelle Umgebung offline aus wheels\ komplett neu auf.
+
+.INPUTS
+    Keine. Steuerung ueber den Parameter -Action; im Menue via Read-Host.
+
+.OUTPUTS
+    Keine Objekte; Status-/Konsolenausgabe.
+
+.NOTES
+    Projekt    : LucentTools DB Explorer - Visual Join-Path Builder (read-only SQL)
+    Autor      : Tobias Philipp / LucentTools
+    Lizenz     : intern / proprietaer (siehe Repository)
+    Plattform  : Windows 10/11 - PowerShell 5.1+ oder PowerShell 7+
+    Benoetigt  : Python 3.14 (64-bit, passend zum cp314-Wheelhouse); Port 5057 frei
+    Version    : siehe config.py (APP_VERSION) - bewusst NICHT hier dupliziert,
+                 damit Versions-Bumps dieses (signierte) Skript nicht veraendern.
+    Sicherheit : nur lokale Quellen (NO-CDN); App ist read-only (Schema lesen +
+                 SQL erzeugen - keine schreibenden DB-Operationen).
+    Pendant    : run.sh (Linux)
+
+.LINK
+    Doku (lokal): luDBxP-docs/  ->  Grundlagen / Installation
 #>
 param(
     [ValidateSet('menu', 'start', 'setup-venv', 'skip-setup', 'clean', 'tests', 'demo-db', 'version')]
@@ -32,6 +82,15 @@ $Port    = 5057
 # Offline wheelhouse (bundled Windows wheels). When present, setup runs without
 # internet. The compiled wheels are built for CPython 3.14 (win_amd64).
 $Wheels = Join-Path $PSScriptRoot 'wheels'
+
+# Anzeigename aus der Single Source of Truth (config.py) lesen, damit eine
+# Umbenennung der App dieses (signierte) Skript NICHT mehr anfassen muss.
+$AppName = 'LucentTools DB Explorer'
+try {
+    $m = Select-String -Path (Join-Path $PSScriptRoot 'config.py') `
+                       -Pattern '^\s*APP_NAME\s*=\s*"([^"]+)"' -ErrorAction Stop
+    if ($m) { $AppName = $m.Matches[0].Groups[1].Value }
+} catch { }
 
 # --- Status helpers (AP-15: durchgaengiger Statusausgabebereich) -----------
 # ASCII-Marker, damit die Windows-Konsole (cp1252) nichts verschluckt.
@@ -204,8 +263,8 @@ function Do-DemoDb {
 # --- Interactive menu -----------------------------------------------------
 function Show-Menu {
     Write-Host ''
-    Write-Host '  LucentTools DB Explorer'
-    Write-Host '  =================='
+    Write-Host "  $AppName"
+    Write-Host ('  ' + ('=' * $AppName.Length))
     Write-Host '  1) App starten (Setup, falls noetig)'
     Write-Host '  2) Nur Umgebung einrichten (venv + pip)'
     Write-Host '  3) App schnell starten (ohne Setup-Check)'
