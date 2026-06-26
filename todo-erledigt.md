@@ -230,3 +230,11 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] **Abgrenzung definiert** (Tabelle in README): Insight = *Warum*/Erkenntnis/Entscheidung (intern, Prozess-/KI-Bezug erlaubt) vs. öffentliche Doku = *Was*/*Wie benutze ich es* (`referenz/`/`grundlagen/`/`entwicklung/`, nie Prozess/KI)
 - [x] **Überführung dokumentiert:** reife Insights können *neutralisiert* (ohne KI-Bezug) in die Site wandern; Original bleibt intern
 - [x] Betroffen: `docs/insights/README.md` (neu)
+
+## Server-Deployment-Fixes (PowerShell 5.1) (v0.11.1–v0.11.3)
+Beim ersten Server-Test (Windows PowerShell **5.1**) aufgetretene Blocker behoben:
+- [x] **run.ps1 reines ASCII + UTF-8-BOM** (v0.11.2-Fix): Em-Dashes `—` ohne BOM → PS 5.1 las als cp1252, zerlegte UTF-8-Bytes falsch → „unexpected )/}". Jetzt ASCII + BOM (PS 5.1 **und** 7)
+- [x] **Start-Abbruch behoben** (v0.11.3): Flask-Dev-Server-Warnung („This is a development server…") geht auf stderr; unter `$ErrorActionPreference='Stop'` wertete PS 5.1 das als Fehler und brach den Start ab → in `Start-App` lokal auf `Continue` gesetzt (try/finally)
+- [x] **Debug-Schalter**: `run.ps1 -DebugMode` setzt `LUCENT_DEBUG=1`; `app.py` liest die Variable → Flask-Debug (interaktiver Debugger + Reloader); Hilfe (`.PARAMETER`/`.EXAMPLE`) ergänzt
+- [x] **app.py** zusätzlich `threaded=True` (gleichzeitige Requests); verifiziert: HTTP 200; 118 Tests grün
+- [x] Betroffen: `app.py`, `run.ps1`

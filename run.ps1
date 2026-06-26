@@ -29,6 +29,11 @@
       demo-db     - Demo-CMDB (sample_data) neu erzeugen
       version     - APP_VERSION aus config.py ausgeben
 
+.PARAMETER DebugMode
+    Startet den Server im Flask-Debug-Modus (setzt LUCENT_DEBUG=1): interaktiver
+    Debugger + Auto-Reload. Nur fuer lokale Diagnose, nicht fuer Produktiv-/
+    Mehrbenutzerbetrieb. Kombinierbar mit -Action start bzw. skip-setup.
+
 .EXAMPLE
     .\run.ps1
     Startet das interaktive Menue.
@@ -36,6 +41,14 @@
 .EXAMPLE
     .\run.ps1 -Action start
     Richtet bei Bedarf die venv ein und startet den Server (http://127.0.0.1:5057).
+
+.EXAMPLE
+    .\run.ps1 -Action start -DebugMode
+    Wie 'start', aber im Debug-Modus (interaktiver Debugger + Auto-Reload).
+
+.EXAMPLE
+    .\run.ps1 -Action skip-setup -DebugMode
+    Schnellstart ohne Setup-Check, im Debug-Modus.
 
 .EXAMPLE
     .\run.ps1 -Action clean
@@ -64,7 +77,8 @@
 #>
 param(
     [ValidateSet('menu', 'start', 'setup-venv', 'skip-setup', 'clean', 'tests', 'demo-db', 'version')]
-    [string]$Action = 'menu'
+    [string]$Action = 'menu',
+    [switch]$DebugMode
 )
 
 $ErrorActionPreference = 'Stop'
@@ -220,9 +234,18 @@ function Start-App {
         _warn "Port $Port ist bereits belegt - laeuft schon eine Instanz? Start abgebrochen."
         return
     }
+    if ($DebugMode) { $env:LUCENT_DEBUG = '1'; _info "Debug-Modus aktiv (LUCENT_DEBUG=1)" }
     _info "Starte http://127.0.0.1:$Port/  (Strg+C zum Beenden)"
-    & $VenvPy app.py
-    $code = $LASTEXITCODE
+    # Flask schreibt die Dev-Server-Warnung nach stderr; unter ErrorActionPreference=Stop
+    # wertet PowerShell 5.1 das als Fehler und bricht ab - hier lokal entschaerfen.
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        & $VenvPy app.py
+        $code = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $prevEAP
+    }
     if ($code -and $code -ne 0) { _warn "App beendet mit Exit-Code $code" }
 }
 
