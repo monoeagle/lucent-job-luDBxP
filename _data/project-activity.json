@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-26T23:08:16",
+  "generatedAt": "2026-06-26T23:15:08",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 62,
+      "commits": 63,
       "kinds": {
-        "docs": 31,
+        "docs": 32,
         "other": 4,
         "fix": 6,
         "build": 5,
@@ -17,6 +17,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "a2a61a1",
+          "subject": "docs: UI-Screenshots auf aktuellen Stand (LucentTools-UI, dagre-Graph, vereinheitlichte Join-Maske); Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "2272681",
           "subject": "docs: AP-14 nach erledigt (AP-Baum/Gantt/Roadmap), Badges v0.14.0, Changelog-Mirror, Site neu gebaut",
@@ -530,13 +535,13 @@
     }
   },
   "stats": {
-    "totalCommits": 99,
+    "totalCommits": 100,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 40
+        "count": 41
       },
       {
         "kind": "feat",

@@ -1101,14 +1101,14 @@
 <h2 id="offline-einrichtung-ohne-internet">Offline-Einrichtung (ohne Internet)<a class="headerlink" href="#offline-einrichtung-ohne-internet" title="Permanent link">&para;</a></h2>
 <p>Für Maschinen <strong>ohne PyPI-/Internet-Freigabe</strong> liegt ein <strong>Offline-Wheelhouse</strong>
 bei: der Ordner <code>wheels/</code> enthält alle Laufzeit-Abhängigkeiten als Windows-Wheels
-(<code>cp312-win_amd64</code>, ~7,8 MB). Ist <code>wheels/</code> vorhanden, installiert <code>run.ps1</code>
+(<code>cp314-win_amd64</code>, ~7,8 MB). Ist <code>wheels/</code> vorhanden, installiert <code>run.ps1</code>
 <strong>automatisch offline</strong> (<code>pip --no-index --find-links wheels</code>):</p>
 <div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.\</span><span class="n">run</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Action</span> <span class="n">setup-venv</span>   <span class="c"># läuft ohne Internet aus wheels\</span>
 </span></code></pre></div>
 <ul>
-<li><strong>Voraussetzung:</strong> Python <strong>3.12 (64-bit)</strong> muss installiert sein (Installer von
+<li><strong>Voraussetzung:</strong> Python <strong>3.14 (64-bit)</strong> muss installiert sein (Installer von
   python.org, ~30 MB — einmalig, kein pip-Nachladen). Die kompilierten Wheels sind
-  <code>cp312</code>; <code>run.ps1</code> verlangt im Offline-Modus daher Python 3.12.</li>
+  <code>cp314</code>; <code>run.ps1</code> verlangt im Offline-Modus daher Python 3.14.</li>
 <li>Andere Python-Version oder Aktualisierung: siehe <code>wheels/README.md</code>
   (<code>pip download …</code>-Rezept).</li>
 <li><strong>Linux:</strong> für einen vollständig offline-fähigen Build dient das AppImage
