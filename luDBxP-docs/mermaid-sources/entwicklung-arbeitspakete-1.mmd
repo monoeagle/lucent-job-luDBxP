@@ -29,7 +29,7 @@ flowchart LR
         D9 ~~~ D10 ~~~ D11 ~~~ D12 ~~~ D13 ~~~ D14 ~~~ D15 ~~~ D16
     end
 
-    subgraph S3["✅  Features · v0.2.0–v0.3.1"]
+    subgraph S3["✅  Features · v0.2.0–v0.5.0"]
         direction TB
         D17["AP-4\nMehrere SELECT-Spalten"]
         D18["AP-3\nSQL-Optionen-Paket\nDISTINCT · ORDER BY · LIMIT · IN"]
@@ -38,22 +38,22 @@ flowchart LR
         D21["AP-7 · v0.3.0\nFeiner Graph-Zoom\n+ Slider mit %"]
         D22["AP-8 · v0.3.0\nFix Auswahl-Reset"]
         D23["AP-9 · v0.3.1\nErgebnisliste maximiert"]
-        D17 ~~~ D18 ~~~ D19 ~~~ D20 ~~~ D21 ~~~ D22 ~~~ D23
+        D24["AP-11 · v0.5.0\nComposite FK voll\nON … AND …"]
+        D17 ~~~ D18 ~~~ D19 ~~~ D20 ~~~ D21 ~~~ D22 ~~~ D23 ~~~ D24
     end
 
     subgraph S4["🗓️  Geplant — offene APs"]
         direction TB
         P10["AP-10\nVerbindungen in der Topbar\nDropdown neben „Verbinden“"]
-        P11["AP-11\nComposite-FK voll\nechtes ON … AND …"]
         P12["AP-12\nMSSQL real testbar\nODBC-Treiber + Doku"]
         P13["AP-13\nUI-Politur\nSuchfeld · linker Splitter · Auto-Layout"]
         P14["AP-14\nPython-3.14-Readiness\ncp314-Wheelhouse (Windows ✓)"]
         P15["AP-15\nrun.sh / run.ps1\nabbruchsicher + idempotent"]
-        P10 ~~~ P11 ~~~ P12 ~~~ P13 ~~~ P14 ~~~ P15
+        P10 ~~~ P12 ~~~ P13 ~~~ P14 ~~~ P15
     end
 
     %% Subgraphs nebeneinander erzwingen (sonst stapelt dagre sie vertikal)
     S1 ~~~ S2 ~~~ S3 ~~~ S4
 
-    class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23 done
-    class P10,P11,P12,P13,P14,P15 plan
+    class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24 done
+    class P10,P12,P13,P14,P15 plan
