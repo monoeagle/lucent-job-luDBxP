@@ -142,12 +142,12 @@
           : `${dtFmt} — ${commits} Commit${commits === 1 ? '' : 's'}${kindsList ? ` (${kindsList})` : ''}`;
         cell.title = tip;
         // Hover → Floating-Overlay mit Commits-Liste (max 8 sichtbar).
-        // Klick → persistenter Detail-Pane (gleiche Daten, bleibt offen).
+        // Klick auf die Zahl → Detail-Pane unten auf-/zuklappen (Toggle).
         if (commits > 0) {
           cell.classList.add('adb-act-cell--clickable');
           cell.addEventListener('mouseenter', (ev) => showOverlay(payload, key, ev.currentTarget));
           cell.addEventListener('mouseleave', hideOverlay);
-          cell.addEventListener('click', () => showDayDetail(payload, key));
+          cell.addEventListener('click', (ev) => toggleDayDetail(payload, key, ev.currentTarget));
         }
         grid.appendChild(cell);
       });
@@ -285,15 +285,44 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  function showDayDetail(payload, dateKey) {
+  // Aktuell aufgeklappter Tag (oder null). Steuert das Toggle-Verhalten:
+  // Klick auf dieselbe Zahl klappt den Detail-Pane wieder ein.
+  let activeDetailKey = null;
+
+  function highlightActiveCell(cellEl) {
+    document.querySelectorAll('.adb-act-cell--active')
+      .forEach(c => c.classList.remove('adb-act-cell--active'));
+    if (cellEl) cellEl.classList.add('adb-act-cell--active');
+  }
+
+  function collapseDetail(pane) {
+    if (!pane) return;
+    pane.innerHTML = '';
+    pane.style.display = 'none';
+    activeDetailKey = null;
+    highlightActiveCell(null);
+  }
+
+  // Klick auf eine Zahl-Kachel: Detail-Pane unten aufklappen; erneuter Klick
+  // auf denselben Tag klappt ihn wieder ein. Klick auf einen anderen Tag
+  // wechselt den Inhalt.
+  function toggleDayDetail(payload, dateKey, cellEl) {
     const pane = ensureDetailPane();
     if (!pane) return;
+    const isOpen = activeDetailKey === dateKey && pane.style.display !== 'none';
+    if (isOpen) {
+      collapseDetail(pane);
+      return;
+    }
     const entry = payload.byDay && payload.byDay[dateKey];
     if (!entry) return;
     const dt = new Date(dateKey + 'T00:00:00');
     const headline = dt.toLocaleDateString('de', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
     pane.innerHTML = renderCommitList(entry.list || [], headline);
+    pane.style.display = '';
     bindDetailClose(pane);
+    activeDetailKey = dateKey;
+    highlightActiveCell(cellEl);
     pane.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -312,13 +341,16 @@
     // Innerhalb der Phase nach Datum absteigend.
     collected.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     pane.innerHTML = renderCommitList(collected, phase.label + ' — ' + phase.start + ' bis ' + phase.end);
+    pane.style.display = '';
     bindDetailClose(pane);
+    activeDetailKey = null;   // Phase-Detail ist kein Einzeltag
+    highlightActiveCell(null);
     pane.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function bindDetailClose(pane) {
     const btn = pane.querySelector('.adb-act-detail__close');
-    if (btn) btn.addEventListener('click', () => { pane.innerHTML = ''; });
+    if (btn) btn.addEventListener('click', () => collapseDetail(pane));
   }
 
   // ── Phase-Buttons unter dem Gantt: pro Phase ein Klick-Button, der die ──

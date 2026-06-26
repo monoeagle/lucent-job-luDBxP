@@ -448,6 +448,60 @@
     ov.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
+  // ── Architektur-Badge im Header → Architekturbild im Modal ────────────
+  function archSvgUrl() {
+    const s = document.querySelector('script[src*="javascripts/icon-rail.js"]');
+    const base = s ? s.src.replace(/javascripts\/icon-rail\.js.*$/, '') : '/';
+    return base + 'images/mermaid/referenz-architektur-3.svg';
+  }
+  function closeArch() {
+    const ov = document.getElementById('adb-arch-overlay');
+    if (!ov) return;
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  function openArch() {
+    let ov = document.getElementById('adb-arch-overlay');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'adb-arch-overlay';
+      ov.className = 'adb-lightbox-overlay';
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      ov.innerHTML =
+        '<button class="adb-lightbox-close" aria-label="Schliessen">&times;</button>' +
+        '<div class="adb-lightbox-content"><img class="adb-lightbox-img" src="' +
+        archSvgUrl() + '" alt="Systemüberblick: UI · Flask-API · Core-Layer"></div>' +
+        '<div class="adb-lightbox-caption">Architektur — UI · Flask-API · Core-Layer</div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', function (e) {
+        if (e.target === ov || e.target.classList.contains('adb-lightbox-close')) {
+          closeArch();
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && ov.classList.contains('open')) closeArch();
+      });
+    }
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function addArchBadge() {
+    const search = document.querySelector('.md-search');
+    if (!search || !search.parentNode) return;
+    if (document.querySelector('.adb-arch-badge')) return;  // idempotent
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'adb-status-badge adb-arch-badge';
+    btn.title = 'Architekturbild (Systemüberblick) öffnen';
+    btn.innerHTML =
+      '<span class="adb-status-badge__dot" aria-hidden="true"></span>Architektur';
+    btn.addEventListener('click', openArch);
+    search.parentNode.insertBefore(btn, search);
+  }
+
   function addRoadmapBadge() {
     const search = document.querySelector('.md-search');
     if (!search || !search.parentNode) return;
@@ -481,6 +535,7 @@
   function init() {
     updateHeaderTitle();
     addStatusBadge();
+    addArchBadge();
     addRoadmapBadge();
 
     const sections = parseSections();

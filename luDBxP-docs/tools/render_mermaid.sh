@@ -31,11 +31,22 @@ for src in "$SOURCES"/${filter}*.mmd; do
     else
         render_w=1200
     fi
-    npx --yes -p @mermaid-js/mermaid-cli mmdc \
+    # mmdc-Exit NICHT pipen (sonst maskiert | tail den Fehler unter set -e und
+    # ein veraltetes SVG bleibt unbemerkt stehen). In Logdatei schreiben und
+    # den echten Exit-Code prüfen.
+    log="$TARGET/.mmdc-$name.log"
+    if npx --yes -p @mermaid-js/mermaid-cli mmdc \
         -i "$src" \
         -o "$out" \
         -b transparent \
-        -w "$render_w" 2>&1 | tail -1
+        -w "$render_w" > "$log" 2>&1; then
+        tail -1 "$log"; rm -f "$log"
+    else
+        echo "  ✗ mmdc-Render fehlgeschlagen für $name:" >&2
+        tail -8 "$log" >&2
+        rm -f "$log"
+        exit 1
+    fi
     # Post-process: width="100%" durch viewBox-Breite ersetzen, sodass die SVG
     # eine intrinsische Pixel-Breite hat (sonst kollabiert sie in <img>-Tags
     # ohne expliziten Container, z.B. in der Lightbox).

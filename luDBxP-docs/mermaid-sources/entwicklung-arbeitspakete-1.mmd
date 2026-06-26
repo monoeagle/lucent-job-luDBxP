@@ -1,86 +1,128 @@
 flowchart LR
-    classDef done fill:#1f6f3c,color:#fff,stroke:#1a5c32
-    classDef wip  fill:#7a5c00,color:#fff,stroke:#5e4600
-    classDef plan fill:#2c3550,color:#fff,stroke:#1e2538
+    classDef done fill:#1f6f3c,color:#fff,stroke:#1a5c32,stroke-width:1px
+    classDef plan fill:#234a78,color:#fff,stroke:#16314f,stroke-width:1px
 
-    subgraph S1["✅  Fundament · v0.1.0"]
+    %% ── C1 · Engine / Fundament ──────────────────────────────────────────
+    subgraph C1["⚙️  Engine / Fundament"]
         direction TB
-        D1["Core-Domänenmodell\nSchema / Table / Column / FK"]
-        D2["SQLAlchemy-Loader\n(live reflection, read-only)"]
-        D3["FK-Graph\n(NetworkX DiGraph)"]
-        D4["Pathfinder\n(k-kürzeste Pfade, BFS)"]
-        D5["SQL-Generator\n(read-only, parametrisiert)"]
-        D6["Flask-API\nschema · joinpath · graph · data"]
-        D7["Filter-UI\nTabelle / Spalte / Operator / Wert"]
-        D8["Graph-Visualisierung\n(Cytoscape.js, lokal)"]
-        D1 ~~~ D2 ~~~ D3 ~~~ D4 ~~~ D5 ~~~ D6 ~~~ D7 ~~~ D8
+        E1["Domänenmodell\nSchema · Table · Column · FK"]
+        E2["SQLAlchemy-Loader\nlive reflection · read-only"]
+        E3["FK-Graph\nNetworkX DiGraph"]
+        E4["Pathfinder\nk-kürzeste Pfade"]
+        E5["SQL-Generator\nread-only · parametrisiert"]
+        E6["Flask-API\nschema · joinpath · graph · data"]
+        E7["AP-11 · Composite-FK\nON … AND …"]
+        E8["Implizite-FK-Heuristik"]
+        E1 --> E2 --> E3 --> E4 --> E5
+        E7 --> E5
+        E8 --> E3
+        E5 ~~~ E6
     end
 
-    subgraph S2["✅  UI · Daten · AP-1/2"]
+    %% ── C2 · Verbindungen & Backends ─────────────────────────────────────
+    subgraph C2["🔌  Verbindungen & Backends"]
         direction TB
-        D9["Implizite FKs\n(SchemaSpy-Heuristik)"]
-        D10["3-Panel-Layout\n+ Detail-Sub-Tabs"]
-        D11["Datenvorschau\n(erste 100 Zeilen)"]
-        D12["Verbindungs-Manager\nSQLite · PG · MySQL · MSSQL"]
-        D13["Demo-CMDB\n+ run.sh · run.ps1"]
-        D14["Doku · AppImage · Poster"]
-        D15["AP-1\nGraph-Interaktion\nUML-Karte → Pfad-Auswahl"]
-        D16["AP-2\nVerbinden-Fehler entschärft"]
-        D9 ~~~ D10 ~~~ D11 ~~~ D12 ~~~ D13 ~~~ D14 ~~~ D15 ~~~ D16
+        V1["Verbindungs-Manager\nSQLite · PG · MySQL · MSSQL"]
+        V2["AP-2 · Verbinden-Fehler entschärft"]
+        V3["AP-10 · Verbindungen in der Topbar"]
+        V4["AP-12 · MSSQL real testbar"]
+        V5["AP-22 · Implizite FKs default?"]
+        V3 --> V1
+        V1 ~~~ V2 ~~~ V4 ~~~ V5
     end
 
-    subgraph S3["✅  Features · v0.2.0–v0.10.0"]
+    %% ── C3 · Join-Builder & SQL-Ausgabe ──────────────────────────────────
+    subgraph C3["🧩  Join-Builder & SQL-Ausgabe"]
         direction TB
-        D17["AP-4\nMehrere SELECT-Spalten"]
-        D18["AP-3\nSQL-Optionen-Paket\nDISTINCT · ORDER BY · LIMIT · IN"]
-        D19["AP-5 · v0.2.0\nAusgabebereich\nSELECT ausführen → Tabelle"]
-        D20["AP-6 · v0.3.0\nAusgabe-Steuerung\nZeilen 200/400/Alle · Refresh"]
-        D21["AP-7 · v0.3.0\nFeiner Graph-Zoom\n+ Slider mit %"]
-        D22["AP-8 · v0.3.0\nFix Auswahl-Reset"]
-        D23["AP-9 · v0.3.1\nErgebnisliste maximiert"]
-        D24["AP-11 · v0.5.0\nComposite FK voll\nON … AND …"]
-        D25["AP-10 · v0.6.0\nVerbindungen in der Topbar\nDropdown + Direkt-Connect"]
-        D26["AP-13 · v0.7.0\nUI-Politur\nSuchfeld · Splitter · Re-Layout"]
-        D27["AP-20 · v0.10.0\nCopy-Icon am SELECT"]
-        D28["AP-21 · v0.10.0\nKosmetik: Balkenhöhe"]
-        D17 ~~~ D18 ~~~ D19 ~~~ D20 ~~~ D21 ~~~ D22 ~~~ D23 ~~~ D24 ~~~ D25 ~~~ D26 ~~~ D27 ~~~ D28
+        J1["Filter-UI\nTabelle · Spalte · Operator · Wert"]
+        J2["AP-3 · SQL-Optionen\nDISTINCT · ORDER BY · LIMIT · IN"]
+        J3["AP-4 · Mehrere SELECT-Spalten"]
+        J4["AP-5 · Ausgabebereich\nSELECT ausführen → Tabelle"]
+        J5["AP-6 · Ausgabe-Steuerung\nZeilen · Refresh"]
+        J6["AP-9 · Ergebnisliste maximiert"]
+        J7["AP-23 · Join-Maske vereinheitlicht"]
+        J8["AP-20 · Copy-Icon am SELECT"]
+        J9["AP-29 · SQL-Dialekt umschalten"]
+        J10["AP-30 · 1-N: mehrere Zieltabellen"]
+        J11["AP-25 · SQL-Statement-Analyzer"]
+        J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5 ~~~ J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10 ~~~ J11
     end
 
-    subgraph S4["✅  Stabilisierung · v0.11.0–v0.12.0"]
+    %% ── C4 · Graph-Visualisierung ────────────────────────────────────────
+    subgraph C4["🕸️  Graph-Visualisierung"]
         direction TB
-        E1["AP-16 · v0.11.0\nGraph dagre (Sugiyama)\nminimale Kreuzungen"]
-        E2["AP-18 · v0.11.0\nMulti-Tabellen-Join\n(Status: voll implementiert)"]
-        E3["AP-23 · v0.11.0\nJoin-Builder-Maske\nvereinheitlicht"]
-        E4["AP-26 · v0.11.0\nAudit-Prozess + Checkliste"]
-        E5["AP-28 · v0.11.1\nJoin-Builder scrollt nicht mehr"]
-        E6["Server-Deployment-Fixes\nv0.11.1–v0.11.3\nPowerShell 5.1 (ASCII+BOM)"]
-        E7["AP-32 · v0.11.2\nZoom-Slider in Kopfzeile"]
-        E8["AP-27 · v0.11.2\nInsights: Ort & Einbindung"]
-        E9["AP-15 · v0.12.0\nrun.sh abbruchsicher + idempotent"]
-        E1 ~~~ E2 ~~~ E3 ~~~ E4 ~~~ E5 ~~~ E6 ~~~ E7 ~~~ E8 ~~~ E9
+        G1["Graph-Visualisierung\nCytoscape.js · lokal"]
+        G2["AP-1 · Graph-Interaktion\nUML-Karte → Pfad"]
+        G3["AP-7 · Feiner Graph-Zoom"]
+        G4["AP-8 · Fix Auswahl-Reset"]
+        G5["AP-16 · dagre-Layout\nminimale Kreuzungen"]
+        G6["AP-32 · Zoom-Slider in der Kopfzeile"]
+        G7["AP-28 · Scroll nur im Ergebnis"]
+        G8["AP-13 · UI-Politur\nSuchfeld · Splitter · Re-Layout"]
+        G9["AP-21 · Kosmetik: Balkenhöhe"]
+        G5 --> G1
+        G1 ~~~ G2 ~~~ G3 ~~~ G4 ~~~ G6 ~~~ G7 ~~~ G8 ~~~ G9
     end
 
-    subgraph S5["🗓️  Geplant — offene APs"]
+    %% ── C5 · Daten & UI-Rahmen ───────────────────────────────────────────
+    subgraph C5["🗂️  Daten & UI-Rahmen"]
         direction TB
-        P12["AP-12\nMSSQL real testbar\nBackend ✓ · realer Test offen"]
-        P14["AP-14\nPython-3.14: Linux/AppImage-Rest"]
-        P17["AP-17\nDelivery-Verzeichnis bereinigen"]
-        P19["AP-19\n.pattern_transfer sammeln"]
-        P22["AP-22\nImplizite FKs default aktivieren?"]
-        P24["AP-24\nSession-KPIs erheben & dokumentieren?"]
-        P25["AP-25\nSQL-Statement-Analyzer (read-only)"]
-        P29["AP-29\nSQL-Dialekt umschalten"]
-        P30["AP-30\n1-N: mehrere Zieltabellen?"]
-        P31["AP-31\nTerminal-Server (Multi-User)"]
-        P33["AP-33\nLogging sauber machen"]
-        P34["AP-34\nTray-Icon-Launcher"]
-        P35["AP-35\nrun.ps1: leeres venv gilt als vollständig"]
-        P12 ~~~ P14 ~~~ P17 ~~~ P19 ~~~ P22 ~~~ P24 ~~~ P25 ~~~ P29 ~~~ P30 ~~~ P31 ~~~ P33 ~~~ P34 ~~~ P35
+        D1["3-Panel-Layout\n+ Detail-Sub-Tabs"]
+        D2["Datenvorschau\nerste 100 Zeilen"]
+        D3["Views-Support"]
+        D4["AP-18 · Multi-Tabellen-Join"]
+        D1 ~~~ D2 ~~~ D3 ~~~ D4
     end
 
-    %% Subgraphs nebeneinander erzwingen (sonst stapelt dagre sie vertikal)
-    S1 ~~~ S2 ~~~ S3 ~~~ S4 ~~~ S5
+    %% ── C6 · Deployment & Betrieb ────────────────────────────────────────
+    subgraph C6["🚀  Deployment & Betrieb"]
+        direction TB
+        B1["Demo-CMDB"]
+        B2["run.sh / run.ps1"]
+        B3["AP-15 · abbruchsicher + idempotent"]
+        B4["AP-14 · Python-3.14 / AppImage"]
+        B5["AP-35 · run.ps1: leeres venv-Fix"]
+        B6["AP-17 · Delivery-Bereinigung"]
+        B7["AP-31 · Terminal-Server (Multi-User)"]
+        B8["AP-33 · Logging sauber"]
+        B9["AP-34 · Tray-Icon-Launcher"]
+        B2 --> B3
+        B3 --> B4
+        B3 --> B5
+        B8 --> B7
+        B1 ~~~ B6 ~~~ B9
+    end
 
-    class D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28 done
-    class E1,E2,E3,E4,E5,E6,E7,E8,E9 done
-    class P12,P14,P17,P19,P22,P24,P25,P29,P30,P31,P33,P34,P35 plan
+    %% ── C7 · Doku & Prozess ──────────────────────────────────────────────
+    subgraph C7["📚  Doku & Prozess"]
+        direction TB
+        K1["Doku · AppImage · Poster"]
+        K2["AP-26 · Audit-Sessions"]
+        K3["AP-27 · Insights"]
+        K4["AP-19 · .pattern_transfer"]
+        K5["AP-24 · Session-KPIs"]
+        K1 ~~~ K2 ~~~ K3 ~~~ K4 ~~~ K5
+    end
+
+    %% ── Cluster-übergreifende Abhängigkeiten ─────────────────────────────
+    V1 --> E2
+    E5 --> J1
+    E5 --> J9
+    E5 --> J11
+    E4 --> G2
+    E3 --> G1
+    E6 --> D1
+    V4 --> B7
+    G5 --> K2
+
+    class E1,E2,E3,E4,E5,E6,E7,E8 done
+    class V1,V2,V3 done
+    class V4,V5 plan
+    class J1,J2,J3,J4,J5,J6,J7,J8 done
+    class J9,J10,J11 plan
+    class G1,G2,G3,G4,G5,G6,G7,G8,G9 done
+    class D1,D2,D3,D4 done
+    class B1,B2,B3 done
+    class B4,B5,B6,B7,B8,B9 plan
+    class K1,K2,K3 done
+    class K4,K5 plan

@@ -1844,6 +1844,14 @@ body:has(.adb-home-layout) .md-content {
   min-height: 0;
 }
 
+/* Aktive (aufgeklappte) Heatmap-Kachel hervorheben — Klick-Toggle-Feedback. */
+.adb-act-cell--active {
+  outline: 2px solid #4A9EFF;
+  outline-offset: 1px;
+  position: relative;
+  z-index: 2;
+}
+
 /* Insights gestapelt */
 .adb-home-footer .adb-act-insights-grid {
   display: flex;

@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-06-26T21:32:58",
+  "generatedAt": "2026-06-26T21:57:53",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 56,
+      "commits": 57,
       "kinds": {
+        "docs": 28,
         "other": 2,
-        "docs": 27,
         "fix": 6,
         "build": 5,
         "chore": 2,
@@ -17,6 +17,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "6e132ef",
+          "subject": "docs: Zensical-Site auf v0.12.0 nachgezogen + neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "0233835",
           "subject": "run.sh: AP-15 abbruchsicher+idempotent (Paritaet zu run.ps1); v0.12.0",
@@ -500,13 +505,13 @@
     }
   },
   "stats": {
-    "totalCommits": 93,
+    "totalCommits": 94,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 36
+        "count": 37
       },
       {
         "kind": "feat",

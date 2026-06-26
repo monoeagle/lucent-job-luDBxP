@@ -1,23 +1,17 @@
 gantt
     title LucentTools DB Explorer — Arbeitspaket-Roadmap
     dateFormat  YYYY-MM-DD
-    axisFormat  %m/%y
+    axisFormat  %d.%m
 
-    section v0.1.0 (erledigt, 2026-06-25)
+    section v0.1.0 (erledigt)
     Core-Domänenmodell + Loaders          :done, d1, 2026-06-25, 1d
-    FK-Graph (NetworkX)                   :done, d2, 2026-06-25, 1d
-    Pathfinder (k-kürzeste Pfade)         :done, d3, 2026-06-25, 1d
-    SQL-Generator (read-only)             :done, d4, 2026-06-25, 1d
-    Flask-API (/api/schema, joinpath …)   :done, d5, 2026-06-25, 1d
-    Filter-UI + Graph-Visualisierung      :done, d6, 2026-06-25, 1d
-    3-Panel-Layout + Detail-Sub-Tabs      :done, d7, 2026-06-25, 1d
-    Datenvorschau + Views-Support         :done, d8, 2026-06-25, 1d
-    Verbindungs-Manager (Multi-DB)        :done, d9, 2026-06-25, 1d
-    Implizite FKs (SchemaSpy-Heuristik)   :done, d10, 2026-06-25, 1d
-    Demo-CMDB + run.sh + run.ps1          :done, d11, 2026-06-25, 1d
-    Doku + AppImage + Projektposter       :done, d12, 2026-06-25, 1d
+    FK-Graph · Pathfinder · SQL-Generator :done, d2, 2026-06-25, 1d
+    Flask-API · Filter-UI · Graph-Viz     :done, d3, 2026-06-25, 1d
+    3-Panel · Datenvorschau · Views       :done, d4, 2026-06-25, 1d
+    Verbindungs-Manager · Implizite FKs   :done, d5, 2026-06-25, 1d
+    Demo-CMDB · run.sh/ps1 · Doku/Poster  :done, d6, 2026-06-25, 1d
 
-    section v0.2.0–v0.3.0 (erledigt, 2026-06-26)
+    section v0.2.0–v0.3.1 (erledigt)
     AP-1 — Graph-Interaktion (UML-Karte)        :done, a1, 2026-06-25, 1d
     AP-2 — Fix Verbinden / failed-to-fetch      :done, a2, 2026-06-25, 1d
     AP-3 — SQL-Optionen-Paket                   :done, a3, 2026-06-25, 1d
@@ -27,3 +21,40 @@ gantt
     AP-7 — Feiner Graph-Zoom + Slider           :done, a7, 2026-06-26, 1d
     AP-8 — Fix Auswahl-Reset                    :done, a8, 2026-06-26, 1d
     AP-9 — Ergebnisliste maximiert              :done, a9, 2026-06-26, 1d
+
+    section v0.4.0–v0.7.0 (erledigt)
+    AP-14 — Python-3.14-Readiness (Windows)     :done, b1, 2026-06-26, 1d
+    AP-11 — Composite FK voll (ON … AND …)      :done, b2, 2026-06-26, 1d
+    AP-10 — Verbindungen in der Topbar          :done, b3, 2026-06-26, 1d
+    AP-13 — UI-Politur (Suchfeld/Splitter)      :done, b4, 2026-06-26, 1d
+
+    section v0.8.0–v0.10.0 (erledigt)
+    AP-15 — run.ps1 abbruchsicher (Windows)     :done, c1, 2026-06-26, 1d
+    AP-12 — MSSQL Treiber/Encrypt (Backend)     :done, c2, 2026-06-26, 1d
+    AP-20 — Copy-Icon am SELECT                 :done, c3, 2026-06-26, 1d
+    AP-21 — Kosmetik (Balkenhöhe)               :done, c4, 2026-06-26, 1d
+
+    section v0.11.x–v0.12.0 (erledigt)
+    AP-23 — Join-Maske vereinheitlicht          :done, e1, 2026-06-26, 1d
+    AP-16 — Graph entzerren (dagre)             :done, e2, 2026-06-26, 1d
+    AP-18 — Multi-Tabellen-Join (verifiziert)   :done, e3, 2026-06-26, 1d
+    AP-28 — Scroll nur im Ergebnis              :done, e4, 2026-06-26, 1d
+    AP-32 — Zoom-Slider in der Kopfzeile        :done, e5, 2026-06-26, 1d
+    AP-26 — Audit-Sessions                      :done, e6, 2026-06-26, 1d
+    AP-27 — Insights-Prozess                    :done, e7, 2026-06-26, 1d
+    AP-15 — run.sh abbruchsicher (Linux)        :done, e8, 2026-06-26, 1d
+
+    section Geplant (offen)
+    AP-12 — MSSQL real testbar                  :p1, 2026-06-27, 2d
+    AP-14 — Python-3.14 / AppImage (Linux-Rest) :p2, after p1, 2d
+    AP-35 — run.ps1 leeres-venv-Fix             :p3, 2026-06-27, 1d
+    AP-29 — SQL-Dialekt umschalten              :p4, 2026-06-28, 2d
+    AP-25 — SQL-Statement-Analyzer              :p5, after p4, 3d
+    AP-30 — 1-N mehrere Zieltabellen            :p6, after p4, 2d
+    AP-31 — Terminal-Server (Multi-User)        :p7, 2026-06-29, 3d
+    AP-33 — Logging sauber                      :p8, 2026-06-28, 1d
+    AP-34 — Tray-Icon-Launcher                  :p9, after p7, 2d
+    AP-17 — Delivery-Bereinigung                :p10, after p7, 1d
+    AP-19 — .pattern_transfer                   :p11, 2026-06-30, 1d
+    AP-22 — Implizite FKs default?              :p12, 2026-06-30, 1d
+    AP-24 — Session-KPIs dokumentieren          :p13, 2026-06-30, 1d
