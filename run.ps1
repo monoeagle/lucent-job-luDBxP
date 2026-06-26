@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     LucentTools DB Explorer - Launcher & Offline-Setup (Windows / PowerShell).
 
@@ -119,7 +119,7 @@ function Find-Python {
 
 # AP-15: venv-Integritaet pruefen, nicht nur Existenz. Ein mittendrin
 # abgebrochenes `python -m venv` hinterlaesst ggf. ein Verzeichnis ohne
-# funktionsfaehigen Interpreter — das wuerde ein blosses Test-Path uebersehen.
+# funktionsfaehigen Interpreter - das wuerde ein blosses Test-Path uebersehen.
 function Test-VenvHealthy {
     if (-not (Test-Path $VenvPy)) { return $false }
     & $VenvPy -c 'import sys' *> $null 2>&1
@@ -127,7 +127,7 @@ function Test-VenvHealthy {
 }
 
 # AP-15: sind alle Laufzeit-Pakete installiert und konsistent? `pip check`
-# meldet fehlende/inkompatible Abhaengigkeiten — faengt einen abgebrochenen
+# meldet fehlende/inkompatible Abhaengigkeiten - faengt einen abgebrochenen
 # pip-Install, bei dem der Stamp noch nicht geschrieben wurde.
 function Test-RequirementsInstalled {
     if (-not (Test-Path $VenvPip)) { return $false }
@@ -149,17 +149,17 @@ function Test-PortFree ($p) {
 # niemals aus dem Netz. Vor jeder Installation wird per --dry-run geprueft, ob
 # alle benoetigten Wheels lokal vorliegen (--no-index unterbindet jeden
 # PyPI-Zugriff). Fehlt das Wheelhouse oder ein Wheel, wird mit Fehlermeldung
-# UND Protokoll (welche Pakete fehlen) ausgestiegen — es erfolgt KEINE
+# UND Protokoll (welche Pakete fehlen) ausgestiegen - es erfolgt KEINE
 # (Teil-)Installation und KEIN Online-Nachladen.
 function Install-Requirements ($reqFile) {
     if (-not (Test-Path $Wheels)) {
-        _fail "Wheelhouse 'wheels\' fehlt — KEINE Installation, kein Online-Nachladen."
+        _fail "Wheelhouse 'wheels\' fehlt - KEINE Installation, kein Online-Nachladen."
     }
     _info "Pruefe lokale Wheels fuer $reqFile (--dry-run, kein Netz)..."
     $probe = & $VenvPip install --no-index --find-links $Wheels --dry-run -r $reqFile 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-Host ''
-        _warn "Es fehlen lokale Wheels — Protokoll (pip --no-index):"
+        _warn "Es fehlen lokale Wheels - Protokoll (pip --no-index):"
         $probe | ForEach-Object { Write-Host "       $_" -ForegroundColor DarkYellow }
         Write-Host ''
         _fail "Offline-Setup abgebrochen ($reqFile): nicht alle Wheels lokal vorhanden. KEINE Installation."
@@ -181,7 +181,7 @@ function Ensure-Venv {
         _ok "venv funktionsfaehig"
     } else {
         if (Test-Path $Venv) {
-            _warn "venv unvollstaendig/kaputt — wird neu aufgebaut"
+            _warn "venv unvollstaendig/kaputt - wird neu aufgebaut"
             Remove-Item $Venv -Recurse -Force
         }
         $py = Find-Python
@@ -198,7 +198,7 @@ function Ensure-Venv {
         _info "requirements.txt geaendert (oder Erstinstallation)"
         $needInstall = $true
     } elseif (-not (Test-RequirementsInstalled)) {
-        _warn "Pakete unvollstaendig (pip check) — Reparatur-Install"
+        _warn "Pakete unvollstaendig (pip check) - Reparatur-Install"
         $needInstall = $true
     } else {
         _ok "Laufzeit-Pakete vollstaendig"
@@ -215,9 +215,9 @@ function Ensure-Venv {
 
 function Start-App {
     _hdr "App starten"
-    if (-not (Test-VenvHealthy)) { _fail "venv nicht funktionsfaehig — bitte zuerst 'setup-venv'." }
+    if (-not (Test-VenvHealthy)) { _fail "venv nicht funktionsfaehig - bitte zuerst 'setup-venv'." }
     if (-not (Test-PortFree $Port)) {
-        _warn "Port $Port ist bereits belegt — laeuft schon eine Instanz? Start abgebrochen."
+        _warn "Port $Port ist bereits belegt - laeuft schon eine Instanz? Start abgebrochen."
         return
     }
     _info "Starte http://127.0.0.1:$Port/  (Strg+C zum Beenden)"
@@ -231,7 +231,7 @@ function Do-Start      { Ensure-Venv; Start-App }
 function Do-SetupVenv  { Ensure-Venv; _ok "Umgebung bereit." }
 function Do-SkipSetup {
     if (-not (Test-VenvHealthy)) {
-        _fail "venv fehlt/kaputt — bitte zuerst '.\run.ps1 -Action setup-venv'."
+        _fail "venv fehlt/kaputt - bitte zuerst '.\run.ps1 -Action setup-venv'."
     }
     Start-App
 }
@@ -243,7 +243,7 @@ function Do-Clean {
     _ok "Umgebung neu aufgebaut."
 }
 function Do-Version {
-    if (-not (Test-VenvHealthy)) { _fail "venv nicht funktionsfaehig — bitte zuerst 'setup-venv'." }
+    if (-not (Test-VenvHealthy)) { _fail "venv nicht funktionsfaehig - bitte zuerst 'setup-venv'." }
     & $VenvPy -c 'import config; print(config.APP_VERSION)'
 }
 function Do-Tests {
