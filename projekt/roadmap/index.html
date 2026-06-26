@@ -780,41 +780,13 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Offene Arbeitspakete">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ap-1-interaktive-pfad-auswahl-direkt-im-graph" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        AP-1 — Interaktive Pfad-Auswahl direkt im Graph
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ap-2-bug-verbinden-liefert-failed-to-fetch-zu-verifizieren" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        AP-2 — Bug: „Verbinden" liefert „failed to fetch" (zu verifizieren)
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
-  <a href="#erledigte-arbeitspakete-v010" class="md-nav__link">
+  <a href="#erledigte-arbeitspakete" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Erledigte Arbeitspakete (v0.1.0)
+        Erledigte Arbeitspakete
       </span>
     </span>
   </a>
@@ -897,41 +869,13 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Offene Arbeitspakete">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ap-1-interaktive-pfad-auswahl-direkt-im-graph" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        AP-1 — Interaktive Pfad-Auswahl direkt im Graph
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ap-2-bug-verbinden-liefert-failed-to-fetch-zu-verifizieren" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        AP-2 — Bug: „Verbinden" liefert „failed to fetch" (zu verifizieren)
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
-  <a href="#erledigte-arbeitspakete-v010" class="md-nav__link">
+  <a href="#erledigte-arbeitspakete" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Erledigte Arbeitspakete (v0.1.0)
+        Erledigte Arbeitspakete
       </span>
     </span>
   </a>
@@ -958,32 +902,26 @@
 <p><img src="../../images/mermaid/projekt-roadmap-1.svg" alt="Arbeitspaket-Roadmap (Gantt)"></p>
 <hr />
 <h2 id="offene-arbeitspakete">Offene Arbeitspakete<a class="headerlink" href="#offene-arbeitspakete" title="Permanent link">&para;</a></h2>
-<h3 id="ap-1-interaktive-pfad-auswahl-direkt-im-graph">AP-1 — Interaktive Pfad-Auswahl direkt im Graph<a class="headerlink" href="#ap-1-interaktive-pfad-auswahl-direkt-im-graph" title="Permanent link">&para;</a></h3>
-<p><strong>Idee:</strong> Im Schema-Graph <strong>Doppelklick</strong> auf eine Tabelle → eingebettete
-<strong>UML-Tabellenansicht</strong> (Spalten/Typen/PK). Dort eine Spalte als <strong>Quelle</strong>
-wählen, in einer zweiten Tabelle die <strong>Ziel-Spalte</strong> — danach aktualisiert
-sich der Graph live und zeigt den Join-Pfad.</p>
-<p><strong>Nebeneffekt:</strong> Der Join-Builder-Tab öffnet sich automatisch und füllt
-Start-/Ziel-Felder aus der Graph-Auswahl (Zweiweg-Sync Graph ↔ Join-Builder).</p>
-<p><strong>Betroffene Dateien:</strong></p>
+<p><em>Aktuell keine offenen Arbeitspakete</em> (<code>todo.md</code> ist leer).</p>
+<hr />
+<h2 id="erledigte-arbeitspakete">Erledigte Arbeitspakete<a class="headerlink" href="#erledigte-arbeitspakete" title="Permanent link">&para;</a></h2>
+<p><strong>v0.1.0</strong> (2026-06-25): Core-Domänenmodell, Loader, FK-Graph, Pathfinder,
+SQL-Generator, Flask-API, Filter-UI, Graph-Visualisierung, implizite FKs,
+3-Panel-Layout, Datenvorschau, Views, Verbindungs-Manager, Demo-CMDB,
+Doku/AppImage/Projektposter.</p>
+<p><strong>v0.2.0 – v0.3.0</strong> (2026-06-26):</p>
 <ul>
-<li><code>web/static/js/app.js</code> — Doppelklick-Handler, UML-Karte, Sync-Logik</li>
-<li>CSS für die eingebettete UML-Karte</li>
+<li><strong>AP-1</strong> — Interaktive Pfad-Auswahl im Graph (Doppelklick → UML-Karte → Sync)</li>
+<li><strong>AP-2</strong> — Fix „Verbinden": klare Meldung statt „failed to fetch"</li>
+<li><strong>AP-3</strong> — SQL-Optionen-Paket (DISTINCT · ORDER BY · LIMIT · IS NULL/IN/BETWEEN)</li>
+<li><strong>AP-4</strong> — Mehrere SELECT-Spalten</li>
+<li><strong>AP-5</strong> — Tabellarischer Ausgabebereich (generiertes SELECT ausführen) — v0.2.0</li>
+<li><strong>AP-6</strong> — Ausgabe-Steuerung: Zeilen-Auswahl (200/400/Alle) + „Aktualisieren" — v0.3.0</li>
+<li><strong>AP-7</strong> — Feiner Graph-Zoom + Zoom-Slider mit %-Anzeige — v0.3.0</li>
+<li><strong>AP-8</strong> — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0</li>
 </ul>
-<hr />
-<h3 id="ap-2-bug-verbinden-liefert-failed-to-fetch-zu-verifizieren">AP-2 — Bug: „Verbinden" liefert „failed to fetch" (zu verifizieren)<a class="headerlink" href="#ap-2-bug-verbinden-liefert-failed-to-fetch-zu-verifizieren" title="Permanent link">&para;</a></h3>
-<p><strong>Symptom:</strong> Klick auf „Verbinden" → Browser zeigt nur „failed to fetch".</p>
-<p><strong>Verdacht:</strong> Dev-Server lief nicht (bei Session-Handoff gestoppt) → offenes
-Browser-Tab erreicht <code>127.0.0.1:5057</code> nicht → generisches Fehlerbild.</p>
-<p><strong>Vorgehen:</strong>
-1. Server neu starten (<code>bash run.sh --start</code>)
-2. Im Browser neu verbinden
-3. Falls weiterhin reproduzierbar: Netzwerk-Tab (URL/Status), CORS prüfen,
-   Exception im <code>/api/connect</code>-Endpoint eingrenzen</p>
-<hr />
-<h2 id="erledigte-arbeitspakete-v010">Erledigte Arbeitspakete (v0.1.0)<a class="headerlink" href="#erledigte-arbeitspakete-v010" title="Permanent link">&para;</a></h2>
-<p>Alle in v0.1.0 implementierten Features sind in <code>todo-erledigt.md</code> aufgelistet.
-Detaillierter Stand: <a href="../../entwicklung/changelog/">Changelog</a>.</p>
+<p>Vollständige Liste in <code>todo-erledigt.md</code>; detaillierter Stand:
+<a href="../../entwicklung/changelog/">Changelog</a>.</p>
 
 
 
