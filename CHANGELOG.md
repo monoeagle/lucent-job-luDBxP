@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0] — 2026-06-26
+### Changed
+- **AP-15 (Teil 1, Windows) — `run.ps1` abbruchsicher + idempotent:** Der
+  Windows-Launcher heilt sich nach abgebrochenen Läufen selbst. Jeder Schritt
+  prüft seine Vorbedingungen (Python, venv-Integrität per Funktionstest,
+  Paket-Vollständigkeit per `pip check`, freier Port) und zieht nur Fehlendes
+  nach; der Requirements-Stamp wird erst nach erfolgreichem Install geschrieben
+  (atomar). **NO-CDN / nur lokale Sourcen:** Installation strikt `--no-index`
+  aus `wheels\` mit `--dry-run`-Vorabprüfung — fehlt ein Wheel, steigt das Setup
+  mit Protokoll (welche Pakete fehlen) aus, **ohne etwas zu installieren oder
+  online nachzuladen**. Neu außerdem: durchgängige Status-Ausgaben, Port-Check
+  vor App-Start (5057 belegt → klare Meldung) und ein gegen Einzelfehler robustes
+  Menü. Verifiziert: idempotenter Lauf, fehlender Stamp, fehlendes Wheel, belegter
+  Port. (`run.sh`/Linux-Parität folgt separat.)
+
 ## [0.7.0] — 2026-06-26
 ### Added
 - **AP-13 — UI-Politur:** Drei Verbesserungen in Objekt-Browser und Graph-Panel:

@@ -47,13 +47,19 @@ Blockierend waren **5 kompilierte cp312-Wheels** (CPython-3.12-ABI):
 halbes venv, halber pip-Install) — der nächste Lauf erkennt den Zustand, zieht fehlende
 Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meldet seinen Status.
 
-- [ ] **Prereq-Check pro Schritt** statt nur am Anfang: vor jeder Aktion prüfen, was sie braucht (Python gefunden? venv funktionsfähig? pip vorhanden? wheels vollständig? requirements installiert? Port frei?), und Fehlendes nachziehen
-- [ ] **venv-Integrität prüfen, nicht nur Existenz:** aktuell `[ -d venv ]` / `Test-Path $VenvPy` — bei einem mittendrin abgebrochenen `venv`-Bau liegt ein kaputtes Verzeichnis. Bei kaputtem/halbem venv automatisch neu aufbauen (Funktionstest: `python -c "import sys"` im venv)
-- [ ] **Idempotenter pip-Install:** Stamp wird erst nach Erfolg geschrieben (gut) — zusätzlich nach Abbruch verifizieren, dass alle Pakete wirklich da sind (`pip check` / Import-Smoke-Test), sonst neu installieren
-- [ ] **Statusausgabebereich:** in `run.ps1` durchgängige Status-Helfer einführen (analog `_ok`/`_warn`/`_info`/`_fail` aus `run.sh`); jeder Schritt gibt klar „prüfe … / ziehe nach … / ✓ fertig" aus, am Ende eine Zusammenfassung
-- [ ] **`run.sh`-Fehler nicht mehr verschlucken:** `do_start`/`do_skip_setup` enden auf `|| true` (schluckt App-Exit-Code) — bewusst sauberen Exit-Code durchreichen, sonst sieht der Hub Fehlstarts nicht
-- [ ] **Atomare Schritte:** Teilarbeiten (venv-Bau, wheel-Install) so kapseln, dass ein Abbruch keinen inkonsistenten Halbzustand hinterlässt, der beim nächsten Lauf unentdeckt bleibt (z. B. Stamp/Marker erst nach vollständigem Schritt)
-- [ ] **Port-/Instanz-Check vor App-Start:** prüfen, ob Port 5057 schon belegt ist (läuft bereits eine Instanz?) → klare Meldung statt stillem Fehlstart; passt zu Prereq-Check + Idempotenz
-- [ ] **Parität halten:** `run.sh` und `run.ps1` müssen sich gleich verhalten (gleiche Checks, gleiche Status-Sprache, gleiche Idempotenz-Garantien)
-- [ ] Betroffen: `run.sh`, `run.ps1`
-- [ ] Verifikation: Lauf nach simuliertem Abbruch in jeder Phase (venv halb, pip halb, Stamp fehlt) → sauberer Selbstheilungslauf; beide Skripte
+**Stand 2026-06-26 — `run.ps1` (Windows) UMGESETZT & verifiziert:**
+- [x] **Prereq-Check pro Schritt** (Python, venv-Integrität, Paket-Vollständigkeit, Port) vor jeder Aktion
+- [x] **venv-Integrität statt nur Existenz** (`Test-VenvHealthy`: `python -c import sys`); kaputtes/halbes venv wird automatisch neu gebaut
+- [x] **Idempotenter, selbstheilender Install:** `pip check` erkennt unvollständige Installation und repariert; Stamp erst nach Erfolg (atomar)
+- [x] **NO-CDN / nur lokale Sourcen:** Install strikt `--no-index` aus `wheels\`; **--dry-run-Vorabprüfung** listet fehlende Wheels und steigt mit **Protokoll** aus — KEINE (Teil-)Installation, kein Online-Nachladen
+- [x] **Statusausgabebereich:** durchgängige Helfer `_ok`/`_warn`/`_info`/`_hdr`/`_fail`
+- [x] **Port-/Instanz-Check** vor App-Start (5057 belegt → klare Abbruch-Meldung)
+- [x] **Robustes Menü** (`_fail` beendet das Menü nicht mehr; try/catch)
+- [x] Verifiziert: idempotenter Lauf · fehlender Stamp (Selbstheilung) · fehlendes Wheel (Protokoll + Abbruch) · Port belegt
+
+**Noch offen — `run.sh` (Linux, heute Abend):**
+- [ ] `run.sh` mit identischer Logik spiegeln (venv-Integrität, idempotent + `pip check`, Status-Helfer, Port-Check via `ss`/`lsof`); **Parität** halten
+- [ ] **`run.sh`-Fehler nicht mehr verschlucken:** `do_start`/`do_skip_setup` enden auf `|| true` → Exit-Code sauber durchreichen
+- [ ] **NO-CDN auf Linux:** braucht ein **Linux-Wheelhouse** (manylinux-cp314); die aktuellen `wheels/` sind `win_amd64`. Quelle/Strategie auf Linux entscheiden
+- [ ] Funktionale Verifikation beider Skripte auf Linux (simulierte Abbrüche)
+- [ ] Betroffen: `run.sh` (· `run.ps1` erledigt)
