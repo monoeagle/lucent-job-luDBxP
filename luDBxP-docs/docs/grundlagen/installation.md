@@ -82,7 +82,12 @@ Die Kerndependencies werden automatisch installiert:
 **MySQL / MariaDB** — Treiber `PyMySQL` ist in `requirements.txt` enthalten.
 
 **MS SQL Server** — Treiber `pyodbc` ist enthalten; zusätzlich ist system-seitiges
-unixODBC + der Microsoft ODBC Driver for SQL Server (`msodbcsql`) erforderlich.
+unixODBC + der Microsoft **ODBC Driver 18 for SQL Server** (`msodbcsql18`)
+erforderlich (Windows: Microsoft-Installer; Linux: unixODBC + msodbcsql18). Driver 18
+verschlüsselt standardmäßig — bei selbstsigniertem Server-Zertifikat in der Verbindung
+`TrustServerCertificate=yes` (oder `Encrypt=no`) setzen. Der ODBC-Treibername ist
+überschreibbar (z. B. `ODBC Driver 17 for SQL Server`). Fehlt der Treiber, meldet die
+App das klar statt einer rohen pyodbc-Fehlermeldung.
 
 ## Dokumentation einrichten
 

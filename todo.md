@@ -11,12 +11,16 @@ sowie der **Linux/AppImage-Rest von AP-14**.
 ---
 
 ## AP-12 — MSSQL real testbar machen
-- [ ] System-ODBC einrichten/dokumentieren (`unixODBC` + `msodbcsql17` Linux; ODBC Driver 17/18 Windows)
-- [ ] **ODBC Driver 18 verschlüsselt per Default** → `Encrypt`/`TrustServerCertificate=yes`-Parameter in der Connection-URL unterstützen; Driver-Name konfigurierbar
-- [ ] **Klare Fehlermeldung bei fehlendem Treiber** (im Stil von AP-2, statt roher pyodbc-Exception)
-- [ ] Setup-Doku in `wheels/README.md` / Installations-Doku ergänzen
+**Backend UMGESETZT (v0.9.0):**
+- [x] **ODBC Driver 18 als Default** + `Encrypt`/`TrustServerCertificate`-Parameter in der Connection-URL; Treibername überschreibbar (`core/connection.py::_mssql_query`)
+- [x] **Klare Fehlermeldung bei fehlendem Treiber** (AP-2-Stil, statt roher pyodbc-Exception) — `_odbc_driver_hint` im Loader (IM002 / „no default driver" / „Can't open lib")
+- [x] Setup-Doku in `grundlagen/installation.md` (Driver 18, TrustServerCertificate, überschreibbar)
+- [x] Tests: Default-Driver 18, Custom-Driver + Encrypt/Trust, Treiber-Hinweis-Erkennung (118 grün, gegen SQLite)
+
+**Noch offen (braucht echte MSSQL-Instanz / heute Abend Linux):**
+- [ ] System-ODBC real einrichten (`unixODBC` + `msodbcsql18` Linux; ODBC Driver 18 Windows)
 - [ ] Optionaler Integrationstest gegen lokale MSSQL-Instanz (markiert, überspringbar wenn Treiber fehlt)
-- [ ] Betroffen: `core/connection.py` (URL/Driver-Param), Doku, ggf. `run.ps1`/`run.sh`
+- [ ] UI: MSSQL-Felder für `Encrypt`/`TrustServerCertificate` im Verbindungs-Tab (aktuell nur via API/`config.json` setzbar)
 
 ## AP-14 — Python-3.14-Readiness (Wheel-ABI cp312 → cp314)
 **Analyse:** Von 20 Wheels sind 15 plattformunabhängig (`py3-none-any`) und 3.14-tauglich.
@@ -63,3 +67,47 @@ Prereqs nach und führt **idempotent** zum sauberen Ergebnis. Jeder Schritt meld
 - [ ] **NO-CDN auf Linux:** braucht ein **Linux-Wheelhouse** (manylinux-cp314); die aktuellen `wheels/` sind `win_amd64`. Quelle/Strategie auf Linux entscheiden
 - [ ] Funktionale Verifikation beider Skripte auf Linux (simulierte Abbrüche)
 - [ ] Betroffen: `run.sh` (· `run.ps1` erledigt)
+
+## AP-16 — Graph entzerren: minimale Linienkreuzungen
+- [ ] Layout so wählen/tunen, dass sich möglichst **wenige Kanten kreuzen** (lesbarerer Schema-Graph)
+- [ ] Ansatz prüfen: crossing-reduction-Layouts (z. B. dagre/elk hierarchisch) statt/neben `cose`
+- [ ] Betroffen: `web/static/js/app.js` (Graph-Layout)
+
+## AP-17 — Delivery-Verzeichnis bereinigen
+- [ ] Ein Auslieferungs-Verzeichnis, das **nur** enthält, was zum Betrieb explizit benötigt wird
+- [ ] **Keine Rückschlüsse auf Claude-/AI-Einsatz** (keine CLAUDE.md, Handoffs, `.pattern`, Insights, AI-Spuren im Delivery)
+- [ ] Abgrenzen: was gehört ins Delivery vs. nur ins Entwickler-Repo
+
+## AP-18 — Verknüpfen mehrerer Tabellen (Status prüfen)
+- [ ] Frage: ist das Verknüpfen von **mehr als zwei** Tabellen (mehrere Join-Stationen) schon umgesetzt?
+- [ ] Falls ja: dokumentieren/verifizieren; falls nein: umsetzen
+- [ ] (Hinweis: Filter-Tabellen werden bereits in den Pfad eingewebt — Mehrfach-Ziel/-Quelle prüfen)
+
+## AP-19 — `.pattern_transfer` (projektlokale Pattern sammeln)
+- [ ] Verzeichnis `.pattern_transfer` im Projekt: Sammelstelle für Pattern, die im aktiven Projekt entstehen
+- [ ] In einer globalen Claude-Session werden alle projektlokalen Pattern eingesammelt und — wo sinnvoll — ins globale `.pattern` zusammengeführt
+
+## AP-20 — Copy-Icon am SELECT-Feld
+- [ ] Kleines **Copy-Icon** oben rechts in der Ecke des generierten SELECT
+- [ ] Klick aufs Icon → SELECT landet im Zwischenspeicher (Clipboard)
+- [ ] Betroffen: `web/static/js/app.js`, `web/static/css/app.css`
+
+## AP-21 — Kosmetik: gleiche Höhe „Schema-Graph"-Balken & Tab-Linie
+- [ ] Der Balken „Schema-Graph" (`.panelhead`) ist aktuell leicht höher als die Tab-Linie links daneben → untere Kante tiefer, stört das Auge
+- [ ] Höhen angleichen (`.panelhead` ↔ `.tabbar`)
+- [ ] Betroffen: `web/static/css/app.css`
+
+## AP-22 (Frage) — Implizite FKs immer aktivieren?
+- [ ] Klären: macht es Sinn, implizite FKs **standardmäßig** zu aktivieren? Was spricht dagegen?
+- [ ] Abwägung: mehr Join-Pfade out-of-the-box vs. falsch-positive (geratene) Beziehungen, die zu fragwürdigen Joins führen können
+
+## AP-23 — Join-Builder-Maske: einheitliche Button-/Dropdown-Größen
+- [ ] Alle **Buttons** im Join-Builder gleich groß
+- [ ] Alle **Dropdowns** gleiche Länge (Breite)
+- [ ] Maske ggf. neu entwerfen (konsistentes, aufgeräumtes Layout)
+- [ ] Betroffen: `web/static/js/app.js` (Join-Builder-Rendering), `web/static/css/app.css`
+
+## AP-24 (Frage) — Session-KPIs erheben & dokumentieren?
+- [ ] Erheben wir beim Sessionwechsel bereits KPIs für dieses Projekt? (vgl. `docs/session-kennzahlen.md`)
+- [ ] Sind diese KPIs Teil der (Projekt-)Dokumentation?
+- [ ] Falls lückenhaft: KPI-Erhebung beim Handoff festlegen + in die Doku aufnehmen

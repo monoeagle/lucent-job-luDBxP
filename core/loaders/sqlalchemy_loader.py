@@ -6,6 +6,23 @@ from core.model import Column, ForeignKey, Table, View, Schema
 from core.schema_loader import SchemaLoader
 
 
+def _odbc_driver_hint(exc) -> "str | None":
+    """Return a clear hint when the error is a missing ODBC driver, else None.
+
+    pyodbc surfaces a missing driver as SQLSTATE IM002 / "Data source name not
+    found and no default driver specified" / "Can't open lib …". We translate
+    that into an actionable message instead of leaking the raw exception.
+    """
+    msg = str(exc).lower()
+    markers = ("im002", "data source name not found", "can't open lib",
+               "no default driver", "libodbc")
+    if any(m in msg for m in markers):
+        return ("ODBC-Treiber nicht gefunden. Fuer MS SQL Server bitte den "
+                "'ODBC Driver 18 for SQL Server' installieren — Windows: "
+                "Microsoft-Installer; Linux: unixODBC + msodbcsql18.")
+    return None
+
+
 class SqlAlchemyLoader(SchemaLoader):
     """Reflects a live database schema using SQLAlchemy introspection.
 
@@ -62,6 +79,7 @@ class SqlAlchemyLoader(SchemaLoader):
                 views.append(View(vname, vcols, definition))
             return Schema(tuple(tables), tuple(views))
         except SQLAlchemyError as exc:
-            raise ConnectionError(f"Could not reflect schema: {exc}") from exc
+            hint = _odbc_driver_hint(exc)
+            raise ConnectionError(hint or f"Could not reflect schema: {exc}") from exc
         finally:
             engine.dispose()

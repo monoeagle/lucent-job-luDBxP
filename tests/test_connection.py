@@ -1,6 +1,7 @@
 import pytest
 
 from core.connection import build_url
+from core.loaders.sqlalchemy_loader import _odbc_driver_hint
 
 
 def test_sqlite_url():
@@ -21,11 +22,32 @@ def test_mysql_default_port():
     assert url == "mysql+pymysql://u:p@h:3306/d"
 
 
-def test_mssql_includes_odbc_driver():
+def test_mssql_defaults_to_driver_18_no_encryption_params():
     url = build_url({
         "db_type": "mssql", "host": "h", "database": "d", "user": "u", "password": "p"})
     assert url.startswith("mssql+pyodbc://u:p@h:1433/d")
+    assert "driver=ODBC+Driver+18+for+SQL+Server" in url
+    # Nothing insecure assumed: Encrypt/Trust only when explicitly requested.
+    assert "Encrypt" not in url and "TrustServerCertificate" not in url
+
+
+def test_mssql_custom_driver_and_encryption():
+    url = build_url({
+        "db_type": "mssql", "host": "h", "database": "d", "user": "u", "password": "p",
+        "driver": "ODBC Driver 17 for SQL Server",
+        "encrypt": "yes", "trust_server_certificate": "yes"})
     assert "driver=ODBC+Driver+17+for+SQL+Server" in url
+    assert "Encrypt=yes" in url
+    assert "TrustServerCertificate=yes" in url
+
+
+def test_odbc_driver_hint_detects_missing_driver():
+    assert _odbc_driver_hint(Exception("[IM002] Data source name not found")) is not None
+    assert "ODBC Driver 18" in _odbc_driver_hint(Exception("Can't open lib 'ODBC Driver 18'"))
+
+
+def test_odbc_driver_hint_ignores_unrelated_error():
+    assert _odbc_driver_hint(Exception("connection timed out")) is None
 
 
 def test_password_is_url_encoded():

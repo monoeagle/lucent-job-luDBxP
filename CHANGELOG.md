@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0] — 2026-06-26
+### Changed
+- **AP-12 (Backend) — MS SQL Server: ODBC-Treiber & Verschlüsselung
+  konfigurierbar, klare Treiber-Fehlermeldung:** `build_url` nutzt jetzt
+  standardmäßig den aktuellen **ODBC Driver 18 for SQL Server** (überschreibbar
+  per `driver`) und unterstützt optionale `Encrypt`/`TrustServerCertificate`-
+  Parameter — nichts Unsicheres wird per Default angenommen. Fehlt der ODBC-
+  Treiber, meldet die App das klar (AP-2-Stil) statt einer rohen pyodbc-Exception
+  (`_odbc_driver_hint`: IM002 / „no default driver" / „Can't open lib"). Installations-
+  Doku ergänzt. 118 Tests grün. (Realer Integrationstest gegen eine MSSQL-Instanz
+  und UI-Felder für Encrypt/Trust folgen separat.)
+
 ## [0.8.0] — 2026-06-26
 ### Changed
 - **AP-15 (Teil 1, Windows) — `run.ps1` abbruchsicher + idempotent:** Der

@@ -4,7 +4,7 @@ Keeping URL assembly here (rather than in the browser) centralizes driver
 selection and credential encoding. Passwords are URL-encoded so special
 characters do not break the URL.
 """
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, urlencode
 
 # db_type -> SQLAlchemy dialect+driver prefix for server databases.
 _DRIVERS = {
@@ -14,6 +14,34 @@ _DRIVERS = {
 }
 
 _DEFAULT_PORTS = {"postgresql": 5432, "mysql": 3306, "mssql": 1433}
+
+# Current Microsoft ODBC driver. Driver 18 encrypts by default; with a
+# self-signed server certificate the caller must add trust_server_certificate.
+_DEFAULT_MSSQL_DRIVER = "ODBC Driver 18 for SQL Server"
+
+
+def _mssql_query(params: dict) -> str:
+    """Build the MSSQL ODBC query string from connection params.
+
+    Always includes the ODBC ``driver`` (overridable via ``driver``); adds
+    ``Encrypt`` and/or ``TrustServerCertificate`` only when explicitly given,
+    so behaviour stays predictable and nothing insecure is assumed by default.
+
+    Args:
+        params: Connection params; recognises ``driver``, ``encrypt``
+            ("yes"/"no") and ``trust_server_certificate`` ("yes"/"no").
+
+    Returns:
+        A URL-encoded query string (without the leading ``?``).
+    """
+    query = {"driver": (params.get("driver") or _DEFAULT_MSSQL_DRIVER)}
+    encrypt = params.get("encrypt")
+    if encrypt:
+        query["Encrypt"] = encrypt
+    trust = params.get("trust_server_certificate")
+    if trust:
+        query["TrustServerCertificate"] = trust
+    return urlencode(query, quote_via=quote_plus)
 
 
 def build_url(params: dict) -> str:
@@ -53,5 +81,5 @@ def build_url(params: dict) -> str:
     auth = f"{user}:{password}@" if user else ""
     url = f"{_DRIVERS[db_type]}://{auth}{host}:{port}/{database}"
     if db_type == "mssql":
-        url += "?driver=ODBC+Driver+17+for+SQL+Server"
+        url += "?" + _mssql_query(params)
     return url
