@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.14.0] — 2026-06-26
+### Geändert
+- **AP-14 (Teil 2, Linux) — Python-3.14-AppImage:** venv und AppImage laufen jetzt
+  gegen **Python 3.14.6** (user-lokal via `uv`, kein Root; alle 5 C-Extensions als
+  **cp314-manylinux**-Wheels → venv rein aus Wheels, 125 Tests grün). AppImage
+  gegen 3.14 gebaut & verifiziert (HTTP 200, bundelt 3.14.6).
+- **AppImage-Fixes (`run.sh` AppRun):** **versions-bewusstes App-Update** (Code wird
+  bei Versionswechsel erneuert, Nutzerdaten `config.json`/`Logs/` bleiben — vorher
+  lief stiller Alt-Code weiter, real 0.1.0 statt der gebauten Version); **Browser**
+  öffnet bevorzugt Chrome/Chromium statt `xdg-open`-Default.
+### Behoben
+- **`run.sh` unter Python 3.14:** `re.split(..., 1)` (positionsbasiertes `maxsplit`)
+  löste einen DeprecationWarning aus → `maxsplit=1`.
+
 ## [0.13.0] — 2026-06-26
 ### Geändert
 - **AP-33 — Logging sauber gemacht:** `core/log.py` rotiert jetzt (`RotatingFileHandler`,

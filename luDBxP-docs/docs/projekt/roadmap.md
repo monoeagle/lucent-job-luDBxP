@@ -11,9 +11,6 @@
 - **AP-12** — MSSQL real testbar machen (Backend ✓ in v0.9.0; offen: System-ODBC
   real einrichten, optionaler Integrationstest gegen MSSQL-Instanz, UI-Felder für
   `Encrypt`/`TrustServerCertificate`)
-- **AP-14** — Python-3.14-Readiness: Linux/AppImage-Rest (Windows-Wheelhouse ✓;
-  offen: 3.14 auf der Linux-Build-Maschine, AppImage gegen 3.14, optionale
-  Lock-/Constraints-Datei)
 - **AP-17** — Delivery-Verzeichnis bereinigen (nur Betriebsnotwendiges; keine
   KI-/Entwickler-Spuren im Delivery)
 - **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
@@ -53,7 +50,7 @@ Doku/AppImage/Projektposter.
 - **AP-8** — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0
 - **AP-9** — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1
 
-**v0.4.0 – v0.13.0** (2026-06-26):
+**v0.4.0 – v0.14.0** (2026-06-26):
 
 - **AP-14** — Python-3.14-Readiness, Windows-Pfad (Wheelhouse cp312 → cp314) — v0.4.0
 - **AP-11** — Composite Foreign Keys voll unterstützt (`ON … AND …`) — v0.5.0
@@ -73,6 +70,7 @@ Doku/AppImage/Projektposter.
 - **AP-27** — Insights: Ort & Einbindung geklärt — v0.11.2
 - **AP-15** (Teil 2, Linux) — `run.sh` abbruchsicher + idempotent — v0.12.0
 - **AP-33** — Logging sauber (Rotation · konfig. Level/Pfad · Request-Logging) — v0.13.0
+- **AP-14** (Teil 2, Linux) — Python-3.14-AppImage + AppRun-Update-/Browser-Fix — v0.14.0
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:
 [Changelog](../entwicklung/changelog.md).
