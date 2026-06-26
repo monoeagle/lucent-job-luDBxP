@@ -81,3 +81,21 @@ ersetzen (`find … -mindepth 1 ! -name .git -exec rm -rf` + `cp -a site/.`),
 ist **auch in master** getrackt (bewusst, damit Kollegen sie ohne Pages sehen).
 Doku-Build immer über `bash run_luDBxP_docs.sh --build` (eigene `.venv-docs` mit
 Zensical; rendert Mermaid via mmdc, regeneriert Activity-JSON, baut `site/`).
+
+## 9. Diagramm-Orientierung: dieselbe Übersicht braucht zwei Formate
+Das AP-Übersichtsdiagramm wird an zwei Stellen gezeigt, mit **gegensätzlichen
+Platzanforderungen**:
+- **Doku-Startseite (schmales Band rechts):** **hochkant** — 3 Spalten ×
+  ~8 Zeilen passt in die schmale, hohe Bandfläche.
+- **A0-Poster (breiter Streifen):** `make_poster.py` platziert Diagramme über die
+  **volle Inhaltsbreite**. Ein hochkant-Diagramm wird dort riesig (frisst die
+  halbe Poster-Höhe, verdrängt das Screenshot-Raster). Lösung: eine
+  **transponierte, querformatige** Variante (3 Phasen als **Zeilen** statt
+  Spalten → Aspekt ~4.4:1) nur fürs Poster rendern (`flowchart TB` mit
+  `direction LR`-Subgraphs). Die Docs-`.mmd` bleibt hochkant; die Poster-Variante
+  lebt im Scratch und wird nach `mail/diagramm-ap-ueberblick.jpg` gerendert.
+- **Höhen-Aufteilung im Poster:** der Faktor `diag_band_max = (… ) * 0.62`
+  in `make_poster.py` deckelt die Diagramm-Bänder auf ~62 % der Restfläche,
+  damit die Screenshots groß bleiben. Eine Zahl zum Justieren.
+Lehre: „voll-breit platzieren" + hochkant-Diagramm = Layout-Sprengung; das Format
+des Diagramms muss zur Zielfläche passen, nicht nur der Inhalt.
