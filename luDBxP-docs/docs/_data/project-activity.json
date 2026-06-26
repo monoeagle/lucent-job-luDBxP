@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-06-26T22:55:05",
+  "generatedAt": "2026-06-26T23:08:16",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 60,
+      "commits": 62,
       "kinds": {
-        "docs": 30,
-        "other": 3,
+        "docs": 31,
+        "other": 4,
         "fix": 6,
         "build": 5,
         "chore": 2,
@@ -17,6 +17,16 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "2272681",
+          "subject": "docs: AP-14 nach erledigt (AP-Baum/Gantt/Roadmap), Badges v0.14.0, Changelog-Mirror, Site neu gebaut",
+          "kind": "docs"
+        },
+        {
+          "sha": "bef00ab",
+          "subject": "AP-14 (Linux): AppImage gegen Python 3.14; AppRun versions-bewusstes Update + Chrome-Bevorzugung; v0.14.0",
+          "kind": "other"
+        },
         {
           "sha": "ee42cac",
           "subject": "docs: AP-33 nach erledigt (AP-Baum/Gantt/Roadmap), Badges v0.13.0/125, Changelog-Mirror, Site neu gebaut",
@@ -520,13 +530,13 @@
     }
   },
   "stats": {
-    "totalCommits": 97,
+    "totalCommits": 99,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 39
+        "count": 40
       },
       {
         "kind": "feat",
@@ -537,16 +547,16 @@
         "count": 11
       },
       {
+        "kind": "other",
+        "count": 5
+      },
+      {
         "kind": "build",
         "count": 5
       },
       {
         "kind": "chore",
         "count": 5
-      },
-      {
-        "kind": "other",
-        "count": 4
       },
       {
         "kind": "style",
