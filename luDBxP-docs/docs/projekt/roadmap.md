@@ -11,18 +11,14 @@
 - **AP-12** — MSSQL real testbar machen (Backend ✓ in v0.9.0; offen: System-ODBC
   real einrichten, optionaler Integrationstest gegen MSSQL-Instanz, UI-Felder für
   `Encrypt`/`TrustServerCertificate`)
-- **AP-17** — Delivery-Verzeichnis bereinigen (nur Betriebsnotwendiges; keine
-  KI-/Entwickler-Spuren im Delivery)
 - **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
   zusammenführen
-- **AP-22** (Frage) — Implizite FKs standardmäßig aktivieren? (mehr Join-Pfade vs.
-  falsch-positive Beziehungen)
-- **AP-24** (Frage) — Session-KPIs erheben & in die Doku aufnehmen?
 - **AP-25** — Tool: SQL-Statement-Analyzer (read-only Analyse beliebiger Statements,
   ohne Ausführung; Tabellen/Join-Pfad markieren)
 - **AP-29** — SQL-Dialekt umschalten (Oracle/MSSQL/PostgreSQL/MySQL/SQLite;
   LIMIT/TOP/FETCH + Identifier-Quoting)
-- **AP-30** (Frage) — 1-N: ein Start, mehrere Zieltabellen in einem SELECT?
+- **AP-30** — N-1-Stern-Abfrage (ein Start, mehrere Lookup-/Eltern-Ziele; kein
+  Zeilen-Fan-out — 1-N-Mehrfach-Ziele werden gewarnt)
 - **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
   Pro-Nutzer-`config.json`/`Logs/`, WSGI-Server)
 - **AP-34** — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)

@@ -195,6 +195,17 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] Test-first: 7 neue Tests in `tests/test_log.py`; **125 Tests grün**. Betroffen: `core/log.py`, `web/__init__.py`, `config.py`
 - [ ] **An AP-31 übergeben:** volle Terminal-Server-Verdrahtung des Pro-Nutzer-Logpfads (z. B. `%LOCALAPPDATA%`) — hier nur der ENV-Hook gebaut
 
+## AP-17 — Delivery-Verzeichnis bereinigen · VERWORFEN (2026-06-26)
+- [x] **Gestrichen:** Auslieferung läuft über **GitHub-Releases** (`tools/build_release.py` → bereinigtes ZIP ohne Dev-/KI-Spuren; Releases v0.11.2/v0.11.3). Ein separates Delivery-Verzeichnis ist damit obsolet.
+
+## AP-22 — Implizite FKs standardmäßig aktivieren? · ENTSCHIEDEN: NEIN (2026-06-26)
+- [x] **Default bleibt OFF (opt-in).** Begründung: das Tool lebt von korrekten, vertrauenswürdigen Join-Pfaden; Default-ON würde geratene Beziehungen mit echten FKs vermischen. Implizite FKs bleiben bewusste Opt-in-Entscheidung (Checkbox `include_implied`, im Graph gestrichelt-lila abgehoben).
+
+## AP-24 — Session-KPIs erheben & dokumentieren? · ENTSCHIEDEN (2026-06-26)
+- [x] **Erfüllt:** KPI-Erhebung ist etablierte Handoff-Konvention (`docs/session-kennzahlen.md`, Schema aus `.pattern/session-handoff-kpi.pattern`).
+- [x] **Dev-intern:** bleibt im Entwickler-Repo, **nicht** in der öffentlichen Zensical-Site (enthält Modell-/Token-/Subagenten-Infos).
+- [ ] **Laufend:** fehlende Sessions (Session 4 Windows + aktuelle Linux-Sessions) beim **nächsten Handoff** nachtragen.
+
 ## AP-14 — Python-3.14-Readiness (v0.4.0 Windows · v0.14.0 Linux/AppImage)
 - [x] **Windows (v0.4.0):** alle 5 C-Ext als cp314-win_amd64-Wheels ins Wheelhouse; `run.ps1`/`run.sh` auf 3.14 gegated; 3.14.6 via winget; offline-Setup ✓
 - [x] **Linux/AppImage (v0.14.0):** Python 3.14.6 **user-lokal via `uv`** (kein Root); alle 5 C-Ext als **cp314-manylinux**-Wheels auf PyPI → venv-Neubau rein aus Wheels, **125 Tests grün** auf 3.14

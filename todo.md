@@ -31,23 +31,9 @@ Offen hier: **AP-12** (MSSQL real testbar).
 - [ ] **Constraint:** `run.ps1` ist signiert → ASCII + UTF-8-BOM-Pattern beachten (PS 5.1),
       nicht blind mit dem Edit-Tool bearbeiten. Eigene Windows-Session.
 
-## AP-17 — Delivery-Verzeichnis bereinigen
-- [ ] Ein Auslieferungs-Verzeichnis, das **nur** enthält, was zum Betrieb explizit benötigt wird
-- [ ] **Keine Rückschlüsse auf Claude-/AI-Einsatz** (keine CLAUDE.md, Handoffs, `.pattern`, Insights, AI-Spuren im Delivery)
-- [ ] Abgrenzen: was gehört ins Delivery vs. nur ins Entwickler-Repo
-
 ## AP-19 — `.pattern_transfer` (projektlokale Pattern sammeln)
 - [ ] Verzeichnis `.pattern_transfer` im Projekt: Sammelstelle für Pattern, die im aktiven Projekt entstehen
 - [ ] In einer globalen Claude-Session werden alle projektlokalen Pattern eingesammelt und — wo sinnvoll — ins globale `.pattern` zusammengeführt
-
-## AP-22 (Frage) — Implizite FKs immer aktivieren?
-- [ ] Klären: macht es Sinn, implizite FKs **standardmäßig** zu aktivieren? Was spricht dagegen?
-- [ ] Abwägung: mehr Join-Pfade out-of-the-box vs. falsch-positive (geratene) Beziehungen, die zu fragwürdigen Joins führen können
-
-## AP-24 (Frage) — Session-KPIs erheben & dokumentieren?
-- [ ] Erheben wir beim Sessionwechsel bereits KPIs für dieses Projekt? (vgl. `docs/session-kennzahlen.md`)
-- [ ] Sind diese KPIs Teil der (Projekt-)Dokumentation?
-- [ ] Falls lückenhaft: KPI-Erhebung beim Handoff festlegen + in die Doku aufnehmen
 
 ## AP-25 — Tool: SQL-Statement-Analyzer (read-only Analyse)
 **Idee:** Neuer Tab, in dem der Nutzer ein beliebiges SQL-Statement in ein Freitextfeld
@@ -75,12 +61,12 @@ read-only SELECT je Datenbank-Typ — und lohnt sich ein Dialekt-Umschalter?
 - [ ] Technik prüfen: `sqlglot` lokal gebündelt (NO-CDN) zum Transpilieren — **Überschneidung mit AP-25** (SQL-Analyzer), evtl. gemeinsam lösen
 - [ ] Betroffen: `core/sqlgen.py`, `web/static/js/app.js`/`index.html` (Dialekt-Dropdown), ggf. `core/connection.py`
 
-## AP-30 (Frage) — 1-N: ein Start, mehrere Zieltabellen in einem SELECT?
-- [ ] Frage: Gibt es den sinnvollen Fall, in **einem** SELECT von **einer** Start-Tabelle zu **mehreren** Ziel-Tabellen zu joinen (Stern-/1-N-Abfrage)?
-- [ ] Heute: genau **eine** Start- und **eine** Ziel-Tabelle (linearer Pfad); Zusatzspalten + Filter-Tabellen werden eingewebt, aber **kein** zweites unabhängiges Ziel (vgl. AP-18-Abgrenzung)
-- [ ] Abwägung: Mehrwert (breitere Abfrage in einem Schritt) vs. Komplexität (mehrere Pfade vereinen, Mehrdeutigkeit, kartesische Risiken bei 1-N-Fan-out)
-- [ ] Falls sinnvoll: als **Join-Baum** mit mehreren Ziel-Ästen modellieren (analog zum bestehenden Filter-Tabellen-Weaving in `find_paths`)
-- [ ] **Erkenntnis (Anwendungsfälle):** wertvoll v. a. für **N-1-Äste** (Stern-/Report-Abfrage: Start zieht Attribute aus mehreren Eltern-/Lookup-Tabellen, z. B. VM + Host-Name + OS-Name + VLAN) — kein Zeilen-Fan-out. Mehrere **1-N-Kind**-Äste gleichzeitig blähen quasi-kartesisch auf → eher **warnen** statt anbieten
+## AP-30 — N-1-Stern-Abfrage (ein Start, mehrere Lookup-Ziele)
+**Entschieden 2026-06-26 (war Frage):** Umsetzen — aber zugeschnitten auf den **N-1-Stern-Fall**; eigenes Feature-AP, Umsetzung separat (nicht jetzt).
+- [ ] **Scope = N-1-Stern:** Start zieht Attribute aus mehreren **Eltern-/Lookup-Tabellen** (z. B. VM + Host-Name + OS-Name + VLAN) — **kein** Zeilen-Fan-out, ein erweiterter Report in einem SELECT
+- [ ] Modell: **Join-Baum** mit mehreren Ziel-Ästen (analog zum Filter-Tabellen-Weaving in `find_paths`)
+- [ ] **1-N-Kind-Äste** (mehrere absteigende Ziele): nicht anbieten bzw. **vor quasi-kartesischem Fan-out warnen**
+- [ ] Betroffen: `core/pathfinder.py`, `core/sqlgen.py`, `web/static/js/app.js`/`index.html` (mehrere Ziel-Zeilen)
 
 ## AP-31 — Terminal-Server-Tauglichkeit (Multi-User)
 **Frage:** Läuft die App korrekt für **mehrere gleichzeitige** Nutzer auf einem (RDS-)Terminal-Server?

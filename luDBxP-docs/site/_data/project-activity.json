@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-26T23:15:08",
+  "generatedAt": "2026-06-26T23:29:16",
   "range": {
     "from": "2025-06-27",
     "to": "2026-06-26"
   },
   "byDay": {
     "2026-06-26": {
-      "commits": 63,
+      "commits": 64,
       "kinds": {
-        "docs": 32,
+        "docs": 33,
         "other": 4,
         "fix": 6,
         "build": 5,
@@ -17,6 +17,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "eb997a5",
+          "subject": "docs: Doku-Drift nachgezogen (Testzahl 81->125, Wheelhouse/Python 3.12->3.14, run.sh-Menue 8 Optionen, korrekte conftest-Fixtures, Composite-FK seit AP-11); Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "a2a61a1",
           "subject": "docs: UI-Screenshots auf aktuellen Stand (LucentTools-UI, dagre-Graph, vereinheitlichte Join-Maske); Site neu gebaut",
@@ -535,13 +540,13 @@
     }
   },
   "stats": {
-    "totalCommits": 100,
+    "totalCommits": 101,
     "activeDays": 2,
     "longestStreak": 2,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 41
+        "count": 42
       },
       {
         "kind": "feat",
