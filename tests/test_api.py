@@ -529,7 +529,7 @@ def test_joinpath_descending_branch_warns(client, inventory_url):
     assert resp.status_code == 200
     p = resp.get_json()["paths"][0]
     assert "SELECT" in p["sql"]            # generation still succeeds
-    assert any("VirtualMachines" in w for w in p["warnings"])
+    assert any("1-N" in w and "VirtualMachines" in w for w in p["warnings"])
 
 
 def test_joinpath_ascending_star_has_no_warning(client, inventory_url):
