@@ -130,11 +130,16 @@ body {
 .jb-result-bar { margin-top: .6rem; }
 .jb-result-bar #jb_rows_info { margin-left: .4rem; }
 
-/* --- join result table --- */
+/* --- join result table (AP-9: fill remaining vertical space) --- */
+/* Scoped to the join-builder panel so detail tabs keep normal block flow. */
+.panel[data-tab="joinbuilder"].active {
+  display: flex; flex-direction: column; min-height: 100%;
+}
+.panel[data-tab="joinbuilder"] .joinbuilder {
+  display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto;
+}
 #join_result {
-  margin-top: .6rem;
-  max-height: 320px;
-  overflow: auto;
+  flex: 1 1 auto; min-height: 200px; overflow: auto; margin-top: .6rem;
 }
 
 /* --- sub-tabs inside a detail tab --- */

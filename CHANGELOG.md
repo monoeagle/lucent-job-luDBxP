@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1] — 2026-06-26
+### Changed
+- **AP-9 — Ergebnisliste maximiert:** Die Ergebnistabelle unter dem Join-Builder
+  nutzt jetzt den vollen vertikalen Restplatz nach unten (fixe `max-height: 320px`
+  entfernt). Das Join-Builder-Panel ist eine Flex-Spalte; `#join_result` wächst
+  mit (`flex: 1`, eigener Scroll). Auf das Join-Builder-Panel beschränkt, sodass
+  Detail-Tabs ihren normalen Fluss behalten.
+
 ## [0.3.0] — 2026-06-26
 ### Added
 - **AP-6 — Ausgabe-Steuerung im Join-Builder:** Auswahl der Ausgabezeilen

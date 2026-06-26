@@ -114,6 +114,11 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 - [x] DRY: `_parse_joinpath_params` + `_make_path_gen` von `api_joinpath` und Run-Endpoint geteilt
 - [x] 3 neue API-Tests (Spalten/Zeilen, Zeilen-Cap, unbekannte Spalte 400); 109 Tests grün
 
+## AP-9 — Ergebnisliste unter dem Join-Builder maximieren (v0.3.1)
+- [x] Fixe `max-height: 320px` entfernt; `#join_result` füllt den vertikalen Restplatz (`flex: 1`, eigener Scroll)
+- [x] Join-Builder-Panel als Flex-Spalte, auf `panel[data-tab=joinbuilder]` beschränkt (Detail-Tabs unberührt)
+- [x] Verifiziert (Playwright): `max-height:none`, `flex-grow:1`, Tabelle bis ~13 px an die Panel-Unterkante
+
 ## AP-6 — Ausgabe-Steuerung: Zeilen-Auswahl + Aktualisieren (v0.3.0)
 - [x] Zeilen-Auswahl 200 / 400 / Alle (`#jb_rows`) im Ergebnisbereich
 - [x] „Aktualisieren"-Button (`#jb_refresh`): liest Formular neu (Sortierung/Spalten), behält gewählten Pfad
