@@ -24,13 +24,13 @@ $VenvPy  = Join-Path $Venv 'Scripts\python.exe'
 $VenvPip = Join-Path $Venv 'Scripts\pip.exe'
 
 # Offline wheelhouse (bundled Windows wheels). When present, setup runs without
-# internet. The compiled wheels are built for CPython 3.12 (win_amd64).
+# internet. The compiled wheels are built for CPython 3.14 (win_amd64).
 $Wheels = Join-Path $PSScriptRoot 'wheels'
 
 function Find-Python {
-    # With the offline wheelhouse, require Python 3.12 to match the cp312 wheels;
+    # With the offline wheelhouse, require Python 3.14 to match the cp314 wheels;
     # otherwise prefer the newest available.
-    $versions = if (Test-Path $Wheels) { @('3.12') } else { @('3.13', '3.12', '3.11', '3.10') }
+    $versions = if (Test-Path $Wheels) { @('3.14') } else { @('3.14', '3.13', '3.12', '3.11', '3.10') }
     foreach ($v in $versions) {
         if (Get-Command py -ErrorAction SilentlyContinue) {
             & py "-$v" --version *> $null
@@ -39,7 +39,7 @@ function Find-Python {
     }
     if (Get-Command python -ErrorAction SilentlyContinue) { return @('python') }
     if (Test-Path $Wheels) {
-        throw 'Python 3.12 (64-bit) wird fuer das Offline-Setup benoetigt (passend zu wheels\).'
+        throw 'Python 3.14 (64-bit) wird fuer das Offline-Setup benoetigt (passend zu wheels\).'
     }
     throw 'Kein Python gefunden (py oder python).'
 }

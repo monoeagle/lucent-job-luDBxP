@@ -9,12 +9,12 @@ Sobald dieser Ordner vorhanden ist, installiert `run.ps1` **automatisch offline*
 .\run.ps1 -Action setup-venv     # nutzt --no-index --find-links wheels\
 .\run.ps1                        # Menü → "Nur Umgebung einrichten"
 ```
-`run.ps1` verlangt dann **Python 3.12 (64-bit)** — die kompilierten Wheels
-(SQLAlchemy, psycopg2-binary, pyodbc, greenlet, markupsafe) sind `cp312-win_amd64`.
+`run.ps1` verlangt dann **Python 3.14 (64-bit)** — die kompilierten Wheels
+(SQLAlchemy, psycopg2-binary, pyodbc, greenlet, markupsafe) sind `cp314-win_amd64`.
 Die übrigen sind plattformunabhängig (`py3-none-any`).
 
 ## Voraussetzung
-Nur **Python 3.12 (64-bit)** muss auf der Windows-Maschine installiert sein
+Nur **Python 3.14 (64-bit)** muss auf der Windows-Maschine installiert sein
 (Installer von python.org, ~30 MB — separat, kein pip-Nachladen).
 
 ## Inhalt (Laufzeit-Dependencies aus requirements.txt + transitiv)
@@ -32,9 +32,9 @@ Für eine andere Python-Version oder neue Abhängigkeiten die Wheels neu ziehen
 Laufzeit-Wheels und pytest in einem Rutsch:
 ```bash
 pip download -r requirements-dev.txt --platform win_amd64 \
-  --python-version 312 --implementation cp --only-binary=:all: -d wheels/
+  --python-version 314 --abi cp314 --implementation cp --only-binary=:all: -d wheels/
 ```
-(`--python-version` auf die Ziel-Version anpassen, z. B. 311/313.)
+(`--python-version`/`--abi` auf die Ziel-Version anpassen, z. B. 313/315.)
 
 ## Hinweis
 - `pytest` und seine Abhängigkeiten sind enthalten — `run.ps1 -Action tests`

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0] — 2026-06-26
+### Changed
+- **AP-14 — Python-3.14-Readiness (Windows):** Das Offline-Wheelhouse (`wheels/`)
+  wurde von der CPython-3.12- auf die **3.14-ABI** umgestellt. Die fünf
+  kompilierten Wheels (SQLAlchemy, psycopg2-binary, pyodbc, greenlet, MarkupSafe)
+  liegen jetzt als `cp314-win_amd64` vor — identische Paketversionen, nur neuer
+  ABI-Tag; die `py3-none-any`-Wheels bleiben versionsunabhängig. Die Launcher
+  `run.ps1` (Offline-Gate) und `run.sh` (Präferenzreihenfolge) verlangen bzw.
+  bevorzugen jetzt Python 3.14; `wheels/README.md` entsprechend aktualisiert.
+  Verifiziert: venv mit Python 3.14.6, Offline-Setup aus `wheels/`, `pip check`
+  sauber, alle **111 Tests grün**, App startet (HTTP 200).
+
 ## [0.3.1] — 2026-06-26
 ### Changed
 - **AP-9 — Ergebnisliste maximiert:** Die Ergebnistabelle unter dem Join-Builder

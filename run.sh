@@ -30,7 +30,7 @@ _info() { echo -e "  ${CYAN}→${NC} $1"; }
 _hdr()  { echo -e "\n${BOLD}=== $1 ===${NC}\n"; }
 
 pick_python() {
-  for v in python3.13 python3.12 python3.11 python3.10; do
+  for v in python3.14 python3.13 python3.12 python3.11 python3.10; do
     if command -v "$v" >/dev/null 2>&1; then PY="$v"; return; fi
   done
 }
