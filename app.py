@@ -1,4 +1,4 @@
-"""Lucent DB Explorer — entry point."""
+"""LucentTools DB Explorer — entry point."""
 import config
 from web import create_app
 

@@ -1,4 +1,4 @@
-"""Build a portable demo CMDB SQLite database for Lucent DB Explorer.
+"""Build a portable demo CMDB SQLite database for LucentTools DB Explorer.
 
 The schema is a small VMware-style datacenter inventory crafted to exercise
 every join-path scenario the tool must handle:

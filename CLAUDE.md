@@ -1,4 +1,4 @@
-# Lucent DB Explorer — CLAUDE.md
+# LucentTools DB Explorer — CLAUDE.md
 
 ## Project Purpose
 Visual join-path builder: reflects a live database schema, builds a directed FK-graph, and generates read-only parameterised SQL from a start/target column selection plus optional filters. No data is written or mutated.

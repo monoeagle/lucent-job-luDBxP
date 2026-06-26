@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Lucent DB Explorer launcher.
+# LucentTools DB Explorer launcher.
 # Run with no argument for an interactive menu; pass a flag for direct,
 # non-interactive actions (the hub calls --skip-setup / --setup-venv).
 set -euo pipefail
@@ -149,7 +149,7 @@ _bundle_python_standalone() {
 }
 
 cmd_appimage() {
-  _hdr "Lucent DB Explorer AppImage Build"
+  _hdr "LucentTools DB Explorer AppImage Build"
 
   if [ ! -d "$SCRIPT_DIR/$VENV" ]; then
     _fail "venv nicht vorhanden — bitte zuerst 'bash run.sh --setup-venv' ausfuehren"
@@ -212,7 +212,7 @@ SVGEOF
   cat > "$appdir/lucent-db-explorer.desktop" << DEOF
 [Desktop Entry]
 Type=Application
-Name=Lucent DB Explorer
+Name=LucentTools DB Explorer
 Comment=Database schema explorer with graph visualization
 Exec=AppRun
 Icon=lucent-db-explorer
@@ -288,7 +288,7 @@ RUNEOF
 
   cat > "$APPIMAGES_OUT_DIR/LucentDBExplorer.yml" << YMLEOF
 name: lucent-db-explorer
-display_name: "Lucent DB Explorer"
+display_name: "LucentTools DB Explorer"
 version: "${app_version}"
 description: "Database schema explorer with graph visualization"
 port: 5057
@@ -304,7 +304,7 @@ YMLEOF
 # --- Interactive menu -----------------------------------------------------
 show_menu() {
   echo ""
-  echo "  Lucent DB Explorer"
+  echo "  LucentTools DB Explorer"
   echo "  =================="
   echo "  1) App starten (Setup, falls nötig)"
   echo "  2) Nur Umgebung einrichten (venv + pip)"

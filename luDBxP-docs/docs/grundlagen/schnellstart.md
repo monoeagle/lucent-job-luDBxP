@@ -11,7 +11,7 @@ bash run.sh
 Die App ist danach erreichbar unter: **http://127.0.0.1:5057**
 
 <img src="../images/screenshots/Screenshot_01_luDBxP.jpg"
-     alt="Startscreen: Lucent DB Explorer vor dem Verbinden — leerer Objekt-Browser, leerer Schema-Graph, Verbindungsfeld in der Topbar.">
+     alt="Startscreen: LucentTools DB Explorer vor dem Verbinden — leerer Objekt-Browser, leerer Schema-Graph, Verbindungsfeld in der Topbar.">
 
 **Windows (PowerShell):**
 ```powershell

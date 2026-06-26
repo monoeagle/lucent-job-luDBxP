@@ -1,5 +1,5 @@
 <#
-  Lucent DB Explorer launcher (Windows / PowerShell).
+  LucentTools DB Explorer launcher (Windows / PowerShell).
   Run with no argument for an interactive menu; pass a flag for direct,
   non-interactive actions. Mirrors run.sh.
 
@@ -204,7 +204,7 @@ function Do-DemoDb {
 # --- Interactive menu -----------------------------------------------------
 function Show-Menu {
     Write-Host ''
-    Write-Host '  Lucent DB Explorer'
+    Write-Host '  LucentTools DB Explorer'
     Write-Host '  =================='
     Write-Host '  1) App starten (Setup, falls noetig)'
     Write-Host '  2) Nur Umgebung einrichten (venv + pip)'

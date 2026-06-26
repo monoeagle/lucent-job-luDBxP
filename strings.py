@@ -1,6 +1,6 @@
 """UI text internationalization (DE/EN)."""
 _STRINGS = {
-    "app_title":   {"de": "Lucent DB Explorer", "en": "Lucent DB Explorer"},
+    "app_title":   {"de": "LucentTools DB Explorer", "en": "LucentTools DB Explorer"},
     "btn_load":    {"de": "Schema laden",        "en": "Load schema"},
     "btn_build":   {"de": "Join-Pfad bauen",     "en": "Build join path"},
     "lbl_start":   {"de": "Start",               "en": "Start"},

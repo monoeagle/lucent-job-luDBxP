@@ -11,7 +11,7 @@ def client():
 
 def test_index_renders_form_and_local_assets(client):
     html = client.get("/").get_data(as_text=True)
-    assert "Lucent DB Explorer" in html
+    assert "LucentTools DB Explorer" in html
     assert 'id="connection_url"' in html
     # assets must be local, never a CDN
     assert "/static/js/app.js" in html

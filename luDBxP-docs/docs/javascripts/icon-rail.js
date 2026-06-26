@@ -1,5 +1,5 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   Icon-Rail + Flyout-Panel — für Lucent DB Explorer adaptiert (2026-06-25).
+   Icon-Rail + Flyout-Panel — für LucentTools DB Explorer adaptiert (2026-06-25).
 
    Basis: .pattern/prereqs/docs/icon-rail.js (neutrale Vorlage).
    Portiert aus: adb-control-docs → libredrive-docs → luDBxP-docs.
@@ -17,7 +17,7 @@
   const APP_VERSION   = '0.3.1';                        // ADAPT: bei Release anpassen
   const TEST_COUNT    = '111';                          // ADAPT: bei Release anpassen
   const TEST_DATE     = '2026-06-26';                   // ADAPT: bei Release anpassen
-  const HEADER_PREFIX = `Lucent DB Explorer v${APP_VERSION}`;
+  const HEADER_PREFIX = `LucentTools DB Explorer v${APP_VERSION}`;
 
   // ── Icon-Map: Titel-Schluesselwort → Emoji ─────────────────────────────
   const ICON_MAP = [
@@ -267,7 +267,7 @@
       '<section class="adb-info-block">' +
         '<h4>Stack</h4>' +
         '<table class="adb-info-stack">' +
-          '<tr><td>Lucent DB Explorer</td><td>v' + APP_VERSION + '</td></tr>' +
+          '<tr><td>LucentTools DB Explorer</td><td>v' + APP_VERSION + '</td></tr>' +
           '<tr><td>Python</td><td>3.x</td></tr>' +
           '<tr><td>Flask</td><td>≥ 3.0</td></tr>' +
           '<tr><td>SQLAlchemy</td><td>≥ 2.0</td></tr>' +
@@ -345,7 +345,7 @@
       pageTitle = h1.textContent.replace(/[¶#]\s*$/, '').trim();
     }
 
-    // Startseite: H1 enthält "Lucent DB Explorer" → nur Prefix ohne Doppelnennung
+    // Startseite: H1 enthält "LucentTools DB Explorer" → nur Prefix ohne Doppelnennung
     const isHomePage = /lucent db explorer|ludbxp/i.test(pageTitle);  // ADAPT
 
     if (!pageTitle || isHomePage) {
@@ -469,7 +469,7 @@
     if (document.querySelector('.adb-status-badge')) return;
     const badge = document.createElement('span');
     badge.className = 'adb-status-badge';
-    badge.title = `Lucent DB Explorer v${APP_VERSION} — ${TEST_COUNT} Tests grün (pytest, Stand ${TEST_DATE}). ` +
+    badge.title = `LucentTools DB Explorer v${APP_VERSION} — ${TEST_COUNT} Tests grün (pytest, Stand ${TEST_DATE}). ` +
       'SQLite/PostgreSQL/MySQL/MSSQL via SQLAlchemy. FK-Graph (NetworkX), Join-Pfad-Builder (k-kürzeste Pfade), ' +
       'Cytoscape.js-Graph-Visualisierung, Implizite-FK-Heuristik, Datenvorschau, Verbindungs-Manager. ' +
       'Demo-CMDB deckt Diamant-Pfade, zusammengesetzte FKs, isolierte Tabellen, Selbstreferenzen ab.';

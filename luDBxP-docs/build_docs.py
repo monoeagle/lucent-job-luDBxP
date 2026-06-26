@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-build_docs.py — Lucent DB Explorer Doku-Pipeline.
+build_docs.py — LucentTools DB Explorer Doku-Pipeline.
 
 Ein Einstiegspunkt fuer den kompletten Doku-Build:
     1. Inline-Mermaid-Bloecke aus .md nach mermaid-sources/ extrahieren
@@ -188,7 +188,7 @@ def serve(port: int) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Lucent DB Explorer Docs — voller Build inkl. Mermaid + Activity-JSON",
+        description="LucentTools DB Explorer Docs — voller Build inkl. Mermaid + Activity-JSON",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )

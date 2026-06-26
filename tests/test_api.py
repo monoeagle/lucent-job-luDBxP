@@ -71,7 +71,7 @@ def test_connect_from_saved_sqlite_round_trip(client, demo_url, tmp_path, monkey
 
 def test_info_endpoint_returns_metadata_and_stack(client):
     data = client.get("/api/info").get_json()
-    assert data["name"] == "Lucent DB Explorer"
+    assert data["name"] == "LucentTools DB Explorer"
     assert data["version"]
     assert "Tobias" in data["author"]
     stack_names = {s["name"] for s in data["stack"]}

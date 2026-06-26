@@ -8,7 +8,7 @@ Galerie der wichtigsten Screens — Klick auf ein Bild öffnet die Lightbox-Ansi
 ## Startscreen — vor der Verbindung
 
 <img src="../images/screenshots/Screenshot_01_luDBxP.jpg"
-     alt="Startscreen: Lucent DB Explorer vor dem Verbinden. Verbindungsfeld in der Topbar, leerer Objekt-Browser links, leerer Schema-Graph rechts.">
+     alt="Startscreen: LucentTools DB Explorer vor dem Verbinden. Verbindungsfeld in der Topbar, leerer Objekt-Browser links, leerer Schema-Graph rechts.">
 
 Der Startscreen zeigt das 3-Panel-Grundgerüst: Topbar mit Verbindungsfeld und
 „Verbinden"-Button, leerer Objekt-Browser links (TABELLEN 0 / VIEWS 0), leeres

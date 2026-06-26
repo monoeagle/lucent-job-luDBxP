@@ -1,4 +1,4 @@
-# Lucent DB Explorer
+# LucentTools DB Explorer
 
 Visueller Join-Pfad-Builder. Liest ein DB-Schema per Reflection, baut einen
 FK-Graphen und generiert aus Start-/Ziel-Spalte (+ Filtern) read-only SQL.

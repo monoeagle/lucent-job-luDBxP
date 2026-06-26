@@ -26,7 +26,7 @@ from PIL import Image, ImageDraw, ImageFont
 # ║  PROJEKT-KONFIG — beim Einsatz in ein Projekt NUR diesen Block anpassen.   ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 ROOT          = "/home/meagle/Dokumente/_Projects/lucent-job-luDBxP"
-DISPLAY_NAME  = "Lucent DB Explorer"               # Titel + Schriftfeld-Kopf
+DISPLAY_NAME  = "LucentTools DB Explorer"               # Titel + Schriftfeld-Kopf
 SUBTITLE_BASE = "FK-Graph · Join-Pfad-Builder · read-only SQL · Python/Flask"  # vor „ vX.Y.Z · … · Stand …"
 APP_VERSION   = "0.3.1"                            # bei jedem Bump anpassen
 POSTER_DATE   = "2026-06-26"

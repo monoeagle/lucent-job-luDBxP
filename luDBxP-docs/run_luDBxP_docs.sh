@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ══════════════════════════════════════════════════════════════
-# run_luDBxP_docs.sh – Lucent DB Explorer Dokumentation
+# run_luDBxP_docs.sh – LucentTools DB Explorer Dokumentation
 #
 # Eigenes .venv-docs, unabhängig von anderen venvs.
 # Wird vom Hub als Kindprozess gestartet oder manuell ausgeführt.
@@ -39,7 +39,7 @@ error()   { echo -e "${RED}  ✗ $*${NC}"; exit 1; }
 
 echo ""
 echo -e "${CYAN}╔══════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║   Lucent DB Explorer – Dokumentation     ║${NC}"
+echo -e "${CYAN}║   LucentTools DB Explorer – Dokumentation     ║${NC}"
 echo -e "${CYAN}╚══════════════════════════════════════════╝${NC}"
 echo ""
 

@@ -2,7 +2,7 @@
 
 ## Interne Modell-Klassen (`core/model.py`)
 
-Lucent DB Explorer arbeitet mit einem rein im Speicher gehaltenen Modell der
+LucentTools DB Explorer arbeitet mit einem rein im Speicher gehaltenen Modell der
 Datenbankstruktur. Es gibt keine persistente eigene Datenbank — alles wird bei
 jedem API-Aufruf frisch aus der Zieldatenbank reflektiert.
 

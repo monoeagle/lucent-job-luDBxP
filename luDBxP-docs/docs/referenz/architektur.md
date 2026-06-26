@@ -2,7 +2,7 @@
 
 ## Systemüberblick
 
-Lucent DB Explorer verbindet ein Browser-Frontend direkt mit einer
+LucentTools DB Explorer verbindet ein Browser-Frontend direkt mit einer
 Live-Datenbankverbindung über eine Flask-API. Der Core-Layer kapselt die
 gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.
 
@@ -10,7 +10,7 @@ gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.
 
 ## Schichten
 
-Lucent DB Explorer folgt einem zweischichtigen Aufbau: ein `core/`-Layer für
+LucentTools DB Explorer folgt einem zweischichtigen Aufbau: ein `core/`-Layer für
 die gesamte Datenbanklogik und ein `web/`-Layer für die Flask-API und das
 Frontend.
 
