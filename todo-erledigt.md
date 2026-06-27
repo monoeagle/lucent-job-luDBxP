@@ -4,6 +4,12 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-47 — Pfad-Auswahl-Indikator + Waisen-Chip pro Join-Typ (v0.29.0)
+- [x] Pfad-Liste: `[*]`/`[ ]` statt Bullets (`_markActivePath`), aktiver Pfad hervorgehoben; aktualisiert beim Wechsel
+- [x] read-only Endpoint `/api/orphan_check`: je Schritt NOT-EXISTS-Probe links/rechts → `{left_orphans,right_orphans}`
+- [x] Frontend: datengetriebener Chip `⚠ LEFT/RIGHT/FULL` pro Join-Schritt (gecacht je Pfad, Reset bei frischem Build) + best-effort Option-Tönung
+- [x] 2 API-Tests (Flags + Text-Mode-leer), 197 grün; Playwright-verifiziert (Marker wandert, Chips matchen Backend-Flags)
+
 ## AP-46 — Detailkarten folgen der Join-Builder-Auswahl (v0.28.0)
 - [x] `#uml_area` initial versteckt (CSS `display:none`) → Graph zentriert wenn nichts gewählt
 - [x] `_updateUmlAreaVisibility()`: zeigt Area bei Auswahl/Karten, sonst versteckt; CY.resize() bei Sichtbarkeitswechsel

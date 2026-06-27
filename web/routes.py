@@ -490,6 +490,64 @@ def api_joinpath_run():
                    sql=gen.sql, row_cap=max_rows)
 
 
+def _orphan_probe_sql(dialect, base_table: str, other_table: str,
+                      conds: list) -> str:
+    """A read-only EXISTS probe: do rows in base_table have no match in
+    other_table under the join condition? (Table/column names come from the
+    reflected schema, not user text, so quoting is enough — no injection.)"""
+    on = " AND ".join(conds)
+    return (f"SELECT 1 FROM {dialect.quote(base_table)} a "
+            f"WHERE NOT EXISTS (SELECT 1 FROM {dialect.quote(other_table)} b "
+            f"WHERE {on})")
+
+
+@bp.post("/api/orphan_check")
+def api_orphan_check():
+    """Per join step of the chosen path: do unmatched (orphan) rows exist on the
+    left/right side? Read-only probes that let the UI flag which outer-join types
+    (LEFT/RIGHT/FULL) would actually change the result. Returns
+    ``{"steps": [{"left_orphans": bool, "right_orphans": bool}, …]}``; an empty
+    list in text-mode or on any error (best-effort hint, never blocks)."""
+    data = request.get_json(silent=True) or {}
+    url = (data.get("connection_url") or "").strip()
+    if not url:
+        return jsonify(steps=[])
+    try:
+        schema = SqlAlchemyLoader(url).load()
+        graph = build_graph(schema, bool(data.get("include_implied", False)))
+        (start, target, filters, extra_selections, distinct, limit,
+         order_by_validated, required_tables) = _parse_joinpath_params(data, schema)
+        paths = find_paths(graph, start["table"], target["table"], required_tables)
+    except (ConnectionError, KeyError, NoPathError, ValueError):
+        return jsonify(steps=[])
+    try:
+        path_index = int(data.get("path_index") or 0)
+    except (TypeError, ValueError):
+        path_index = 0
+    if not (0 <= path_index < len(paths)):
+        return jsonify(steps=[])
+
+    dialect = _dialect_from_url(url)
+    out = []
+    for s in paths[path_index].steps:
+        # join is left.lc = right.rc; probe each side for rows without a partner.
+        left_conds = [f"a.{dialect.quote(lc)} = b.{dialect.quote(rc)}"
+                      for lc, rc in s.column_pairs]
+        right_conds = [f"b.{dialect.quote(lc)} = a.{dialect.quote(rc)}"
+                       for lc, rc in s.column_pairs]
+        try:
+            lo = bool(execute_select(
+                url, _orphan_probe_sql(dialect, s.left_table, s.right_table, left_conds),
+                {}, max_rows=1)["rows"])
+            ro = bool(execute_select(
+                url, _orphan_probe_sql(dialect, s.right_table, s.left_table, right_conds),
+                {}, max_rows=1)["rows"])
+        except ConnectionError:
+            lo = ro = False
+        out.append({"left_orphans": lo, "right_orphans": ro})
+    return jsonify(steps=out)
+
+
 @bp.post("/api/analyze")
 def api_analyze():
     """Analyze a pasted SQL statement read-only — never executes it.

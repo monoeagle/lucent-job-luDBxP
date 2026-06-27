@@ -197,7 +197,12 @@ body {
 
 /* Optionszeile: DISTINCT/LIMIT kompakt. */
 .jb-check, .jb-limit { display: inline-flex; align-items: center; gap: .3rem; }
-.path_list { padding-left: 1.2rem; }
+/* AP-47: [ ] / [*] selection markers instead of bullets */
+.path_list { list-style: none; padding-left: .2rem; margin: .3rem 0; }
+.path_list li { display: flex; align-items: baseline; gap: .35rem; padding: 1px 0; }
+.path-mark { font-family: monospace; color: #aaa; flex: 0 0 auto; }
+.path_list li.active .path-mark { color: #1e7e34; font-weight: 700; }
+.path_list li.active a { font-weight: 600; }
 /* Soft-wrap long lines so the SQL box never scrolls horizontally. pre-wrap keeps
    the real newlines + indentation, so copy/paste yields the original statement
    (the wrapping is visual only); overflow-wrap breaks over-long quoted tokens. */
@@ -276,6 +281,11 @@ body {
 .jt-lbl { font-size: .78rem; color: #555; font-weight: 600; }
 .jt-step { font-size: .72rem; color: #444; display: inline-flex; align-items: center; gap: 3px; }
 .jt-step select { font-size: .72rem; padding: 0 2px; }
+/* AP-47: orphan-revealing join types (data-driven) */
+.jt-orphan-chip { font-size: .64rem; font-weight: 700; color: #9a6700;
+  background: #fbeccf; border-radius: 3px; padding: 0 .25rem; margin-left: 3px;
+  white-space: nowrap; }
+.opt-orphan { background: #fbeccf; }   /* native option tint (best effort) */
 
 /* --- SQL-Analyzer (AP-25) --- */
 .an-warn { padding: 4px 8px; margin: 3px 0; border-radius: 3px; font-size: 0.9em; }

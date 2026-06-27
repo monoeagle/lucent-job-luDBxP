@@ -584,6 +584,31 @@ def test_joinpath_per_step_join_type(client, inventory_url):
     assert "LEFT JOIN" in sql
 
 
+def test_orphan_check_returns_per_step_bool_flags(client, inventory_url):
+    """AP-47: per join step, the endpoint reports whether unmatched (orphan) rows
+    exist on the left/right side (read-only probes)."""
+    resp = client.post("/api/orphan_check", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [],
+        "path_index": 0,
+    })
+    assert resp.status_code == 200
+    steps = resp.get_json()["steps"]
+    assert isinstance(steps, list) and steps
+    for s in steps:
+        assert isinstance(s["left_orphans"], bool)
+        assert isinstance(s["right_orphans"], bool)
+
+
+def test_orphan_check_text_mode_returns_empty(client):
+    """Without a connection there is nothing to probe — empty, never an error."""
+    resp = client.post("/api/orphan_check", json={"path_index": 0})
+    assert resp.status_code == 200
+    assert resp.get_json()["steps"] == []
+
+
 def test_joinpath_ascending_star_has_no_warning(client, inventory_url):
     """AP-30: a pure N-1 star (all branches ascend) carries no fan-out warning."""
     resp = client.post("/api/joinpath", json={

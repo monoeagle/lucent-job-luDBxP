@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.29.0] — 2026-06-27
+### Added
+- **AP-47 — Visible path selection + orphan hint on join type:**
+  - the path list uses **`[*]` (active) / `[ ]`** instead of bullets — the chosen alternative
+    path is unambiguous (active path also emphasised).
+  - each join step shows a **data-driven orphan chip** (e.g. `⚠ LEFT/FULL`) indicating which
+    join types would **actually** reveal unmatched (orphan) rows here. New read-only endpoint
+    `/api/orphan_check` probes each step left/right via `NOT EXISTS`; the affected dropdown
+    options are also tinted amber (where the browser renders native `<option>` colours).
+    197 tests green, 1 skipped.
+
 ## [0.28.1] — 2026-06-27
 ### Fixed
 - **Graph stays centered when the detail cards expand:** when the detail area (start/target

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.29.0] — 2026-06-27
+### Hinzugefügt
+- **AP-47 — Pfad-Auswahl sichtbar + Waisen-Hinweis am Join-Typ:**
+  - Die Pfad-Liste nutzt **`[*]` (aktiv) / `[ ]`** statt Bullets — der gewählte Alternativpfad
+    ist eindeutig markiert (aktiver Pfad zusätzlich hervorgehoben).
+  - Pro Join-Schritt zeigt ein **datengetriebener Waisen-Chip** (z. B. `⚠ LEFT/FULL`), welche
+    Join-Typen hier **tatsächlich** unverknüpfte (Waisen-)Zeilen aufdecken. Neuer read-only
+    Endpoint `/api/orphan_check` prüft per `NOT EXISTS`-Probe je Schritt links/rechts; die
+    betroffenen Dropdown-Optionen werden zusätzlich amber getönt (so weit der Browser native
+    `<option>`-Farben rendert). 197 Tests grün, 1 skipped.
+
 ## [0.28.1] — 2026-06-27
 ### Behoben
 - **Graph bleibt beim Aufklappen der Detailkarten zentriert:** Erscheint unten der

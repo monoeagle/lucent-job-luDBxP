@@ -664,19 +664,78 @@ function renderJoinTypeControls(i) {
     const opts = JB_JOIN_OPTS.map((o) =>
       `<option${o === cur ? " selected" : ""}>${o}</option>`).join("");
     return `<label class="jt-step" title="${esc(s.left)} → ${esc(s.right)}">` +
-      `${esc(s.left)}→${esc(s.right)} <select data-step="${k}">${opts}</select></label>`;
+      `${esc(s.left)}→${esc(s.right)} <select data-step="${k}">${opts}</select>` +
+      `<span class="jt-orphan" data-step="${k}"></span></label>`;
   }).join("");
   box.querySelectorAll("select").forEach((sel) =>
     sel.addEventListener("change", () => {
       JB_JOIN_TYPES[+sel.dataset.step] = sel.value;
       runBuild(true);   // regenerate SQL + result with the new join types
     }));
+  _loadOrphans(i).then(() => _applyOrphanHints(i));   // AP-47: flag orphan-revealing types
+}
+
+// AP-47: which join types would actually reveal orphan (unmatched) rows per step.
+// Cached per path index; cleared on a fresh build. Best-effort, never blocks.
+let JB_ORPHANS_CACHE = {};
+async function _loadOrphans(i) {
+  if (JB_ORPHANS_CACHE[i] || !JB_LAST) return;
+  try {
+    const res = await postJSON("/api/orphan_check",
+      Object.assign({}, JB_LAST.body, { path_index: i }));
+    JB_ORPHANS_CACHE[i] = res.steps || [];
+  } catch (e) { JB_ORPHANS_CACHE[i] = []; }
+}
+
+function _applyOrphanHints(i) {
+  const flags = JB_ORPHANS_CACHE[i];
+  const box = $("jb_join_types");
+  if (!flags || !box) return;
+  box.querySelectorAll("select").forEach((sel) => {
+    const f = flags[+sel.dataset.step];
+    if (!f) return;
+    // Tint the outer-join options that would reveal orphans (best effort — native
+    // <option> background support varies by browser/OS).
+    [...sel.options].forEach((opt) => {
+      const t = opt.value.toUpperCase();
+      const orphan = (t === "LEFT" && f.left_orphans) ||
+                     (t === "RIGHT" && f.right_orphans) ||
+                     (t === "FULL" && (f.left_orphans || f.right_orphans));
+      opt.style.background = orphan ? "#fbeccf" : "";
+      opt.classList.toggle("opt-orphan", !!orphan);
+    });
+  });
+  // Reliable, always-visible marker chip next to each dropdown.
+  box.querySelectorAll(".jt-orphan").forEach((span) => {
+    const f = flags[+span.dataset.step];
+    const marks = [];
+    if (f && f.left_orphans) marks.push("LEFT");
+    if (f && f.right_orphans) marks.push("RIGHT");
+    if (f && (f.left_orphans || f.right_orphans)) marks.push("FULL");
+    span.innerHTML = marks.length
+      ? `<span class="jt-orphan-chip" title="Diese Join-Typen zeigen hier zusätzlich unverknüpfte (Waisen-)Zeilen">⚠ ${marks.join("/")}</span>`
+      : "";
+  });
+}
+
+// Mark the active path with [*] and the rest with [ ] (AP-47), so the chosen
+// alternative is obvious — replacing the plain bullet list.
+function _markActivePath() {
+  const list = $("path_list");
+  if (!list) return;
+  list.querySelectorAll("li").forEach((li) => {
+    const active = +li.dataset.i === JB_PATH_IDX;
+    li.classList.toggle("active", active);
+    const m = li.querySelector(".path-mark");
+    if (m) m.textContent = active ? "[*]" : "[ ]";
+  });
 }
 
 // Execute the SELECT for path `i` and render its rows into #join_result.
 async function renderJoinResult(i) {
   if (!JB_LAST || !JB_LAST.paths[i]) return;
   JB_PATH_IDX = i;
+  _markActivePath();
   // Show the runnable, value-inlined SQL (copy uses this text too); the server
   // still executes the parameterised form server-side from the form body.
   $("sql_out").textContent = JB_LAST.paths[i].sql_inline || JB_LAST.paths[i].sql;
@@ -748,8 +807,9 @@ function renderPathSeq(p) {
 // path (used by "Aktualisieren" after a sort/column change); a fresh build
 // from "Join-Pfad bauen" resets to the first path.
 async function runBuild(preserveIndex = false) {
-  // A fresh build (not a refresh) resets per-step join types to INNER (AP-41).
-  if (!preserveIndex) JB_JOIN_TYPES = [];
+  // A fresh build (not a refresh) resets per-step join types to INNER (AP-41)
+  // and the cached orphan-flags (AP-47).
+  if (!preserveIndex) { JB_JOIN_TYPES = []; JB_ORPHANS_CACHE = {}; }
   const body = collectJoinBody();
   try {
     const data = await postJSON("/api/joinpath", body);
@@ -777,9 +837,11 @@ async function runBuild(preserveIndex = false) {
     // The verbose per-branch fan-out text is dropped — the inline 1-N / N-1 chips
     // already mark direction. A single compact hint tile (below) explains 1-N.
     list.innerHTML = data.paths.map((p, i) =>
-      `<li><a href="#" data-i="${i}">${renderPathSeq(p)}</a></li>`).join("");
+      `<li data-i="${i}"><span class="path-mark"></span>` +
+      `<a href="#" data-i="${i}">${renderPathSeq(p)}</a></li>`).join("");
     list.querySelectorAll("a").forEach((a) =>
       a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
+    _markActivePath();
     // Show the fan-out hint once if any candidate path has a descending (1-N) step.
     const hint = $("jb_fanout_hint");
     if (hint) {
