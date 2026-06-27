@@ -91,3 +91,24 @@ def test_required_table_unreachable_raises(graph):
     g.add_node("Orphan")
     with pytest.raises(NoPathError):
         find_paths(g, "Networks", "VMwareCluster", required_tables=("Orphan",))
+
+
+@pytest.fixture
+def oto_graph(onetoone_url):
+    return build_graph(SqlAlchemyLoader(onetoone_url).load())
+
+
+def test_one_to_one_step_is_not_to_many(oto_graph):
+    # Person -> Passport descends, but Passport's FK is UNIQUE → 1-1, not 1-N
+    paths = find_paths(oto_graph, "Person", "Passport")
+    step = paths[0].steps[0]
+    assert step.left_table == "Person" and step.right_table == "Passport"
+    assert step.to_many is False
+
+
+def test_one_to_many_step_still_to_many(oto_graph):
+    # Person -> Orders descends with a non-unique FK → still 1-N
+    paths = find_paths(oto_graph, "Person", "Orders")
+    step = paths[0].steps[0]
+    assert step.left_table == "Person" and step.right_table == "Orders"
+    assert step.to_many is True

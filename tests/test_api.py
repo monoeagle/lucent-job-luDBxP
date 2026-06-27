@@ -735,3 +735,29 @@ def test_distinct_no_connection_best_effort_empty(client):
     resp = client.post("/api/distinct", json={"table": "Cluster", "column": "Name"})
     assert resp.status_code == 200
     assert resp.get_json()["values"] == []
+
+
+def test_one_to_one_path_has_no_fanout_warning(client, onetoone_url):
+    """A 1-1 join (UNIQUE FK) must not raise the 1-N fan-out warning."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": onetoone_url,
+        "start": {"table": "Person", "column": "PersonID"},
+        "target": {"table": "Passport", "column": "PassportID"},
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert all("1-N" not in w for w in p["warnings"])
+
+
+def test_one_to_many_path_still_warns(client, onetoone_url):
+    """A 1-N join (non-unique FK) still raises the fan-out warning."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": onetoone_url,
+        "start": {"table": "Person", "column": "PersonID"},
+        "target": {"table": "Orders", "column": "OrderID"},
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert any("1-N" in w and "Orders" in w for w in p["warnings"])

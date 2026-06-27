@@ -62,9 +62,10 @@ def _join_step(graph: nx.Graph, a: str, b: str) -> JoinStep:
     # Deterministic choice: the option whose a-oriented pairs sort smallest.
     chosen = min(options, key=lambda o: _oriented_pairs(o, a))
     pairs = _oriented_pairs(chosen, a)
-    # The chosen FK is held by chosen.table_a (the child/many side). Stepping
-    # a -> b descends (one-to-many) exactly when b is that FK holder.
-    to_many = chosen.table_a == b
+    # The chosen FK is held by chosen.table_a (the child side). Stepping a -> b
+    # descends (one-to-many) when b is that FK holder — unless the FK columns are
+    # themselves unique (chosen.fk_unique), which makes the step one-to-one.
+    to_many = (chosen.table_a == b) and not chosen.fk_unique
     return JoinStep(a, b, pairs, to_many)
 
 
