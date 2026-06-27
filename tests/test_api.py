@@ -39,8 +39,7 @@ def test_connect_missing_host_returns_400(client):
 
 
 def test_connections_save_list_delete_without_password(client, tmp_path, monkeypatch):
-    import config
-    monkeypatch.setattr(config, "CONFIG_JSON", str(tmp_path / "settings.json"))
+    monkeypatch.setenv("LUCENT_CONFIG_DIR", str(tmp_path))
     save = client.post("/api/connections", json={
         "name": "prod", "db_type": "postgresql", "host": "h",
         "database": "cmdb", "user": "admin", "password": "SECRET"})
@@ -54,8 +53,7 @@ def test_connections_save_list_delete_without_password(client, tmp_path, monkeyp
 
 def test_mssql_connection_persists_encrypt_and_trust(client, tmp_path, monkeypatch):
     """AP-12: MSSQL Encrypt/TrustServerCertificate are saved with the connection."""
-    import config
-    monkeypatch.setattr(config, "CONFIG_JSON", str(tmp_path / "settings.json"))
+    monkeypatch.setenv("LUCENT_CONFIG_DIR", str(tmp_path))
     save = client.post("/api/connections", json={
         "name": "mssql_prod", "db_type": "mssql", "host": "h", "port": 1433,
         "database": "cmdb", "user": "sa", "password": "SECRET",
@@ -74,8 +72,7 @@ def test_connect_from_saved_sqlite_round_trip(client, demo_url, tmp_path, monkey
     # AP-10: the topbar picker connects directly from a saved (passwordless)
     # connection. Round-trip: save -> list -> connect using the saved entry
     # verbatim (exactly what connectSaved() posts to /api/connect).
-    import config
-    monkeypatch.setattr(config, "CONFIG_JSON", str(tmp_path / "settings.json"))
+    monkeypatch.setenv("LUCENT_CONFIG_DIR", str(tmp_path))
     path = demo_url.replace("sqlite:///", "")
     client.post("/api/connections", json={
         "name": "demo", "db_type": "sqlite", "filepath": path})

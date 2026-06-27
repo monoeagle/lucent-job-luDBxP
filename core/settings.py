@@ -3,6 +3,7 @@ import json
 import os
 
 import config
+from core import userpaths
 
 _DEFAULTS = {"language": "de", "default_connection": "", "connections": []}
 
@@ -23,13 +24,13 @@ class Settings:
         """Load settings from JSON file or create with defaults.
 
         Args:
-            path: File path to load from; defaults to config.CONFIG_JSON
-                (resolved at call time so tests can redirect it).
+            path: File path to load from; defaults to the per-user config.json
+                (core/userpaths, honours LUCENT_CONFIG_DIR).
 
         Returns:
             A new Settings instance with loaded or default values.
         """
-        path = path or config.CONFIG_JSON
+        path = path or userpaths.user_config_file(config.APP_SLUG)
         data = dict(_DEFAULTS)
         if os.path.exists(path):
             with open(path, encoding="utf-8") as fh:

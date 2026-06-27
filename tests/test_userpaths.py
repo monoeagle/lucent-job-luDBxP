@@ -97,3 +97,13 @@ def test_migrate_noop_when_legacy_missing(tmp_path):
     user = tmp_path / "new.json"
     assert userpaths.migrate_legacy_config(str(user), str(tmp_path / "nope.json")) is False
     assert not user.exists()
+
+
+def test_settings_default_path_is_per_user(tmp_path, monkeypatch):
+    monkeypatch.setenv("LUCENT_CONFIG_DIR", str(tmp_path))
+    from core.settings import Settings
+    s = Settings.load()
+    s.set("default_connection", "sqlite:///x.db")
+    s.save()
+    assert (tmp_path / "config.json").exists()
+    assert Settings.load().get("default_connection") == "sqlite:///x.db"
