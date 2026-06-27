@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.32.0] — 2026-06-27
+### Added
+- **AP-45 — Ergebnis-Hilfen Teil 2: Spaltenkopf-Aktionen + DISTINCT-Filterwerte:**
+  - **Klickbare Spaltenköpfe** in der Ergebnistabelle: ein Klick auf eine Spalte öffnet ein
+    Menü mit **Sortieren ASC/DESC**, **Als Filter…** und **Spalte entfernen**. Sortieren legt
+    eine ORDER-BY-Zeile an und baut neu; „Als Filter" füllt eine Filterzeile vor und fokussiert
+    das Wertfeld; „Spalte entfernen" wirkt auf Zusatzspalten — **Start-/Ziel-Spalten** definieren
+    den Join-Pfad und sind geschützt (Menüeintrag deaktiviert).
+  - **Filter-Wertfeld mit echten Werten:** jedes Wertfeld ist mit einer `<datalist>` der echten
+    **DISTINCT-Werte** der Spalte hinterlegt (Auswahl per Dropdown, Freitext bleibt möglich).
+    Neues read-only Endpoint **`/api/distinct`** (`SELECT DISTINCT … ORDER BY …`, auf
+    `config.DISTINCT_LIMIT` begrenzt, spalten-validiert, best-effort wie `/api/orphan_check`).
+  - **`/api/joinpath/run`** liefert zusätzlich **`columns_meta`** (Tabelle/Spalte je Ausgabespalte
+    in Selektionsreihenfolge) → jeder Spaltenkopf lässt sich eindeutig seiner Quellspalte zuordnen,
+    auch wenn zwei verbundene Tabellen denselben Spaltennamen haben. 205 Tests grün, 1 skipped.
+
 ## [0.31.0] — 2026-06-27
 ### Fixed
 - **Parse error showed ANSI garbage:** sqlglot underlines the bad token with ANSI colour codes,

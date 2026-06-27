@@ -2,9 +2,9 @@
 
 ## Übersicht
 
-| Metrik | Wert (Stand v0.14.0) |
+| Metrik | Wert (Stand v0.32.0) |
 |---|---|
-| Gesamt-Tests | **125** |
+| Gesamt-Tests | **205** (+ 1 skipped: optionaler MSSQL-Live-Test) |
 | Framework | pytest |
 | Laufzeit | < 10 s |
 | Abdeckung | Unit + Integrationstests |

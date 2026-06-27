@@ -8,8 +8,6 @@
 
 ## Offene Arbeitspakete
 
-- **AP-45** — Ergebnis-Hilfen Teil 2: Spaltenkopf-Aktionen (Sortieren/Filtern/
-  Spalte entfernen) + Filter-Dropdown mit echten DISTINCT-Werten
 - **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
   zusammenführen
 - **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
@@ -77,6 +75,7 @@ Doku/AppImage/Projektposter.
 - **AP-47** — Pfad-Auswahl-Indikator `[*]`/`[ ]` statt Bullets + count-basierter Waisen-Chip pro Join-Typ (`/api/orphan_check`, pfad-kontextbewusst) — v0.29.0–v0.29.1
 - **AP-48** — SQL-Analyzer: Eingabe-Textbox größer + nur vertikal verstellbar; Tippfehler-Lint `SUSPICIOUS_ALIAS` (Alias ähnelt Join-Schlüsselwort) — v0.30.0
 - **AP-49** — Analyzer-Feinschliff: größere Default-Textbox + read-only-Badge; Fix: ANSI-Codes aus Parsefehler entfernt, mehrzeiliges Fehler-Layout — v0.31.0
+- **AP-45** — Ergebnis-Hilfen Teil 2: klickbare Spaltenköpfe in der Ergebnistabelle (Menü: Sortieren ASC/DESC, Als Filter, Spalte entfernen — Start/Ziel-Anker geschützt) + Filter-Wertfeld mit echten DISTINCT-Werten (neues read-only Endpoint `/api/distinct`); `/api/joinpath/run` liefert `columns_meta` für eindeutiges Spalten-Mapping (auch bei gleichnamigen Spalten) — v0.32.0
 - **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
 - **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
 

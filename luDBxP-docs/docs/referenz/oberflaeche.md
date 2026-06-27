@@ -63,6 +63,12 @@ als anklickbare Hyperlinks. Der kürzeste Pfad ist vorausgewählt; das generiert
 parametrisierte SQL erscheint direkt darunter. Im Schema-Graph werden die
 beteiligten Tabellen und Kanten farblich hervorgehoben.
 
+**Interaktive Ergebnistabelle (AP-45):** Ein Klick auf einen **Spaltenkopf** öffnet ein Menü mit
+**Sortieren ASC/DESC**, **Als Filter…** und **Spalte entfernen**. Sortieren ergänzt eine
+Sortierzeile und baut neu, „Als Filter" legt eine vorbefüllte Filterzeile an, „Spalte entfernen"
+entfernt Zusatzspalten (Start-/Ziel-Spalten definieren den Pfad und sind geschützt). Filter-Wertfelder
+bieten zusätzlich ein **Dropdown der echten DISTINCT-Werte** der Spalte an (Freitext bleibt möglich).
+
 ---
 
 ## Join-Builder — parallele Tab-Ansicht

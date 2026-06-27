@@ -486,8 +486,51 @@ def api_joinpath_run():
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
 
+    # AP-45: per-output-column (table, column) map, in the exact order the SQL
+    # generator emits selections (start, target, then extra selects, deduped).
+    # Lets the result table trace each <th> back to its source column even when
+    # two joined tables share a column name.
+    seen: set = set()
+    columns_meta = []
+    for sel in (start, target, *({"table": s.table, "column": s.column}
+                                 for s in extra_selections)):
+        key = (sel["table"], sel["column"])
+        if key not in seen:
+            seen.add(key)
+            columns_meta.append({"table": sel["table"], "column": sel["column"]})
+
     return jsonify(columns=result["columns"], rows=result["rows"],
-                   sql=gen.sql, row_cap=max_rows)
+                   sql=gen.sql, row_cap=max_rows, columns_meta=columns_meta)
+
+
+@bp.post("/api/distinct")
+def api_distinct():
+    """AP-45: return the distinct values of one column for the filter-value
+    dropdown. Read-only ``SELECT DISTINCT col FROM table WHERE col IS NOT NULL
+    ORDER BY col``, capped at ``config.DISTINCT_LIMIT``. The (table, column) is
+    validated against the reflected schema before being quoted in — not an
+    injection vector. Best-effort like ``/api/orphan_check``: any problem
+    (no connection, unknown column, unreachable DB) returns ``{"values": []}``
+    with status 200 so the form is never blocked."""
+    data = request.get_json(silent=True) or {}
+    url = (data.get("connection_url") or "").strip()
+    table = data.get("table") or ""
+    column = data.get("column") or ""
+    if not url or not table or not column:
+        return jsonify(values=[])
+    try:
+        schema = SqlAlchemyLoader(url).load()
+        if not schema.has_column(table, column):
+            return jsonify(values=[])
+        dialect = _dialect_from_url(url)
+        col = dialect.qualify(table, column)
+        sql = (f"SELECT DISTINCT {col} FROM {dialect.quote(table)}\n"
+               f"WHERE {col} IS NOT NULL\nORDER BY {col}")
+        result = execute_select(url, sql, {}, max_rows=config.DISTINCT_LIMIT)
+    except (ConnectionError, ValueError):
+        return jsonify(values=[])
+    values = [r[0] for r in result["rows"]]
+    return jsonify(values=values)
 
 
 @bp.post("/api/orphan_check")

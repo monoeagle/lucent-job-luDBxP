@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: **AP-48** (Analyzer-Textbox + Tippfehler-Lint, v0.30.0), **AP-49** (Analyzer-Feinschliff + ANSI-Fix im Parsefehler, v0.31.0). Offen: **AP-45** (Spaltenkopf-Aktionen + Filter-Dropdown mit echten DISTINCT-Werten).
+Zuletzt erledigt: **AP-49** (Analyzer-Feinschliff + ANSI-Fix im Parsefehler, v0.31.0), **AP-45** (Spaltenkopf-Aktionen + Filter-Wertfeld mit echten DISTINCT-Werten, v0.32.0). Offen: nur noch nicht-UI-APs (AP-19/31/34/35).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach

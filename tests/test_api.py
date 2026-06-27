@@ -665,3 +665,76 @@ def test_analyze_bad_connection_returns_400(client):
     })
     # a connection that cannot reflect → 400 (reflection raises ConnectionError)
     assert resp.status_code == 400
+
+
+# ===== AP-45: /api/joinpath/run columns_meta =====
+
+def test_joinpath_run_returns_columns_meta(client, demo_url):
+    """AP-45: the result carries a per-column (table, column) map in selection
+    order, so a result <th> can be traced back to its source column even when
+    two joined tables share a column name."""
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Network", "column": "VLAN"},
+        "target": {"table": "Cluster", "column": "Name"},
+        "extra_selects": [{"table": "Datacenter", "column": "Name"}],
+        "filters": [],
+        "path_index": 0,
+    })
+    assert resp.status_code == 200
+    meta = resp.get_json()["columns_meta"]
+    # one entry per output column, same order as `columns`
+    assert len(meta) == len(resp.get_json()["columns"])
+    # start, target, then the extra select — in that order
+    assert meta[0] == {"table": "Network", "column": "VLAN"}
+    assert meta[1] == {"table": "Cluster", "column": "Name"}
+    assert meta[2] == {"table": "Datacenter", "column": "Name"}
+
+
+# ===== AP-45: /api/distinct =====
+
+def test_distinct_returns_sorted_unique_values(client, demo_url):
+    """AP-45: /api/distinct returns the distinct values of one column, sorted,
+    for the filter-value dropdown."""
+    resp = client.post("/api/distinct", json={
+        "connection_url": demo_url,
+        "table": "Cluster",
+        "column": "Name",
+    })
+    assert resp.status_code == 200
+    values = resp.get_json()["values"]
+    assert isinstance(values, list)
+    assert len(values) >= 1
+    assert len(values) == len(set(values))          # unique
+    assert values == sorted(values)                 # sorted ascending
+
+
+def test_distinct_capped(client, demo_url):
+    """The result is capped so a huge column can never flood the dropdown."""
+    import config
+    resp = client.post("/api/distinct", json={
+        "connection_url": demo_url,
+        "table": "Network",
+        "column": "NetworkID",
+    })
+    assert resp.status_code == 200
+    assert len(resp.get_json()["values"]) <= config.DISTINCT_LIMIT
+
+
+def test_distinct_unknown_column_best_effort_empty(client, demo_url):
+    """An unknown column is a best-effort no-op (empty list, 200) — like
+    /api/orphan_check, it never blocks the form."""
+    resp = client.post("/api/distinct", json={
+        "connection_url": demo_url,
+        "table": "Cluster",
+        "column": "NoSuchColumn",
+    })
+    assert resp.status_code == 200
+    assert resp.get_json()["values"] == []
+
+
+def test_distinct_no_connection_best_effort_empty(client):
+    """No connection URL → empty list, 200 (best-effort hint)."""
+    resp = client.post("/api/distinct", json={"table": "Cluster", "column": "Name"})
+    assert resp.status_code == 200
+    assert resp.get_json()["values"] == []

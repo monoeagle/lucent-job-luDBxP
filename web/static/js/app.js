@@ -465,22 +465,57 @@ function refillJoinBuilder() {
   JB_PATH_IDX = 0;
 }
 
+// AP-45: distinct-value cache per (table, column) — feeds the filter-value
+// dropdowns. Best-effort (empty on any error); never blocks the form.
+let JB_DISTINCT_CACHE = {};
+let _dlSeq = 0;   // unique id source for <datalist> elements
+async function _fetchDistinct(table, column) {
+  const key = table + "\u0000" + column;
+  if (key in JB_DISTINCT_CACHE) return JB_DISTINCT_CACHE[key];
+  try {
+    const res = await postJSON("/api/distinct",
+      { connection_url: connUrl(), table, column });
+    JB_DISTINCT_CACHE[key] = res.values || [];
+  } catch (e) { JB_DISTINCT_CACHE[key] = []; }
+  return JB_DISTINCT_CACHE[key];
+}
+
+// Fill any <datalist> in a filter row with the DISTINCT values of its column,
+// so the value field offers a real value dropdown while staying free-text.
+async function _loadFilterDistinct(row) {
+  const tEl = row.querySelector(".f-table");
+  const cEl = row.querySelector(".f-col");
+  const lists = row.querySelectorAll("datalist");
+  if (!tEl || !cEl || !tEl.value || !cEl.value || !lists.length) return;
+  const values = await _fetchDistinct(tEl.value, cEl.value);
+  const opts = values.map((v) => `<option value="${esc(v)}"></option>`).join("");
+  lists.forEach((dl) => { dl.innerHTML = opts; });
+}
+
 // Render the value input(s) for a filter row based on the selected operator.
+// AP-45: each free-text value field is backed by a <datalist> of the column's
+// real DISTINCT values (loaded async, best-effort), so users can pick existing
+// values without losing the ability to type anything.
 function _updateFilterValueField(row) {
   const op = row.querySelector(".f-op").value;
   const wrap = row.querySelector(".f-val-wrap");
   if (op === "IS NULL" || op === "IS NOT NULL") {
     wrap.innerHTML = "";
+    return;
   } else if (op === "BETWEEN") {
+    const a = ++_dlSeq, b = ++_dlSeq;
     wrap.innerHTML =
-      `<input class="f-val-lo" type="text" placeholder="von">` +
-      `<input class="f-val-hi" type="text" placeholder="bis">`;
+      `<input class="f-val-lo" type="text" placeholder="von" list="dl${a}"><datalist id="dl${a}"></datalist>` +
+      `<input class="f-val-hi" type="text" placeholder="bis" list="dl${b}"><datalist id="dl${b}"></datalist>`;
   } else if (op === "IN") {
+    const a = ++_dlSeq;
     wrap.innerHTML =
-      `<input class="f-val" type="text" placeholder="Wert1, Wert2, …">`;
+      `<input class="f-val" type="text" placeholder="Wert1, Wert2, …" list="dl${a}"><datalist id="dl${a}"></datalist>`;
   } else {
-    wrap.innerHTML = `<input class="f-val" type="text" placeholder="Wert">`;
+    const a = ++_dlSeq;
+    wrap.innerHTML = `<input class="f-val" type="text" placeholder="Wert" list="dl${a}"><datalist id="dl${a}"></datalist>`;
   }
+  _loadFilterDistinct(row);
 }
 
 function addFilterRow() {
@@ -500,10 +535,12 @@ function addFilterRow() {
       optionList(t ? t.columns.map((c) => c.name) : []);
   };
   fillFcol();
-  row.querySelector(".f-table").addEventListener("change", fillFcol);
+  // AP-45: reload the DISTINCT dropdown whenever the column (or its table) changes.
+  row.querySelector(".f-table").addEventListener("change", () => { fillFcol(); _loadFilterDistinct(row); });
+  row.querySelector(".f-col").addEventListener("change", () => _loadFilterDistinct(row));
   row.querySelector(".f-op").addEventListener("change", () => _updateFilterValueField(row));
   row.querySelector(".f-del").addEventListener("click", () => row.remove());
-  _updateFilterValueField(row);  // render initial value field for default op "="
+  _updateFilterValueField(row);  // render initial value field for default op "=" (loads DISTINCT)
   $("filters").appendChild(row);
 }
 
@@ -732,6 +769,95 @@ function _markActivePath() {
   });
 }
 
+// ===== AP-45: result column-header actions (sort / filter / remove) =====
+
+// A start/target column defines the join path and cannot be dropped from output.
+function _isAnchorColumn(table, column) {
+  return ($("start_table").value === table && $("start_col").value === column) ||
+         ($("target_table").value === table && $("target_col").value === column);
+}
+
+// Add an ORDER BY for (table, column, dir), replacing any existing sort on the
+// same column, then rebuild keeping the active path so the result re-sorts.
+function _sortByColumn(table, column, dir) {
+  document.querySelectorAll("#order_bys .orderby-row").forEach((row) => {
+    if (row.querySelector(".ob-table").value === table &&
+        row.querySelector(".ob-col").value === column) row.remove();
+  });
+  addOrderByRow();
+  const row = $("order_bys").lastElementChild;
+  const tEl = row.querySelector(".ob-table");
+  tEl.value = table;
+  tEl.dispatchEvent(new Event("change"));   // repopulate the column dropdown
+  row.querySelector(".ob-col").value = column;
+  row.querySelector(".ob-dir").value = dir;
+  if (JB_LAST) runBuild(true);
+}
+
+// Add a filter row pre-set to (table, column) with op "=", focus its value field
+// (which loads the DISTINCT dropdown). The build only changes once a value is set.
+function _filterByColumn(table, column) {
+  addFilterRow();
+  const row = $("filters").lastElementChild;
+  const tEl = row.querySelector(".f-table");
+  tEl.value = table;
+  tEl.dispatchEvent(new Event("change"));   // repopulate the column dropdown + DISTINCT
+  row.querySelector(".f-col").value = column;
+  _loadFilterDistinct(row);
+  const valEl = row.querySelector(".f-val");
+  if (valEl) valEl.focus();
+  row.scrollIntoView({ block: "nearest" });
+}
+
+// Remove an extra-select column from the output and rebuild. Start/target anchor
+// columns define the path and are refused (the menu item is disabled too).
+function _removeColumn(table, column) {
+  if (_isAnchorColumn(table, column)) return;
+  let removed = false;
+  document.querySelectorAll("#extra_cols .col-row").forEach((row) => {
+    if (row.querySelector(".c-table").value === table &&
+        row.querySelector(".c-col").value === column) { row.remove(); removed = true; }
+  });
+  if (removed && JB_LAST) runBuild(true);
+}
+
+let _colMenuEl = null;
+function _closeColMenu() {
+  if (_colMenuEl) { _colMenuEl.remove(); _colMenuEl = null; }
+  document.removeEventListener("click", _closeColMenu, true);
+}
+
+// Open the actions popup under a result header cell.
+function _showColMenu(th, meta) {
+  _closeColMenu();
+  const anchor = _isAnchorColumn(meta.table, meta.column);
+  const m = document.createElement("div");
+  m.className = "col-menu";
+  m.innerHTML =
+    `<button data-act="asc">▲ Sortieren ASC</button>` +
+    `<button data-act="desc">▼ Sortieren DESC</button>` +
+    `<button data-act="filter">≡ Als Filter…</button>` +
+    `<button data-act="remove"${anchor ? " disabled title='Start-/Ziel-Spalte definiert den Pfad'" : ""}>✕ Spalte entfernen</button>`;
+  document.body.appendChild(m);
+  const r = th.getBoundingClientRect();
+  m.style.left = (window.scrollX + r.left) + "px";
+  m.style.top = (window.scrollY + r.bottom) + "px";
+  m.querySelectorAll("button").forEach((b) =>
+    b.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      if (b.disabled) return;
+      const act = b.dataset.act;
+      if (act === "asc") _sortByColumn(meta.table, meta.column, "ASC");
+      else if (act === "desc") _sortByColumn(meta.table, meta.column, "DESC");
+      else if (act === "filter") _filterByColumn(meta.table, meta.column);
+      else if (act === "remove") _removeColumn(meta.table, meta.column);
+      _closeColMenu();
+    }));
+  _colMenuEl = m;
+  // Defer the outside-click closer so the opening click doesn't immediately fire it.
+  setTimeout(() => document.addEventListener("click", _closeColMenu, true), 0);
+}
+
 // Execute the SELECT for path `i` and render its rows into #join_result.
 async function renderJoinResult(i) {
   if (!JB_LAST || !JB_LAST.paths[i]) return;
@@ -755,7 +881,15 @@ async function renderJoinResult(i) {
       resultEl.innerHTML = "<p class='hint'>keine Ergebniszeilen</p>";
       return;
     }
-    const thead = res.columns.map((c) => `<th>${esc(c)}</th>`).join("");
+    // AP-45: each header carries its source (table, column) so a click opens an
+    // actions menu (sort / filter / remove). columns_meta is in selection order.
+    const meta = res.columns_meta || [];
+    const thead = res.columns.map((c, idx) => {
+      const cm = meta[idx];
+      const attrs = cm ? ` data-table="${esc(cm.table)}" data-col="${esc(cm.column)}"` : "";
+      const cls = cm ? "th-actionable" : "";
+      return `<th class="${cls}"${attrs}>${esc(c)}${cm ? `<span class="th-caret">▾</span>` : ""}</th>`;
+    }).join("");
     const tbody = res.rows.map((r) =>
       "<tr>" + r.map((v) => v === null
         ? `<td class="null-cell"><i>NULL</i></td>`   // AP-44: orphan/outer-join cells stand out
@@ -764,6 +898,11 @@ async function renderJoinResult(i) {
     resultEl.innerHTML =
       `<table class="cols"><thead><tr>${thead}</tr></thead>` +
       `<tbody>${tbody}</tbody></table>`;
+    resultEl.querySelectorAll("th.th-actionable").forEach((th) =>
+      th.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        _showColMenu(th, { table: th.dataset.table, column: th.dataset.col });
+      }));
     if (info) {
       // AP-44: richer status line — rows · join-type · fan-out flag.
       const cap = res.row_cap || res.rows.length;

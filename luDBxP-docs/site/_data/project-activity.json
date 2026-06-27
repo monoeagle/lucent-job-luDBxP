@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T15:24:48",
+  "generatedAt": "2026-06-27T15:52:42",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 56,
+      "commits": 57,
       "kinds": {
-        "docs": 16,
+        "docs": 17,
         "feat": 13,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "64f8adf",
+          "subject": "docs: Doku-Drift geschlossen (Session-7-Nachprüfung) — Oberflaeche-Funktionen, Architektur /api/orphan_check + Join-Typ, Endpoint-Diagramm",
+          "kind": "docs"
+        },
         {
           "sha": "bafc2a8",
           "subject": "docs: Session-7-Handoff + Insight (Effekt-Hinweise echtes Ergebnis zählen) + KPI-Zeile #7 + Gantt/Board bis AP-49 + AP-45 offen",
@@ -851,13 +856,13 @@
     }
   },
   "stats": {
-    "totalCommits": 161,
+    "totalCommits": 162,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 59
+        "count": 60
       },
       {
         "kind": "feat",
@@ -888,7 +893,7 @@
         "count": 1
       }
     ],
-    "testCount": 199
+    "testCount": 204
   },
   "phases": []
 }

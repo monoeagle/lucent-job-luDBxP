@@ -252,6 +252,19 @@ body {
 .cols { border-collapse: collapse; width: 100%; font-size: .9rem; }
 .cols th, .cols td { border: 1px solid #ddd; padding: .25rem .5rem; text-align: left; }
 .cols th { background: #f3f3f6; }
+/* AP-45: clickable result headers open the column-actions menu (sort/filter/remove). */
+.cols th.th-actionable { cursor: pointer; user-select: none; white-space: nowrap; }
+.cols th.th-actionable:hover { background: #e6ecf6; }
+.th-caret { color: #2E6FAE; font-size: .7rem; margin-left: .25rem; opacity: .6; }
+.cols th.th-actionable:hover .th-caret { opacity: 1; }
+/* AP-45: column-header actions popup */
+.col-menu { position: absolute; z-index: 1000; background: #fff; border: 1px solid #bbb;
+  border-radius: 4px; box-shadow: 0 3px 10px rgba(0,0,0,.18); padding: 3px;
+  display: flex; flex-direction: column; min-width: 11rem; }
+.col-menu button { background: none; border: none; text-align: left; padding: .35rem .6rem;
+  font-size: .82rem; cursor: pointer; border-radius: 3px; color: #222; }
+.col-menu button:hover { background: #eef2ff; }
+.col-menu button:disabled { color: #aaa; cursor: not-allowed; background: none; }
 .badge { font-size: .7rem; background: #2E6FAE; color: #fff; padding: 0 .35rem;
   border-radius: 3px; }
 .viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;

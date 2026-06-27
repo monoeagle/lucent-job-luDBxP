@@ -65,3 +65,11 @@ Der **Join-Builder** (`/api/joinpath`, Ausführung `/api/joinpath/run`) erlaubt 
 `/api/orphan_check` zählt je Schritt, welcher Typ das Ergebnis tatsächlich ändert
 (Waisen-Hinweis). Die generierte Abfrage wird parametrisiert und read-only ausgeführt;
 die Anzeige/Copy-Variante setzt die Filterwerte als Literale ein (direkt lauffähig).
+
+Die **Ergebnistabelle** ist interaktiv: `/api/joinpath/run` liefert neben `columns`/`rows`
+ein **`columns_meta`** (Tabelle/Spalte je Ausgabespalte in Selektionsreihenfolge), sodass jeder
+Spaltenkopf eindeutig seiner Quellspalte zugeordnet wird (auch bei gleichnamigen Spalten zweier
+verbundener Tabellen). Ein Klick auf einen Spaltenkopf bietet **Sortieren/Filtern/Spalte entfernen**
+(Start-/Ziel-Anker geschützt). Filter-Wertfelder werden aus dem read-only Endpoint
+**`/api/distinct`** (`SELECT DISTINCT … ORDER BY …`, spalten-validiert, begrenzt auf
+`config.DISTINCT_LIMIT`) mit echten Werten vorbelegt.

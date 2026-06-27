@@ -4,6 +4,20 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-45 — Ergebnis-Hilfen Teil 2: Spaltenkopf-Aktionen + DISTINCT-Filterwerte (v0.32.0)
+- [x] **`/api/distinct`** (read-only): `SELECT DISTINCT col FROM table WHERE col IS NOT NULL ORDER BY col`,
+      spalten-validiert gegen das reflektierte Schema, begrenzt auf `config.DISTINCT_LIMIT`,
+      best-effort (leere Liste bei jedem Fehler — wie `/api/orphan_check`)
+- [x] **`/api/joinpath/run`** liefert zusätzlich **`columns_meta`** (Tabelle/Spalte je Ausgabespalte
+      in Selektionsreihenfolge) → eindeutiges Spalten→Quell-Mapping auch bei gleichnamigen Spalten
+- [x] **Spaltenkopf-Menü** in `renderJoinResult` (`th.th-actionable`): Sortieren ASC/DESC (legt
+      ORDER-BY-Zeile an, baut neu), Als Filter (füllt Filterzeile vor, fokussiert Wertfeld),
+      Spalte entfernen (nur Zusatzspalten; Start/Ziel-Anker deaktiviert)
+- [x] **Filter-Wertfeld** mit `<datalist>` aus `/api/distinct` (`_updateFilterValueField` +
+      `_loadFilterDistinct`, Cache je (Tabelle,Spalte)); Freitext bleibt möglich
+- [x] 5 neue API-Tests (TDD: rot→grün), **205 grün** (1 skipped); Playwright-verifiziert
+      (12 UI-Checks: Menü, Sortieren, Als-Filter, DISTINCT-Liste, Anker-Schutz, Spalte-entfernen)
+
 ## AP-49 — Analyzer-Feinschliff + ANSI-Fix (v0.31.0)
 - [x] Eingabe-Textbox per Default größer (`#an_sql` min-height 17rem), weiterhin nur vertikal verstellbar
 - [x] read-only-Hinweis als grünes Badge (`.an-readonly`), abgesetzt neben „Analysieren"

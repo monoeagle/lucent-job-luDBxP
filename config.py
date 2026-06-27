@@ -3,7 +3,7 @@ import os
 
 APP_NAME = "LucentTools DB Explorer"
 APP_SLUG = "luDBxP"
-APP_VERSION = "0.31.0"  # change only via sync_version.py
+APP_VERSION = "0.32.0"  # change only via sync_version.py
 APP_AUTHOR = "Tobias Philipp / LucentTools"
 CYTOSCAPE_VERSION = "3.30.2"  # bundled in web/static/lib/cytoscape.min.js
 
@@ -29,3 +29,7 @@ MAX_PATH_ENUMERATION = 200  # cap on simple paths enumerated before k-selection 
 # Join-Builder result output (AP-6): selectable row counts + hard ceiling.
 DEFAULT_RESULT_ROWS = 200
 MAX_RESULT_ROWS = 5000  # "Alle" is capped here to protect the browser UI
+
+# AP-45: distinct-value cap for the filter-value dropdown (/api/distinct). Kept
+# small so a high-cardinality column can never flood the datalist.
+DISTINCT_LIMIT = 200

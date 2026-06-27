@@ -33,7 +33,7 @@ lucent-job-luDBxP/
 │   ├── routes.py             # Blueprint: alle /api/*-Endpoints + index-Route
 │   └── __init__.py
 │
-├── tests/                    # pytest-Tests (125 gesamt)
+├── tests/                    # pytest-Tests (205 gesamt)
 │   ├── conftest.py           # Fixtures (Test-Schema, Flask-Client)
 │   ├── test_api.py           # HTTP-API-Tests (via Flask-Testclient)
 │   ├── test_smoke.py         # Smoke-Tests

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.31.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.32.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1144,6 +1144,13 @@ Schema-Abgleich und Graph-Highlight. <code>sqlglot</code> ist lokal als Wheel ge
 <code>/api/orphan_check</code> zählt je Schritt, welcher Typ das Ergebnis tatsächlich ändert
 (Waisen-Hinweis). Die generierte Abfrage wird parametrisiert und read-only ausgeführt;
 die Anzeige/Copy-Variante setzt die Filterwerte als Literale ein (direkt lauffähig).</p>
+<p>Die <strong>Ergebnistabelle</strong> ist interaktiv: <code>/api/joinpath/run</code> liefert neben <code>columns</code>/<code>rows</code>
+ein <strong><code>columns_meta</code></strong> (Tabelle/Spalte je Ausgabespalte in Selektionsreihenfolge), sodass jeder
+Spaltenkopf eindeutig seiner Quellspalte zugeordnet wird (auch bei gleichnamigen Spalten zweier
+verbundener Tabellen). Ein Klick auf einen Spaltenkopf bietet <strong>Sortieren/Filtern/Spalte entfernen</strong>
+(Start-/Ziel-Anker geschützt). Filter-Wertfelder werden aus dem read-only Endpoint
+<strong><code>/api/distinct</code></strong> (<code>SELECT DISTINCT … ORDER BY …</code>, spalten-validiert, begrenzt auf
+<code>config.DISTINCT_LIMIT</code>) mit echten Werten vorbelegt.</p>
 
 
 
