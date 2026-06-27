@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.2] — 2026-06-27
+### Geändert
+- **Ziel-Knoten jetzt Amber/Gold** statt Rot: Das Rot war auf der orangenen Pfad-Füllung
+  noch zu ähnlich. Ziel = **Amber (#f3b305) mit dunkler Schrift**, hebt sich klar von Start
+  (grün) und Pfad (orange) ab. Legende angepasst (so unterscheidet sich „Ziel" nun auch klar
+  von „Analyzer: geschrieben"/rot).
+
 ## [0.24.1] — 2026-06-27
 ### Behoben
 - **Ziel im Graph schlecht lesbar:** Der rote Ziel-**Ring** verschwamm mit der orangenen

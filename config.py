@@ -3,7 +3,7 @@ import os
 
 APP_NAME = "LucentTools DB Explorer"
 APP_SLUG = "luDBxP"
-APP_VERSION = "0.24.1"  # change only via sync_version.py
+APP_VERSION = "0.24.2"  # change only via sync_version.py
 APP_AUTHOR = "Tobias Philipp / LucentTools"
 CYTOSCAPE_VERSION = "3.30.2"  # bundled in web/static/lib/cytoscape.min.js
 

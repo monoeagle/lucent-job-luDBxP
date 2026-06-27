@@ -84,7 +84,7 @@ body {
 .lg-line { width: 16px; height: 0; border-top: 3px solid; border-radius: 0; }
 .lg-path { border-color: #E0532E; }
 .lg-ring-s { background: #1e7e34; }
-.lg-ring-t { background: #c0392b; margin-left: 4px; }
+.lg-ring-t { background: #f3b305; margin-left: 4px; }
 .lg-chip { font-size: .6rem; font-weight: 700; padding: 0 .25rem; border-radius: 3px; }
 .lg-one  { background: #e3f4e8; color: #1e7e34; }
 .lg-many { background: #fbeccf; color: #9a6700; margin-left: 3px; }

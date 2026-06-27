@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.2] — 2026-06-27
+### Changed
+- **Target node now amber/gold** instead of red: red was still too close to the orange path
+  fill. Target = **amber (#f3b305) with dark text**, clearly distinct from start (green) and
+  path (orange). Legend adjusted (so "target" is now also clearly different from "Analyzer:
+  written"/red).
+
 ## [0.24.1] — 2026-06-27
 ### Fixed
 - **Target hard to read in the graph:** the red target **ring** blended into the orange path

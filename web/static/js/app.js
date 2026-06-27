@@ -941,12 +941,14 @@ async function drawGraph() {
         "text-border-width": 1, "text-border-opacity": 1, "text-border-color": "#ccc" } },
       { selector: "edge.hl.dir-many", style: { color: "#9a6700" } },  // amber = 1-N (fan-out)
       { selector: "edge.hl.dir-one",  style: { color: "#1e7e34" } },  // green = N-1 (safe)
-      // Endpoints get a full fill (green start / red target) so they stand out
-      // against the orange path — a red ring alone blended with the orange (AP-41).
+      // Endpoints get a full fill so they stand out against the orange path:
+      // green start, amber/gold target (red blended with the orange). Amber needs
+      // dark label text to stay readable (nodes default to white text).
       { selector: "node.sel-source", style: {
         "background-color": "#1e7e34", "border-width": 3, "border-color": "#13532299" } },
       { selector: "node.sel-target", style: {
-        "background-color": "#c0392b", "border-width": 3, "border-color": "#7a1f1599" } },
+        "background-color": "#f3b305", color: "#222",
+        "border-width": 3, "border-color": "#9a7300" } },
       { selector: "node.analyze-read",  style: { "background-color": "#1a73e8" } },
       { selector: "node.analyze-write", style: { "background-color": "#d93025" } },
       { selector: "edge.analyze-edge", style: {
