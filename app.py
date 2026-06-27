@@ -8,6 +8,17 @@ from web import create_app
 
 app = create_app()  # initialisiert auch das Logging (core.log.init_logging)
 
+
+def run_server(app, host, port, debug):
+    """AP-31: Server-Weiche. Normalbetrieb → waitress (Prod-WSGI-Server);
+    Debug → Werkzeug-Dev-Server mit Auto-Reload (waitress kann kein Reload)."""
+    if debug:
+        app.run(host=host, port=port, debug=True, use_reloader=True, threaded=True)
+    else:
+        from waitress import serve
+        serve(app, host=host, port=port)
+
+
 if __name__ == "__main__":
     logger = logging.getLogger("luDBxP")
 
@@ -27,5 +38,4 @@ if __name__ == "__main__":
     logger.info("%s läuft auf %s", config.APP_NAME, url)
     print(f"\n  ▸ {config.APP_NAME} — {url}\n", flush=True)
 
-    app.run(host=config.WEB_HOST, port=port,
-            debug=debug, use_reloader=debug, threaded=True)
+    run_server(app, config.WEB_HOST, port, debug)
