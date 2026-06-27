@@ -4,6 +4,7 @@ import os
 
 import config
 from core import userpaths
+from core.settings import Settings
 from web import create_app
 
 app = create_app()  # initialisiert auch das Logging (core.log.init_logging)
@@ -26,6 +27,18 @@ if __name__ == "__main__":
     user_cfg = userpaths.user_config_file(config.APP_SLUG)
     if userpaths.migrate_legacy_config(user_cfg, config.LEGACY_CONFIG_JSON):
         logger.info("config.json aus App-Verzeichnis übernommen → %s", user_cfg)
+
+    # Seed the bundled "Demo" connection (SQLite demo CMDB) so the connection
+    # picker works out of the box. Added once if absent; never overwrites.
+    demo_db = os.path.join(config.BASE_DIR, "sample_data", "demo_cmdb.db")
+    if os.path.exists(demo_db):
+        settings = Settings.load()
+        conns = list(settings.get("connections") or [])
+        if not any(c.get("name") == "Demo" for c in conns):
+            conns.append({"name": "Demo", "db_type": "sqlite", "filepath": demo_db})
+            settings.set("connections", conns)
+            settings.save()
+            logger.info("Demo-Verbindung angelegt → %s", demo_db)
 
     # Debug optional via Umgebungsvariable (run.ps1 -DebugMode setzt sie).
     debug = os.environ.get("LUCENT_DEBUG", "").strip().lower() in ("1", "true", "yes", "on")

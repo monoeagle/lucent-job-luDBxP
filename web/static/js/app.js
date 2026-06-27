@@ -34,7 +34,8 @@ function maskUrl(url) {
 }
 function setCurrentUrl(url) {
   $("connection_url").value = url;
-  $("current_conn").textContent = url ? maskUrl(url) : "(keine Verbindung)";
+  const cc = $("current_conn");           // optional (removed from the topbar)
+  if (cc) cc.textContent = url ? maskUrl(url) : "(keine Verbindung)";
 }
 
 function esc(s) {
@@ -1385,15 +1386,22 @@ function setupLeftSplitter() {
 // ===== Schema picker — populate dropdown after connecting =====
 async function populateSchemas() {
   const sel = $("schema_select");
+  if (!sel) return;
+  let list = [];
   try {
     const res = await postJSON("/api/schemas", { connection_url: connUrl() });
-    const list = (res && res.schemas) || [];
+    list = (res && res.schemas) || [];
+  } catch (_e) { list = []; }
+  sel.style.display = "";  // schema picker stays visible (with a label)
+  if (list.length === 1) {
+    // only one schema possible → preselect it by default
+    SELECTED_SCHEMA = list[0];
+    sel.innerHTML = list.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
+    sel.value = SELECTED_SCHEMA;
+  } else {
     sel.innerHTML = '<option value="">— Standard-Schema —</option>'
       + list.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
     sel.value = SELECTED_SCHEMA;
-    sel.style.display = list.length ? "" : "none";
-  } catch (_e) {
-    sel.style.display = "none";
   }
 }
 
@@ -1581,8 +1589,14 @@ function openConnections() {
 }
 
 // ===== Wiring =====
-$("btn_load").addEventListener("click", doConnect);
-$("btn_connections").addEventListener("click", openConnections);
+// "Verbinden" connects to the chosen saved connection (must be clicked actively;
+// changing the dropdown only selects, it no longer auto-connects). Falls back to
+// the hidden connection_url if nothing is selected.
+$("btn_load").addEventListener("click", () => {
+  const name = $("topbar_conn").value;
+  if (name) connectSaved(name);
+  else doConnect();
+});
 $("schema_select").addEventListener("change", (e) => {
   SELECTED_SCHEMA = e.target.value;
   doConnect();
@@ -1591,13 +1605,14 @@ $("uml_reset").addEventListener("click", clearSelectionAndCards);
 $("include_implied").addEventListener("change", () => {
   if (SCHEMA.tables.length) drawGraph().catch((e) => alert(e.message));
 });
-$("topbar_conn").addEventListener("change", (e) => {
-  if (e.target.value) connectSaved(e.target.value);
-});
 $("graph_relayout").addEventListener("click", runGraphLayout);  // AP-13: re-roll layout
 
-// AP-10: populate the topbar connection picker on initial load.
-refreshSavedConnections();
+// AP-10: populate the topbar connection picker on initial load; preselect the
+// bundled "Demo" connection by default (user still clicks "Verbinden").
+refreshSavedConnections().then(() => {
+  const tb = $("topbar_conn");
+  if (tb && SAVED_CONNS.some((c) => c.name === "Demo")) tb.value = "Demo";
+});
 
 setCurrentUrl(connUrl());   // show the prefilled demo connection
 renderSidebar();            // show Tools/Info even before connecting

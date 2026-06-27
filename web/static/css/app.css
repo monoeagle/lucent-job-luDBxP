@@ -8,16 +8,28 @@ body {
 
 /* --- top bar --- */
 .topbar {
-  flex: 0 0 auto; display: flex; align-items: center; gap: .6rem;
-  padding: .45rem .8rem; background: #1A1A2E; color: #eaeaea;
+  flex: 0 0 auto; display: flex; align-items: stretch;
+  background: #1A1A2E; color: #eaeaea;
 }
-.topbar .brand { font-weight: bold; white-space: nowrap; }
-.topbar #connection_url { flex: 0 1 360px; padding: .25rem .4rem; }
+/* Brand sits in a block as wide as the sidebar column (tracks the splitter),
+   forming the label area above the sidebar. */
+.topbar .brand-area {
+  flex: 0 0 auto; width: var(--sidebar-width, 240px);
+  display: flex; align-items: center;
+  font-weight: bold; white-space: nowrap;
+  padding: .45rem .8rem; border-right: 1px solid #2a2a44;
+}
+.topbar .topbar-controls {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; align-items: center; gap: .6rem;
+  padding: .45rem .8rem;
+}
+.topbar .tb-label { font-size: .85rem; color: #cdd; white-space: nowrap; }
+.topbar .tb-sep { flex: 0 0 auto; width: 1px; align-self: stretch;
+  background: #3a3a55; margin: .15rem .3rem; }
 .topbar .impl { font-size: .85rem; display: flex; align-items: center; gap: .25rem; }
-.topbar .current-conn { font-size: .82rem; color: #cdd; font-family: monospace;
-  max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.topbar .topbar-conn { padding: .25rem .4rem; max-width: 200px; }
-.topbar .status { font-size: .85rem; color: #9bd; margin-left: auto; }
+.topbar .topbar-conn { padding: .25rem .4rem; max-width: 220px; }
+.topbar .status { font-size: .85rem; color: #9bd; margin-left: auto; white-space: nowrap; }
 
 /* --- connection form --- */
 .conn-form .row { display: flex; gap: .5rem; align-items: center; margin: .5rem 0; }
