@@ -42,6 +42,13 @@ def onetoone_url(tmp_path) -> str:
 
 
 @pytest.fixture
+def uniqueindex_url(tmp_path) -> str:
+    """SQLite URL: Profile is 1-1 via a UNIQUE INDEX only; Note's only unique
+    index is partial (WHERE ...) → must not count → stays 1-N."""
+    return _build_sqlite(tmp_path, "uniqueindex.db", "uniqueindex_schema.sql")
+
+
+@pytest.fixture
 def sqlite_engine(inventory_url):
     engine = create_engine(inventory_url)
     yield engine

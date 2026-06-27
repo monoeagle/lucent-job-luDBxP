@@ -73,7 +73,19 @@ class SqlAlchemyLoader(SchemaLoader):
                     )
                 except SQLAlchemyError:
                     uniques = ()
-                tables.append(Table(tname, columns, tuple(fks), pk, uniques))
+                try:
+                    uidx = tuple(
+                        tuple(idx["column_names"])
+                        for idx in insp.get_indexes(tname)
+                        if idx.get("unique")
+                        and idx.get("column_names")
+                        and None not in idx["column_names"]
+                        and not any(k.endswith("_where")
+                                    for k in (idx.get("dialect_options") or {}))
+                    )
+                except SQLAlchemyError:
+                    uidx = ()
+                tables.append(Table(tname, columns, tuple(fks), pk, uniques, uidx))
             views = []
             for vname in insp.get_view_names():
                 vcols = tuple(

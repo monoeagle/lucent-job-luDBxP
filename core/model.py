@@ -51,6 +51,9 @@ class Table:
     # Each inner tuple is the column names of one UNIQUE constraint (table-level
     # or inline). The primary key is held separately in `primary_key`.
     unique_constraints: tuple[tuple[str, ...], ...] = ()
+    # Column names of UNIQUE indexes (full-column, non-partial). Kept separate
+    # from `unique_constraints`: a unique index is not a declared constraint.
+    unique_indexes: tuple[tuple[str, ...], ...] = ()
 
 
 @dataclass(frozen=True)

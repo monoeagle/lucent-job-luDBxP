@@ -40,3 +40,13 @@ def test_load_reflects_unique_constraints(onetoone_url):
     orders = schema.table("Orders")
     # the 1-N child has no unique set covering its FK column
     assert all("PersonID" not in u for u in orders.unique_constraints)
+
+
+def test_load_reflects_unique_indexes(uniqueindex_url):
+    schema = SqlAlchemyLoader(uniqueindex_url).load()
+    profile = schema.table("Profile")
+    # full, non-partial unique index on the FK column is reflected
+    assert ("ParentID",) in profile.unique_indexes
+    note = schema.table("Note")
+    # the only unique index on Note is partial → must be excluded
+    assert all("ParentID" not in idx for idx in note.unique_indexes)
