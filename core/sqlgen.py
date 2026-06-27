@@ -8,6 +8,12 @@ from dataclasses import dataclass
 
 from core.pathfinder import JoinPath
 
+# Per-step join type (AP-41). INNER is the default; outer joins keep rows from
+# the driving side even without a match on the joined table.
+_JOIN_KEYWORDS = {
+    "INNER": "JOIN", "LEFT": "LEFT JOIN", "RIGHT": "RIGHT JOIN", "FULL": "FULL JOIN",
+}
+
 _ALLOWED_OPS = {"=", "!=", "<", ">", "<=", ">=", "LIKE",
                 "IS NULL", "IS NOT NULL", "IN", "BETWEEN"}
 _NULL_OPS = frozenset({"IS NULL", "IS NOT NULL"})
@@ -123,6 +129,7 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
                  distinct: bool = False,
                  order_by: tuple[tuple[str, str, str], ...] = (),
                  limit: "int | None" = None,
+                 join_types: tuple[str, ...] = (),
                  dialect: Dialect = SQLITE) -> GeneratedSQL:
     """Generate read-only SELECT SQL from a JoinPath with optional filters.
 
@@ -169,13 +176,17 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
     base = dialect.quote(path.tables[0])
     lines = [f"SELECT {distinct_kw}{top_kw}{select_cols}", f"FROM {base}"]
 
-    for step in path.steps:
+    for i, step in enumerate(path.steps):
         on = " AND ".join(
             f"{dialect.qualify(step.left_table, lc)} = "
             f"{dialect.qualify(step.right_table, rc)}"
             for lc, rc in step.column_pairs
         )
-        lines.append(f"JOIN {dialect.quote(step.right_table)} ON {on}")
+        jt = (join_types[i] if i < len(join_types) else "INNER") or "INNER"
+        kw = _JOIN_KEYWORDS.get(jt.upper())
+        if kw is None:
+            raise ValueError(f"Unsupported join type: {jt!r}")
+        lines.append(f"{kw} {dialect.quote(step.right_table)} ON {on}")
 
     params: dict = {}
     if filters:

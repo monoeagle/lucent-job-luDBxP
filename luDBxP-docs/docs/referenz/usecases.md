@@ -16,6 +16,11 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.
 **Ausgabe:** Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative
 Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.
 
+> **Join-Typ pro Schritt:** Über der SQL-Ausgabe lässt sich für **jede Join-Station**
+> der Typ wählen — **INNER** (Standard), **LEFT**, **RIGHT**, **FULL**. So bleiben z. B.
+> mit **LEFT** die Zeilen der Start-/Treiber-Tabelle erhalten, auch wenn eine
+> Folgetabelle kein Match hat. Eine Änderung baut SQL und Ergebnis neu.
+
 > **Fan-out-Warnung:** Enthält ein Pfad einen absteigenden (1-N) Schritt, zeigt
 > der Builder eine gelbe ⚠-Zeile, weil das Ergebnis Zeilen vervielfachen kann.
 > Was das genau bedeutet und wann es zu erwarten ist, erklärt

@@ -255,6 +255,12 @@ body {
 /* Start ⇄ Ziel swap button */
 .jb-swap { margin-left: .4rem; padding: 0 .45rem; line-height: 1.6; font-size: 1rem;
   cursor: pointer; }
+/* AP-41: per-step join-type selectors for the active path */
+.jb-join-types { flex-wrap: wrap; gap: 6px; align-items: center; margin: 2px 0 4px; }
+.jb-join-types:empty { display: none; }
+.jt-lbl { font-size: .78rem; color: #555; font-weight: 600; }
+.jt-step { font-size: .72rem; color: #444; display: inline-flex; align-items: center; gap: 3px; }
+.jt-step select { font-size: .72rem; padding: 0 2px; }
 
 /* --- SQL-Analyzer (AP-25) --- */
 .an-warn { padding: 4px 8px; margin: 3px 0; border-radius: 3px; font-size: 0.9em; }

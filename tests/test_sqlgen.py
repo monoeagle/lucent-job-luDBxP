@@ -99,6 +99,27 @@ def test_sql_inline_leading_zero_preserved_as_string():
     assert "= '01234'" in g.sql_inline
 
 
+def test_join_types_left_then_default_inner():
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     join_types=("LEFT",))
+    assert 'LEFT JOIN "VirtualMachines"' in g.sql
+    # second step, no type supplied → defaults to plain INNER JOIN
+    assert '\nJOIN "VMwareCluster"' in g.sql
+
+
+def test_join_types_right_and_full():
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     join_types=("RIGHT", "FULL"))
+    assert 'RIGHT JOIN "VirtualMachines"' in g.sql
+    assert 'FULL JOIN "VMwareCluster"' in g.sql
+
+
+def test_join_types_invalid_raises():
+    with pytest.raises(ValueError):
+        generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     join_types=("OUTER",))
+
+
 def test_determinism():
     a = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))
     b = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))

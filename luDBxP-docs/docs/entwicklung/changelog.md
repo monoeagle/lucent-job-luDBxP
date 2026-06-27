@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.24.0] — 2026-06-27
+### Hinzugefügt
+- **AP-41 — Join-Typ pro Schritt:** Im Join-Builder lässt sich jetzt **je Join-Station**
+  der Typ wählen — **INNER** (Standard), **LEFT**, **RIGHT**, **FULL**. Pro Schritt ein
+  Dropdown über der SQL-Ausgabe; eine Änderung baut SQL **und** Ergebnis neu. Damit gehen
+  z. B. Start-Zeilen ohne Match nicht mehr verloren (LEFT statt INNER). `sqlgen`/`/api/joinpath`
+  + `/api/joinpath/run` nehmen `join_types` (positionsweise; read-only-Ausführung bleibt
+  parametrisiert). Der **SQL-Analyzer** erkannte Outer Joins bereits korrekt (LEFT/RIGHT/FULL/CROSS).
+### Behoben
+- **Graph-Marker passten nicht zur Legende:** Beim Bauen über die Dropdowns wurden Start/Ziel
+  nicht eingefärbt (alle Knoten gleich). Jetzt markiert der Graph **Start grün / Ziel rot**
+  (Ringe) auch ohne Klick-Auswahl — passend zur Legende. 194 Tests grün, 1 skipped.
+
 ## [0.23.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-40 — Graph-Legende** (klein, oben links im Schema-Graph): erklärt die

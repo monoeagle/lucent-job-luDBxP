@@ -298,7 +298,8 @@ def _make_path_gen(p, start: dict, target: dict,
                    distinct: bool,
                    limit,
                    order_by_validated: list,
-                   dialect=SQLITE):
+                   dialect=SQLITE,
+                   join_types: tuple = ()):
     """Build a GeneratedSQL for a single join path.
 
     All extra selects and order_by entries are included; AP-30 guarantees
@@ -328,6 +329,7 @@ def _make_path_gen(p, start: dict, target: dict,
                         distinct=distinct,
                         order_by=order_by_for_path,
                         limit=limit,
+                        join_types=tuple(join_types),
                         dialect=dialect)
 
 
@@ -376,11 +378,15 @@ def api_joinpath():
     dialect = (dialect_for(data["dialect"]) if data.get("dialect")
                else _dialect_from_url(url))
 
+    # AP-41: optional per-step join types (INNER default), applied positionally.
+    join_types = tuple(data.get("join_types") or ())
+
     out = []
     try:
         for p in paths:
             gen = _make_path_gen(p, start, target, extra_selections, filters,
-                                 distinct, limit, order_by_validated, dialect)
+                                 distinct, limit, order_by_validated, dialect,
+                                 join_types=join_types)
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],
@@ -455,10 +461,11 @@ def api_joinpath_run():
     # Execution must match the real backend → use the connection's own dialect
     # (not any client display choice), so the quoted SQL actually runs.
     run_dialect = _dialect_from_url(url)
+    join_types = tuple(data.get("join_types") or ())
     try:
         gen = _make_path_gen(paths[path_index], start, target, extra_selections,
                              filters, distinct, limit, order_by_validated,
-                             run_dialect)
+                             run_dialect, join_types=join_types)
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
 

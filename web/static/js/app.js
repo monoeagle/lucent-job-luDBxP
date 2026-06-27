@@ -23,6 +23,7 @@ const GRAPH_FIT_PAD = 16;
 // ===== Join-builder state (AP-6: result refresh + row-count selection) =====
 let JB_LAST = null;     // { body, paths } from the last successful build
 let JB_PATH_IDX = 0;    // currently selected path index
+let JB_JOIN_TYPES = []; // AP-41: per-step join type for the active path (INNER default)
 
 const $ = (id) => document.getElementById(id);
 
@@ -303,6 +304,7 @@ function openJoinBuilder() {
     `<option value="oracle">Oracle</option></select></label>` +
     `<button id="btn_build">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
+    `<div class="row jb-join-types" id="jb_join_types"></div>` +
     `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
     `title="SELECT in die Zwischenablage kopieren" aria-label="SELECT kopieren">` +
     `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" ` +
@@ -630,6 +632,7 @@ function collectJoinBody() {
     order_by: collectOrderBy(),
     limit: limitRaw !== "" ? parseInt(limitRaw, 10) : null,
     dialect: $("jb_dialect") ? $("jb_dialect").value : "sqlite",
+    join_types: JB_JOIN_TYPES,   // AP-41: per-step join types (INNER default)
   };
 }
 
@@ -648,6 +651,28 @@ function jbSelectedMaxRows() {
   return sel.value === "0" ? null : parseInt(sel.value, 10);
 }
 
+// AP-41: render one join-type dropdown per step of the active path. Changing a
+// type updates JB_JOIN_TYPES (per step) and rebuilds the SQL (and result).
+const JB_JOIN_OPTS = ["INNER", "LEFT", "RIGHT", "FULL"];
+function renderJoinTypeControls(i) {
+  const box = $("jb_join_types");
+  if (!box) return;
+  const steps = (JB_LAST && JB_LAST.paths[i] && JB_LAST.paths[i].steps) || [];
+  if (!steps.length) { box.innerHTML = ""; return; }
+  box.innerHTML = `<span class="jt-lbl">Join-Typ:</span>` + steps.map((s, k) => {
+    const cur = (JB_JOIN_TYPES[k] || "INNER").toUpperCase();
+    const opts = JB_JOIN_OPTS.map((o) =>
+      `<option${o === cur ? " selected" : ""}>${o}</option>`).join("");
+    return `<label class="jt-step" title="${esc(s.left)} → ${esc(s.right)}">` +
+      `${esc(s.left)}→${esc(s.right)} <select data-step="${k}">${opts}</select></label>`;
+  }).join("");
+  box.querySelectorAll("select").forEach((sel) =>
+    sel.addEventListener("change", () => {
+      JB_JOIN_TYPES[+sel.dataset.step] = sel.value;
+      runBuild(true);   // regenerate SQL + result with the new join types
+    }));
+}
+
 // Execute the SELECT for path `i` and render its rows into #join_result.
 async function renderJoinResult(i) {
   if (!JB_LAST || !JB_LAST.paths[i]) return;
@@ -655,6 +680,7 @@ async function renderJoinResult(i) {
   // Show the runnable, value-inlined SQL (copy uses this text too); the server
   // still executes the parameterised form server-side from the form body.
   $("sql_out").textContent = JB_LAST.paths[i].sql_inline || JB_LAST.paths[i].sql;
+  renderJoinTypeControls(i);
   highlightPath(JB_LAST.paths[i].steps || JB_LAST.paths[i].edges || []);
   const resultEl = $("join_result");
   if (!resultEl) return;
@@ -710,10 +736,20 @@ function renderPathSeq(p) {
 // path (used by "Aktualisieren" after a sort/column change); a fresh build
 // from "Join-Pfad bauen" resets to the first path.
 async function runBuild(preserveIndex = false) {
+  // A fresh build (not a refresh) resets per-step join types to INNER (AP-41).
+  if (!preserveIndex) JB_JOIN_TYPES = [];
   const body = collectJoinBody();
   try {
     const data = await postJSON("/api/joinpath", body);
     JB_LAST = { body, paths: data.paths };
+    // Mirror the form's start/target into the graph markers so the built path
+    // shows green Start / red Ziel rings — matching the legend even when the
+    // selection was made via the dropdowns rather than by clicking nodes.
+    if (body.start && body.start.table && body.target && body.target.table) {
+      GRAPH_SEL.source = { table: body.start.table, column: body.start.column };
+      GRAPH_SEL.target = { table: body.target.table, column: body.target.column };
+      _updateGraphNodeMarkers();
+    }
     const prev = JB_PATH_IDX;
     JB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
     const list = $("path_list");
@@ -733,6 +769,7 @@ async function runBuild(preserveIndex = false) {
       if (bar) bar.style.display = "none";
       $("sql_out").textContent = "";
       $("join_result").innerHTML = "";
+      if ($("jb_join_types")) $("jb_join_types").innerHTML = "";
     }
   } catch (e) { alert(e.message); }
 }

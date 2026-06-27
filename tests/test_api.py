@@ -570,6 +570,20 @@ def test_joinpath_sql_inline_has_runnable_literal(client, inventory_url):
     assert '"VMwareCluster"."ClusterID" = 1' in p["sql_inline"]
 
 
+def test_joinpath_per_step_join_type(client, inventory_url):
+    """AP-41: a per-step join type (LEFT) is rendered into the generated SQL."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [],
+        "join_types": ["LEFT"],
+    })
+    assert resp.status_code == 200
+    sql = resp.get_json()["paths"][0]["sql"]
+    assert "LEFT JOIN" in sql
+
+
 def test_joinpath_ascending_star_has_no_warning(client, inventory_url):
     """AP-30: a pure N-1 star (all branches ascend) carries no fan-out warning."""
     resp = client.post("/api/joinpath", json={

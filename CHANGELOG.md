@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.24.0] — 2026-06-27
+### Added
+- **AP-41 — Per-step join type:** the join-builder now lets you pick the type **per join
+  station** — **INNER** (default), **LEFT**, **RIGHT**, **FULL**. One dropdown per step above
+  the SQL output; changing one rebuilds SQL **and** result. So e.g. start rows without a match
+  are no longer dropped (LEFT instead of INNER). `sqlgen`/`/api/joinpath` + `/api/joinpath/run`
+  accept `join_types` (positional; read-only execution stays parameterised). The **SQL Analyzer**
+  already detected outer joins correctly (LEFT/RIGHT/FULL/CROSS).
+### Fixed
+- **Graph markers didn't match the legend:** building via the dropdowns left start/target
+  uncoloured (all nodes the same). The graph now marks **start green / target red** (rings)
+  even without click-selection — matching the legend. 194 tests green, 1 skipped.
+
 ## [0.23.0] — 2026-06-27
 ### Added
 - **AP-40 — Graph legend** (small, top-left of the schema graph): explains the highlights —

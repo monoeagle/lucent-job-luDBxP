@@ -4,6 +4,14 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-41 — Join-Typ pro Schritt + Start/Ziel-Color-Fix (v0.24.0)
+- [x] `core/sqlgen.py`: `generate_sql(join_types=…)` — pro Schritt INNER/LEFT/RIGHT/FULL (`_JOIN_KEYWORDS`); ungültiger Typ → ValueError; Default INNER
+- [x] `/api/joinpath` + `/api/joinpath/run` nehmen `join_types` (positionsweise); read-only-Ausführung bleibt parametrisiert
+- [x] Frontend: pro Join-Station ein Dropdown (`#jb_join_types`) über der SQL; Änderung → `runBuild(true)` mit `join_types`; Reset bei frischem Build
+- [x] **Fix:** Graph färbt Start grün / Ziel rot auch beim Bauen über Dropdowns (GRAPH_SEL aus Formular gespiegelt) — passend zur AP-40-Legende
+- [x] Analyzer erkennt Outer Joins bereits korrekt (LEFT/RIGHT/FULL/CROSS) — kein Handlungsbedarf
+- [x] +4 Tests (3 sqlgen + 1 api), 194 grün; Playwright-verifiziert (LEFT JOIN im SQL, Start/Ziel-Marker)
+
 ## AP-40 — Graph-Legende + Fix überlagernde Marker (v0.23.0)
 - [x] Kleine Legende oben links im Schema-Graph (blau=Analyzer gelesen/Joins, rot=geschrieben, orange=Join-Pfad, N-1/1-N=Richtung, grün/rot Rahmen=Start/Ziel)
 - [x] `clearGraphHighlights()` — Join-Pfad- und Analyzer-Marker wechselseitig exklusiv; blaue Spur verschwindet beim Join-Bauen (und umgekehrt); auch „Auswahl zurücksetzen" räumt alles

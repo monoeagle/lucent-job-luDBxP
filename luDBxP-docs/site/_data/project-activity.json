@@ -1,18 +1,23 @@
 {
-  "generatedAt": "2026-06-27T12:30:16",
+  "generatedAt": "2026-06-27T12:45:50",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 39,
+      "commits": 40,
       "kinds": {
-        "feat": 4,
+        "feat": 5,
         "docs": 14,
         "other": 21
       },
       "list": [
+        {
+          "sha": "a1280b2",
+          "subject": "feat: AP-40 Graph-Legende + Fix überlagernde Highlight-Marker — v0.23.0",
+          "kind": "feat"
+        },
         {
           "sha": "b8f7dbb",
           "subject": "feat: AP-39 SQL-Analyzer vertieft — Struktur/Klauseln, Graph-Kanten, Lints, Komplexität — v0.22.0",
@@ -765,7 +770,7 @@
     }
   },
   "stats": {
-    "totalCommits": 144,
+    "totalCommits": 145,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -775,7 +780,7 @@
       },
       {
         "kind": "feat",
-        "count": 34
+        "count": 35
       },
       {
         "kind": "other",
@@ -802,7 +807,7 @@
         "count": 1
       }
     ],
-    "testCount": 189
+    "testCount": 193
   },
   "phases": []
 }

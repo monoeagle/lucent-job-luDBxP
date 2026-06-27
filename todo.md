@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: **AP-39** (SQL-Analyzer vertieft, v0.22.0), **AP-40** (Graph-Legende + Fix überlagernde Marker, v0.23.0).
+Zuletzt erledigt: **AP-40** (Graph-Legende + Fix überlagernde Marker, v0.23.0), **AP-41** (Join-Typ pro Schritt + Start/Ziel-Color-Fix, v0.24.0).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
