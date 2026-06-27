@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.31.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.32.0">
       
       
         <meta name="author" content="LucentTools">
@@ -957,8 +957,6 @@
 <hr />
 <h2 id="offene-arbeitspakete">Offene Arbeitspakete<a class="headerlink" href="#offene-arbeitspakete" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>AP-45</strong> — Ergebnis-Hilfen Teil 2: Spaltenkopf-Aktionen (Sortieren/Filtern/
-  Spalte entfernen) + Filter-Dropdown mit echten DISTINCT-Werten</li>
 <li><strong>AP-19</strong> — <code>.pattern_transfer</code>: projektlokale Pattern sammeln und global
   zusammenführen</li>
 <li><strong>AP-31</strong> — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
@@ -1023,6 +1021,7 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-47</strong> — Pfad-Auswahl-Indikator <code>[*]</code>/<code>[ ]</code> statt Bullets + count-basierter Waisen-Chip pro Join-Typ (<code>/api/orphan_check</code>, pfad-kontextbewusst) — v0.29.0–v0.29.1</li>
 <li><strong>AP-48</strong> — SQL-Analyzer: Eingabe-Textbox größer + nur vertikal verstellbar; Tippfehler-Lint <code>SUSPICIOUS_ALIAS</code> (Alias ähnelt Join-Schlüsselwort) — v0.30.0</li>
 <li><strong>AP-49</strong> — Analyzer-Feinschliff: größere Default-Textbox + read-only-Badge; Fix: ANSI-Codes aus Parsefehler entfernt, mehrzeiliges Fehler-Layout — v0.31.0</li>
+<li><strong>AP-45</strong> — Ergebnis-Hilfen Teil 2: klickbare Spaltenköpfe in der Ergebnistabelle (Menü: Sortieren ASC/DESC, Als Filter, Spalte entfernen — Start/Ziel-Anker geschützt) + Filter-Wertfeld mit echten DISTINCT-Werten (neues read-only Endpoint <code>/api/distinct</code>); <code>/api/joinpath/run</code> liefert <code>columns_meta</code> für eindeutiges Spalten-Mapping (auch bei gleichnamigen Spalten) — v0.32.0</li>
 <li><strong>AP-22</strong> — Implizite FKs: Default geklärt → bleibt <strong>opt-in</strong> (Entscheidung)</li>
 <li><strong>AP-24</strong> — Session-KPIs: erhoben &amp; dev-intern dokumentiert (<code>session-kennzahlen.md</code>) (Entscheidung)</li>
 </ul>
