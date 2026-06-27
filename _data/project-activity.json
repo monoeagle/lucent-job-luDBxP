@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T16:51:23",
+  "generatedAt": "2026-06-27T16:54:58",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 62,
+      "commits": 63,
       "kinds": {
-        "docs": 20,
+        "docs": 21,
         "feat": 15,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "228f2ba",
+          "subject": "docs: Matching-Tabelle breiter (46% / 3 Spalten / 11px), Board-Feld entsprechend kleiner (links)",
+          "kind": "docs"
+        },
         {
           "sha": "031e542",
           "subject": "docs: Matching-Tabelle 2-spaltig + größere Schrift (10.5px), AP-17 gestrichen, Board linksbündig",
@@ -881,13 +886,13 @@
     }
   },
   "stats": {
-    "totalCommits": 167,
+    "totalCommits": 168,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 63
+        "count": 64
       },
       {
         "kind": "feat",
