@@ -1,19 +1,69 @@
 {
-  "generatedAt": "2026-06-27T17:21:31",
+  "generatedAt": "2026-06-27T18:36:02",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 66,
+      "commits": 76,
       "kinds": {
-        "docs": 24,
-        "feat": 15,
-        "fix": 4,
+        "fix": 5,
+        "feat": 21,
+        "docs": 27,
         "other": 23
       },
       "list": [
+        {
+          "sha": "f54737f",
+          "subject": "fix: AP-31 Launcher brechen bei belegtem Port nicht mehr ab — app.py waehlt freien Port",
+          "kind": "fix"
+        },
+        {
+          "sha": "a0c1d26",
+          "subject": "feat: AP-31 app entry — dynamic port, URL banner, per-user config migration",
+          "kind": "feat"
+        },
+        {
+          "sha": "8379945",
+          "subject": "feat: AP-31 per-user log dir via userpaths (drop config.LOG_DIR)",
+          "kind": "feat"
+        },
+        {
+          "sha": "c72318f",
+          "subject": "feat: AP-31 per-user config.json via userpaths (settings + tests)",
+          "kind": "feat"
+        },
+        {
+          "sha": "72d28d4",
+          "subject": "feat: AP-31 userpaths.migrate_legacy_config — one-time config.json takeover",
+          "kind": "feat"
+        },
+        {
+          "sha": "9f6ec0e",
+          "subject": "feat: AP-31 userpaths.pick_port/resolve_port — dynamic port selection",
+          "kind": "feat"
+        },
+        {
+          "sha": "d995171",
+          "subject": "feat: AP-31 core/userpaths — per-user config/log dirs (XDG/LOCALAPPDATA)",
+          "kind": "feat"
+        },
+        {
+          "sha": "bcfbeea",
+          "subject": "docs(plan): AP-31 Kern-Scheibe — Pro-Nutzer-Pfade + dynamischer Port (Implementierungsplan)",
+          "kind": "docs"
+        },
+        {
+          "sha": "ee242e9",
+          "subject": "docs(spec): AP-31 Kern-Scheibe — Pro-Nutzer-Pfade + dynamischer Port (Design)",
+          "kind": "docs"
+        },
+        {
+          "sha": "9ca0303",
+          "subject": "docs: Oberfläche-Screenshots aktualisiert (aktueller UI-Stand v0.32.x)",
+          "kind": "docs"
+        },
         {
           "sha": "08de196",
           "subject": "docs: fehlende Abhängigkeitspfeile AP-31→AP-34 und AP-33→AP-34 ergänzt",
@@ -901,17 +951,17 @@
     }
   },
   "stats": {
-    "totalCommits": 171,
+    "totalCommits": 181,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 67
+        "count": 70
       },
       {
         "kind": "feat",
-        "count": 45
+        "count": 51
       },
       {
         "kind": "other",
@@ -919,7 +969,7 @@
       },
       {
         "kind": "fix",
-        "count": 15
+        "count": 16
       },
       {
         "kind": "build",
@@ -938,7 +988,7 @@
         "count": 1
       }
     ],
-    "testCount": 204
+    "testCount": 219
   },
   "phases": []
 }
