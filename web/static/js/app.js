@@ -3,6 +3,7 @@
 let SCHEMA = { tables: [], views: [] };
 let CY = null;  // Cytoscape instance for the schema graph
 let SAVED_CONNS = [];  // saved connections (without passwords)
+let SELECTED_SCHEMA = "";  // empty = default schema
 const OPERATORS = ["=", "!=", "<", ">", "<=", ">=", "LIKE",
                    "IS NULL", "IS NOT NULL", "IN", "BETWEEN"];
 const DB_TYPES = [
@@ -43,6 +44,11 @@ function esc(s) {
 }
 
 async function postJSON(url, body) {
+  // Auto-inject selected schema into every request that carries a connection_url
+  if (SELECTED_SCHEMA && body && body.connection_url !== undefined
+      && body.schema === undefined) {
+    body = { ...body, schema: SELECTED_SCHEMA };
+  }
   let r;
   try {
     r = await fetch(url, {
@@ -1376,9 +1382,25 @@ function setupLeftSplitter() {
   });
 }
 
+// ===== Schema picker — populate dropdown after connecting =====
+async function populateSchemas() {
+  const sel = $("schema_select");
+  try {
+    const res = await postJSON("/api/schemas", { connection_url: connUrl() });
+    const list = (res && res.schemas) || [];
+    sel.innerHTML = '<option value="">— Standard-Schema —</option>'
+      + list.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
+    sel.value = SELECTED_SCHEMA;
+    sel.style.display = list.length ? "" : "none";
+  } catch (_e) {
+    sel.style.display = "none";
+  }
+}
+
 // ===== Connect with the current URL (hidden field) =====
 async function doConnect() {
   try {
+    await populateSchemas();
     SCHEMA = await postJSON("/api/schema", { connection_url: connUrl() });
     document.querySelectorAll(".tab").forEach((t) => closeTab(t.dataset.tab));
     renderSidebar();
@@ -1561,6 +1583,10 @@ function openConnections() {
 // ===== Wiring =====
 $("btn_load").addEventListener("click", doConnect);
 $("btn_connections").addEventListener("click", openConnections);
+$("schema_select").addEventListener("change", (e) => {
+  SELECTED_SCHEMA = e.target.value;
+  doConnect();
+});
 $("uml_reset").addEventListener("click", clearSelectionAndCards);
 $("include_implied").addEventListener("change", () => {
   if (SCHEMA.tables.length) drawGraph().catch((e) => alert(e.message));
