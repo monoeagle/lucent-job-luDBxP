@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.23.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.24.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1029,6 +1029,10 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.</p>
 <p><strong>Ausgabe:</strong> Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative
 Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.</p>
 <blockquote>
+<p><strong>Join-Typ pro Schritt:</strong> Über der SQL-Ausgabe lässt sich für <strong>jede Join-Station</strong>
+der Typ wählen — <strong>INNER</strong> (Standard), <strong>LEFT</strong>, <strong>RIGHT</strong>, <strong>FULL</strong>. So bleiben z. B.
+mit <strong>LEFT</strong> die Zeilen der Start-/Treiber-Tabelle erhalten, auch wenn eine
+Folgetabelle kein Match hat. Eine Änderung baut SQL und Ergebnis neu.</p>
 <p><strong>Fan-out-Warnung:</strong> Enthält ein Pfad einen absteigenden (1-N) Schritt, zeigt
 der Builder eine gelbe ⚠-Zeile, weil das Ergebnis Zeilen vervielfachen kann.
 Was das genau bedeutet und wann es zu erwarten ist, erklärt
