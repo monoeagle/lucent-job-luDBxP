@@ -33,11 +33,12 @@ class JoinEdge:
 
 def _columns_unique(table, columns) -> bool:
     """True if ``columns`` on ``table`` are collectively unique: some unique set
-    (a UNIQUE constraint or the primary key) is a subset of ``columns``."""
+    (a UNIQUE constraint, a qualifying UNIQUE index, or the primary key) is a
+    subset of ``columns``."""
     target = set(columns)
     if not target:
         return False
-    candidates = list(table.unique_constraints)
+    candidates = list(table.unique_constraints) + list(table.unique_indexes)
     if table.primary_key:
         candidates.append(table.primary_key)
     return any(set(u) <= target for u in candidates if u)

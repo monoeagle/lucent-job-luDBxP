@@ -761,3 +761,16 @@ def test_one_to_many_path_still_warns(client, onetoone_url):
     assert resp.status_code == 200
     p = resp.get_json()["paths"][0]
     assert any("1-N" in w and "Orders" in w for w in p["warnings"])
+
+
+def test_index_unique_path_has_no_fanout_warning(client, uniqueindex_url):
+    """A 1-1 join whose uniqueness comes from a UNIQUE INDEX must not warn 1-N."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": uniqueindex_url,
+        "start": {"table": "Parent", "column": "ParentID"},
+        "target": {"table": "Profile", "column": "ProfileID"},
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert all("1-N" not in w for w in p["warnings"])
