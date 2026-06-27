@@ -230,12 +230,13 @@ function Ensure-Venv {
 function Start-App {
     _hdr "App starten"
     if (-not (Test-VenvHealthy)) { _fail "venv nicht funktionsfaehig - bitte zuerst 'setup-venv'." }
-    if (-not (Test-PortFree $Port)) {
-        _warn "Port $Port ist bereits belegt - laeuft schon eine Instanz? Start abgebrochen."
-        return
+    # AP-31: kein harter Abbruch bei belegtem Port - app.py waehlt selbst einen freien
+    # Port (5057 bevorzugt). Nur informieren, sofern kein fester LUCENT_PORT gesetzt ist.
+    if ((-not $env:LUCENT_PORT) -and (-not (Test-PortFree $Port))) {
+        _info "Port $Port belegt - es wird automatisch ein freier Port gewaehlt."
     }
     if ($DebugMode) { $env:LUCENT_DEBUG = '1'; _info "Debug-Modus aktiv (LUCENT_DEBUG=1)" }
-    _info "Starte http://127.0.0.1:$Port/  (Strg+C zum Beenden)"
+    _info "Starte App - die tatsaechliche URL erscheint gleich unten.  (Strg+C zum Beenden)"
     # Flask schreibt die Dev-Server-Warnung nach stderr; unter ErrorActionPreference=Stop
     # wertet PowerShell 5.1 das als Fehler und bricht ab - hier lokal entschaerfen.
     $prevEAP = $ErrorActionPreference

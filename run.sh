@@ -167,15 +167,16 @@ ensure_venv() {
 start_app() {
   _hdr "App starten"
   venv_healthy || _fail "venv nicht funktionsfaehig — bitte zuerst 'bash run.sh --setup-venv'."
-  if ! port_free "$PORT"; then
-    _warn "Port $PORT ist bereits belegt — laeuft schon eine Instanz? Start abgebrochen."
-    return 0
+  # AP-31: kein harter Abbruch mehr bei belegtem Port — app.py waehlt selbst einen
+  # freien Port (5057 bevorzugt). Nur informieren, sofern kein fester LUCENT_PORT gesetzt ist.
+  if [ -z "${LUCENT_PORT:-}" ] && ! port_free "$PORT"; then
+    _info "Port $PORT belegt — es wird automatisch ein freier Port gewaehlt."
   fi
   if [ "${DEBUG_MODE:-0}" = "1" ]; then
     export LUCENT_DEBUG=1
     _info "Debug-Modus aktiv (LUCENT_DEBUG=1)"
   fi
-  _info "Starte http://127.0.0.1:$PORT/  (Strg+C zum Beenden)"
+  _info "Starte App — die tatsaechliche URL erscheint gleich unten.  (Strg+C zum Beenden)"
   local code=0
   "$VENV_PY" app.py || code=$?
   [ "$code" -ne 0 ] && _warn "App beendet mit Exit-Code $code"
