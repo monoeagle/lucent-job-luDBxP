@@ -48,6 +48,9 @@ class Table:
     columns: tuple[Column, ...]
     foreign_keys: tuple[ForeignKey, ...]
     primary_key: tuple[str, ...] = ()  # primary-key column names
+    # Each inner tuple is the column names of one UNIQUE constraint (table-level
+    # or inline). The primary key is held separately in `primary_key`.
+    unique_constraints: tuple[tuple[str, ...], ...] = ()
 
 
 @dataclass(frozen=True)

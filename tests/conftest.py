@@ -36,6 +36,12 @@ def inventory_nofk_url(tmp_path) -> str:
 
 
 @pytest.fixture
+def onetoone_url(tmp_path) -> str:
+    """SQLite URL with a 1-1 (Passport, UNIQUE FK) and a 1-N (Orders) child."""
+    return _build_sqlite(tmp_path, "onetoone.db", "onetoone_schema.sql")
+
+
+@pytest.fixture
 def sqlite_engine(inventory_url):
     engine = create_engine(inventory_url)
     yield engine

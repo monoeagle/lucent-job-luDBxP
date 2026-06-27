@@ -30,3 +30,13 @@ def test_load_reflects_views(inventory_url):
 def test_bad_url_raises_connection_error():
     with pytest.raises(ConnectionError):
         SqlAlchemyLoader("sqlite:////nonexistent/path/that/cannot/exist.db").load()
+
+
+def test_load_reflects_unique_constraints(onetoone_url):
+    schema = SqlAlchemyLoader(onetoone_url).load()
+    passport = schema.table("Passport")
+    # inline UNIQUE on the FK column is reflected as a one-column unique set
+    assert ("PersonID",) in passport.unique_constraints
+    orders = schema.table("Orders")
+    # the 1-N child has no unique set covering its FK column
+    assert all("PersonID" not in u for u in orders.unique_constraints)

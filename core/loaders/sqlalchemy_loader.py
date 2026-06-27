@@ -65,7 +65,15 @@ class SqlAlchemyLoader(SchemaLoader):
                     ))
                     fks.append(ForeignKey(fk["referred_table"], pairs))
                 pk = tuple(insp.get_pk_constraint(tname).get("constrained_columns", []))
-                tables.append(Table(tname, columns, tuple(fks), pk))
+                try:
+                    uniques = tuple(
+                        tuple(uc.get("column_names") or ())
+                        for uc in insp.get_unique_constraints(tname)
+                        if uc.get("column_names")
+                    )
+                except SQLAlchemyError:
+                    uniques = ()
+                tables.append(Table(tname, columns, tuple(fks), pk, uniques))
             views = []
             for vname in insp.get_view_names():
                 vcols = tuple(
