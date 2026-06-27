@@ -1,18 +1,23 @@
 {
-  "generatedAt": "2026-06-27T12:45:50",
+  "generatedAt": "2026-06-27T12:53:00",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 40,
+      "commits": 41,
       "kinds": {
-        "feat": 5,
+        "feat": 6,
         "docs": 14,
         "other": 21
       },
       "list": [
+        {
+          "sha": "37f484e",
+          "subject": "feat: AP-41 Join-Typ pro Schritt (INNER/LEFT/RIGHT/FULL) + Fix Start/Ziel-Einfärbung — v0.24.0",
+          "kind": "feat"
+        },
         {
           "sha": "a1280b2",
           "subject": "feat: AP-40 Graph-Legende + Fix überlagernde Highlight-Marker — v0.23.0",
@@ -770,7 +775,7 @@
     }
   },
   "stats": {
-    "totalCommits": 145,
+    "totalCommits": 146,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -780,7 +785,7 @@
       },
       {
         "kind": "feat",
-        "count": 35
+        "count": 36
       },
       {
         "kind": "other",

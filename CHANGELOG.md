@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.24.1] — 2026-06-27
+### Fixed
+- **Target hard to read in the graph:** the red target **ring** blended into the orange path
+  fill. Endpoints are now **fully coloured** — start green, target red, intermediate orange —
+  so they stand out clearly. Legend adjusted to filled squares.
+
 ## [0.24.0] — 2026-06-27
 ### Added
 - **AP-41 — Per-step join type:** the join-builder now lets you pick the type **per join

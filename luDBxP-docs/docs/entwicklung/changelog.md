@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.24.1] — 2026-06-27
+### Behoben
+- **Ziel im Graph schlecht lesbar:** Der rote Ziel-**Ring** verschwamm mit der orangenen
+  Pfad-Füllung. Endpunkte werden jetzt **voll eingefärbt** — Start grün, Ziel rot,
+  Zwischenstationen orange — und heben sich klar ab. Legende auf gefüllte Quadrate angepasst.
+
 ## [0.24.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-41 — Join-Typ pro Schritt:** Im Join-Builder lässt sich jetzt **je Join-Station**
