@@ -23,6 +23,8 @@ lucent-job-luDBxP/
 │   ├── ddl.py                # table_ddl() — rekonstruiertes CREATE TABLE
 │   ├── settings.py           # Settings.load/save (config.json)
 │   ├── log.py                # Logging-Setup
+│   ├── sqlanalyze.py         # analyze() — read-only SQL-Analyzer (AP-25, sqlglot)
+│   ├── userpaths.py          # Pro-Nutzer-Pfade + dynamischer Port + Migration (AP-31)
 │   └── loaders/
 │       ├── sqlalchemy_loader.py   # Haupt-Loader (SQLAlchemy inspect)
 │       ├── manual_loader.py       # Manuell definiertes Schema (Tests)
@@ -33,7 +35,13 @@ lucent-job-luDBxP/
 │   ├── routes.py             # Blueprint: alle /api/*-Endpoints + index-Route
 │   └── __init__.py
 │
-├── tests/                    # pytest-Tests (205 gesamt)
+├── launcher/                 # Tray-Icon-Launcher (AP-34, pystray/Pillow)
+│   ├── core.py               # LauncherCore: Port + app.py-Prozess + Auto-Browser + sauberes Beenden
+│   ├── tray.py               # pystray-Icon + Menü (Im Browser öffnen / Info / Beenden)
+│   ├── about.py              # Info-Dialog (Tkinter, eigener Prozess, primär-Monitor-zentriert)
+│   └── __main__.py           # Einstieg: python -m launcher (Windows fensterlos via pythonw)
+│
+├── tests/                    # pytest-Tests (232 gesamt)
 │   ├── conftest.py           # Fixtures (Test-Schema, Flask-Client)
 │   ├── test_api.py           # HTTP-API-Tests (via Flask-Testclient)
 │   ├── test_smoke.py         # Smoke-Tests

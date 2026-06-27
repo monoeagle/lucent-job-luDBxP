@@ -91,7 +91,7 @@ bash run.sh              # Interaktives Menü
   [2] Nur Umgebung einrichten (venv + pip)
   [3] App schnell starten (ohne Setup-Check)
   [4] Umgebung neu aufbauen (clean)
-  [5] Tests ausführen                    → pytest (125 Tests)
+  [5] Tests ausführen                    → pytest (232 Tests)
   [6] Demo-DB neu erzeugen               → sample_data/
   [7] Version anzeigen
   [8] AppImage bauen                     → Linux-Standalone (Python gebündelt)

@@ -2,9 +2,9 @@
 
 ## Übersicht
 
-| Metrik | Wert (Stand v0.32.0) |
+| Metrik | Wert (Stand v0.34.1) |
 |---|---|
-| Gesamt-Tests | **205** (+ 1 skipped: optionaler MSSQL-Live-Test) |
+| Gesamt-Tests | **232** (+ 1 skipped: optionaler MSSQL-Live-Test) |
 | Framework | pytest |
 | Laufzeit | < 10 s |
 | Abdeckung | Unit + Integrationstests |
@@ -39,6 +39,10 @@ bash run.sh --tests
 | `test_sync_version.py` | `sync_version.py` — Versions-Bump-Logik |
 | `test_loader_interface.py` | Abstrakte Loader-Schnittstelle |
 | `test_log.py` | `init_logging()` — Rotation, Level/Pfad via ENV, Request-Logging (AP-33) |
+| `test_sqlanalyze.py` | `analyze()` — read-only SQL-Analyzer: Typ/Tabellen/Spalten, Lints, Komplexität (AP-25) |
+| `test_sqlgen_dialect.py` | dialekt-spezifisches SQL-Rendering (SQLite/PostgreSQL/MySQL/MSSQL/Oracle, AP-29) |
+| `test_userpaths.py` | Pro-Nutzer-Pfade, `pick_port`/`resolve_port`, Migration (AP-31) |
+| `test_launcher.py` | Tray-Launcher-Kern: Port-Handoff, Readiness, sauberes Beenden, Info-Dialog/Primärmonitor (AP-34) |
 
 ## Playwright-Verifikation
 

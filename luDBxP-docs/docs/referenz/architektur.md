@@ -11,8 +11,10 @@ gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.
 ## Schichten
 
 LucentTools DB Explorer folgt einem zweischichtigen Aufbau: ein `core/`-Layer für
-die gesamte Datenbanklogik und ein `web/`-Layer für die Flask-API und das
-Frontend.
+die gesamte Datenbanklogik (kein Flask-Import) und ein `web/`-Layer für die Flask-API
+und das Frontend. Ein optionaler `launcher/`-Layer (Tray-Icon, AP-34) startet die App
+als eigenständigen Prozess — er nutzt `core/userpaths.py`, importiert aber keinen
+Web-Code.
 
 <img src="../images/mermaid/referenz-architektur-1.svg" alt="Diagramm 1 aus referenz/architektur.md">
 
@@ -77,3 +79,18 @@ Lookup** auf eine einzelne Spalte und **nicht** Teil des generierten Join-SQL �
 Vorschlagsliste des Wertfelds. (Davon zu unterscheiden ist die **`DISTINCT`-Checkbox** des Builders,
 die sehr wohl als `SELECT DISTINCT` in die generierte Abfrage einfließt.) Das Setzen eines Filterwerts
 baut sofort neu, sodass die `WHERE`-Bedingung umgehend im SQL und Ergebnis erscheint.
+
+### Multi-User & Tray-Launcher (AP-31/AP-34)
+
+Das pure Modul `core/userpaths.py` (stdlib-only, kein Flask-/`config`-Zyklus) macht den Betrieb
+**mehrbenutzerfähig**: `config.json` und Logs liegen pro Nutzer im OS-Standardpfad (Slug `luDBxP`,
+XDG bzw. `%LOCALAPPDATA%`; Overrides `LUCENT_CONFIG_DIR`/`LUCENT_LOG_DIR`), und der Port wird pro
+Session gewählt (5057 bevorzugt, sonst frei; `LUCENT_PORT` erzwingt fest/`0`=dynamisch). Bind bleibt
+ausschließlich `127.0.0.1`.
+
+Der **Tray-Launcher** (`launcher/`, AP-34) ist die Ein-Klick-Variante: `launcher/core.py` wählt den
+Port, startet `app.py` als Kindprozess (mit `LUCENT_PORT`), pollt bis der Server antwortet und öffnet
+den Browser; `tray.py` (pystray/Pillow) bietet das Menü **Im Browser öffnen / Info / Beenden**,
+`about.py` einen Info-Dialog. „Beenden" stoppt den Kindprozess (Port frei); der Launcher räumt das Kind
+bei jedem Ende sauber ab. Die Logik in `core.py` ist stdlib-only und getestet; die GUI-Schale
+(`tray.py`/`about.py`) ist plattformabhängig (Windows nativ; Linux via AppIndicator/GTK).

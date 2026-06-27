@@ -1109,13 +1109,13 @@
 <thead>
 <tr>
 <th>Metrik</th>
-<th>Wert (Stand v0.32.0)</th>
+<th>Wert (Stand v0.34.1)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Gesamt-Tests</td>
-<td><strong>205</strong> (+ 1 skipped: optionaler MSSQL-Live-Test)</td>
+<td><strong>232</strong> (+ 1 skipped: optionaler MSSQL-Live-Test)</td>
 </tr>
 <tr>
 <td>Framework</td>
@@ -1210,6 +1210,22 @@
 <tr>
 <td><code>test_log.py</code></td>
 <td><code>init_logging()</code> — Rotation, Level/Pfad via ENV, Request-Logging (AP-33)</td>
+</tr>
+<tr>
+<td><code>test_sqlanalyze.py</code></td>
+<td><code>analyze()</code> — read-only SQL-Analyzer: Typ/Tabellen/Spalten, Lints, Komplexität (AP-25)</td>
+</tr>
+<tr>
+<td><code>test_sqlgen_dialect.py</code></td>
+<td>dialekt-spezifisches SQL-Rendering (SQLite/PostgreSQL/MySQL/MSSQL/Oracle, AP-29)</td>
+</tr>
+<tr>
+<td><code>test_userpaths.py</code></td>
+<td>Pro-Nutzer-Pfade, <code>pick_port</code>/<code>resolve_port</code>, Migration (AP-31)</td>
+</tr>
+<tr>
+<td><code>test_launcher.py</code></td>
+<td>Tray-Launcher-Kern: Port-Handoff, Readiness, sauberes Beenden, Info-Dialog/Primärmonitor (AP-34)</td>
 </tr>
 </tbody>
 </table>

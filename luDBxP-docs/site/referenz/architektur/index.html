@@ -559,6 +559,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#multi-user-tray-launcher-ap-31ap-34" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Multi-User &amp; Tray-Launcher (AP-31/AP-34)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1161,6 +1172,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#multi-user-tray-launcher-ap-31ap-34" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Multi-User &amp; Tray-Launcher (AP-31/AP-34)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1189,8 +1211,10 @@ gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.</
 <p><img src="../../images/mermaid/referenz-architektur-3.svg" alt="Systemüberblick: UI · Flask-API · Core-Layer"></p>
 <h2 id="schichten">Schichten<a class="headerlink" href="#schichten" title="Permanent link">&para;</a></h2>
 <p>LucentTools DB Explorer folgt einem zweischichtigen Aufbau: ein <code>core/</code>-Layer für
-die gesamte Datenbanklogik und ein <code>web/</code>-Layer für die Flask-API und das
-Frontend.</p>
+die gesamte Datenbanklogik (kein Flask-Import) und ein <code>web/</code>-Layer für die Flask-API
+und das Frontend. Ein optionaler <code>launcher/</code>-Layer (Tray-Icon, AP-34) startet die App
+als eigenständigen Prozess — er nutzt <code>core/userpaths.py</code>, importiert aber keinen
+Web-Code.</p>
 <p><img src="../../images/mermaid/referenz-architektur-1.svg" alt="Diagramm 1 aus referenz/architektur.md"></p>
 <h2 id="datenfluss-join-pfad-berechnung">Datenfluss: Join-Pfad-Berechnung<a class="headerlink" href="#datenfluss-join-pfad-berechnung" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/mermaid/referenz-architektur-2.svg" alt="Diagramm 2 aus referenz/architektur.md"></p>
@@ -1239,6 +1263,18 @@ Lookup</strong> auf eine einzelne Spalte und <strong>nicht</strong> Teil des gen
 Vorschlagsliste des Wertfelds. (Davon zu unterscheiden ist die <strong><code>DISTINCT</code>-Checkbox</strong> des Builders,
 die sehr wohl als <code>SELECT DISTINCT</code> in die generierte Abfrage einfließt.) Das Setzen eines Filterwerts
 baut sofort neu, sodass die <code>WHERE</code>-Bedingung umgehend im SQL und Ergebnis erscheint.</p>
+<h3 id="multi-user-tray-launcher-ap-31ap-34">Multi-User &amp; Tray-Launcher (AP-31/AP-34)<a class="headerlink" href="#multi-user-tray-launcher-ap-31ap-34" title="Permanent link">&para;</a></h3>
+<p>Das pure Modul <code>core/userpaths.py</code> (stdlib-only, kein Flask-/<code>config</code>-Zyklus) macht den Betrieb
+<strong>mehrbenutzerfähig</strong>: <code>config.json</code> und Logs liegen pro Nutzer im OS-Standardpfad (Slug <code>luDBxP</code>,
+XDG bzw. <code>%LOCALAPPDATA%</code>; Overrides <code>LUCENT_CONFIG_DIR</code>/<code>LUCENT_LOG_DIR</code>), und der Port wird pro
+Session gewählt (5057 bevorzugt, sonst frei; <code>LUCENT_PORT</code> erzwingt fest/<code>0</code>=dynamisch). Bind bleibt
+ausschließlich <code>127.0.0.1</code>.</p>
+<p>Der <strong>Tray-Launcher</strong> (<code>launcher/</code>, AP-34) ist die Ein-Klick-Variante: <code>launcher/core.py</code> wählt den
+Port, startet <code>app.py</code> als Kindprozess (mit <code>LUCENT_PORT</code>), pollt bis der Server antwortet und öffnet
+den Browser; <code>tray.py</code> (pystray/Pillow) bietet das Menü <strong>Im Browser öffnen / Info / Beenden</strong>,
+<code>about.py</code> einen Info-Dialog. „Beenden" stoppt den Kindprozess (Port frei); der Launcher räumt das Kind
+bei jedem Ende sauber ab. Die Logik in <code>core.py</code> ist stdlib-only und getestet; die GUI-Schale
+(<code>tray.py</code>/<code>about.py</code>) ist plattformabhängig (Windows nativ; Linux via AppIndicator/GTK).</p>
 
 
 
