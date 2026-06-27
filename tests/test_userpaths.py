@@ -73,3 +73,27 @@ def test_resolve_port_none_uses_preferred_when_free():
 
 def test_resolve_port_zero_is_dynamic():
     assert userpaths.resolve_port("0", 5057) > 0
+
+
+def test_migrate_copies_when_target_missing(tmp_path):
+    legacy = tmp_path / "old" / "config.json"
+    legacy.parent.mkdir()
+    legacy.write_text('{"x":1}', encoding="utf-8")
+    user = tmp_path / "new" / "config.json"
+    assert userpaths.migrate_legacy_config(str(user), str(legacy)) is True
+    assert user.read_text(encoding="utf-8") == '{"x":1}'
+
+
+def test_migrate_noop_when_target_exists(tmp_path):
+    legacy = tmp_path / "old.json"
+    legacy.write_text("OLD", encoding="utf-8")
+    user = tmp_path / "new.json"
+    user.write_text("KEEP", encoding="utf-8")
+    assert userpaths.migrate_legacy_config(str(user), str(legacy)) is False
+    assert user.read_text(encoding="utf-8") == "KEEP"
+
+
+def test_migrate_noop_when_legacy_missing(tmp_path):
+    user = tmp_path / "new.json"
+    assert userpaths.migrate_legacy_config(str(user), str(tmp_path / "nope.json")) is False
+    assert not user.exists()

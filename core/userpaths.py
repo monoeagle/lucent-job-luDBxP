@@ -81,3 +81,13 @@ def resolve_port(forced, preferred, host="127.0.0.1"):
     if forced == "0":
         return pick_port(0, host)
     return int(forced)
+
+
+def migrate_legacy_config(user_file, legacy_file):
+    """One-time copy legacy_file → user_file, only when user_file is absent and
+    legacy_file exists. Returns True if a copy happened (never overwrites)."""
+    if os.path.exists(user_file) or not os.path.exists(legacy_file):
+        return False
+    os.makedirs(os.path.dirname(user_file), exist_ok=True)
+    shutil.copy2(legacy_file, user_file)
+    return True
