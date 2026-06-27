@@ -1,51 +1,44 @@
 graph TB
-    subgraph UI["UI (Browser)"]
-        OB["Objekt-Browser\n(Tabellen · Views)"]
-        JB["Join-Builder\n(Start → Ziel → Filter → SQL)"]
-        AN["SQL-Analyzer\n(Statement → Wirkung)"]
-        GR["FK-Graph\n(Cytoscape.js)"]
-    end
-    subgraph FLASK["Webserver: waitress (WSGI) · Flask-API (routes.py)"]
-        WS["waitress — Prod-WSGI-Server\n(--debug → Werkzeug-Dev-Server)"]
-        RT["lokal 127.0.0.1 · Port pro Session (5057→frei)\nPro-Nutzer config.json/Logs (core/userpaths.py)"]
-        S["/api/schema"]
-        J["/api/joinpath\n(+ /run, Join-Typ pro Schritt)"]
-        OC["/api/orphan_check\n(Waisen-Hinweis, read-only)"]
-        G["/api/graph"]
-        D["/api/data"]
-        A["/api/analyze"]
-        C["/api/connect"]
-        SC["/api/schemas"]
-        WS ~~~ RT
-    end
-    subgraph CORE["Core-Layer"]
-        SL["SQLAlchemy\nLoader"]
-        BG["FK-Graph\n(NetworkX)"]
-        PF["Pathfinder\n(k-kürzeste\nPfade)"]
-        SG["SQL-Generator\n(parametrisiert)"]
-        SA["SQL-Analyzer\n(sqlglot, read-only)"]
-        IFK["Implizite FK\nHeuristik"]
-    end
-    DB[("SQLite · PostgreSQL\nMySQL · MSSQL")]
+    classDef ui   fill:#1f3a5f,color:#fff,stroke:#2c5a8f,stroke-width:1px
+    classDef srv  fill:#5c3a13,color:#fff,stroke:#7a4f1d,stroke-width:1px
+    classDef api  fill:#234a78,color:#fff,stroke:#16314f,stroke-width:1px
+    classDef core fill:#1f6f3c,color:#fff,stroke:#1a5c32,stroke-width:1px
+    classDef db   fill:#4a2b66,color:#fff,stroke:#35204a,stroke-width:1px
 
-    OB --> S
-    JB --> J
-    JB --> OC
-    JB --> G
-    GR --> G
-    OB --> D
-    AN --> A
-    AN -. Highlight .-> GR
-    S --> SL
-    J --> PF
-    G --> BG
-    C --> SL
-    SC --> SL
-    A --> SA
-    A --> SL
-    OC --> SG
-    OC --> SL
-    SL --> DB
-    PF --> BG
-    PF --> SG
-    BG --> IFK
+    subgraph L1["1 · Browser-UI"]
+        direction LR
+        OB["Objekt-Browser"]
+        JB["Join-Builder"]
+        AN["SQL-Analyzer"]
+        GR["FK-Graph (Cytoscape.js)"]
+    end
+
+    WS["2 · Webserver — lokal 127.0.0.1\nwaitress (Prod-WSGI) · --debug → Werkzeug\nPort pro Session · Pro-Nutzer config.json/Logs"]
+
+    subgraph L3["3 · Flask-API · routes.py (/api/*)"]
+        direction LR
+        A1["/schema · /schemas\n/graph · /data"]
+        A2["/joinpath · /joinpath/run\n/orphan_check"]
+        A3["/analyze · /connect"]
+    end
+
+    subgraph L4["4 · Core-Layer — kein Flask, read-only"]
+        direction LR
+        C1["loaders\nSQLAlchemy-Reflection"]
+        C2["graph + pathfinder\nNetworkX, k-kürzeste"]
+        C3["sqlgen\nparametrisiert"]
+        C4["sqlanalyze\nsqlglot"]
+    end
+
+    DB[("5 · Datenbank\nSQLite · PostgreSQL · MySQL · MSSQL")]
+
+    L1 --> WS
+    WS --> L3
+    L3 --> L4
+    L4 --> DB
+
+    class OB,JB,AN,GR ui
+    class WS srv
+    class A1,A2,A3 api
+    class C1,C2,C3,C4 core
+    class DB db
