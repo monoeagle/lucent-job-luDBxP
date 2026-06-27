@@ -1,17 +1,22 @@
 {
-  "generatedAt": "2026-06-27T03:07:34",
+  "generatedAt": "2026-06-27T03:09:33",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 29,
+      "commits": 30,
       "kinds": {
-        "other": 21,
-        "docs": 8
+        "docs": 9,
+        "other": 21
       },
       "list": [
+        {
+          "sha": "87f1b2e",
+          "subject": "docs(AP-25): Architekturbild um SQL-Analyzer (Modul sqlanalyze + /api/analyze) erweitert, Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "fef4326",
           "subject": "AP-25 (Review-Fixes): sqlglot-Dialekt-Mapping (kein 500 bei PG/MSSQL), NO_WHERE eigene Klausel, UNKNOWN_COLUMN case-insensitiv",
@@ -714,13 +719,13 @@
     }
   },
   "stats": {
-    "totalCommits": 134,
+    "totalCommits": 135,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 51
+        "count": 52
       },
       {
         "kind": "feat",
