@@ -22,16 +22,32 @@ class JoinEdge:
 
     ``pairs`` holds ``(column_on_table_a, column_on_table_b)`` tuples — one for
     a single-column FK, several for a composite FK (all combined with AND).
+    ``fk_unique`` is True when ``table_a``'s FK columns are collectively unique
+    (the relationship is one-to-one, not one-to-many).
     """
     table_a: str
     table_b: str
     pairs: tuple[tuple[str, str], ...]
+    fk_unique: bool = False
+
+
+def _columns_unique(table, columns) -> bool:
+    """True if ``columns`` on ``table`` are collectively unique: some unique set
+    (a UNIQUE constraint or the primary key) is a subset of ``columns``."""
+    target = set(columns)
+    if not target:
+        return False
+    candidates = list(table.unique_constraints)
+    if table.primary_key:
+        candidates.append(table.primary_key)
+    return any(set(u) <= target for u in candidates if u)
 
 
 def _add_join_edge(g: nx.Graph, a: str, b: str,
-                   pairs: tuple[tuple[str, str], ...], implied: bool) -> None:
+                   pairs: tuple[tuple[str, str], ...], implied: bool,
+                   fk_unique: bool = False) -> None:
     """Add or extend the (a, b) edge with one join option (one foreign key)."""
-    option = JoinEdge(a, b, pairs)
+    option = JoinEdge(a, b, pairs, fk_unique)
     if g.has_edge(a, b):
         data = g[a][b]
         data["joins"] = data["joins"] + (option,)
@@ -62,7 +78,9 @@ def build_graph(schema: Schema, include_implied: bool = False) -> nx.Graph:
         g.add_node(table.name)
     for table in schema.tables:
         for fk in table.foreign_keys:
-            _add_join_edge(g, table.name, fk.ref_table, fk.column_pairs, False)
+            fk_unique = _columns_unique(table, fk.columns)
+            _add_join_edge(g, table.name, fk.ref_table, fk.column_pairs,
+                           False, fk_unique)
     if include_implied:
         from core.implied import find_implied_fks
         for ifk in find_implied_fks(schema):
