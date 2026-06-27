@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../../grundlagen/schnellstart/">
+        <link rel="prev" href="../fanout-warnung/">
       
       
-        <link rel="next" href="../datenmodell/">
+        <link rel="next" href="../oberflaeche/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Architektur - LucentTools DB Explorer</title>
+        <title>Outer Joins & Waisen (LEFT/RIGHT/FULL) - LucentTools DB Explorer</title>
       
     
     
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architektur" class="md-skip">
+        <a href="#outer-joins-waisen-leftrightfull" class="md-skip">
           Zum Inhalt
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Architektur
+              Outer Joins &amp; Waisen (LEFT/RIGHT/FULL)
             
           </span>
         </div>
@@ -398,36 +398,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  Architektur
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="././" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../architektur/" class="md-nav__link">
         
   
   
@@ -442,132 +416,6 @@
   
 
       </a>
-      
-        
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Inhaltsverzeichnis
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#systemuberblick" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Systemüberblick
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#schichten" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Schichten
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#datenfluss-join-pfad-berechnung" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Datenfluss: Join-Pfad-Berechnung
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#wichtige-design-entscheidungen" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Wichtige Design-Entscheidungen
-      </span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Wichtige Design-Entscheidungen">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#read-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Read-only
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lokale-assets" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Lokale Assets
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parametrisierte-abfragen" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Parametrisierte Abfragen
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implizite-fks" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Implizite FKs
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sql-analyzer-read-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        SQL-Analyzer (read-only)
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -658,10 +506,36 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../outer-joins/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Outer Joins & Waisen
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
         
   
   
@@ -676,6 +550,99 @@
   
 
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#was-die-typen-bewirken" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Was die Typen bewirken
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-stolperstein-left-andert-manchmal-nichts" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Der Stolperstein: LEFT ändert manchmal <em>nichts</em>
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Der Stolperstein: LEFT ändert manchmal nichts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-die-waise-ist-von-der-from-tabelle-aus-unerreichbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        1. Die Waise ist von der FROM-Tabelle aus unerreichbar
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-nachfolgende-inner-joins-filtern-die-waisen-wieder-heraus" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        2. Nachfolgende INNER-Joins filtern die Waisen wieder heraus
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wie-der-waisen-chip-das-berucksichtigt" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Wie der Waisen-Chip das berücksichtigt
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-machst-du-waisen-sichtbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        So machst du Waisen sichtbar
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -978,10 +945,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#systemuberblick" class="md-nav__link">
+  <a href="#was-die-typen-bewirken" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Systemüberblick
+        Was die Typen bewirken
       </span>
     </span>
   </a>
@@ -989,44 +956,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#schichten" class="md-nav__link">
+  <a href="#der-stolperstein-left-andert-manchmal-nichts" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Schichten
+        Der Stolperstein: LEFT ändert manchmal <em>nichts</em>
       </span>
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#datenfluss-join-pfad-berechnung" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Datenfluss: Join-Pfad-Berechnung
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#wichtige-design-entscheidungen" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Wichtige Design-Entscheidungen
-      </span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Wichtige Design-Entscheidungen">
+    <nav class="md-nav" aria-label="Der Stolperstein: LEFT ändert manchmal nichts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#read-only" class="md-nav__link">
+  <a href="#1-die-waise-ist-von-der-from-tabelle-aus-unerreichbar" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Read-only
+        1. Die Waise ist von der FROM-Tabelle aus unerreichbar
       </span>
     </span>
   </a>
@@ -1034,43 +979,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lokale-assets" class="md-nav__link">
+  <a href="#2-nachfolgende-inner-joins-filtern-die-waisen-wieder-heraus" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Lokale Assets
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parametrisierte-abfragen" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Parametrisierte Abfragen
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implizite-fks" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Implizite FKs
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sql-analyzer-read-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        SQL-Analyzer (read-only)
+        2. Nachfolgende INNER-Joins filtern die Waisen wieder heraus
       </span>
     </span>
   </a>
@@ -1079,6 +991,28 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wie-der-waisen-chip-das-berucksichtigt" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Wie der Waisen-Chip das berücksichtigt
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-machst-du-waisen-sichtbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        So machst du Waisen sichtbar
+      </span>
+    </span>
+  </a>
   
 </li>
       
@@ -1097,45 +1031,122 @@
                 
                   
 
-<h1 id="architektur">Architektur<a class="headerlink" href="#architektur" title="Permanent link">&para;</a></h1>
-<h2 id="systemuberblick">Systemüberblick<a class="headerlink" href="#systemuberblick" title="Permanent link">&para;</a></h2>
-<p>LucentTools DB Explorer verbindet ein Browser-Frontend direkt mit einer
-Live-Datenbankverbindung über eine Flask-API. Der Core-Layer kapselt die
-gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.</p>
-<p><img src="../../images/mermaid/referenz-architektur-3.svg" alt="Systemüberblick: UI · Flask-API · Core-Layer"></p>
-<h2 id="schichten">Schichten<a class="headerlink" href="#schichten" title="Permanent link">&para;</a></h2>
-<p>LucentTools DB Explorer folgt einem zweischichtigen Aufbau: ein <code>core/</code>-Layer für
-die gesamte Datenbanklogik und ein <code>web/</code>-Layer für die Flask-API und das
-Frontend.</p>
-<p><img src="../../images/mermaid/referenz-architektur-1.svg" alt="Diagramm 1 aus referenz/architektur.md"></p>
-<h2 id="datenfluss-join-pfad-berechnung">Datenfluss: Join-Pfad-Berechnung<a class="headerlink" href="#datenfluss-join-pfad-berechnung" title="Permanent link">&para;</a></h2>
-<p><img src="../../images/mermaid/referenz-architektur-2.svg" alt="Diagramm 2 aus referenz/architektur.md"></p>
-<h2 id="wichtige-design-entscheidungen">Wichtige Design-Entscheidungen<a class="headerlink" href="#wichtige-design-entscheidungen" title="Permanent link">&para;</a></h2>
-<h3 id="read-only">Read-only<a class="headerlink" href="#read-only" title="Permanent link">&para;</a></h3>
-<p>Der gesamte Core-Layer führt ausschließlich <code>SELECT</code>-Abfragen aus.
-Schreiboperationen (INSERT/UPDATE/DELETE/DDL) sind nicht implementiert.
-Objektnamen werden gegen das reflektierte Schema validiert, bevor eine
-Abfrage ausgeführt wird.</p>
-<h3 id="lokale-assets">Lokale Assets<a class="headerlink" href="#lokale-assets" title="Permanent link">&para;</a></h3>
-<p>Alle JavaScript-Bibliotheken (Cytoscape.js, Mermaid) sind lokal im Projekt
-gebundelt. Kein CDN-Zugriff zur Laufzeit.</p>
-<h3 id="parametrisierte-abfragen">Parametrisierte Abfragen<a class="headerlink" href="#parametrisierte-abfragen" title="Permanent link">&para;</a></h3>
-<p>Der SQL-Generator erzeugt immer parametrisierte Platzhalter (<code>?</code> / <code>:param</code>).
-Werte werden niemals direkt in die SQL-Zeichenkette eingebettet.</p>
-<h3 id="implizite-fks">Implizite FKs<a class="headerlink" href="#implizite-fks" title="Permanent link">&para;</a></h3>
-<p>Die Heuristik (<code>core/implied.py</code>) vergleicht Spaltennamen mit Primärschlüsseln
-anderer Tabellen (z. B. <code>user_id</code> → <code>user.id</code>). Nur kompatible Typen werden
-berücksichtigt. Die Ergebnisse werden im Graph als gestrichelte Kanten
-dargestellt und sind per Checkbox deaktivierbar.</p>
-<h3 id="sql-analyzer-read-only">SQL-Analyzer (read-only)<a class="headerlink" href="#sql-analyzer-read-only" title="Permanent link">&para;</a></h3>
-<p>Der SQL-Analyzer (<code>core/sqlanalyze.py</code>, Endpoint <code>/api/analyze</code>) parst ein
-eingefügtes Statement ausschließlich über den sqlglot-AST und <strong>führt es nie
-aus</strong>. Er bestimmt Statement-Typ, gelesene und geschriebene Tabellen sowie
-nicht-blockierende Warnungen (Schreib-/DDL-Statement, fehlendes WHERE,
-kartesischer Join; mit aktiver Verbindung zusätzlich unbekannte Tabellen/Spalten
-gegen das reflektierte Schema). Er arbeitet <strong>mit und ohne Verbindung</strong>: ohne
-Verbindung rein textuell, mit Verbindung zusätzlich mit Schema-Abgleich und
-Graph-Highlight. <code>sqlglot</code> ist lokal als Wheel gebündelt (kein CDN).</p>
+<h1 id="outer-joins-waisen-leftrightfull">Outer Joins &amp; Waisen (LEFT/RIGHT/FULL)<a class="headerlink" href="#outer-joins-waisen-leftrightfull" title="Permanent link">&para;</a></h1>
+<p>Im Join-Builder lässt sich <strong>pro Join-Station</strong> der Typ wählen — <strong>INNER</strong>
+(Standard), <strong>LEFT</strong>, <strong>RIGHT</strong>, <strong>FULL</strong>. Outer Joins behalten Zeilen einer
+Seite <strong>auch ohne Partner</strong> auf der anderen Seite (die fehlenden Spalten werden
+<code>NULL</code>). Solche unverknüpften Zeilen heißen hier <strong>Waisen</strong>.</p>
+<p>Neben jeder Join-Station zeigt ein <strong>Waisen-Chip</strong> (z. B. <code>⚠ LEFT/FULL</code>), welche
+Join-Typen an <em>dieser</em> Stelle das Ergebnis <strong>tatsächlich verändern</strong>. Diese Seite
+erklärt, was die Typen bewirken — und einen Stolperstein, der leicht verwirrt.</p>
+<hr />
+<h2 id="was-die-typen-bewirken">Was die Typen bewirken<a class="headerlink" href="#was-die-typen-bewirken" title="Permanent link">&para;</a></h2>
+<p>Pfad <code>A → B</code> (A = FROM/Treiber-Tabelle, B wird gejoint, Bedingung <code>A.x = B.y</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Typ</th>
+<th>Behält …</th>
+<th>Zeigt Waisen …</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>INNER</strong></td>
+<td>nur Zeilen mit Treffer auf <strong>beiden</strong> Seiten</td>
+<td>keine</td>
+</tr>
+<tr>
+<td><strong>LEFT</strong></td>
+<td><strong>alle A-Zeilen</strong>, auch ohne B-Treffer</td>
+<td>A-Zeilen ohne B (B-Spalten <code>NULL</code>)</td>
+</tr>
+<tr>
+<td><strong>RIGHT</strong></td>
+<td><strong>alle B-Zeilen</strong>, auch ohne A-Treffer</td>
+<td>B-Zeilen ohne A</td>
+</tr>
+<tr>
+<td><strong>FULL</strong></td>
+<td>alle A- <strong>und</strong> alle B-Zeilen</td>
+<td>beide Seiten</td>
+</tr>
+</tbody>
+</table>
+<p>In der <strong>Ergebnistabelle</strong> werden <code>NULL</code>-Zellen hervorgehoben — so fallen die
+Waisen-Zeilen sofort auf.</p>
+<hr />
+<h2 id="der-stolperstein-left-andert-manchmal-nichts">Der Stolperstein: LEFT ändert manchmal <em>nichts</em><a class="headerlink" href="#der-stolperstein-left-andert-manchmal-nichts" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Beobachtung:</strong> „Ich stelle den 2. Join auf <strong>LEFT</strong>, der Chip sagte vorher
+Waisen — aber die Tabelle unten ändert sich nicht."</p>
+</blockquote>
+<p>Das ist <strong>kein Fehler</strong>, sondern echte SQL-Semantik. Ob ein Outer Join Waisen
+ins Ergebnis bringt, hängt vom <strong>ganzen Pfad</strong> ab, nicht nur vom einzelnen Join.
+Zwei Gründe lassen LEFT/RIGHT wirkungslos bleiben:</p>
+<h3 id="1-die-waise-ist-von-der-from-tabelle-aus-unerreichbar">1. Die Waise ist von der FROM-Tabelle aus unerreichbar<a class="headerlink" href="#1-die-waise-ist-von-der-from-tabelle-aus-unerreichbar" title="Permanent link">&para;</a></h3>
+<p>Beispiel-Pfad <strong><code>Cluster → Datacenter → Network</code></strong>:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="ss">&quot;Cluster&quot;</span><span class="p">.</span><span class="ss">&quot;ClusterID&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Network&quot;</span><span class="p">.</span><span class="ss">&quot;NetworkID&quot;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;Cluster&quot;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;Datacenter&quot;</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="ss">&quot;Cluster&quot;</span><span class="p">.</span><span class="ss">&quot;DatacenterID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;Datacenter&quot;</span><span class="p">.</span><span class="ss">&quot;DatacenterID&quot;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;Network&quot;</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="ss">&quot;Datacenter&quot;</span><span class="p">.</span><span class="ss">&quot;DatacenterID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;Network&quot;</span><span class="p">.</span><span class="ss">&quot;DatacenterID&quot;</span>
+</span></code></pre></div>
+<p>In der Demo-CMDB gibt es ein <strong><code>Datacenter</code> „DC-Empty" ohne Network</strong> — isoliert
+betrachtet also eine Waise für <code>Datacenter → Network</code>. Trotzdem ändert <code>LEFT</code>
+hier <strong>nichts</strong>: Das Statement startet bei <code>FROM "Cluster"</code>, und <strong>kein Cluster
+zeigt auf DC-Empty</strong>. Die akkumulierte linke Seite (<code>Cluster ⋈ Datacenter</code>)
+enthält DC-Empty also gar nicht — <code>LEFT JOIN "Network"</code> hat keine Zeile, der er
+ein <code>NULL</code>-Network anhängen könnte.</p>
+<h3 id="2-nachfolgende-inner-joins-filtern-die-waisen-wieder-heraus">2. Nachfolgende INNER-Joins filtern die Waisen wieder heraus<a class="headerlink" href="#2-nachfolgende-inner-joins-filtern-die-waisen-wieder-heraus" title="Permanent link">&para;</a></h3>
+<p>Setzt man in einer <strong>Kette</strong> einen mittleren Join auf LEFT, aber die folgenden
+bleiben INNER, verschwinden die gerade erzeugten <code>NULL</code>-Zeilen sofort wieder:
+Der nächste <code>JOIN … ON &lt;vorige&gt;.spalte = …</code> findet auf <code>NULL</code> keinen Treffer und
+wirft die Zeile raus. <strong>Damit eine LEFT-Waise im Endergebnis ankommt, müssen die
+nachfolgenden Joins sie ebenfalls behalten</strong> (auch LEFT/FULL).</p>
+<hr />
+<h2 id="wie-der-waisen-chip-das-berucksichtigt">Wie der Waisen-Chip das berücksichtigt<a class="headerlink" href="#wie-der-waisen-chip-das-berucksichtigt" title="Permanent link">&para;</a></h2>
+<p>Der Chip prüft <strong>nicht</strong> den Join isoliert, sondern <strong>zählt das echte Ergebnis</strong>:
+für jede Join-Station vergleicht er die Zeilenzahl mit <code>LEFT</code>/<code>RIGHT</code>/<code>FULL</code>
+gegen <code>INNER</code> (die übrigen Stationen auf ihrem aktuellen Stand). Er erscheint
+<strong>nur</strong>, wenn der Typ die Zeilenzahl <strong>wirklich</strong> ändert. So sind <strong>Chip und
+Tabelle immer konsistent</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Pfad</th>
+<th>Chip an der Station</th>
+<th>LEFT-Wirkung im Ergebnis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Cluster → Datacenter → Network</code></td>
+<td><strong>keiner</strong></td>
+<td>16 → 16 Zeilen (keine Änderung)</td>
+</tr>
+<tr>
+<td><code>Cluster → Datastore</code> (direkt)</td>
+<td><code>⚠ LEFT/FULL</code></td>
+<td>6 → 8 Zeilen (EMPTY-Cluster mit <code>NULL</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="so-machst-du-waisen-sichtbar">So machst du Waisen sichtbar<a class="headerlink" href="#so-machst-du-waisen-sichtbar" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Pfad wählen, auf dem die Waise erreichbar ist.</strong> Willst du Cluster ohne
+   Datastore sehen, nimm den direkten Pfad <code>Cluster → Datastore</code> (LEFT) — nicht
+   einen Umweg, auf dem die Cluster bereits über andere Joins „gefüllt" werden.</li>
+<li><strong>In einer Kette nachfolgende Joins ebenfalls auf LEFT/FULL</strong> setzen, damit die
+   <code>NULL</code>-Zeilen bis ins Endergebnis durchlaufen.</li>
+<li><strong>Auf den Chip achten:</strong> Steht an einer Station kein Chip, ändert dort <em>kein</em>
+   Outer-Join-Typ das Ergebnis — Umschalten ist dann wirkungslos (korrekt so).</li>
+</ol>
+<blockquote>
+<p><strong>Merksatz:</strong> Ein Outer Join zeigt nur die Waisen, die (a) von der FROM-Tabelle
+aus <strong>erreichbar</strong> sind und (b) von <strong>allen nachfolgenden</strong> Joins behalten werden.
+Der Waisen-Chip nimmt dir diese Prüfung ab — er zählt das echte Ergebnis.</p>
+</blockquote>
 
 
 

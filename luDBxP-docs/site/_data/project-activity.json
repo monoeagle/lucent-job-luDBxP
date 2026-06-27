@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T14:34:01",
+  "generatedAt": "2026-06-27T14:54:08",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 51,
+      "commits": 52,
       "kinds": {
+        "fix": 4,
         "feat": 11,
-        "fix": 3,
         "other": 23,
         "docs": 14
       },
       "list": [
+        {
+          "sha": "98ecdef",
+          "subject": "fix: AP-47 Waisen-Chip count-basiert (Pfad-Kontext) statt isolierter Probe — v0.29.1",
+          "kind": "fix"
+        },
         {
           "sha": "b14758c",
           "subject": "feat: AP-47 Pfad-Indikator [*]/[ ] + datengetriebener Waisen-Chip pro Join-Typ — v0.29.0",
@@ -826,7 +831,7 @@
     }
   },
   "stats": {
-    "totalCommits": 156,
+    "totalCommits": 157,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -844,7 +849,7 @@
       },
       {
         "kind": "fix",
-        "count": 14
+        "count": 15
       },
       {
         "kind": "build",

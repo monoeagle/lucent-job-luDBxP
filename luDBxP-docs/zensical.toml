@@ -29,6 +29,7 @@ nav = [
     { "Datenmodell"     = "referenz/datenmodell.md" },
     { "UseCases"        = "referenz/usecases.md" },
     { "Fan-out-Warnung" = "referenz/fanout-warnung.md" },
+    { "Outer Joins & Waisen" = "referenz/outer-joins.md" },
     { "Oberfläche"      = "referenz/oberflaeche.md" },
   ]},
   { "Entwicklung" = [

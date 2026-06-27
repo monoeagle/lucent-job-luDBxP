@@ -633,6 +633,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../outer-joins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Outer Joins & Waisen
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../oberflaeche/" class="md-nav__link">
         
   
@@ -1032,7 +1059,9 @@ Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.</p>
 <p><strong>Join-Typ pro Schritt:</strong> Über der SQL-Ausgabe lässt sich für <strong>jede Join-Station</strong>
 der Typ wählen — <strong>INNER</strong> (Standard), <strong>LEFT</strong>, <strong>RIGHT</strong>, <strong>FULL</strong>. So bleiben z. B.
 mit <strong>LEFT</strong> die Zeilen der Start-/Treiber-Tabelle erhalten, auch wenn eine
-Folgetabelle kein Match hat. Eine Änderung baut SQL und Ergebnis neu.</p>
+Folgetabelle kein Match hat. Eine Änderung baut SQL und Ergebnis neu. Warum LEFT
+manchmal <em>nichts</em> ändert (unerreichbare/gefilterte Waisen) und was der Waisen-Chip
+bedeutet, erklärt <a href="../outer-joins/">Outer Joins &amp; Waisen</a>.</p>
 <p><strong>Fan-out-Warnung:</strong> Enthält ein Pfad einen absteigenden (1-N) Schritt, zeigt
 der Builder eine gelbe ⚠-Zeile, weil das Ergebnis Zeilen vervielfachen kann.
 Was das genau bedeutet und wann es zu erwarten ist, erklärt
