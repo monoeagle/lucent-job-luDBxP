@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.26.0] — 2026-06-27
+### Geändert
+- **AP-43 — Lesbares SQL-Layout:** Das generierte SQL ist jetzt **mehrzeilig formatiert** —
+  eine Spalte pro Zeile, jeder `JOIN` auf eigener Zeile mit `ON`/`AND` darunter und
+  **ausgerichteten `=`** bei zusammengesetzten Schlüsseln. Dadurch bleiben die Zeilen kurz
+  (kein Horizontal-Scroll/keine Umbruch-Sorgen) und ein eingefügtes Statement ist sauber.
+  Die **Copy/Anzeige**-Variante endet mit `;` (paste-and-run); das intern ausgeführte
+  parametrisierte SQL ohne. 195 Tests grün, 1 skipped.
+
 ## [0.25.0] — 2026-06-27
 ### Geändert
 - **AP-42 — Join-Builder-Politur:** Der verbose Fan-out-Warntext pro Ast („Ast „X" ist

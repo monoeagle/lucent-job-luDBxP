@@ -20,8 +20,11 @@ def test_basic_select_join():
                               Selection("VMwareCluster", "ClusterID")))
     assert "SELECT" in g.sql
     assert 'FROM "Networks"' in g.sql
-    assert 'JOIN "VirtualMachines" ON "Networks"."NetworkID" = "VirtualMachines"."NetworkID"' in g.sql
-    assert 'JOIN "VMwareCluster" ON "VirtualMachines"."ClusterID" = "VMwareCluster"."ClusterID"' in g.sql
+    # Multi-line layout: JOIN on its own line, ON on the next (AP-43).
+    assert 'JOIN "VirtualMachines"' in g.sql
+    assert '    ON "Networks"."NetworkID" = "VirtualMachines"."NetworkID"' in g.sql
+    assert 'JOIN "VMwareCluster"' in g.sql
+    assert '    ON "VirtualMachines"."ClusterID" = "VMwareCluster"."ClusterID"' in g.sql
     assert g.params == {}
 
 
@@ -34,9 +37,10 @@ def test_composite_join_renders_all_pairs_with_and():
                         (("ClusterID", "ClusterID"), ("PoolKey", "PoolKey"))),),
     )
     g = generate_sql(path, selects=(Selection("ResourcePool", "Name"),))
-    assert ('JOIN "ResourcePool" ON '
-            '"VMPlacement"."ClusterID" = "ResourcePool"."ClusterID" AND '
-            '"VMPlacement"."PoolKey" = "ResourcePool"."PoolKey"') in g.sql
+    # Each pair on its own line: ON … then AND … ("=" aligned via padding).
+    assert 'ON "VMPlacement"."ClusterID" = "ResourcePool"."ClusterID"' in g.sql
+    assert 'AND "VMPlacement"."PoolKey"' in g.sql
+    assert '= "ResourcePool"."PoolKey"' in g.sql
 
 
 def test_filter_uses_named_placeholder():
@@ -120,6 +124,14 @@ def test_join_types_invalid_raises():
                      join_types=("OUTER",))
 
 
+def test_inline_ends_with_semicolon_executed_sql_does_not():
+    # AP-43: the copy/display variant is terminated with ';' (paste-and-run);
+    # the executed parameterised `sql` is not.
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))
+    assert g.sql_inline.endswith(";")
+    assert not g.sql.rstrip().endswith(";")
+
+
 def test_determinism():
     a = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))
     b = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))
@@ -144,14 +156,11 @@ def test_three_selections():
                      selects=(Selection("Networks", "VLAN"),
                               Selection("VMwareCluster", "ClusterID"),
                               Selection("VirtualMachines", "VMID")))
-    assert '"Networks"."VLAN"' in g.sql
-    assert '"VMwareCluster"."ClusterID"' in g.sql
-    assert '"VirtualMachines"."VMID"' in g.sql
-    # All three must appear on the same SELECT line
-    select_line = g.sql.splitlines()[0]
-    assert '"Networks"."VLAN"' in select_line
-    assert '"VMwareCluster"."ClusterID"' in select_line
-    assert '"VirtualMachines"."VMID"' in select_line
+    # AP-43: one column per indented line under a bare SELECT.
+    assert g.sql.splitlines()[0] == "SELECT"
+    assert '    "Networks"."VLAN",' in g.sql
+    assert '    "VMwareCluster"."ClusterID",' in g.sql
+    assert '    "VirtualMachines"."VMID"' in g.sql      # last column, no trailing comma
 
 
 # ===== AP-3: DISTINCT =====

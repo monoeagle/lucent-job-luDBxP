@@ -4,6 +4,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-43 — Lesbares mehrzeiliges SQL-Layout (v0.26.0)
+- [x] `core/sqlgen.py`: eine Spalte/Zeile, jeder JOIN eigene Zeile mit `ON`/`AND` darunter, `=` ausgerichtet (Composite-Keys via ljust-Padding)
+- [x] WHERE mehrzeilig (`WHERE …` / `  AND …`); ORDER BY/LIMIT unverändert
+- [x] Copy/Anzeige-Variante (`sql_inline`) endet mit `;` (paste-and-run); ausgeführtes `sql` ohne — Run-Endpoint verifiziert (10 Zeilen)
+- [x] Soft-Wrap-Bedenken geklärt: Umbruch war rein visuell (echte `\n` bleiben); neues Format macht lange Zeilen ohnehin überflüssig
+- [x] 10 Format-Test-Assertions angepasst + Semikolon-Test; 195 grün; Playwright (Format + kein H-Scroll + Copy mit `;`)
+
 ## AP-42 — Join-Builder-Politur (v0.24.1–v0.25.0)
 - [x] Verbose Fan-out-Warntext pro Ast entfernt (Richtung steht als N-1/1-N-Chip am Join)
 - [x] Eine kompakte Kachel „1-N kann Zeilen vervielfachen (Fan-out)" unter der Pfadliste, nur bei vorhandenem 1-N

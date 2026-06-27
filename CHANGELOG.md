@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.26.0] — 2026-06-27
+### Changed
+- **AP-43 — Readable SQL layout:** generated SQL is now **multi-line formatted** — one column
+  per line, each `JOIN` on its own line with `ON`/`AND` beneath it and **aligned `=`** for
+  composite keys. Lines stay short (no horizontal scroll / wrap worries) and a pasted statement
+  is clean. The **copy/display** variant ends with `;` (paste-and-run); the internally executed
+  parameterised SQL does not. 195 tests green, 1 skipped.
+
 ## [0.25.0] — 2026-06-27
 ### Changed
 - **AP-42 — Join-builder polish:** the verbose per-branch fan-out warning text ("branch X is

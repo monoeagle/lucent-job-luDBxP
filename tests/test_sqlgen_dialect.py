@@ -23,27 +23,29 @@ def _sel():
 
 def test_default_dialect_double_quotes():
     g = generate_sql(_path(), selects=_sel())
-    assert 'SELECT "VirtualMachine"."VMID"' in g.sql
+    assert '    "VirtualMachine"."VMID"' in g.sql       # column on its own line
     assert 'FROM "VirtualMachine"' in g.sql
-    assert 'JOIN "Host" ON "VirtualMachine"."HostID" = "Host"."HostID"' in g.sql
+    assert 'JOIN "Host"' in g.sql
+    assert '    ON "VirtualMachine"."HostID" = "Host"."HostID"' in g.sql
 
 
 def test_mysql_backtick_quoting():
     g = generate_sql(_path(), selects=_sel(), dialect=MYSQL)
-    assert "SELECT `VirtualMachine`.`VMID`" in g.sql
+    assert "    `VirtualMachine`.`VMID`" in g.sql
     assert "FROM `VirtualMachine`" in g.sql
 
 
 def test_mssql_bracket_quoting():
     g = generate_sql(_path(), selects=_sel(), dialect=MSSQL)
-    assert "SELECT [VirtualMachine].[VMID]" in g.sql
-    assert "JOIN [Host] ON [VirtualMachine].[HostID] = [Host].[HostID]" in g.sql
+    assert "    [VirtualMachine].[VMID]" in g.sql
+    assert "JOIN [Host]" in g.sql
+    assert "    ON [VirtualMachine].[HostID] = [Host].[HostID]" in g.sql
 
 
 def test_postgres_and_oracle_double_quote():
     for d in (POSTGRES, ORACLE):
         g = generate_sql(_path(), selects=_sel(), dialect=d)
-        assert 'SELECT "VirtualMachine"."VMID"' in g.sql
+        assert '    "VirtualMachine"."VMID"' in g.sql
 
 
 def test_quote_escaping_doubles_close_char():
@@ -66,13 +68,13 @@ def test_limit_suffix_for_sqlite_pg_mysql():
 
 def test_limit_mssql_uses_top():
     g = generate_sql(_path(), selects=_sel(), limit=10, dialect=MSSQL)
-    assert g.sql.startswith("SELECT TOP 10 ")
+    assert g.sql.splitlines()[0] == "SELECT TOP 10"
     assert "LIMIT" not in g.sql
 
 
 def test_distinct_top_order_mssql():
     g = generate_sql(_path(), selects=_sel(), distinct=True, limit=10, dialect=MSSQL)
-    assert g.sql.startswith("SELECT DISTINCT TOP 10 ")
+    assert g.sql.splitlines()[0] == "SELECT DISTINCT TOP 10"
 
 
 def test_limit_oracle_fetch_first():

@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T13:17:42",
+  "generatedAt": "2026-06-27T13:30:44",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 44,
+      "commits": 45,
       "kinds": {
+        "feat": 7,
         "other": 22,
         "fix": 2,
-        "feat": 6,
         "docs": 14
       },
       "list": [
+        {
+          "sha": "7e146a9",
+          "subject": "feat: AP-42 Join-Builder-Politur — Fan-out-Kachel statt verbose Warntext, SQL-Umbruch ohne H-Scroll — v0.25.0",
+          "kind": "feat"
+        },
         {
           "sha": "dff375c",
           "subject": "data: Demo-CMDB um Waisen-Zeilen ergänzt (Cluster EMPTY-CL01 ohne Datastore/Host, Network ohne VM)",
@@ -791,7 +796,7 @@
     }
   },
   "stats": {
-    "totalCommits": 149,
+    "totalCommits": 150,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -801,7 +806,7 @@
       },
       {
         "kind": "feat",
-        "count": 36
+        "count": 37
       },
       {
         "kind": "other",
@@ -828,7 +833,7 @@
         "count": 1
       }
     ],
-    "testCount": 193
+    "testCount": 194
   },
   "phases": []
 }

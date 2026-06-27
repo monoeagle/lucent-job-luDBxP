@@ -47,10 +47,10 @@ def test_composite_fk_joins_all_column_pairs(demo_graph):
     sql = generate_sql(
         path, (Selection("VirtualMachine", "Name"), Selection("ResourcePool", "Name"))
     ).sql
-    join_line = next(ln for ln in sql.splitlines() if ln.startswith('JOIN "ResourcePool"'))
-    assert join_line.count("=") == 2         # both column pairs joined
-    assert " AND " in join_line              # combined with AND
-    assert "ClusterID" in join_line and "PoolKey" in join_line
+    # AP-43: composite FK → each pair on its own ON/AND line.
+    assert 'JOIN "ResourcePool"' in sql
+    assert 'ON "VMPlacement"."ClusterID" = "ResourcePool"."ClusterID"' in sql
+    assert 'AND "VMPlacement"."PoolKey"' in sql and '= "ResourcePool"."PoolKey"' in sql
 
 
 def test_multiple_fks_between_two_tables_stay_alternative(demo_graph):
