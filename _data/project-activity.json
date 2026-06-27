@@ -1,18 +1,23 @@
 {
-  "generatedAt": "2026-06-27T11:14:26",
+  "generatedAt": "2026-06-27T11:28:53",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 35,
+      "commits": 36,
       "kinds": {
-        "feat": 1,
+        "feat": 2,
         "docs": 13,
         "other": 21
       },
       "list": [
+        {
+          "sha": "c18318d",
+          "subject": "feat: AP-37 Start⇄Ziel-Tausch-Knopf + Fan-out-Doku Beispiel 3 (verkürzen oder filtern) — v0.20.0",
+          "kind": "feat"
+        },
         {
           "sha": "457de81",
           "subject": "feat: AP-36 Fan-out-Richtung pro Join sichtbar (N-1/1-N-Chips in Pfad-Liste + Graph-Kantenlabel) — v0.19.0",
@@ -745,7 +750,7 @@
     }
   },
   "stats": {
-    "totalCommits": 140,
+    "totalCommits": 141,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -755,7 +760,7 @@
       },
       {
         "kind": "feat",
-        "count": 31
+        "count": 32
       },
       {
         "kind": "other",
@@ -782,7 +787,7 @@
         "count": 1
       }
     ],
-    "testCount": 171
+    "testCount": 179
   },
   "phases": []
 }

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.20.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.21.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1033,7 +1033,12 @@ Ziel-Tabelle; mehrere voneinander unabhängige Ziele in einer Abfrage sind nicht
 <li>Wert eingeben</li>
 <li>Mehrere Filter werden mit UND verknüpft</li>
 </ol>
-<p><strong>Ausgabe:</strong> SQL mit <code>WHERE</code>-Klausel und parametrisierten Platzhaltern.</p>
+<p><strong>Ausgabe:</strong> SQL mit <code>WHERE</code>-Klausel. Der <strong>angezeigte und kopierte</strong> SELECT ist
+<strong>direkt lauffähig</strong> — die Filterwerte sind als Literale eingesetzt (z. B.
+<code>WHERE "Cluster"."ClusterID" = 1</code>), sodass er sich ohne Nacharbeit in einen externen
+SQL-Editor einfügen lässt. Intern führt das Tool die Abfrage <strong>parametrisiert</strong>
+(<code>:p0</code> + gebundene Werte) read-only aus — injection-sicher; die <code>:p0</code>-Form taucht in der
+Oberfläche nicht mehr auf.</p>
 <hr />
 <h2 id="uc-3-fk-graph-erkunden">UC-3: FK-Graph erkunden<a class="headerlink" href="#uc-3-fk-graph-erkunden" title="Permanent link">&para;</a></h2>
 <p><strong>Ziel:</strong> Die Beziehungsstruktur einer unbekannten Datenbank visuell verstehen.</p>
