@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T16:54:58",
+  "generatedAt": "2026-06-27T17:00:09",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 63,
+      "commits": 64,
       "kinds": {
-        "docs": 21,
+        "docs": 22,
         "feat": 15,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "3b9743f",
+          "subject": "docs: Matching-Tabelle wieder max. 2-spaltig (Vorgabe), Board-Feld dafür breiter",
+          "kind": "docs"
+        },
         {
           "sha": "228f2ba",
           "subject": "docs: Matching-Tabelle breiter (46% / 3 Spalten / 11px), Board-Feld entsprechend kleiner (links)",
@@ -886,13 +891,13 @@
     }
   },
   "stats": {
-    "totalCommits": 168,
+    "totalCommits": 169,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 64
+        "count": 65
       },
       {
         "kind": "feat",

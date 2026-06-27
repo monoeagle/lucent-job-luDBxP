@@ -1745,7 +1745,7 @@ body:has(.adb-home-layout) .md-content {
   min-height: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-start;   /* Board linksbündig statt zentriert */
+  justify-content: center;
 }
 .adb-home-arch--split .adb-home-arch__main img {
   max-width: 100%;
@@ -1775,71 +1775,6 @@ body:has(.adb-home-layout) .md-content {
   object-fit: contain;
 }
 
-/* AP-Matching als rechtes Band: "normale" Lookup-Liste, 2-spaltig (CSS-Columns),
-   nimmt nur so viel Breite wie nötig, scrollt vertikal. */
-.adb-home-arch__band.adb-ap-match {
-  flex: 0 0 auto;         /* max. 2 Spalten → schmaler; Board-Feld wird breiter */
-  width: 480px;
-  max-width: 480px;
-  overflow: auto;
-  align-items: stretch;
-  justify-content: flex-start;
-  padding: 0 0 0 14px;
-  flex-direction: column;
-}
-.adb-ap-match-title {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: #1A1A2E;
-  color: #fff;
-  padding: 3px 8px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.adb-ap-match-grid {
-  column-count: 2;       /* max. 2 Spalten (Vorgabe) */
-  column-gap: 16px;
-  font-size: 11px;
-  line-height: 1.3;
-  padding-top: 2px;
-}
-.adb-ap-match-grid .grp,
-.adb-ap-match-grid .row {
-  break-inside: avoid;
-}
-.adb-ap-match-grid .grp {
-  break-after: avoid;
-  background: #eef2f7;
-  font-weight: 700;
-  color: #444;
-  padding: 2px 6px;
-  margin-top: 3px;
-}
-.adb-ap-match-grid .row {
-  padding: 1px 6px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  overflow-wrap: anywhere;
-}
-.adb-ap-match-grid .row b {
-  color: #2E6FAE;
-  font-weight: 600;
-}
-.adb-ap-match-grid .row.struck {
-  color: #999;
-  text-decoration: line-through;
-  text-decoration-color: #bbb;
-}
-.adb-ap-match-grid .row.struck b {
-  color: #999;
-}
-[data-md-color-scheme="slate"] .adb-ap-match-grid .row {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-[data-md-color-scheme="slate"] .adb-ap-match-grid .grp {
-  background: #232838;
-  color: #ccc;
-}
 
 /* 3-Spalten-Grid am unteren Rand. */
 .adb-home-footer {

@@ -24,9 +24,9 @@ flowchart TB
         direction TB
         V1["Verbindungs-Mgr"]
         V2["AP-2\nVerbinden-Fix"]
-        V3["AP-10\nTopbar"]
-        V4["AP-12\nMSSQL"]
-        V5["AP-22\nImplizite-FK"]
+        V3["AP-10\nConn in Topbar"]
+        V4["AP-12\nMSSQL testbar"]
+        V5["AP-22\nImplizite FKs"]
         V3 --> V1
         V1 ~~~ V2 ~~~ V5 ~~~ V4
     end
@@ -37,28 +37,28 @@ flowchart TB
         J1["Filter-UI"]
         J2["AP-3\nSQL-Optionen"]
         J3["AP-4\nSELECT-Spalten"]
-        J4["AP-5\nAusgabe"]
-        J5["AP-6\nSteuerung"]
-        J6["AP-9\nMaximiert"]
+        J4["AP-5\nAusgabe-Tabelle"]
+        J5["AP-6\nAusgabe-Steuerung"]
+        J6["AP-9\nErgebnis maximiert"]
         J7["AP-23\nJoin-Maske"]
-        J8["AP-20\nCopy-Icon"]
-        J9["AP-29\nDialekt"]
+        J8["AP-20\nCopy-Icon SELECT"]
+        J9["AP-29\nSQL-Dialekt"]
         J10["AP-30\nN-1-Stern"]
-        J11["AP-25\nAnalyzer"]
-        J12["AP-36\nFan-out"]
-        J13["AP-37\nStart⇄Ziel"]
-        J14["AP-38\nCopy-SQL"]
-        J15["AP-39\nAnalyzer+"]
-        J16["AP-40\nLegende"]
-        J17["AP-41\nJoin-Typ"]
-        J18["AP-42\nPolitur"]
-        J19["AP-43\nSQL-Layout"]
-        J20["AP-44\nKompakt"]
+        J11["AP-25\nSQL-Analyzer"]
+        J12["AP-36\nFan-out-Richtung"]
+        J13["AP-37\nStart⇄Ziel-Tausch"]
+        J14["AP-38\nLauffähiges SQL"]
+        J15["AP-39\nAnalyzer vertieft"]
+        J16["AP-40\nGraph-Legende"]
+        J17["AP-41\nJoin-Typ/Schritt"]
+        J18["AP-42\nBuilder-Politur"]
+        J19["AP-43\nMehrzeiliges SQL"]
+        J20["AP-44\nKompakt + NULL"]
         J21["AP-46\nDetailkarten"]
-        J22["AP-47\nPfad-Indikator"]
-        J23["AP-48\nTextbox"]
-        J24["AP-49\nFeinschliff"]
-        J25["AP-45\nSpaltenkopf"]
+        J22["AP-47\nPfad + Waisen"]
+        J23["AP-48\nAnalyzer-Textbox"]
+        J24["AP-49\nAnalyzer-Feinschliff"]
+        J25["AP-45\nSpaltenkopf-Aktionen"]
         %% In 5 parallele Spalten gepackt (statt einer 25-Boxen-Säule) → kompaktes Gitter
         J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5
         J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10
@@ -71,12 +71,12 @@ flowchart TB
     subgraph C4["🕸️  Graph-Visualisierung"]
         direction TB
         G1["Graph-Vis"]
-        G2["AP-1\nInteraktion"]
-        G3["AP-7\nZoom"]
-        G4["AP-8\nAuswahl-Fix"]
-        G5["AP-16\ndagre"]
+        G2["AP-1\nGraph-Interaktion"]
+        G3["AP-7\nFeiner Zoom"]
+        G4["AP-8\nAuswahl-Reset-Fix"]
+        G5["AP-16\ndagre-Layout"]
         G6["AP-32\nZoom-Slider"]
-        G7["AP-28\nScroll"]
+        G7["AP-28\nScroll nur Ergebnis"]
         G8["AP-13\nUI-Politur"]
         G9["AP-21\nKosmetik"]
         G5 --> G1
@@ -89,7 +89,7 @@ flowchart TB
         D1["3-Panel-Layout"]
         D2["Datenvorschau"]
         D3["Views"]
-        D4["AP-18\nMulti-Join"]
+        D4["AP-18\nMulti-Tabellen-Join"]
         D1 ~~~ D2 ~~~ D3 ~~~ D4
     end
 
@@ -98,12 +98,12 @@ flowchart TB
         direction TB
         B1["Demo-CMDB"]
         B2["run.sh / ps1"]
-        B3["AP-15\nIdempotent"]
-        B4["AP-14\nAppImage"]
-        B5["AP-35\nvenv-Fix"]
-        B7["AP-31\nTerminal"]
-        B8["AP-33\nLogging"]
-        B9["AP-34\nTray-Icon"]
+        B3["AP-15\nAbbruchsicher"]
+        B4["AP-14\nPython-3.14 / AppImage"]
+        B5["AP-35\nrun.ps1 venv-Fix"]
+        B7["AP-31\nTerminal-Server"]
+        B8["AP-33\nLogging sauber"]
+        B9["AP-34\nTray-Icon-Launcher"]
         B2 --> B3
         B3 --> B4
         B3 --> B5
@@ -115,10 +115,10 @@ flowchart TB
     subgraph C7["📚  Doku & Prozess"]
         direction TB
         K1["Doku / Poster"]
-        K2["AP-26\nAudits"]
+        K2["AP-26\nAudit-Sessions"]
         K3["AP-27\nInsights"]
-        K5["AP-24\nKPIs"]
-        K4["AP-19\nPattern"]
+        K5["AP-24\nSession-KPIs"]
+        K4["AP-19\n.pattern_transfer"]
         K1 ~~~ K2 ~~~ K3 ~~~ K5 ~~~ K4
     end
 
