@@ -9,6 +9,7 @@ Macht den Projektverlauf auswertbar (Tokens/Commit, Tokens/Feature, Tests-Δ je 
 | 2 | 2026-06-26 | Opus 4.8 (1M) Hauptschleife; Subagenten sonnet (Verify/Screenshots) + general-purpose/opus (Deploy) | ~800k (Schätzung; Session lief in Auto-Compaction, `/context`-Endstand nicht abgerufen) | 26 (31→56; 1 fremd: 9d55a9c) | 81 → 111 | 0.1.0 → 0.3.1 | ~25 (Pre-Compaction: AP-1/2-SDD + Wheelhouse + Docs; Post-Compaction ~7: Verify + Screenshots + 4× Deploy) | 7 / 1 (Commit-Ebene; AP-8/AP-2-Fixes gebündelt) | 11267 / 98 (inkl. gener. SVG/JSON/Screenshots/Wheels) | Playwright e2e (21/21 + 7 Screenshots) + Chrome ✓ | Session 2: AP-1…AP-9; read-only-Ausführung eingeführt; Doku-Versions-Drift (icon-rail.js/zensical/poster) behoben; Startseite 2-spaltig + AP-Band 3-spaltig |
 | 3 | 2026-06-26 | Opus 4.8 (1M) Hauptschleife; **keine Subagenten** (alles inline); Playwright/Chromium zur UI-Verifikation | ~640k (Schätzung; letzter `/context` 584.7k bei 58 %) | 10 eigene (56→69; +7 Session-2-Commits beim Rebase integriert) | 111 → 118 | 0.3.1 → 0.10.0 | 0 | 6 / 1 (+ 8 docs, 1 build) | ~1419 ins. / 101 Dateien (inkl. der integrierten Session-2-Commits) | Playwright/Chromium (AP-10/13/20/21: Clipboard-, Höhen-, Filter-, Splitter-Checks) ✓ | Session 3: Remote-Divergenz → Rebase + AP-Umnummerierung; Python-3.14-Wheelhouse (cp314); AP-10/11/13/20/21 komplett + AP-12-Backend/AP-15-Windows; Backlog AP-16…25 dokumentiert; **Windows-only** (Linux abends) |
 | 5 | 2026-06-27 | Opus 4.8 (1M) Hauptschleife; Subagenten general-purpose/opus (Doku-Reconcile + UI-Screenshots) | ~799k (`/context` Endstand 799.2k bei 80 %) | 17 eigene (0 Merges; ab Pull 05de9a5) | 118 → 138 | 0.11.3 → 0.16.0 | 2 | feature-lastig (5 APs) | 3468 ins. / 68 Dateien (inkl. gener. SVG/Screenshots/Site) | Chrome + Playwright + **echtes MSSQL 2022** (podman) ✓ | Session 5 (Linux): AP-15/33/14/29/12 → v0.16.0; Python 3.14 via uv; MSSQL real getestet; Backlog konsolidiert (AP-17 gestrichen, AP-22/24 entschieden, AP-30 rescoped); Doku/Pages durchgehend deployed. **Session 4 (Windows, v0.10→0.11.3) noch nachzutragen.** |
+| 6 | 2026-06-27 | Opus 4.8 (1M) Hauptschleife; Subagenten **haiku** (Transkription) / **sonnet** (Task-Reviews+Integration) / **opus** (Final-Whole-Branch-Reviews) | ~473k (`/context` Endstand 473.3k bei 47 %) | 26 eigene (2 FF-Merges, 0 Merge-Commits) | 138 → 171 | 0.16.0 → 0.18.0 | ~32 (AP-30 ~16 + AP-25 ~16: Implementer+Task-Reviewer je Task, Fixer, 2× Final/opus) | 2 feat (AP-30, AP-25; beide minor) | 2788 ins. / 52 Dateien (Code-only 626 ins. / 9 Dateien; Rest gener. SVG/Site) | Chrome + Playwright (AP-30 Fan-out-Warnung, AP-25 Analyzer-Tab + Graph-Highlight) ✓ | Session 6 (Linux): AP-30 (N-1-Stern) + AP-25 (read-only SQL-Analyzer, sqlglot) → v0.18.0 via SDD; **finale opus-Reviews fingen 3 echte Bugs** (PG/MSSQL-500, NO_WHERE-Subquery, UNKNOWN_COLUMN-Case) die SQLite-only-Tests maskierten; Architekturbild + zensical-Drift nachgezogen; gh-pages deployed. **Session 4 (Windows) weiter offen.** |
 
 ## Details Session 1
 
@@ -73,3 +74,29 @@ Macht den Projektverlauf auswertbar (Tokens/Commit, Tokens/Feature, Tests-Δ je 
 - **Versionierung:** 0.3.1 → 0.10.0. Regel etabliert: **1.0.0 nur auf Ansage**, sonst Feature → minor / Fix → patch.
 - **Geräte-Scope:** Windows-only; Linux-Arbeiten (Doku-Site bauen, `run.sh`, AppImage,
   realer MSSQL-Test) bewusst auf die Abend-Session am anderen Rechner verschoben.
+
+## Details Session 6
+
+- **Modell-Mix:** Hauptschleife Opus 4.8 (1M). Subagenten konsequent nach Aufgabe:
+  **haiku** für Transkriptions-Tasks (Plan enthielt vollständigen Code), **sonnet** für
+  Task-Reviews + Integration (Routen, Frontend), **opus** für die beiden finalen
+  Whole-Branch-Reviews. Zwei Features je als eigenständiges SDD (Brainstorm → Spec →
+  Plan → 6 bzw. 7 Tasks → Final-Review → Merge).
+- **Arbeitspakete:** AP-30 (N-1-Stern: Auto-Weaving der Select-/ORDER-BY-/Filter-Tabellen
+  + Fan-out-Warnung) → v0.17.0; AP-25 Scheibe 1 (read-only SQL-Analyzer via sqlglot:
+  parsen/klassifizieren, gelesen/geschrieben, Warnungen, Graph-Highlight; 2 Modi) → v0.18.0.
+- **Review-Fang-Quote:** Per-Task-Reviews fingen u. a. einen vom Plan übersehenen 3.
+  `filter_tables=`-Keyword-Aufrufer (AP-30) und mehrere Test-Hygiene-Punkte. **Die finale
+  opus-Review (AP-25) fing 3 echte Defekte, die die 100 % grüne Suite passiert hatten:**
+  PostgreSQL/MSSQL-500 (Dialektname nicht sqlglot-kompatibel; SQLite-only-Tests maskierten),
+  NO_WHERE-False-Negative (Subquery-WHERE), UNKNOWN_COLUMN-False-Positive (case-sensitiv).
+  Siehe Insight `2026-06-27-finalreview-faengt-sqlite-blindspot.md`.
+- **Unicode-Lehre (2. Session in Folge):** haiku lässt das schließende `„ … “` (U+201C)
+  fallen → ASCII `"`; Controller byte-verifiziert + fixt manuell.
+- **Doku/Deploy:** Architekturbild (Diagramm 1+3+Prosa) um den Analyzer erweitert;
+  `zensical.toml`-Versionsdrift (v0.17.0) gefangen; gh-pages 2× deployed (v0.17.0, v0.18.0).
+- **Abgeleitet (~473k Hauptschleifen-Token):** grob **~18k Token/Commit**,
+  **~236k Token/MINOR-Feature** (2 Features), **Test-Δ +33 / 473k ≈ 7 Tests je 100k Token**.
+  Niedrigerer Token/Commit als Session 1–2, weil die teure Arbeit (Implementierung +
+  Reviews) in Subagenten lag und die Hauptschleife v. a. orchestrierte.
+- **Offen:** Session 4 (Windows, v0.10→0.11.3) weiterhin nicht nachgetragen.
