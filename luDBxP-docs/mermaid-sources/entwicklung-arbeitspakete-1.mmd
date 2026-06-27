@@ -45,7 +45,10 @@ flowchart LR
         J9["AP-29 · SQL-Dialekt umschalten"]
         J10["AP-30 · N-1-Stern (mehrere Lookup-Ziele)"]
         J11["AP-25 · SQL-Statement-Analyzer"]
-        J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5 ~~~ J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10 ~~~ J11
+        J12["AP-36 · Fan-out-Richtung pro Join (N-1/1-N)"]
+        J13["AP-37 · Start⇄Ziel-Tausch-Knopf"]
+        J14["AP-38 · Kopierbares lauffähiges SQL"]
+        J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5 ~~~ J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10 ~~~ J11 ~~~ J12 ~~~ J13 ~~~ J14
     end
 
     %% ── C4 · Graph-Visualisierung ────────────────────────────────────────
@@ -116,7 +119,7 @@ flowchart LR
 
     class E1,E2,E3,E4,E5,E6,E7,E8 done
     class V1,V2,V3,V4,V5 done
-    class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11 done
+    class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14 done
     class G1,G2,G3,G4,G5,G6,G7,G8,G9 done
     class D1,D2,D3,D4 done
     class B1,B2,B3,B4,B8 done
