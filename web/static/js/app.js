@@ -336,11 +336,15 @@ function openJoinBuilder() {
 }
 
 // ===== SQL-Analyzer (AP-25 / AP-39) =====
-function clearAnalyzeMarkers() {
+// Join-Builder path highlight and Analyzer markers are mutually exclusive views
+// of the graph — clearing all of them keeps only one active at a time (AP-40:
+// the blue analyzer trace must vanish once a join path is built, and vice versa).
+function clearGraphHighlights() {
   if (!CY) return;
-  CY.nodes().removeClass("analyze-read analyze-write");
-  CY.edges().removeClass("analyze-edge");
+  CY.elements().removeClass(
+    "hl dir-many dir-one analyze-read analyze-write analyze-edge");
 }
+function clearAnalyzeMarkers() { clearGraphHighlights(); }
 
 // Colour the read/written nodes and draw the statement's JOIN edges in the graph
 // (AP-39: edges, not only nodes — so the SELECT is visibly traced).
@@ -847,7 +851,7 @@ function resetGraphSelection() {
 // the user can click on a card to start a fresh selection.)
 function clearSelectionAndCards() {
   resetGraphSelection();
-  if (CY) CY.elements().removeClass("hl dir-many dir-one");  // clear highlighted join path
+  clearGraphHighlights();   // join path + analyzer markers
   if ($("uml_cards")) $("uml_cards").innerHTML = "";  // close the cards below
 }
 
@@ -991,7 +995,7 @@ function setupZoomControl() {
 // colour; falls back to legacy [a, b] pairs (then unlabelled).
 function highlightPath(steps) {
   if (!CY) return;
-  CY.elements().removeClass("hl dir-many dir-one");
+  clearGraphHighlights();   // also drops any stale analyzer markers (AP-40)
   const nodes = new Set();
   for (const st of steps) {
     const a = st.left ?? st[0];

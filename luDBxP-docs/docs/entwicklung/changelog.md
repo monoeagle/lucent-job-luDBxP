@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.23.0] — 2026-06-27
+### Hinzugefügt
+- **AP-40 — Graph-Legende** (klein, oben links im Schema-Graph): erklärt die
+  Hervorhebungen — blau = Analyzer (gelesen/Joins), rot = Analyzer (geschrieben),
+  orange = Join-Pfad, N-1/1-N = Join-Richtung, grüner/roter Rahmen = Start/Ziel.
+### Behoben
+- **Überlagernde Graph-Marker:** Join-Builder-Pfad und Analyzer-Markierungen sind jetzt
+  **wechselseitig exklusiv** — die blaue Analyzer-Spur verschwindet, sobald ein Join-Pfad
+  gebaut wird (und umgekehrt). Vorher blieben blaue Knoten/Kanten neben dem orangen Pfad
+  stehen. Verifiziert via Playwright. 190 Tests grün, 1 skipped.
+
 ## [0.22.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-39 — SQL-Analyzer: Struktur-/Klauselanalyse, Graph-Zeichnung, Lints, Komplexität:**

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.23.0] — 2026-06-27
+### Added
+- **AP-40 — Graph legend** (small, top-left of the schema graph): explains the highlights —
+  blue = Analyzer (read/joins), red = Analyzer (written), orange = join path, N-1/1-N = join
+  direction, green/red ring = start/target.
+### Fixed
+- **Overlapping graph markers:** the join-builder path and the analyzer markers are now
+  **mutually exclusive** — the blue analyzer trace disappears as soon as a join path is built
+  (and vice versa). Previously blue nodes/edges lingered next to the orange path. Verified via
+  Playwright. 190 tests green, 1 skipped.
+
 ## [0.22.0] — 2026-06-27
 ### Added
 - **AP-39 — SQL Analyzer: structure/clause analysis, graph drawing, lints, complexity:**

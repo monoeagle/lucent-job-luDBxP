@@ -4,6 +4,11 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-40 — Graph-Legende + Fix überlagernde Marker (v0.23.0)
+- [x] Kleine Legende oben links im Schema-Graph (blau=Analyzer gelesen/Joins, rot=geschrieben, orange=Join-Pfad, N-1/1-N=Richtung, grün/rot Rahmen=Start/Ziel)
+- [x] `clearGraphHighlights()` — Join-Pfad- und Analyzer-Marker wechselseitig exklusiv; blaue Spur verschwindet beim Join-Bauen (und umgekehrt); auch „Auswahl zurücksetzen" räumt alles
+- [x] Playwright-verifiziert (nach Join-Bauen: analyze-Marker 0, hl-Kanten vorhanden; Legende sichtbar)
+
 ## AP-39 — SQL-Analyzer vertieft (Struktur/Klauseln/Graph/Lints/Komplexität) (v0.22.0)
 - [x] `core/sqlanalyze.py`: Klausel-/Strukturextraktion aus AST — `columns`, `joins` (kind+ON), `edges`, `filters`, `group_by`, `having`, `order_by`, `distinct`, `limit`, `structure`-Zähler
 - [x] Komplexitäts-Score (gewichtet: Joins/Subqueries/CTEs/UNION/Window/Aggregate/CASE) + Note A–E

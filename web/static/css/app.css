@@ -69,6 +69,26 @@ body {
 #graph_relayout { font-weight: normal; font-size: .76rem; padding: .15rem .45rem; }
 #graph { flex: 1 1 auto; min-height: 0; }  /* fills panel, never scrolls the page */
 
+/* --- graph legend overlay (AP-40) --- */
+.graph-legend {
+  position: absolute; top: 42px; left: 8px; z-index: 5; pointer-events: none;
+  background: rgba(255,255,255,.88); border: 1px solid #ddd; border-radius: 4px;
+  padding: 5px 8px; font-size: .68rem; color: #444; line-height: 1.5;
+  display: flex; flex-direction: column; gap: 1px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+.graph-legend span { display: flex; align-items: center; gap: 5px; }
+.lg-sw { display: inline-block; width: 11px; height: 11px; border-radius: 2px; flex: 0 0 auto; }
+.lg-read  { background: #1a73e8; }
+.lg-write { background: #d93025; }
+.lg-line { width: 16px; height: 0; border-top: 3px solid; border-radius: 0; }
+.lg-path { border-color: #E0532E; }
+.lg-ring-s { background: #fff; border: 2px solid #1e7e34; }
+.lg-ring-t { background: #fff; border: 2px solid #c0392b; margin-left: 4px; }
+.lg-chip { font-size: .6rem; font-weight: 700; padding: 0 .25rem; border-radius: 3px; }
+.lg-one  { background: #e3f4e8; color: #1e7e34; }
+.lg-many { background: #fbeccf; color: #9a6700; margin-left: 3px; }
+
 /* --- UML card area (interactive join-path selection, below graph) --- */
 #uml_area {
   flex: 0 0 auto; max-height: 40%; overflow-y: auto;
