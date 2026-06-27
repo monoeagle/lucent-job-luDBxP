@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.31.0] — 2026-06-27
+### Fixed
+- **Parse error showed ANSI garbage:** sqlglot underlines the bad token with ANSI colour codes,
+  which rendered as `□[4m…□[0m` in the browser. These are now **stripped** — the message is clean
+  text. New layout: a "could not parse" label, then the message (starting "Invalid expression …")
+  with its multi-line SQL excerpt in a red box (that excerpt was the "offset" piece).
+### Changed
+- **AP-49 — Analyzer polish:** the input textbox is **larger** by default (~17 rem); the
+  **read-only** note now sits as a green **badge** set off from "Analysieren". 200 tests green, 1 skipped.
+
 ## [0.30.0] — 2026-06-27
 ### Changed
 - **AP-48 — SQL Analyzer: larger input + typo lint:**

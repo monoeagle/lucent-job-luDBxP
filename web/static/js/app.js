@@ -366,7 +366,10 @@ function applyAnalyzeMarkers(read, written, edges) {
 function renderAnalyzeResult(panel, res) {
   const out = panel.querySelector("#an_result");
   if (res.parse_error) {
-    out.innerHTML = `<p class="hint">Konnte nicht geparst werden: ${esc(res.parse_error)}</p>`;
+    // Label, then the (ANSI-stripped) error on its own line — preformatted, since
+    // sqlglot includes a multi-line SQL excerpt around the offending token.
+    out.innerHTML = `<p class="hint">Konnte nicht geparst werden:</p>` +
+      `<pre class="an-parse-error">${esc(res.parse_error)}</pre>`;
     clearAnalyzeMarkers();
     return;
   }
@@ -431,7 +434,7 @@ function openAnalyzer() {
     `<div class="analyzer">` +
     `<textarea id="an_sql" rows="14" placeholder="SQL-Statement hier einfügen … "></textarea>` +
     `<div class="row"><button id="an_run">Analysieren</button>` +
-    `<span class="hint">read-only — das Statement wird nie ausgeführt</span></div>` +
+    `<span class="an-readonly" title="Der Analyzer parst nur — er führt nichts auf der Datenbank aus">read-only — wird nie ausgeführt</span></div>` +
     `<div id="an_result"></div></div>`;
   panel.querySelector("#an_run").addEventListener("click", () => runAnalyze(panel));
 }

@@ -294,7 +294,15 @@ body {
 .an-l-info   { background: #e8f0fe; color: #1a4480; }
 /* AP-48: analyzer input — full width, monospace, only vertically resizable. */
 #an_sql { width: 100%; box-sizing: border-box; font-family: monospace;
-  font-size: .82rem; min-height: 9rem; resize: vertical; }
+  font-size: .82rem; min-height: 17rem; resize: vertical; }
+/* AP-49: read-only marker styled as a badge, set off from the run button. */
+.an-readonly { margin-left: 1rem; font-size: .74rem; font-weight: 600;
+  color: #1e7e34; background: #e3f4e8; border: 1px solid #bfe3c9;
+  padding: 1px 8px; border-radius: 10px; white-space: nowrap; }
+/* Parse error: the ANSI-free, multi-line sqlglot message, shown as-is. */
+.an-parse-error { background: #fdecea; color: #8a1f17; border: 1px solid #f3c5bf;
+  border-radius: 4px; padding: .5rem .6rem; margin: 2px 0 0;
+  font-size: .8rem; white-space: pre-wrap; overflow-wrap: anywhere; }
 .an-type { margin-bottom: 6px; }
 .an-struct { font-size: .82em; color: #555; margin: 0 0 8px; }
 .an-pill { font-size: .7rem; font-weight: 700; background: #ececf3; color: #444;

@@ -5,6 +5,7 @@ it, extracts the tables it reads and writes, and (in later layers) derives
 non-blocking warnings. On a parse failure no exception escapes: parse_error
 is set and the other fields stay empty.
 """
+import re
 from dataclasses import dataclass, field
 
 import sqlglot
@@ -30,6 +31,10 @@ _TYPE_NAMES = {
     exp.Update: "UPDATE",
     exp.Delete: "DELETE",
 }
+
+
+# Strips ANSI/CSI escape sequences (e.g. sqlglot's error-token underlining).
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
 
 @dataclass(frozen=True)
@@ -247,7 +252,9 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
     try:
         node = sqlglot.parse_one(sql, read=read)
     except (SqlglotError, ValueError) as exc:
-        return AnalysisResult("OTHER", (), (), (), str(exc))
+        # sqlglot underlines the offending token with ANSI escape codes; strip
+        # them so the browser shows clean text, not "□[4m…□[0m" garbage.
+        return AnalysisResult("OTHER", (), (), (), _ANSI_RE.sub("", str(exc)))
     if node is None:
         return AnalysisResult("OTHER", (), (), (), "empty statement")
 

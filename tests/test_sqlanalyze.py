@@ -244,3 +244,10 @@ def test_lint_suspicious_alias_flags_join_keyword_typo():
 def test_lint_suspicious_alias_quiet_for_correct_keyword_and_normal_alias():
     assert "SUSPICIOUS_ALIAS" not in _codes(analyze("SELECT a FROM t LEFT JOIN u ON t.x = u.y"))
     assert "SUSPICIOUS_ALIAS" not in _codes(analyze("SELECT a FROM t t1 JOIN u ON t1.x = u.y"))
+
+
+def test_parse_error_is_ansi_free():
+    # sqlglot underlines the bad token with ANSI codes; the result must be clean text.
+    r = analyze("SELECT a FROM t JOIN u ON x JOIN LEFTI w x y z")
+    assert r.parse_error is not None
+    assert "\x1b" not in r.parse_error and "[4m" not in r.parse_error

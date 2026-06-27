@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.31.0] — 2026-06-27
+### Behoben
+- **Parsefehler zeigte ANSI-Müll:** sqlglot unterstreicht das Fehler-Token mit ANSI-Farbcodes,
+  die im Browser als `□[4m…□[0m` erschienen. Werden jetzt **entfernt** — die Meldung ist sauberer
+  Text. Layout neu: Label „Konnte nicht geparst werden:", darunter die Meldung (beginnend mit
+  „Invalid expression …") samt mehrzeiligem SQL-Ausschnitt in einem roten Block (das „abgesetzte"
+  Stück war dieser Kontext-Ausschnitt).
+### Geändert
+- **AP-49 — Analyzer-Feinschliff:** Eingabe-Textbox per Default **größer** (~17 rem); der
+  **read-only**-Hinweis sitzt jetzt als grünes **Badge** abgesetzt neben „Analysieren". 200 Tests grün, 1 skipped.
+
 ## [0.30.0] — 2026-06-27
 ### Geändert
 - **AP-48 — SQL-Analyzer: größere Eingabe + Tippfehler-Lint:**

@@ -4,6 +4,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-49 — Analyzer-Feinschliff + ANSI-Fix (v0.31.0)
+- [x] Eingabe-Textbox per Default größer (`#an_sql` min-height 17rem), weiterhin nur vertikal verstellbar
+- [x] read-only-Hinweis als grünes Badge (`.an-readonly`), abgesetzt neben „Analysieren"
+- [x] **Fix:** ANSI-Escape-Codes (`_ANSI_RE`) aus `parse_error` entfernt — kein `□[4m…`-Müll mehr
+- [x] Parsefehler-Layout: Label + mehrzeiliger Fehler/SQL-Ausschnitt im `.an-parse-error`-Block (pre-wrap)
+- [x] Regressionstest (parse_error ANSI-frei), 200 grün; Playwright-verifiziert (Höhe 272px, Badge, sauberer Fehler)
+
 ## AP-48 — SQL-Analyzer: größere Eingabe + Tippfehler-Lint (v0.30.0)
 - [x] Eingabe-Textbox größer (~14 Zeilen, volle Breite) und **nur vertikal** verstellbar (`resize: vertical`, CSS `#an_sql`)
 - [x] Lint `SUSPICIOUS_ALIAS`: Alias mit Edit-Distanz ≤1 zu LEFT/RIGHT/INNER/OUTER/FULL/CROSS → „möglicher Tippfehler im Join-Typ" (fängt `LEFTI`, das sqlglot als Alias schluckt)
