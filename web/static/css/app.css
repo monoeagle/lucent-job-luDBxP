@@ -292,6 +292,9 @@ body {
 .an-l-danger { background: #fdecea; color: #b71c1c; }
 .an-l-warn   { background: #fff4e5; color: #8a5300; }
 .an-l-info   { background: #e8f0fe; color: #1a4480; }
+/* AP-48: analyzer input — full width, monospace, only vertically resizable. */
+#an_sql { width: 100%; box-sizing: border-box; font-family: monospace;
+  font-size: .82rem; min-height: 9rem; resize: vertical; }
 .an-type { margin-bottom: 6px; }
 .an-struct { font-size: .82em; color: #555; margin: 0 0 8px; }
 .an-pill { font-size: .7rem; font-weight: 700; background: #ececf3; color: #444;

@@ -165,6 +165,28 @@ def _structure_and_complexity(node) -> "tuple[dict, int, str]":
     return structure, score, grade
 
 
+def _within_edit1(a: str, b: str) -> bool:
+    """True if a and b differ by at most one insertion/deletion/substitution."""
+    la, lb = len(a), len(b)
+    if abs(la - lb) > 1:
+        return False
+    i = 0
+    while i < min(la, lb) and a[i] == b[i]:
+        i += 1
+    if i == min(la, lb):
+        return True                      # common prefix; one is the other + 1 char
+    if la == lb:
+        return a[i + 1:] == b[i + 1:]     # single substitution
+    if la > lb:
+        return a[i + 1:] == b[i:]         # deletion from a
+    return a[i:] == b[i + 1:]             # insertion into a
+
+
+# Join keywords whose typo'd form sqlglot silently swallows as a table alias
+# (e.g. "FROM t LEFTI JOIN u" → table t aliased "LEFTI").
+_JOIN_KEYWORD_LOOKALIKES = ("LEFT", "RIGHT", "INNER", "OUTER", "FULL", "CROSS")
+
+
 def _static_lints(node) -> list:
     """Schema-free static-quality lints (SELECT *, non-sargable predicates, …)."""
     out: list[AnalysisWarning] = []
@@ -188,6 +210,22 @@ def _static_lints(node) -> list:
                 out.append(AnalysisWarning(
                     "info", "FUNC_ON_COLUMN",
                     "Funktion auf einer Spalte in WHERE — ein Index darauf wird ignoriert."))
+                break
+    # Typo heuristic: sqlglot silently parses a mistyped join keyword as a table
+    # alias (LEFTI → alias). Flag aliases that closely resemble a join keyword.
+    flagged = set()
+    for tbl in node.find_all(exp.Table):
+        alias = (tbl.alias or "")
+        au = alias.upper()
+        if len(au) < 4 or au in flagged:
+            continue
+        for kw in _JOIN_KEYWORD_LOOKALIKES:
+            if au != kw and _within_edit1(au, kw):
+                flagged.add(au)
+                out.append(AnalysisWarning(
+                    "warn", "SUSPICIOUS_ALIAS",
+                    f'Tabellen-Alias „{alias}“ ähnelt dem Schlüsselwort „{kw}“ — '
+                    f'möglicher Tippfehler im Join-Typ?'))
                 break
     return out
 

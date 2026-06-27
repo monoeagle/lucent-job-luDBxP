@@ -72,7 +72,8 @@ Doku/AppImage/Projektposter.
 - **AP-43** — Lesbares SQL-Layout: mehrzeilig (eine Spalte/JOIN/ON-Bedingung pro Zeile, `=` ausgerichtet bei Composite-Keys), Copy endet mit `;` — v0.26.0
 - **AP-44** — Join-Builder kompakter (Button-Zeilen zusammengelegt, 1-N-Kachel oben rechts, mehr Tabellenhöhe) + Ergebnis-Hilfen: NULL-Hervorhebung, Statuszeile Zeilen·Join-Typ·Fan-out — v0.27.0
 - **AP-46** — Detailkarten folgen der Join-Builder-Auswahl: Graph zentriert wenn leer, sonst nach oben + Start/Ziel-Karten darunter (auch bei Dropdown-Auswahl) — v0.28.0–v0.28.1
-- **AP-47** — Pfad-Auswahl-Indikator `[*]`/`[ ]` statt Bullets + datengetriebener Waisen-Chip pro Join-Typ (`/api/orphan_check`, NOT-EXISTS-Probe) — v0.29.0
+- **AP-47** — Pfad-Auswahl-Indikator `[*]`/`[ ]` statt Bullets + count-basierter Waisen-Chip pro Join-Typ (`/api/orphan_check`, pfad-kontextbewusst) — v0.29.0–v0.29.1
+- **AP-48** — SQL-Analyzer: Eingabe-Textbox größer + nur vertikal verstellbar; Tippfehler-Lint `SUSPICIOUS_ALIAS` (Alias ähnelt Join-Schlüsselwort) — v0.30.0
 - **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
 - **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
 

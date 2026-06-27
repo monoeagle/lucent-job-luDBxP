@@ -233,3 +233,14 @@ def test_clean_select_has_no_lint_noise():
     r = analyze('SELECT "Host"."HostID" FROM "Host" WHERE "Host"."HostID" = 1')
     assert "SELECT_STAR" not in _codes(r)
     assert "LEADING_WILDCARD" not in _codes(r)
+
+
+def test_lint_suspicious_alias_flags_join_keyword_typo():
+    # sqlglot parses "LEFTI" as a table alias; the heuristic flags the likely typo.
+    r = analyze("SELECT a FROM t LEFTI JOIN u ON t.x = u.y")
+    assert "SUSPICIOUS_ALIAS" in _codes(r)
+
+
+def test_lint_suspicious_alias_quiet_for_correct_keyword_and_normal_alias():
+    assert "SUSPICIOUS_ALIAS" not in _codes(analyze("SELECT a FROM t LEFT JOIN u ON t.x = u.y"))
+    assert "SUSPICIOUS_ALIAS" not in _codes(analyze("SELECT a FROM t t1 JOIN u ON t1.x = u.y"))

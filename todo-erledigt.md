@@ -4,6 +4,12 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-48 — SQL-Analyzer: größere Eingabe + Tippfehler-Lint (v0.30.0)
+- [x] Eingabe-Textbox größer (~14 Zeilen, volle Breite) und **nur vertikal** verstellbar (`resize: vertical`, CSS `#an_sql`)
+- [x] Lint `SUSPICIOUS_ALIAS`: Alias mit Edit-Distanz ≤1 zu LEFT/RIGHT/INNER/OUTER/FULL/CROSS → „möglicher Tippfehler im Join-Typ" (fängt `LEFTI`, das sqlglot als Alias schluckt)
+- [x] Grenze dokumentiert: sqlglot bleibt tolerant; echte Syntaxfehler (fehlendes `"`) werden gefangen, nicht jeder Tippfehler ist einer
+- [x] 2 Tests, 199 grün; Playwright-verifiziert (resize=vertical, LEFTI-Warnung sichtbar)
+
 ## AP-47 — Pfad-Auswahl-Indikator + Waisen-Chip pro Join-Typ (v0.29.0)
 - [x] Pfad-Liste: `[*]`/`[ ]` statt Bullets (`_markActivePath`), aktiver Pfad hervorgehoben; aktualisiert beim Wechsel
 - [x] read-only Endpoint `/api/orphan_check`: je Schritt NOT-EXISTS-Probe links/rechts → `{left_orphans,right_orphans}`

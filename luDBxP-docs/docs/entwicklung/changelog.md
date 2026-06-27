@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.30.0] — 2026-06-27
+### Geändert
+- **AP-48 — SQL-Analyzer: größere Eingabe + Tippfehler-Lint:**
+  - Die Eingabe-Textbox ist **größer** (volle Breite, ~14 Zeilen) und nur **vertikal**
+    in der Höhe verstellbar (nicht in der Breite, `resize: vertical`).
+  - Neuer Lint **`SUSPICIOUS_ALIAS`**: Ein vertippter Join-Typ wie `LEFTI` ist für sqlglot
+    syntaktisch gültig (Tabellen-**Alias**) und damit kein Parser-Fehler. Die Heuristik
+    erkennt jetzt Aliasse, die einem Join-Schlüsselwort (LEFT/RIGHT/INNER/OUTER/FULL/CROSS)
+    stark ähneln, und warnt vor dem möglichen Tippfehler. *Hinweis:* sqlglot bleibt ein
+    toleranter Parser — echte Syntaxfehler (z. B. ein fehlendes `"`) werden erkannt, aber
+    nicht jeder Tippfehler ist ein Syntaxfehler. 199 Tests grün, 1 skipped.
+
 ## [0.29.1] — 2026-06-27
 ### Behoben
 - **Waisen-Chip war falsch-positiv:** Die Probe testete jeden Join **isoliert** und meldete

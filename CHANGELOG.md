@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.30.0] — 2026-06-27
+### Changed
+- **AP-48 — SQL Analyzer: larger input + typo lint:**
+  - the input textbox is **larger** (full width, ~14 rows) and only **vertically** resizable
+    (not in width, `resize: vertical`).
+  - new lint **`SUSPICIOUS_ALIAS`**: a mistyped join type like `LEFTI` is valid SQL to sqlglot
+    (a table **alias**), so it is not a parse error. The heuristic now flags aliases that closely
+    resemble a join keyword (LEFT/RIGHT/INNER/OUTER/FULL/CROSS) as a likely typo. *Note:* sqlglot
+    remains a lenient parser — real syntax errors (e.g. a missing `"`) are caught, but not every
+    typo is a syntax error. 199 tests green, 1 skipped.
+
 ## [0.29.1] — 2026-06-27
 ### Fixed
 - **Orphan chip was a false positive:** the probe tested each join **in isolation** and flagged

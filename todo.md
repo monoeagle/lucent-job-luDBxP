@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: **AP-46** (Detailkarten folgen Auswahl, v0.28.x), **AP-47** (Pfad-Indikator `[*]` + Waisen-Chip pro Join-Typ, v0.29.0). Offen: **AP-45** (Spaltenkopf-Aktionen + Filter-Dropdown mit echten DISTINCT-Werten).
+Zuletzt erledigt: **AP-47** (Pfad-Indikator + Waisen-Chip count-basiert, v0.29.x), **AP-48** (Analyzer: größere Textbox + Tippfehler-Lint, v0.30.0). Offen: **AP-45** (Spaltenkopf-Aktionen + Filter-Dropdown mit echten DISTINCT-Werten).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach

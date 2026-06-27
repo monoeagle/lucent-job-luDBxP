@@ -429,8 +429,7 @@ function openAnalyzer() {
   panel.dataset.built = "1";
   panel.innerHTML =
     `<div class="analyzer">` +
-    `<textarea id="an_sql" rows="6" placeholder="SQL-Statement hier einfügen … "` +
-    ` style="width:100%;font-family:monospace"></textarea>` +
+    `<textarea id="an_sql" rows="14" placeholder="SQL-Statement hier einfügen … "></textarea>` +
     `<div class="row"><button id="an_run">Analysieren</button>` +
     `<span class="hint">read-only — das Statement wird nie ausgeführt</span></div>` +
     `<div id="an_result"></div></div>`;

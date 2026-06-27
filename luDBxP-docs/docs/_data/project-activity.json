@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T14:54:08",
+  "generatedAt": "2026-06-27T15:00:20",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 52,
+      "commits": 53,
       "kinds": {
+        "docs": 15,
         "fix": 4,
         "feat": 11,
-        "other": 23,
-        "docs": 14
+        "other": 23
       },
       "list": [
+        {
+          "sha": "9f59d0f",
+          "subject": "docs: Referenz-Seite 'Outer Joins & Waisen' (LEFT/RIGHT/FULL, Waisen-Chip, Stolperstein) + UC-1-Querverweis, Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "98ecdef",
           "subject": "fix: AP-47 Waisen-Chip count-basiert (Pfad-Kontext) statt isolierter Probe — v0.29.1",
@@ -831,13 +836,13 @@
     }
   },
   "stats": {
-    "totalCommits": 157,
+    "totalCommits": 158,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 57
+        "count": 58
       },
       {
         "kind": "feat",
@@ -868,7 +873,7 @@
         "count": 1
       }
     ],
-    "testCount": 196
+    "testCount": 198
   },
   "phases": []
 }
