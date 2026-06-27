@@ -50,3 +50,18 @@ def test_load_reflects_unique_indexes(uniqueindex_url):
     note = schema.table("Note")
     # the only unique index on Note is partial → must be excluded
     assert all("ParentID" not in idx for idx in note.unique_indexes)
+
+
+def test_load_with_explicit_default_schema_matches(inventory_url):
+    # SQLite's real default schema is "main"; reflecting it explicitly must
+    # yield the same tables as the no-arg default.
+    default = {t.name for t in SqlAlchemyLoader(inventory_url).load().tables}
+    explicit = {t.name for t in SqlAlchemyLoader(inventory_url).load(schema="main").tables}
+    assert explicit == default and "VirtualMachines" in explicit
+
+
+def test_list_schemas_includes_main_and_filters_system(inventory_url):
+    from core.loaders.sqlalchemy_loader import list_schemas
+    schemas = list_schemas(inventory_url)
+    assert "main" in schemas
+    assert not ({"information_schema", "pg_catalog", "sys"} & set(schemas))

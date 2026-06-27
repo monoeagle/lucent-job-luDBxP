@@ -34,8 +34,12 @@ class SqlAlchemyLoader(SchemaLoader):
     def __init__(self, connection_url: str) -> None:
         self._url = connection_url
 
-    def load(self) -> Schema:
+    def load(self, schema=None) -> Schema:
         """Reflect the database schema and return a :class:`~core.model.Schema`.
+
+        Args:
+            schema: Optional schema name to reflect. If None (default), reflects
+                the database's default schema (e.g. "main" in SQLite).
 
         Returns:
             A fully-populated ``Schema`` with all tables, columns, and FK edges.
@@ -50,13 +54,13 @@ class SqlAlchemyLoader(SchemaLoader):
         try:
             insp = inspect(engine)
             tables = []
-            for tname in insp.get_table_names():
+            for tname in insp.get_table_names(schema=schema):
                 columns = tuple(
                     Column(col["name"], str(col["type"]))
-                    for col in insp.get_columns(tname)
+                    for col in insp.get_columns(tname, schema=schema)
                 )
                 fks = []
-                for fk in insp.get_foreign_keys(tname):
+                for fk in insp.get_foreign_keys(tname, schema=schema):
                     # Keep composite keys intact: one ForeignKey per constraint,
                     # carrying all (local, referred) column pairs. Two separate
                     # FKs between the same tables stay separate ForeignKey objects.
@@ -64,11 +68,11 @@ class SqlAlchemyLoader(SchemaLoader):
                         fk["constrained_columns"], fk["referred_columns"]
                     ))
                     fks.append(ForeignKey(fk["referred_table"], pairs))
-                pk = tuple(insp.get_pk_constraint(tname).get("constrained_columns", []))
+                pk = tuple(insp.get_pk_constraint(tname, schema=schema).get("constrained_columns", []))
                 try:
                     uniques = tuple(
                         tuple(uc.get("column_names") or ())
-                        for uc in insp.get_unique_constraints(tname)
+                        for uc in insp.get_unique_constraints(tname, schema=schema)
                         if uc.get("column_names")
                     )
                 except SQLAlchemyError:
@@ -76,7 +80,7 @@ class SqlAlchemyLoader(SchemaLoader):
                 try:
                     uidx = tuple(
                         tuple(idx["column_names"])
-                        for idx in insp.get_indexes(tname)
+                        for idx in insp.get_indexes(tname, schema=schema)
                         if idx.get("unique")
                         and idx.get("column_names")
                         and None not in idx["column_names"]
@@ -87,13 +91,13 @@ class SqlAlchemyLoader(SchemaLoader):
                     uidx = ()
                 tables.append(Table(tname, columns, tuple(fks), pk, uniques, uidx))
             views = []
-            for vname in insp.get_view_names():
+            for vname in insp.get_view_names(schema=schema):
                 vcols = tuple(
                     Column(col["name"], str(col["type"]))
-                    for col in insp.get_columns(vname)
+                    for col in insp.get_columns(vname, schema=schema)
                 )
                 try:
-                    definition = insp.get_view_definition(vname) or ""
+                    definition = insp.get_view_definition(vname, schema=schema) or ""
                 except SQLAlchemyError:
                     definition = ""
                 views.append(View(vname, vcols, definition))
@@ -103,3 +107,29 @@ class SqlAlchemyLoader(SchemaLoader):
             raise ConnectionError(hint or f"Could not reflect schema: {exc}") from exc
         finally:
             engine.dispose()
+
+
+# Schemas that are infrastructure, not user data — hidden from the picker.
+_SYSTEM_SCHEMAS = frozenset({
+    "information_schema", "pg_catalog", "pg_toast",
+    "sys", "INFORMATION_SCHEMA", "performance_schema", "mysql",
+})
+
+
+def list_schemas(connection_url: str) -> tuple:
+    """Return the connectable, user-facing schema names (system schemas removed).
+
+    Raises:
+        ConnectionError: If the database is unreachable or the URL is invalid.
+    """
+    try:
+        engine = create_engine(connection_url)
+    except SQLAlchemyError as exc:
+        raise ConnectionError(f"Could not create engine: {exc}") from exc
+    try:
+        names = inspect(engine).get_schema_names()
+    except SQLAlchemyError as exc:
+        raise ConnectionError(f"Could not list schemas: {exc}") from exc
+    finally:
+        engine.dispose()
+    return tuple(n for n in names if n not in _SYSTEM_SCHEMAS)
