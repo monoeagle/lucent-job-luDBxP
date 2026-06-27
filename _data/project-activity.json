@@ -1,18 +1,23 @@
 {
-  "generatedAt": "2026-06-27T12:19:15",
+  "generatedAt": "2026-06-27T12:30:16",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 38,
+      "commits": 39,
       "kinds": {
+        "feat": 4,
         "docs": 14,
-        "feat": 3,
         "other": 21
       },
       "list": [
+        {
+          "sha": "b8f7dbb",
+          "subject": "feat: AP-39 SQL-Analyzer vertieft — Struktur/Klauseln, Graph-Kanten, Lints, Komplexität — v0.22.0",
+          "kind": "feat"
+        },
         {
           "sha": "3b8397d",
           "subject": "docs: AP-36/37/38 in Gantt-Timeline + Arbeitspakete-Board ergänzt (Diagramm-Drift behoben)",
@@ -760,7 +765,7 @@
     }
   },
   "stats": {
-    "totalCommits": 143,
+    "totalCommits": 144,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -770,7 +775,7 @@
       },
       {
         "kind": "feat",
-        "count": 33
+        "count": 34
       },
       {
         "kind": "other",

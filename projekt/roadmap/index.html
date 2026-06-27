@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.22.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.23.0">
       
       
         <meta name="author" content="LucentTools">
@@ -985,6 +985,7 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-37</strong> — Start ⇄ Ziel tauschen: ⇄-Knopf neben den Ziel-Dropdowns (vertauscht Tabelle+Spalte, spiegelt Graph-Marker, baut neu); Fan-out-Doku um Beispiel 3 (verkürzen oder filtern) erweitert — v0.20.0</li>
 <li><strong>AP-38</strong> — Kopierbares, lauffähiges SQL: Anzeige/Copy setzen Filterwerte als Literale ein (dialekt-/typbewusst), <code>:p0</code> bleibt intern für die read-only-Ausführung; <code>/api/joinpath</code> liefert <code>sql</code> + <code>sql_inline</code> — v0.21.0</li>
 <li><strong>AP-39</strong> — SQL-Analyzer vertieft: Struktur-/Klauselanalyse (Spalten, Joins+ON, WHERE-Filter, GROUP/HAVING, ORDER BY, DISTINCT/LIMIT), Struktur-Zähler + Komplexitäts-Score (A–E), JOIN-Kanten im Graph gezeichnet, statische Lints (SELECT *, LIKE '%…', Funktion-auf-Spalte) — read-only — v0.22.0</li>
+<li><strong>AP-40</strong> — Graph-Legende (Farb-/Marker-Erklärung) + Fix: Join-Pfad- und Analyzer-Markierungen wechselseitig exklusiv (blaue Spur verschwindet beim Join-Bauen) — v0.23.0</li>
 <li><strong>AP-22</strong> — Implizite FKs: Default geklärt → bleibt <strong>opt-in</strong> (Entscheidung)</li>
 <li><strong>AP-24</strong> — Session-KPIs: erhoben &amp; dev-intern dokumentiert (<code>session-kennzahlen.md</code>) (Entscheidung)</li>
 </ul>
