@@ -10,8 +10,6 @@
 
 - **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
   zusammenführen
-- **AP-25** — Tool: SQL-Statement-Analyzer (read-only Analyse beliebiger Statements,
-  ohne Ausführung; Tabellen/Join-Pfad markieren)
 - **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
   Pro-Nutzer-`config.json`/`Logs/`, WSGI-Server)
 - **AP-34** — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)
@@ -63,6 +61,7 @@ Doku/AppImage/Projektposter.
 - **AP-29** — SQL-Dialekt umschalten (Quoting + LIMIT/TOP/FETCH je Dialekt) — v0.15.0
 - **AP-12** (Abschluss) — MSSQL real getestet (ODBC 18 + Integrationstest) + UI-Felder Encrypt/Trust — v0.16.0
 - **AP-30** — N-1-Stern: Auto-Weaving der Select-/ORDER-BY-/Filter-Tabellen in den Join-Baum; stilles Verwerfen entfällt; 1-N-Äste lösen nicht-blockierende Fan-out-Warnung aus — v0.17.0
+- **AP-25** — SQL-Statement-Analyzer: neuer Tab parst via sqlglot (lokal, kein CDN), zeigt Typ/Tabellen/Warnungen (WRITE_STATEMENT/NO_WHERE/CARTESIAN_JOIN; mit Verbindung UNKNOWN_TABLE/UNKNOWN_COLUMN), markiert beteiligte Tabellen im Graphen; funktioniert mit und ohne Verbindung — v0.18.0
 - **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
 - **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
 

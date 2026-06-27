@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.18.0] — 2026-06-27
+### Hinzugefügt
+- **AP-25 — Read-only SQL-Statement-Analyzer:** Neuer **SQL-Analyzer**-Tab; Statement
+  wird via **sqlglot** (lokal gebündelt, kein CDN) geparst — **nie ausgeführt**.
+  Zeigt Statement-Typ, gelesene/geschriebene Tabellen sowie Warnungen:
+  `WRITE_STATEMENT`, `NO_WHERE` (UPDATE/DELETE ohne WHERE), `CARTESIAN_JOIN`;
+  mit Verbindung zusätzlich `UNKNOWN_TABLE`/`UNKNOWN_COLUMN` (case-insensitiv).
+  Beteiligte Tabellen werden im Graphen markiert (`analyze-read`/`analyze-write`).
+  Funktioniert mit und ohne Verbindung. 165 Tests grün, 1 skipped.
+
 ## [0.17.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-30 — N-1-Stern (Auto-Weaving, Fan-out-Warnung):** Select-/ORDER-BY-/Filter-

@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-14 (v0.14.0), AP-29 (SQL-Dialekt, v0.15.0), **AP-12** (MSSQL komplett, v0.16.0).
+Zuletzt erledigt: AP-30 (N-1-Stern, v0.17.0), **AP-25** (SQL-Analyzer Scheibe 1, v0.18.0).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
@@ -22,23 +22,22 @@ Zuletzt erledigt: AP-14 (v0.14.0), AP-29 (SQL-Dialekt, v0.15.0), **AP-12** (MSSQ
 - [ ] Verzeichnis `.pattern_transfer` im Projekt: Sammelstelle für Pattern, die im aktiven Projekt entstehen
 - [ ] In einer globalen Claude-Session werden alle projektlokalen Pattern eingesammelt und — wo sinnvoll — ins globale `.pattern` zusammengeführt
 
-## AP-25 — Tool: SQL-Statement-Analyzer (read-only Analyse)
+## AP-25 — Tool: SQL-Statement-Analyzer (read-only Analyse) ✓ v0.18.0 (Scheibe 1)
 **Idee:** Neuer Tab, in dem der Nutzer ein beliebiges SQL-Statement in ein Freitextfeld
 einfügt; das Tool **analysiert** es (egal ob lesend, schreibend oder Update) und zeigt
 die **Auswirkungen**, **ohne irgendeine Aktion auf der DB auszuführen** (strikt read-only,
 passt zur Projekt-Grundausrichtung). Ziel: einschätzen, was ein Statement täte.
-- [ ] Neuer Tab „SQL-Analyzer" mit Freitextfeld zum Einfügen eines Statements
-- [ ] Statement parsen/analysieren (SELECT/INSERT/UPDATE/DELETE/DDL, Views) — **keine** Ausführung auf der DB
-- [ ] Im Graphenbereich die **beteiligten Tabellen markieren** (geändert / beteiligt unterscheiden)
-- [ ] Bei Joins den **Pfad markieren** (wie im Join-Builder)
-- [ ] Button **„an Join-Builder übertragen"** → wechselt zum Join-Builder, füllt die Felder und zeigt die Alternativen
-- [ ] Views sowie eigene/fremde Statements analysieren können, nur zur Wirkungsabschätzung
-- [ ] **Brainstorm:** wie lässt sich das AP weiter sinnvoll gestalten (für den Einsatzzweck)?
-      Ideen: betroffene Spalten/PK-FK hervorheben · geschätzte Treffermenge (EXPLAIN read-only, falls vertretbar) ·
-      Warnungen (fehlendes WHERE bei UPDATE/DELETE, kartesische Joins) · Lesbarkeits-/Formatierungs-Ansicht ·
-      Abhängigkeiten einer View aufzeigen
-- [ ] Technik prüfen: SQL-Parser (z. B. `sqlglot`/`sqlparse`) lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
-- [ ] Betroffen: neue `core/`-Analyse (Parser), `web/routes.py` (read-only Analyse-Endpoint), `web/static/js/app.js`, `index.html`
+Design-Spec: `docs/superpowers/specs/2026-06-27-ap25-sql-analyzer-design.md` · Plan: `docs/superpowers/plans/2026-06-27-ap25-sql-analyzer.md`
+- [x] Neuer Tab „SQL-Analyzer" mit Freitextfeld zum Einfügen eines Statements
+- [x] Statement parsen/analysieren (SELECT/INSERT/UPDATE/DELETE/DDL, Views) — **keine** Ausführung auf der DB
+- [x] Im Graphenbereich die **beteiligten Tabellen markieren** (geändert / beteiligt unterscheiden)
+- [ ] Bei Joins den **Pfad markieren** (wie im Join-Builder) — **spätere Scheibe**
+- [ ] Button **„an Join-Builder übertragen"** → wechselt zum Join-Builder, füllt die Felder und zeigt die Alternativen — **spätere Scheibe**
+- [ ] Views sowie eigene/fremde Statements analysieren können (View-Abhängigkeiten) — **spätere Scheibe**
+- [x] **Brainstorm (Scheibe 1):** Warnungen (WRITE_STATEMENT, NO_WHERE, CARTESIAN_JOIN; mit Verbindung UNKNOWN_TABLE/UNKNOWN_COLUMN) umgesetzt.
+      Deferred: geschätzte Treffermenge (EXPLAIN read-only) — **spätere Scheibe**; Abhängigkeiten einer View — **spätere Scheibe**
+- [x] Technik: `sqlglot` lokal gebündelt (NO-CDN); Tabellen-/Join-Extraktion → Graph-Highlight wiederverwenden
+- [x] Betroffen: neue `core/sqlanalyze.py` (Parser), `web/routes.py` (read-only `/api/analyze`-Endpoint), `web/static/js/app.js`, `index.html`
 
 ## AP-30 — N-1-Stern-Abfrage (ein Start, mehrere Lookup-Ziele) ✓ v0.17.0
 **Entschieden 2026-06-26 (war Frage):** Umsetzen — aber zugeschnitten auf den **N-1-Stern-Fall**; eigenes Feature-AP, Umsetzung separat (nicht jetzt).

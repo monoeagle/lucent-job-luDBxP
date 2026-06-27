@@ -1,17 +1,77 @@
 {
-  "generatedAt": "2026-06-27T01:36:28",
+  "generatedAt": "2026-06-27T02:44:23",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 15,
+      "commits": 27,
       "kinds": {
-        "other": 10,
-        "docs": 5
+        "other": 19,
+        "docs": 8
       },
       "list": [
+        {
+          "sha": "7f4773f",
+          "subject": "AP-25: Frontend SQL-Analyzer-Tab (Render + Graph-Highlight)",
+          "kind": "other"
+        },
+        {
+          "sha": "fc0ce01",
+          "subject": "AP-25: read-only Endpoint POST /api/analyze (Text- und Verbindungs-Modus)",
+          "kind": "other"
+        },
+        {
+          "sha": "8fe76f1",
+          "subject": "AP-25: schließendes deutsches Anführungszeichen “ in UNKNOWN_TABLE/COLUMN-Texten",
+          "kind": "other"
+        },
+        {
+          "sha": "bd6630e",
+          "subject": "AP-25: schema-abhängige Warnungen UNKNOWN_TABLE/UNKNOWN_COLUMN (case-insensitiv)",
+          "kind": "other"
+        },
+        {
+          "sha": "b786fa6",
+          "subject": "AP-25: strukturelle Warnungen (WRITE_STATEMENT, NO_WHERE, CARTESIAN_JOIN)",
+          "kind": "other"
+        },
+        {
+          "sha": "691f6b4",
+          "subject": "AP-25: core/sqlanalyze — Parsen, Statement-Typ, gelesene/geschriebene Tabellen",
+          "kind": "other"
+        },
+        {
+          "sha": "7c7412d",
+          "subject": "AP-25: sqlglot als gebündelte Dependency (requirements + Wheelhouse)",
+          "kind": "other"
+        },
+        {
+          "sha": "af385b0",
+          "subject": "docs(AP-25): Plan-Fix — deterministischer 400-Test für bad connection",
+          "kind": "docs"
+        },
+        {
+          "sha": "34bafc1",
+          "subject": "docs(AP-25): Implementierungsplan SQL-Analyzer (7 Tasks, TDD-Schritte)",
+          "kind": "docs"
+        },
+        {
+          "sha": "d53ed73",
+          "subject": "docs(AP-25): Design-Spec SQL-Statement-Analyzer (read-only, sqlglot, zwei Modi)",
+          "kind": "docs"
+        },
+        {
+          "sha": "e194a95",
+          "subject": "AP-30 (Cleanup): englische Test-Kommentare, Testnamen required_*, defensive Invariante in _make_path_gen",
+          "kind": "other"
+        },
+        {
+          "sha": "ac76fb3",
+          "subject": "AP-30 (Abschluss): N-1-Stern — v0.17.0, Changelog/Mirror, Roadmap/Board/Gantt, Badges, Site",
+          "kind": "other"
+        },
         {
           "sha": "93fb5aa",
           "subject": "AP-30: Fan-out-Warnungen in der Pfadliste anzeigen (Frontend)",
@@ -644,13 +704,13 @@
     }
   },
   "stats": {
-    "totalCommits": 120,
+    "totalCommits": 132,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 48
+        "count": 51
       },
       {
         "kind": "feat",
@@ -658,7 +718,7 @@
       },
       {
         "kind": "other",
-        "count": 18
+        "count": 27
       },
       {
         "kind": "fix",
@@ -681,7 +741,7 @@
         "count": 1
       }
     ],
-    "testCount": 143
+    "testCount": 164
   },
   "phases": []
 }

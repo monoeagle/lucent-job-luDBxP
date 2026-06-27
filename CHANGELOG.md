@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.0] — 2026-06-27
+### Added
+- **AP-25 — Read-only SQL-Statement-Analyzer:** New **SQL Analyzer** tab lets users
+  paste any SQL statement; it is parsed by **sqlglot** (bundled locally, no CDN) and
+  **never executed** against any database. Shows statement type (SELECT/INSERT/UPDATE/
+  DELETE/DDL), read and written tables, and structural/schema warnings:
+  `WRITE_STATEMENT`, `NO_WHERE` (UPDATE/DELETE without WHERE), `CARTESIAN_JOIN`
+  (multi-table FROM without JOIN condition); with an active connection also
+  `UNKNOWN_TABLE` and `UNKNOWN_COLUMN` (case-insensitive, schema-aware).
+  Involved tables are highlighted in the schema graph (`analyze-read` / `analyze-write`
+  CSS classes). Works with and without a database connection. 165 Tests grün, 1 skipped.
+
 ## [0.17.0] — 2026-06-27
 ### Added
 - **AP-30 — N-1-Stern (Auto-Weaving, Fan-out-Warnung):** Select-/ORDER-BY-/Filter-
