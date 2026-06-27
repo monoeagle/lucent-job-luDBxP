@@ -118,7 +118,8 @@ function renderSidebar() {
   $("objects").innerHTML =
     `<h3>Tools</h3><ul class="objlist">` +
     `<li data-action="connections">Verbindungen</li>` +
-    `<li data-action="joinbuilder">Join-Builder</li></ul>` +
+    `<li data-action="joinbuilder">Join-Builder</li>` +
+    `<li data-action="analyzer">SQL-Analyzer</li></ul>` +
     `<h3>Tabellen (${SCHEMA.tables.length})</h3>` +
     `<ul class="objlist">${objList(SCHEMA.tables, "table")}</ul>` +
     `<h3>Views (${SCHEMA.views.length})</h3>` +
@@ -128,6 +129,7 @@ function renderSidebar() {
   $("objects").querySelectorAll("li").forEach((li) => {
     li.addEventListener("click", () => {
       if (li.dataset.action === "joinbuilder") openJoinBuilder();
+      else if (li.dataset.action === "analyzer") openAnalyzer();
       else if (li.dataset.action === "connections") openConnections();
       else if (li.dataset.action === "info") openInfo();
       else openDetail(li.dataset.kind, li.dataset.name);
@@ -328,6 +330,68 @@ function openJoinBuilder() {
   $("jb_dialect").value = dialectFromUrl(connUrl());
   $("jb_dialect").addEventListener("change", () => runBuild(true));
   if (SCHEMA.tables.length) refillJoinBuilder();
+}
+
+// ===== SQL-Analyzer (AP-25) =====
+function clearAnalyzeMarkers() {
+  if (!CY) return;
+  CY.nodes().removeClass("analyze-read analyze-write");
+}
+
+function applyAnalyzeMarkers(read, written) {
+  if (!CY) return;
+  clearAnalyzeMarkers();
+  read.forEach((t) => CY.$id(t).addClass("analyze-read"));
+  written.forEach((t) => CY.$id(t).addClass("analyze-write"));
+}
+
+function renderAnalyzeResult(panel, res) {
+  const out = panel.querySelector("#an_result");
+  if (res.parse_error) {
+    out.innerHTML = `<p class="hint">Konnte nicht geparst werden: ${esc(res.parse_error)}</p>`;
+    clearAnalyzeMarkers();
+    return;
+  }
+  const list = (items) => items.length
+    ? `<ul class="objlist">${items.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`
+    : `<p class="hint">—</p>`;
+  const warns = res.warnings.length
+    ? res.warnings.map((w) =>
+        `<div class="an-warn an-l-${esc(w.level)}">${esc(w.message)}</div>`).join("")
+    : `<p class="hint">keine Warnungen</p>`;
+  out.innerHTML =
+    `<div class="an-type">Typ: <strong>${esc(res.statement_type)}</strong></div>` +
+    `<h4>Gelesen</h4>${list(res.tables_read)}` +
+    `<h4>Geschrieben/verändert</h4>${list(res.tables_written)}` +
+    `<h4>Warnungen</h4>${warns}`;
+  applyAnalyzeMarkers(res.tables_read, res.tables_written);
+}
+
+async function runAnalyze(panel) {
+  const sql = panel.querySelector("#an_sql").value;
+  if (!sql.trim()) return;
+  try {
+    const res = await postJSON("/api/analyze",
+      { sql, connection_url: connUrl() });
+    renderAnalyzeResult(panel, res);
+  } catch (e) {
+    panel.querySelector("#an_result").innerHTML =
+      `<p class="hint">Fehler: ${esc(e.message)}</p>`;
+  }
+}
+
+function openAnalyzer() {
+  const panel = ensureTab("analyzer", "SQL-Analyzer", true);
+  if (panel.dataset.built) { activateTab("analyzer"); return; }
+  panel.dataset.built = "1";
+  panel.innerHTML =
+    `<div class="analyzer">` +
+    `<textarea id="an_sql" rows="6" placeholder="SQL-Statement hier einfügen … "` +
+    ` style="width:100%;font-family:monospace"></textarea>` +
+    `<div class="row"><button id="an_run">Analysieren</button>` +
+    `<span class="hint">read-only — das Statement wird nie ausgeführt</span></div>` +
+    `<div id="an_result"></div></div>`;
+  panel.querySelector("#an_run").addEventListener("click", () => runAnalyze(panel));
 }
 
 function fillCols(tableSel, colSel) {
@@ -755,6 +819,8 @@ async function drawGraph() {
         "border-width": 4, "border-color": "#1e7e34" } },
       { selector: "node.sel-target", style: {
         "border-width": 4, "border-color": "#c0392b" } },
+      { selector: "node.analyze-read",  style: { "background-color": "#1a73e8" } },
+      { selector: "node.analyze-write", style: { "background-color": "#d93025" } },
     ],
   });
   // Register dbltap handler: opens the UML card for the clicked table node
