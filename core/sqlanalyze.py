@@ -11,6 +11,17 @@ import sqlglot
 from sqlglot import exp
 from sqlglot.errors import SqlglotError
 
+# Map this project's dialect names (core.sqlgen) to sqlglot's dialect names.
+# sqlglot uses "postgres" (not "postgresql") and "tsql" (not "mssql").
+# An unmapped or None dialect parses dialect-neutrally (read=None).
+_SQLGLOT_DIALECT = {
+    "sqlite": "sqlite",
+    "postgresql": "postgres",
+    "mysql": "mysql",
+    "mssql": "tsql",
+    "oracle": "oracle",
+}
+
 # Map sqlglot root expression types to a coarse, user-facing statement type.
 _DDL_NODES = (exp.Create, exp.Drop, exp.Alter)
 _TYPE_NAMES = {
@@ -70,9 +81,10 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
         An AnalysisResult. On parse failure, parse_error is set and the type is
         "OTHER" with empty table lists.
     """
+    read = _SQLGLOT_DIALECT.get(dialect) if dialect else None
     try:
-        node = sqlglot.parse_one(sql, read=dialect)
-    except SqlglotError as exc:
+        node = sqlglot.parse_one(sql, read=read)
+    except (SqlglotError, ValueError) as exc:
         return AnalysisResult("OTHER", (), (), (), str(exc))
     if node is None:
         return AnalysisResult("OTHER", (), (), (), "empty statement")
@@ -90,7 +102,7 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             "Dieses Statement würde Daten bzw. das Schema verändern — "
             "das Tool führt es nicht aus."))
 
-    if isinstance(node, (exp.Update, exp.Delete)) and node.find(exp.Where) is None:
+    if isinstance(node, (exp.Update, exp.Delete)) and node.args.get("where") is None:
         warnings.append(AnalysisWarning(
             "danger", "NO_WHERE",
             "UPDATE/DELETE ohne WHERE — betrifft alle Zeilen der Tabelle."))
@@ -101,7 +113,7 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
         j.args.get("on") is None and j.args.get("using") is None
         for j in node.find_all(exp.Join)
     )
-    if joins_without_on and node.find(exp.Where) is None:
+    if joins_without_on and node.args.get("where") is None:
         warnings.append(AnalysisWarning(
             "warn", "CARTESIAN_JOIN",
             "Join ohne Verknüpfungsbedingung — möglicher kartesischer Join "
@@ -110,6 +122,11 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
     if schema is not None:
         known = {t.name.lower() for t in schema.tables}
         known |= {v.name.lower() for v in getattr(schema, "views", ())}
+        # Case-insensitive column index: lowercased table name -> set of lowercased column names.
+        cols_by_table = {
+            t.name.lower(): {c.name.lower() for c in t.columns}
+            for t in schema.tables
+        }
         # Map alias -> real table name for qualified-column resolution.
         alias_to_table: dict[str, str] = {}
         for tbl in node.find_all(exp.Table):
@@ -130,7 +147,8 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             real = alias_to_table.get(tbl_ref.lower())
             if real is None or real.lower() not in known:
                 continue  # unknown table already warned; don't double-warn
-            if not schema.has_column(real, col.name):
+            cols = cols_by_table.get(real.lower())
+            if cols is not None and col.name.lower() not in cols:
                 warnings.append(AnalysisWarning(
                     "warn", "UNKNOWN_COLUMN",
                     f'Spalte „{col.name}“ existiert nicht in Tabelle „{real}“.'))

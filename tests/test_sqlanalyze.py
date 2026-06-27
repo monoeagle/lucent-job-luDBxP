@@ -112,3 +112,49 @@ def test_no_schema_no_unknown_warnings():
     r = analyze("SELECT * FROM TotallyUnknown")
     codes = {w.code for w in r.warnings}
     assert "UNKNOWN_TABLE" not in codes and "UNKNOWN_COLUMN" not in codes
+
+
+# ---------------------------------------------------------------------------
+# Fix 1 regression: PostgreSQL/MSSQL dialect names must not raise ValueError
+# ---------------------------------------------------------------------------
+
+def test_postgresql_dialect_does_not_raise():
+    r = analyze("SELECT VLAN FROM Networks", dialect="postgresql")
+    assert r.parse_error is None
+    assert r.statement_type == "SELECT"
+
+
+def test_mssql_dialect_does_not_raise():
+    r = analyze("SELECT VLAN FROM Networks", dialect="mssql")
+    assert r.parse_error is None
+    assert r.statement_type == "SELECT"
+
+
+# ---------------------------------------------------------------------------
+# Fix 2 regression: NO_WHERE must fire even when a subquery provides a WHERE
+# ---------------------------------------------------------------------------
+
+def test_update_with_only_subquery_where_still_warns_no_where():
+    r = analyze("UPDATE Host SET a = (SELECT max(x) FROM Other WHERE x > 1)")
+    assert "NO_WHERE" in {w.code for w in r.warnings}
+
+
+# ---------------------------------------------------------------------------
+# Fix 3 regression: UNKNOWN_COLUMN must be case-insensitive
+# ---------------------------------------------------------------------------
+
+def test_lowercase_table_qualified_column_no_unknown(inv_schema):
+    # Table in schema is "Networks"; query uses lowercase "networks" alias
+    r = analyze("SELECT n.VLAN FROM networks n", schema=inv_schema)
+    assert "UNKNOWN_COLUMN" not in {w.code for w in r.warnings}
+
+
+def test_lowercase_column_name_no_unknown(inv_schema):
+    # Column in schema is "VLAN"; query uses lowercase "vlan"
+    r = analyze("SELECT n.vlan FROM Networks n", schema=inv_schema)
+    assert "UNKNOWN_COLUMN" not in {w.code for w in r.warnings}
+
+
+def test_genuinely_unknown_qualified_column_still_warns(inv_schema):
+    r = analyze("SELECT n.NoSuchCol FROM Networks n", schema=inv_schema)
+    assert "UNKNOWN_COLUMN" in {w.code for w in r.warnings}
