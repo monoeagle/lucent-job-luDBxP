@@ -1132,10 +1132,18 @@ dargestellt und sind per Checkbox deaktivierbar.</p>
 eingefügtes Statement ausschließlich über den sqlglot-AST und <strong>führt es nie
 aus</strong>. Er bestimmt Statement-Typ, gelesene und geschriebene Tabellen sowie
 nicht-blockierende Warnungen (Schreib-/DDL-Statement, fehlendes WHERE,
-kartesischer Join; mit aktiver Verbindung zusätzlich unbekannte Tabellen/Spalten
-gegen das reflektierte Schema). Er arbeitet <strong>mit und ohne Verbindung</strong>: ohne
-Verbindung rein textuell, mit Verbindung zusätzlich mit Schema-Abgleich und
-Graph-Highlight. <code>sqlglot</code> ist lokal als Wheel gebündelt (kein CDN).</p>
+kartesischer Join; statische Lints wie <code>SELECT *</code>, nicht-sargbares <code>LIKE '%…'</code>,
+Funktion-auf-Spalte, vertippte Join-Schlüsselwörter <code>SUSPICIOUS_ALIAS</code>; mit aktiver
+Verbindung zusätzlich unbekannte Tabellen/Spalten gegen das reflektierte Schema).
+Darüber hinaus Struktur-/Klauselanalyse (Spalten, Joins+ON, Filter, GROUP/ORDER BY),
+Komplexitäts-Score und das Zeichnen der JOIN-Kanten im Graph. Er arbeitet <strong>mit und
+ohne Verbindung</strong>: ohne Verbindung rein textuell, mit Verbindung zusätzlich mit
+Schema-Abgleich und Graph-Highlight. <code>sqlglot</code> ist lokal als Wheel gebündelt (kein CDN).</p>
+<p>Der <strong>Join-Builder</strong> (<code>/api/joinpath</code>, Ausführung <code>/api/joinpath/run</code>) erlaubt einen
+<strong>Join-Typ pro Schritt</strong> (INNER/LEFT/RIGHT/FULL); das read-only Endpoint
+<code>/api/orphan_check</code> zählt je Schritt, welcher Typ das Ergebnis tatsächlich ändert
+(Waisen-Hinweis). Die generierte Abfrage wird parametrisiert und read-only ausgeführt;
+die Anzeige/Copy-Variante setzt die Filterwerte als Literale ein (direkt lauffähig).</p>
 
 
 
