@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T15:08:51",
+  "generatedAt": "2026-06-27T15:19:28",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 54,
+      "commits": 55,
       "kinds": {
-        "feat": 12,
+        "feat": 13,
         "docs": 15,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "08e9163",
+          "subject": "feat: AP-49 Analyzer-Feinschliff + Fix ANSI-Codes im Parsefehler — v0.31.0",
+          "kind": "feat"
+        },
         {
           "sha": "97f1f83",
           "subject": "feat: AP-48 SQL-Analyzer — größere/nur-vertikal-Textbox + Tippfehler-Lint SUSPICIOUS_ALIAS — v0.30.0",
@@ -841,7 +846,7 @@
     }
   },
   "stats": {
-    "totalCommits": 159,
+    "totalCommits": 160,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -851,7 +856,7 @@
       },
       {
         "kind": "feat",
-        "count": 42
+        "count": 43
       },
       {
         "kind": "other",
