@@ -7,3 +7,4 @@ pyodbc>=5.0            # MS SQL Server driver (needs system unixODBC + msodbcsql
 sqlglot>=25            # SQL parser/AST for the read-only SQL analyzer (AP-25), pure-Python
 pystray>=0.19         # AP-34: Tray-Icon
 Pillow>=10            # AP-34: Tray-Icon-Bild
+waitress>=3.0         # AP-31: produktiver WSGI-Server (pure Python, Win+Linux)
