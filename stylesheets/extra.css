@@ -1775,6 +1775,57 @@ body:has(.adb-home-layout) .md-content {
   object-fit: contain;
 }
 
+/* AP-Matching als schmales rechtes Band: eine "normale" Tabelle statt Bild,
+   nimmt nur so viel Breite wie ihr Inhalt braucht (gedeckelt), scrollt vertikal. */
+.adb-home-arch__band.adb-ap-match {
+  flex: 0 0 auto;
+  max-width: 42%;
+  overflow: auto;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0 0 0 16px;
+}
+.adb-ap-match-table {
+  border-collapse: collapse;
+  font-size: 0.74rem;
+  line-height: 1.25;
+  width: max-content;
+  max-width: 100%;
+}
+.adb-ap-match-table thead th {
+  position: sticky;
+  top: 0;
+  background: #1A1A2E;
+  color: #fff;
+  text-align: left;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+}
+.adb-ap-match-table td {
+  padding: 2px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  vertical-align: top;
+}
+.adb-ap-match-table td:first-child {
+  white-space: nowrap;
+  font-weight: 600;
+  color: #2E6FAE;
+}
+.adb-ap-match-table tr.grp td {
+  background: #eef2f7;
+  font-weight: 700;
+  color: #444;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+[data-md-color-scheme="slate"] .adb-ap-match-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+[data-md-color-scheme="slate"] .adb-ap-match-table tr.grp td {
+  background: #232838;
+  color: #ccc;
+}
+
 /* 3-Spalten-Grid am unteren Rand. */
 .adb-home-footer {
   display: grid;
