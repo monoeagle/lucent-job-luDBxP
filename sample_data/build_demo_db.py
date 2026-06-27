@@ -128,34 +128,39 @@ _DATA = [
     ("Datacenter", [
         (1, "DC-Frankfurt"),
         (2, "DC-Berlin"),
+        (3, "DC-Empty"),                # orphan: no Cluster/Network/Host
     ]),
     ("Folder", [
         (1, "Datacenters", None),       # root
         (2, "Production", 1),
         (3, "Test", 1),
         (4, "Web-Tier", 2),
+        (5, "Empty-Folder", 1),         # orphan: no VirtualMachine
     ]),
     ("OperatingSystem", [
         (1, "Windows", "Server 2022"),
         (2, "Windows", "Server 2019"),
         (3, "Ubuntu", "22.04 LTS"),
         (4, "RHEL", "9"),
+        (5, "Solaris", "11.4"),         # orphan: no VirtualMachine uses this OS
     ]),
     ("Cluster", [
         (1, "PROD-CL01", 1),
         (2, "PROD-CL02", 1),
         (3, "TEST-CL01", 2),
-        # Orphan on the child side: no Datastore and no Host reference this cluster.
-        # Makes INNER vs LEFT/FULL joins visibly differ (AP-41 demo).
+        # Orphans on the child side: no Datastore/Host/ResourcePool reference these
+        # clusters. Makes INNER vs LEFT/FULL joins visibly differ (AP-41 demo).
         (4, "EMPTY-CL01", 1),
+        (5, "EMPTY-CL02", 2),
     ]),
     ("Network", [
         (1, 100, 1),
         (2, 200, 1),
         (3, 300, 2),
         (4, 110, 1),
-        # Orphan: no VirtualMachine uses this network -> visible under RIGHT/FULL joins.
+        # Orphans: no VirtualMachine uses these networks -> visible under LEFT/FULL.
         (5, 999, 1),
+        (6, 998, 2),
     ]),
     ("Host", [
         (1, "esxi-01", 1, 1),
@@ -164,12 +169,16 @@ _DATA = [
         (4, "esxi-04", 2, 1),
         (5, "esxi-05", 3, 2),
         (6, "esxi-06", 3, 2),
+        (7, "esxi-empty-01", 1, 1),     # orphan: no VirtualMachine on this host
+        (8, "esxi-empty-02", 2, 1),     # orphan: no VirtualMachine on this host
     ]),
     ("Datastore", [
         (1, "DS-SSD-01", 1),
         (2, "DS-SSD-02", 2),
         (3, "DS-NL-01", 1),
         (4, "DS-TEST", 3),
+        (5, "DS-EMPTY-01", 1),          # orphan: no VMDisk / no Replication
+        (6, "DS-EMPTY-02", 2),          # orphan: no VMDisk / no Replication
     ]),
     ("VirtualMachine", [
         (1, "DC01", 1, 1, 1, 2),
@@ -182,6 +191,9 @@ _DATA = [
         (8, "TEST-VM1", 5, 3, 3, 3),
         (9, "TEST-VM2", 6, 1, 3, 3),
         (10, "BACKUP01", 4, 2, 2, 2),
+        # Orphans: valid Host/OS/Network/Folder, but no VMDisk and no VMPlacement.
+        (11, "VM-NoDisk-01", 1, 1, 1, 2),
+        (12, "VM-NoDisk-02", 2, 2, 2, 4),
     ]),
     ("VMDisk", [
         (1, 1, 1, 80),
@@ -202,6 +214,8 @@ _DATA = [
         (1, "infra", "Infrastructure Pool"),
         (2, "prod", "Production Pool"),
         (3, "test", "Test Pool"),
+        (1, "empty", "Empty Pool"),     # orphan: no VMPlacement uses this pool
+        (2, "empty", "Empty Pool"),     # orphan: no VMPlacement uses this pool
     ]),
     ("VMPlacement", [
         (1, 1, 1, "infra"),
