@@ -791,3 +791,26 @@ def test_data_endpoint_with_schema_returns_rows(client, inventory_url):
     })
     assert resp.status_code == 200
     assert "columns" in resp.get_json()
+
+
+def test_joinpath_with_schema_qualifies_sql(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VirtualMachines", "column": "VMID"},
+        "filters": [], "schema": "main",
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert '"main"."Networks"' in p["sql"]
+
+
+def test_joinpath_run_with_schema_executes(client, inventory_url):
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VirtualMachines", "column": "VMID"},
+        "filters": [], "schema": "main", "path_index": 0,
+    })
+    assert resp.status_code == 200
+    assert "columns" in resp.get_json()

@@ -316,7 +316,8 @@ def _make_path_gen(p, start: dict, target: dict,
                    limit,
                    order_by_validated: list,
                    dialect=SQLITE,
-                   join_types: tuple = ()):
+                   join_types: tuple = (),
+                   schema: str = ""):
     """Build a GeneratedSQL for a single join path.
 
     All extra selects and order_by entries are included; AP-30 guarantees
@@ -347,7 +348,8 @@ def _make_path_gen(p, start: dict, target: dict,
                         order_by=order_by_for_path,
                         limit=limit,
                         join_types=tuple(join_types),
-                        dialect=dialect)
+                        dialect=dialect,
+                        schema=schema)
 
 
 def _path_warnings(p) -> list[str]:
@@ -366,8 +368,9 @@ def api_joinpath():
     url = data.get("connection_url", "")
     if not url.strip():
         return jsonify(error=_NO_URL_MSG), 400
+    schema_name = (data.get("schema") or "").strip()
     try:
-        schema = SqlAlchemyLoader(url).load()
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
 
@@ -403,7 +406,7 @@ def api_joinpath():
         for p in paths:
             gen = _make_path_gen(p, start, target, extra_selections, filters,
                                  distinct, limit, order_by_validated, dialect,
-                                 join_types=join_types)
+                                 join_types=join_types, schema=schema_name)
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],
@@ -443,8 +446,9 @@ def api_joinpath_run():
     url = data.get("connection_url", "")
     if not url.strip():
         return jsonify(error=_NO_URL_MSG), 400
+    schema_name = (data.get("schema") or "").strip()
     try:
-        schema = SqlAlchemyLoader(url).load()
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
 
@@ -482,7 +486,7 @@ def api_joinpath_run():
     try:
         gen = _make_path_gen(paths[path_index], start, target, extra_selections,
                              filters, distinct, limit, order_by_validated,
-                             run_dialect, join_types=join_types)
+                             run_dialect, join_types=join_types, schema=schema_name)
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
 
@@ -535,13 +539,14 @@ def api_distinct():
     column = data.get("column") or ""
     if not url or not table or not column:
         return jsonify(values=[])
+    schema_name = (data.get("schema") or "").strip()
     try:
-        schema = SqlAlchemyLoader(url).load()
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
         if not schema.has_column(table, column):
             return jsonify(values=[])
         dialect = _dialect_from_url(url)
-        col = dialect.qualify(table, column)
-        sql = (f"SELECT DISTINCT {col} FROM {dialect.quote(table)}\n"
+        col = dialect.qualify(table, column, schema_name)
+        sql = (f"SELECT DISTINCT {col} FROM {dialect.table_ref(table, schema_name)}\n"
                f"WHERE {col} IS NOT NULL\nORDER BY {col}")
         result = execute_select(url, sql, {}, max_rows=config.DISTINCT_LIMIT)
     except (ConnectionError, ValueError):
@@ -564,8 +569,9 @@ def api_orphan_check():
     url = (data.get("connection_url") or "").strip()
     if not url:
         return jsonify(steps=[])
+    schema_name = (data.get("schema") or "").strip()
     try:
-        schema = SqlAlchemyLoader(url).load()
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
         graph = build_graph(schema, bool(data.get("include_implied", False)))
         (start, target, filters, extra_selections, distinct, limit,
          order_by_validated, required_tables) = _parse_joinpath_params(data, schema)
@@ -588,7 +594,8 @@ def api_orphan_check():
     def row_count(types) -> "int | None":
         try:
             gen = _make_path_gen(p, start, target, extra_selections, filters,
-                                 distinct, None, [], dialect, join_types=tuple(types))
+                                 distinct, None, [], dialect, join_types=tuple(types),
+                                 schema=schema_name)
             wrapped = f"SELECT COUNT(*) AS c FROM (\n{gen.sql}\n) sub"
             res = execute_select(url, wrapped, gen.params, max_rows=1)
             return res["rows"][0][0] if res["rows"] else None
