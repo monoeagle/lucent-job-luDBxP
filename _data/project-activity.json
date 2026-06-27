@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T18:36:02",
+  "generatedAt": "2026-06-27T18:41:13",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 76,
+      "commits": 77,
       "kinds": {
+        "docs": 28,
         "fix": 5,
         "feat": 21,
-        "docs": 27,
         "other": 23
       },
       "list": [
+        {
+          "sha": "12639ac",
+          "subject": "docs: AP-31 (Kern) Release v0.33.0 — Pro-Nutzer-Pfade + dynamischer Port",
+          "kind": "docs"
+        },
         {
           "sha": "f54737f",
           "subject": "fix: AP-31 Launcher brechen bei belegtem Port nicht mehr ab — app.py waehlt freien Port",
@@ -951,13 +956,13 @@
     }
   },
   "stats": {
-    "totalCommits": 181,
+    "totalCommits": 182,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 70
+        "count": 71
       },
       {
         "kind": "feat",
