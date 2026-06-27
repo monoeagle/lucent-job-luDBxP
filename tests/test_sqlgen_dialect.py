@@ -104,3 +104,17 @@ def test_dialect_for_unknown_falls_back_to_sqlite():
     assert dialect_for("") is SQLITE
     assert dialect_for("informix") is SQLITE
     assert dialect_for(None) is SQLITE
+
+
+def test_generate_sql_qualifies_with_schema():
+    g = generate_sql(_path(), selects=_sel(), schema="sales")
+    assert 'FROM "sales"."VirtualMachine"' in g.sql
+    assert 'JOIN "sales"."Host"' in g.sql
+    assert '    "sales"."VirtualMachine"."VMID"' in g.sql
+    assert '    ON "sales"."VirtualMachine"."HostID" = "sales"."Host"."HostID"' in g.sql
+
+
+def test_generate_sql_without_schema_is_unqualified():
+    g = generate_sql(_path(), selects=_sel())
+    assert 'FROM "VirtualMachine"' in g.sql
+    assert '"sales".' not in g.sql

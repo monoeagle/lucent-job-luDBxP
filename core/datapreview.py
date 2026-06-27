@@ -45,7 +45,7 @@ def execute_select(connection_url: str, sql: str, params: dict,
 
 
 def fetch_rows(connection_url: str, object_name: str,
-               valid_names: set, limit: int = 100) -> dict:
+               valid_names: set, limit: int = 100, schema: str = "") -> dict:
     """Fetch up to `limit` rows from a table or view.
 
     Args:
@@ -53,6 +53,7 @@ def fetch_rows(connection_url: str, object_name: str,
         object_name: Table or view name; must be in valid_names.
         valid_names: The set of reflected table/view names (allow-list).
         limit: Maximum number of rows to return.
+        schema: Optional schema qualifier; if non-empty, the object is qualified.
 
     Returns:
         A dict ``{"columns": [...], "rows": [[...], ...]}``.
@@ -70,7 +71,9 @@ def fetch_rows(connection_url: str, object_name: str,
     try:
         with engine.connect() as conn:
             # object_name is allow-list validated; quote it as an identifier.
-            quoted = '"' + object_name.replace('"', '""') + '"'
+            def _q(ident: str) -> str:
+                return '"' + ident.replace('"', '""') + '"'
+            quoted = f"{_q(schema)}.{_q(object_name)}" if schema else _q(object_name)
             result = conn.execute(text(f"SELECT * FROM {quoted} LIMIT {int(limit)}"))
             columns = list(result.keys())
             rows = [list(r) for r in result.fetchall()]

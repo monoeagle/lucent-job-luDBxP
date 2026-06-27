@@ -80,9 +80,13 @@ class Dialect:
                 + ident.replace(self.quote_close, self.quote_close * 2)
                 + self.quote_close)
 
-    def qualify(self, table: str, column: str) -> str:
-        """Render a quoted ``table.column`` reference."""
-        return f"{self.quote(table)}.{self.quote(column)}"
+    def table_ref(self, table: str, schema: str = "") -> str:
+        """Quoted table reference, schema-qualified when ``schema`` is non-empty."""
+        return f"{self.quote(schema)}.{self.quote(table)}" if schema else self.quote(table)
+
+    def qualify(self, table: str, column: str, schema: str = "") -> str:
+        """Render a quoted ``[schema.]table.column`` reference."""
+        return f"{self.table_ref(table, schema)}.{self.quote(column)}"
 
 
 SQLITE   = Dialect("sqlite", '"', '"', "limit")
@@ -130,7 +134,8 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
                  order_by: tuple[tuple[str, str, str], ...] = (),
                  limit: "int | None" = None,
                  join_types: tuple[str, ...] = (),
-                 dialect: Dialect = SQLITE) -> GeneratedSQL:
+                 dialect: Dialect = SQLITE,
+                 schema: str = "") -> GeneratedSQL:
     """Generate read-only SELECT SQL from a JoinPath with optional filters.
 
     Args:
@@ -182,17 +187,17 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
     lines = [head]
     for k, s in enumerate(selects):
         comma = "," if k < len(selects) - 1 else ""
-        lines.append(f"    {dialect.qualify(s.table, s.column)}{comma}")
-    lines.append(f"FROM {dialect.quote(path.tables[0])}")
+        lines.append(f"    {dialect.qualify(s.table, s.column, schema)}{comma}")
+    lines.append(f"FROM {dialect.table_ref(path.tables[0], schema)}")
 
     for i, step in enumerate(path.steps):
         jt = (join_types[i] if i < len(join_types) else "INNER") or "INNER"
         kw = _JOIN_KEYWORDS.get(jt.upper())
         if kw is None:
             raise ValueError(f"Unsupported join type: {jt!r}")
-        lines.append(f"{kw} {dialect.quote(step.right_table)}")
-        pairs = [(dialect.qualify(step.left_table, lc),
-                  dialect.qualify(step.right_table, rc))
+        lines.append(f"{kw} {dialect.table_ref(step.right_table, schema)}")
+        pairs = [(dialect.qualify(step.left_table, lc, schema),
+                  dialect.qualify(step.right_table, rc, schema))
                  for lc, rc in step.column_pairs]
         width = max(len(lhs) for lhs, _ in pairs)
         for j, (lhs, rhs) in enumerate(pairs):
@@ -206,7 +211,7 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
         for i, flt in enumerate(filters):
             if flt.op not in _ALLOWED_OPS:
                 raise ValueError(f"Unsupported operator: {flt.op}")
-            col = dialect.qualify(flt.table, flt.column)
+            col = dialect.qualify(flt.table, flt.column, schema)
             force_str = flt.op == "LIKE"
             if flt.op in _NULL_OPS:
                 # IS NULL / IS NOT NULL: no value, no placeholder
@@ -258,7 +263,7 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
             direction_upper = direction.upper()
             if direction_upper not in _ALLOWED_DIRECTIONS:
                 raise ValueError(f"Unsupported ORDER BY direction: {direction!r}")
-            ob_parts.append(f"{dialect.qualify(tbl, col)} {direction_upper}")
+            ob_parts.append(f"{dialect.qualify(tbl, col, schema)} {direction_upper}")
         tail.append("ORDER BY " + ", ".join(ob_parts))
 
     if n is not None:
