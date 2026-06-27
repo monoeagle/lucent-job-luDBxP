@@ -66,8 +66,23 @@ beteiligten Tabellen und Kanten farblich hervorgehoben.
 **Interaktive Ergebnistabelle (AP-45):** Ein Klick auf einen **Spaltenkopf** öffnet ein Menü mit
 **Sortieren ASC/DESC**, **Als Filter…** und **Spalte entfernen**. Sortieren ergänzt eine
 Sortierzeile und baut neu, „Als Filter" legt eine vorbefüllte Filterzeile an, „Spalte entfernen"
-entfernt Zusatzspalten (Start-/Ziel-Spalten definieren den Pfad und sind geschützt). Filter-Wertfelder
-bieten zusätzlich ein **Dropdown der echten DISTINCT-Werte** der Spalte an (Freitext bleibt möglich).
+entfernt Zusatzspalten (Start-/Ziel-Spalten definieren den Pfad und sind geschützt). Sobald ein
+**Filterwert gesetzt** ist (getippt oder aus dem Dropdown gewählt), wird sofort neu gebaut — die
+`WHERE`-Bedingung erscheint umgehend im SQL und im Ergebnis.
+
+**Zwei verschiedene „DISTINCT" — nicht verwechseln:**
+
+| | erscheint im generierten SQL? | Zweck |
+|---|---|---|
+| **`DISTINCT`-Checkbox** (neben LIMIT/Dialekt) | **ja** — `SELECT DISTINCT …` | doppelte Ergebniszeilen unterdrücken |
+| **Filter-Wertdropdown** (`/api/distinct`) | **nein** | Komfort-Lookup: zeigt die echten Werte der Spalte als Auswahlliste |
+
+Das **Filter-Wertdropdown** ist eine **separate Hintergrundabfrage** auf *eine* Tabelle/Spalte
+(`SELECT DISTINCT col FROM tabelle WHERE col IS NOT NULL ORDER BY col`, begrenzt auf
+`config.DISTINCT_LIMIT`). Sie beantwortet nur die Frage „welche Werte gibt es in dieser Spalte?"
+und füllt damit die Vorschlagsliste (`<datalist>`) des Wertfelds. Sie fließt **nicht** in das
+angezeigte/kopierbare Join-SQL ein — dort steht weiterhin nur deine eigentliche Abfrage
+(Join + deine Filter). Freitext bleibt jederzeit möglich.
 
 ---
 

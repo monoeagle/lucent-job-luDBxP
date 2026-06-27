@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.32.1] — 2026-06-27
+### Geändert
+- **AP-45 Feinschliff — Filter sofort wirksam:** Wird ein Filterwert gesetzt (getippt oder aus dem
+  DISTINCT-Dropdown gewählt), ein wertloser Operator (`IS NULL`/`IS NOT NULL`) gewählt oder eine
+  Filterzeile entfernt, baut der Join-Builder **sofort neu** — die `WHERE`-Bedingung erscheint
+  umgehend im SQL und im Ergebnis (vorher erst nach „Aktualisieren").
+### Behoben
+- **DISTINCT-Dropdown zeigte gelegentlich die falsche Spalte:** Beim Vorbelegen einer Filterzeile
+  (z. B. via „Als Filter") wurde kurzzeitig auch die Default-Spalte geladen; bei ungünstigem
+  Timing füllte deren Antwort die Vorschlagsliste. `_loadFilterDistinct` verwirft jetzt veraltete
+  Antworten (Race-Guard) — es gewinnt immer die aktuell gewählte Spalte.
+### Doku
+- Referenz **Oberfläche/Architektur**: die **zwei „DISTINCT"** klar abgegrenzt — die `DISTINCT`-Checkbox
+  fließt als `SELECT DISTINCT` ins generierte SQL, das **Filter-Wertdropdown** (`/api/distinct`) ist
+  dagegen ein **separater Lookup** auf eine Spalte und erscheint **nicht** im Join-SQL.
+
 ## [0.32.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-45 — Ergebnis-Hilfen Teil 2: Spaltenkopf-Aktionen + DISTINCT-Filterwerte:**

@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T15:52:42",
+  "generatedAt": "2026-06-27T16:13:49",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 57,
+      "commits": 58,
       "kinds": {
+        "feat": 14,
         "docs": 17,
-        "feat": 13,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "c5cba4b",
+          "subject": "feat: AP-45 Ergebnis-Hilfen Teil 2 — Spaltenkopf-Aktionen + DISTINCT-Filterwerte — v0.32.0",
+          "kind": "feat"
+        },
         {
           "sha": "64f8adf",
           "subject": "docs: Doku-Drift geschlossen (Session-7-Nachprüfung) — Oberflaeche-Funktionen, Architektur /api/orphan_check + Join-Typ, Endpoint-Diagramm",
@@ -856,7 +861,7 @@
     }
   },
   "stats": {
-    "totalCommits": 162,
+    "totalCommits": 163,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -866,7 +871,7 @@
       },
       {
         "kind": "feat",
-        "count": 43
+        "count": 44
       },
       {
         "kind": "other",

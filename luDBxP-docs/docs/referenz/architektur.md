@@ -72,4 +72,8 @@ Spaltenkopf eindeutig seiner Quellspalte zugeordnet wird (auch bei gleichnamigen
 verbundener Tabellen). Ein Klick auf einen Spaltenkopf bietet **Sortieren/Filtern/Spalte entfernen**
 (Start-/Ziel-Anker geschützt). Filter-Wertfelder werden aus dem read-only Endpoint
 **`/api/distinct`** (`SELECT DISTINCT … ORDER BY …`, spalten-validiert, begrenzt auf
-`config.DISTINCT_LIMIT`) mit echten Werten vorbelegt.
+`config.DISTINCT_LIMIT`) mit echten Werten vorbelegt. Diese Distinct-Abfrage ist ein **separater
+Lookup** auf eine einzelne Spalte und **nicht** Teil des generierten Join-SQL — sie füllt nur die
+Vorschlagsliste des Wertfelds. (Davon zu unterscheiden ist die **`DISTINCT`-Checkbox** des Builders,
+die sehr wohl als `SELECT DISTINCT` in die generierte Abfrage einfließt.) Das Setzen eines Filterwerts
+baut sofort neu, sodass die `WHERE`-Bedingung umgehend im SQL und Ergebnis erscheint.

@@ -487,7 +487,12 @@ async function _loadFilterDistinct(row) {
   const cEl = row.querySelector(".f-col");
   const lists = row.querySelectorAll("datalist");
   if (!tEl || !cEl || !tEl.value || !cEl.value || !lists.length) return;
-  const values = await _fetchDistinct(tEl.value, cEl.value);
+  const table = tEl.value, column = cEl.value;
+  const values = await _fetchDistinct(table, column);
+  // Race guard: if the row's column changed while this fetch was in flight, a
+  // newer load now owns the datalist — don't overwrite it with stale values
+  // (e.g. selecting a column fires a load for the previous default column too).
+  if (tEl.value !== table || cEl.value !== column) return;
   const opts = values.map((v) => `<option value="${esc(v)}"></option>`).join("");
   lists.forEach((dl) => { dl.innerHTML = opts; });
 }
@@ -538,11 +543,26 @@ function addFilterRow() {
   // AP-45: reload the DISTINCT dropdown whenever the column (or its table) changes.
   row.querySelector(".f-table").addEventListener("change", () => { fillFcol(); _loadFilterDistinct(row); });
   row.querySelector(".f-col").addEventListener("change", () => _loadFilterDistinct(row));
-  row.querySelector(".f-op").addEventListener("change", () => _updateFilterValueField(row));
-  row.querySelector(".f-del").addEventListener("click", () => row.remove());
+  // AP-45.1: setting a filter value (typed or picked from the DISTINCT dropdown)
+  // rebuilds immediately, so the WHERE clause appears in the SQL right away. The
+  // listener sits on the wrapper, so it survives the inner field being re-rendered
+  // and catches `change` bubbling up from whichever value input is active.
+  row.querySelector(".f-val-wrap").addEventListener("change", _rebuildIfBuilt);
+  row.querySelector(".f-op").addEventListener("change", () => {
+    _updateFilterValueField(row);
+    // IS NULL / IS NOT NULL have no value field → they are complete on selection,
+    // so apply them at once (value ops wait for the value `change` above).
+    const op = row.querySelector(".f-op").value;
+    if (op === "IS NULL" || op === "IS NOT NULL") _rebuildIfBuilt();
+  });
+  row.querySelector(".f-del").addEventListener("click", () => { row.remove(); _rebuildIfBuilt(); });
   _updateFilterValueField(row);  // render initial value field for default op "=" (loads DISTINCT)
   $("filters").appendChild(row);
 }
+
+// AP-45.1: rebuild SQL + result keeping the active path, but only once a path has
+// been built (no-op on a fresh form). Used by the filter rows for live feedback.
+function _rebuildIfBuilt() { if (JB_LAST) runBuild(true); }
 
 function collectFilters() {
   const out = [];
