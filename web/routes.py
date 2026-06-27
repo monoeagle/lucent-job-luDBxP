@@ -7,7 +7,7 @@ from flask import Blueprint, jsonify, render_template, request
 
 import config
 
-from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
+from core.loaders.sqlalchemy_loader import SqlAlchemyLoader, list_schemas
 from core.graph import build_graph
 from core.pathfinder import find_paths, NoPathError
 from core.sqlgen import generate_sql, Selection, Filter, dialect_for, SQLITE
@@ -121,8 +121,9 @@ def api_schema():
     url = data.get("connection_url", "")
     if not url.strip():
         return jsonify(error=_NO_URL_MSG), 400
+    schema_name = (data.get("schema") or "").strip()
     try:
-        schema = SqlAlchemyLoader(url).load()
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
     return jsonify(
@@ -147,6 +148,20 @@ def api_schema():
     )
 
 
+@bp.post("/api/schemas")
+def api_schemas():
+    """List the database's user-facing schema names for the schema picker."""
+    data = request.get_json(silent=True) or {}
+    url = (data.get("connection_url") or "").strip()
+    if not url:
+        return jsonify(error=_NO_URL_MSG), 400
+    try:
+        schemas = list_schemas(url)
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+    return jsonify(schemas=list(schemas))
+
+
 @bp.post("/api/data")
 def api_data():
     """Return the first rows of a table or view (read-only preview)."""
@@ -155,13 +170,14 @@ def api_data():
     obj = data.get("object", "")
     if not url.strip():
         return jsonify(error=_NO_URL_MSG), 400
+    schema_name = (data.get("schema") or "").strip()
     try:
-        schema = SqlAlchemyLoader(url).load()
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
     valid = {t.name for t in schema.tables} | {v.name for v in schema.views}
     try:
-        result = fetch_rows(url, obj, valid)
+        result = fetch_rows(url, obj, valid, schema=schema_name)
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
     except ConnectionError as exc:
@@ -176,8 +192,9 @@ def api_graph():
     url = data.get("connection_url", "")
     if not url.strip():
         return jsonify(error=_NO_URL_MSG), 400
+    schema_name = (data.get("schema") or "").strip()
     try:
-        schema = SqlAlchemyLoader(url).load()
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
     include_implied = bool(data.get("include_implied", False))

@@ -774,3 +774,20 @@ def test_index_unique_path_has_no_fanout_warning(client, uniqueindex_url):
     assert resp.status_code == 200
     p = resp.get_json()["paths"][0]
     assert all("1-N" not in w for w in p["warnings"])
+
+
+# ===== AP-52: /api/schemas + schema param on reflect endpoints =====
+
+def test_schemas_endpoint_lists_main(client, inventory_url):
+    resp = client.post("/api/schemas", json={"connection_url": inventory_url})
+    assert resp.status_code == 200
+    assert "main" in resp.get_json()["schemas"]
+
+
+def test_data_endpoint_with_schema_returns_rows(client, inventory_url):
+    resp = client.post("/api/data", json={
+        "connection_url": inventory_url, "object": "VirtualMachines",
+        "schema": "main",
+    })
+    assert resp.status_code == 200
+    assert "columns" in resp.get_json()
