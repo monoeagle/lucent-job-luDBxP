@@ -121,7 +121,7 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             if real.lower() not in known:
                 warnings.append(AnalysisWarning(
                     "warn", "UNKNOWN_TABLE",
-                    f'Tabelle „{real}" ist im verbundenen Schema nicht vorhanden.'))
+                    f'Tabelle „{real}“ ist im verbundenen Schema nicht vorhanden.'))
         # Qualified columns only (table.column); unqualified columns are skipped.
         for col in node.find_all(exp.Column):
             tbl_ref = col.table
@@ -133,7 +133,7 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             if not schema.has_column(real, col.name):
                 warnings.append(AnalysisWarning(
                     "warn", "UNKNOWN_COLUMN",
-                    f'Spalte „{col.name}" existiert nicht in Tabelle „{real}".'))
+                    f'Spalte „{col.name}“ existiert nicht in Tabelle „{real}“.'))
 
     return AnalysisResult(
         statement_type=stmt_type,
