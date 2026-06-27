@@ -190,6 +190,7 @@ do_skip_setup() {
   venv_healthy || _fail "venv fehlt/kaputt — bitte zuerst 'bash run.sh --setup-venv'."
   start_app
 }
+do_tray()       { ensure_venv; "$VENV_PY" -m launcher; }
 do_clean() {
   _hdr "Umgebung neu aufbauen"
   [ -d "$VENV" ] && { _info "venv entfernen..."; rm -rf "$VENV"; }
@@ -541,10 +542,11 @@ case "${1:-MENU}" in
   --skip-setup) do_skip_setup ;;
   --tests)      do_tests ;;
   --demo-db)    do_demo_db ;;
+  --tray)       do_tray ;;
   --start|"")   do_start ;;
   MENU)         menu_loop ;;
   --help|-h)
-    echo "Usage: run.sh [--start|--setup-venv|--skip-setup|--clean|--tests|--demo-db|--version|--appimage] [--debug]"
+    echo "Usage: run.sh [--start|--tray|--setup-venv|--skip-setup|--clean|--tests|--demo-db|--version|--appimage] [--debug]"
     echo "       run.sh            (kein Argument: interaktives Menue)"
     echo "       --debug           Flask-Debug-Modus (LUCENT_DEBUG=1), mit --start/--skip-setup"
     ;;

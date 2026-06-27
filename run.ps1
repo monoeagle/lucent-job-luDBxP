@@ -76,7 +76,7 @@
     Doku (lokal): luDBxP-docs/  ->  Grundlagen / Installation
 #>
 param(
-    [ValidateSet('menu', 'start', 'setup-venv', 'skip-setup', 'clean', 'tests', 'demo-db', 'version')]
+    [ValidateSet('menu', 'start', 'tray', 'setup-venv', 'skip-setup', 'clean', 'tests', 'demo-db', 'version')]
     [string]$Action = 'menu',
     [switch]$DebugMode
 )
@@ -90,6 +90,7 @@ Set-Location -Path $PSScriptRoot
 $Venv    = Join-Path $PSScriptRoot 'venv'
 $Stamp   = Join-Path $PSScriptRoot '.req_stamp'
 $VenvPy  = Join-Path $Venv 'Scripts\python.exe'
+$VenvPythonw = Join-Path $Venv 'Scripts\pythonw.exe'
 $VenvPip = Join-Path $Venv 'Scripts\pip.exe'
 $Port    = 5057
 
@@ -259,6 +260,11 @@ function Do-SkipSetup {
     }
     Start-App
 }
+function Do-Tray {
+    Ensure-Venv
+    # Tray fensterlos starten (pythonw = keine Konsole); app.py wird vom Launcher gestartet.
+    Start-Process -FilePath $VenvPythonw -ArgumentList '-m', 'launcher' -WorkingDirectory $PSScriptRoot
+}
 function Do-Clean {
     _hdr "Umgebung neu aufbauen"
     if (Test-Path $Venv)  { _info "venv entfernen..."; Remove-Item $Venv -Recurse -Force }
@@ -327,6 +333,7 @@ function Menu-Loop {
 switch ($Action) {
     'menu'       { Menu-Loop }
     'start'      { Do-Start }
+    'tray'       { Do-Tray }
     'setup-venv' { Do-SetupVenv }
     'skip-setup' { Do-SkipSetup }
     'clean'      { Do-Clean }
