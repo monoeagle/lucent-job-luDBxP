@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.34.1] — 2026-06-27
+### Hinzugefügt
+- **AP-34 — Info-Dialog:** Das Tray-„Info" öffnet jetzt einen echten Dialog (eigener Prozess,
+  `launcher/about.py`) mit **Ersteller, Art (read-only), Repo, URL/Port und vollem Stack**
+  (Python/Flask/SQLAlchemy/NetworkX/sqlglot/Cytoscape/pystray/Pillow) sowie den Pro-Nutzer-Pfaden.
+  Inhaltsbasierte Fenstergröße (keine Zeilenumbrüche), **Zentrierung auf dem primären Monitor**
+  (Multi-Monitor-fest via xrandr auf Linux).
+- **AP-34 — Linux-Tray-Menü:** mit dem AppIndicator/GTK-Backend (PyGObject) funktioniert das
+  Kontextmenü (Öffnen/Info/Beenden) auch auf Linux. Optionale Deps in `requirements-tray-linux.txt`
+  (Setup-Schritte auf der Betriebsseite); ohne sie Xorg-Fallback (Icon ohne Menü). Windows: nativ.
+### Behoben
+- **AP-34 — sauberes Beenden:** der Launcher räumt den `app.py`-Kindprozess bei **jedem** Ende
+  (Menü „Beenden", Schließen, SIGTERM/SIGINT, normales Exit) ab → **keine verwaisten Prozesse**,
+  Port wird frei. 232 Tests grün.
+
 ## [0.34.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-34 (Kern) — Tray-Icon-Launcher:** Ein-Klick-Start, ohne dass der Nutzer ein venv

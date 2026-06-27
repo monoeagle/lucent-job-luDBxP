@@ -130,3 +130,58 @@ def test_install_cleanup_reaps_child_on_exit_and_signal(monkeypatch):
     with pytest.raises(SystemExit):                   # Signal-Handler stoppt + beendet
         handlers[_signal.SIGTERM](_signal.SIGTERM, None)
     assert stopped == ["stop"]
+
+
+def test_about_info_text_contains_key_fields():
+    import config
+    from launcher.about import info_text
+    txt = info_text(url="http://127.0.0.1:5057", port=5057)
+    assert config.APP_NAME in txt
+    assert config.APP_VERSION in txt
+    assert config.APP_AUTHOR in txt                   # Ersteller
+    assert "http://127.0.0.1:5057" in txt and "5057" in txt
+    assert "Python" in txt and "Flask" in txt and "SQLAlchemy" in txt  # Stack
+    assert "read-only" in txt
+
+
+def test_tray_info_launches_about_subprocess(monkeypatch):
+    import subprocess as _sp
+    from launcher import tray as traymod
+
+    class FakeCore:
+        url = "http://127.0.0.1:5057"
+        port = 5057
+
+        def open_browser(self):
+            pass
+
+        def stop(self):
+            pass
+
+    captured = {}
+    monkeypatch.setattr(_sp, "Popen",
+                        lambda cmd, env=None, **k: captured.update(cmd=cmd, env=env))
+    icon = traymod.build_tray(FakeCore())
+    info_item = [it for it in icon.menu if str(it.text) == "Info"][0]
+    info_item(icon)                                   # MenuItem aufrufbar → Action
+    assert captured["cmd"][0] == sys.executable
+    assert captured["cmd"][1:] == ["-m", "launcher.about"]
+    assert captured["env"]["LUCENT_INFO_URL"] == "http://127.0.0.1:5057"
+    assert captured["env"]["LUCENT_INFO_PORT"] == "5057"
+
+
+def test_parse_primary_geometry_picks_primary_monitor():
+    from launcher.about import _parse_primary_geometry
+    sample = (
+        "Screen 0: minimum 320 x 200, current 5120 x 1440, maximum 16384 x 16384\n"
+        "DP-1 connected 2560x1440+2560+0 (normal left inverted right) 600mm x 340mm\n"
+        "DP-2 connected primary 2560x1440+0+0 (normal) 600mm x 340mm\n"
+    )
+    # die primäre Auflösung+Offset, NICHT der virtuelle Gesamt-Screen (5120x1440)
+    assert _parse_primary_geometry(sample) == (0, 0, 2560, 1440)
+
+
+def test_parse_primary_geometry_falls_back_to_first_connected():
+    from launcher.about import _parse_primary_geometry
+    sample = "HDMI-1 connected 1920x1080+0+0 (normal) 510mm x 290mm\n"
+    assert _parse_primary_geometry(sample) == (0, 0, 1920, 1080)

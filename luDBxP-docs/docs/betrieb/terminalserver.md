@@ -56,10 +56,23 @@ Statt einer Konsole kann pro Nutzer eine **Verknüpfung** angelegt werden, deren
 das venv automatisch eingerichtet (Fortschritt kurz sichtbar) — der **Nutzer muss nichts
 einrichten**; danach startet ein **fensterloses Tray-Icon** und der Browser öffnet sich
 automatisch, sobald der Server antwortet. Tray-Menü: **Im Browser öffnen**, **Info**
-(Version/URL/Port), **Beenden** (stoppt die App → Port frei). Spätere Starts gehen direkt durch.
+(Dialog mit Ersteller/Stack/Version/URL/Port), **Beenden** (stoppt die App → Port frei; der
+Launcher räumt den App-Prozess bei jedem Ende sauber ab). Spätere Starts gehen direkt durch.
 
 > Hinweis: Die `tray`-Action wurde der signierten `run.ps1` hinzugefügt → einmalige
 > **Re-Signatur** nötig. Ein `.exe`-Bau ist nicht erforderlich.
+
+**Windows:** das Tray-Menü funktioniert **out-of-the-box** (natives Backend).
+
+**Linux:** für das Kontextmenü braucht pystray das **AppIndicator/GTK-Backend** (PyGObject).
+Einmalig pro Maschine (mit `sudo`):
+```bash
+sudo apt install libgirepository1.0-dev gobject-introspection libcairo2-dev
+./venv/bin/pip install -r requirements-tray-linux.txt
+```
+Ohne diese Pakete läuft der Tray nur mit dem Xorg-Backend (**Icon, aber kein Menü**) — dann die
+App per `bash run.sh` (Konsole) starten. Manche GNOME-Setups benötigen zusätzlich eine
+AppIndicator-Shell-Erweiterung, damit das Icon erscheint.
 
 ## Pro-Nutzer-Pfade
 

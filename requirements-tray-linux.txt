@@ -1,0 +1,19 @@
+# AP-34 — optionale Linux-Abhängigkeiten für das Tray-Kontextmenü.
+#
+# Nur auf Linux nötig: pystray nutzt dort das AppIndicator-/GTK-Backend (Menü +
+# Notifications), das PyGObject braucht. Auf Windows zeigt pystray das Menü nativ
+# (win32) — diese Pakete werden dort NICHT benötigt.
+#
+# Bewusst NICHT in requirements.txt: PyGObject kompiliert aus Quellen und braucht
+# System-Dev-Pakete; fehlen sie, soll das den Kern-Install (App/Konsole) nicht brechen.
+#
+# Einmalige Voraussetzung (System, mit sudo):
+#   sudo apt install libgirepository1.0-dev gobject-introspection libcairo2-dev
+# Dann:
+#   ./venv/bin/pip install -r requirements-tray-linux.txt
+#
+# Ohne diese Pakete fällt pystray auf das Xorg-Backend zurück (Icon, aber KEIN
+# Kontextmenü) — dann die App per `bash run.sh` (Konsole) starten.
+
+pycairo>=1.16
+PyGObject>=3.50,<3.52   # <3.52 nutzt girepository-1.0 (libgirepository1.0-dev); 3.52+ bräuchte libgirepository-2.0-dev

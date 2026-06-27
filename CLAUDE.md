@@ -33,6 +33,10 @@ bash run.sh --skip-setup  # skip venv/dep check, just launch (for hub use)
 bash run.sh --debug    # Flask debug mode (LUCENT_DEBUG=1); combine with --start/--skip-setup
 bash run.sh --tray     # Tray-Icon-Launcher (App + Auto-Browser); Windows: run.ps1 -Action tray
 ```
+Tray-Menü (Öffnen/Info/Beenden): Windows nativ. **Linux** braucht das AppIndicator/GTK-Backend —
+`sudo apt install libgirepository1.0-dev gobject-introspection libcairo2-dev` + `pip install -r requirements-tray-linux.txt`
+(sonst nur Icon ohne Menü → Xorg-Fallback). `launcher/core.py` ist stdlib-only + getestet; die GUI (`tray.py`/`about.py`) nicht headless-testbar.
+
 Server listens at `http://127.0.0.1:5057`.
 
 ## How to Test

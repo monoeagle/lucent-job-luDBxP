@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.34.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.34.1">
       
       
         <meta name="author" content="LucentTools">
@@ -1258,11 +1258,21 @@ dass automatisch ein freier Port gewählt wird, und starten durch. Jeder Nutzer
 das venv automatisch eingerichtet (Fortschritt kurz sichtbar) — der <strong>Nutzer muss nichts
 einrichten</strong>; danach startet ein <strong>fensterloses Tray-Icon</strong> und der Browser öffnet sich
 automatisch, sobald der Server antwortet. Tray-Menü: <strong>Im Browser öffnen</strong>, <strong>Info</strong>
-(Version/URL/Port), <strong>Beenden</strong> (stoppt die App → Port frei). Spätere Starts gehen direkt durch.</p>
+(Dialog mit Ersteller/Stack/Version/URL/Port), <strong>Beenden</strong> (stoppt die App → Port frei; der
+Launcher räumt den App-Prozess bei jedem Ende sauber ab). Spätere Starts gehen direkt durch.</p>
 <blockquote>
 <p>Hinweis: Die <code>tray</code>-Action wurde der signierten <code>run.ps1</code> hinzugefügt → einmalige
 <strong>Re-Signatur</strong> nötig. Ein <code>.exe</code>-Bau ist nicht erforderlich.</p>
 </blockquote>
+<p><strong>Windows:</strong> das Tray-Menü funktioniert <strong>out-of-the-box</strong> (natives Backend).</p>
+<p><strong>Linux:</strong> für das Kontextmenü braucht pystray das <strong>AppIndicator/GTK-Backend</strong> (PyGObject).
+Einmalig pro Maschine (mit <code>sudo</code>):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libgirepository1.0-dev<span class="w"> </span>gobject-introspection<span class="w"> </span>libcairo2-dev
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>./venv/bin/pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-tray-linux.txt
+</span></code></pre></div>
+Ohne diese Pakete läuft der Tray nur mit dem Xorg-Backend (<strong>Icon, aber kein Menü</strong>) — dann die
+App per <code>bash run.sh</code> (Konsole) starten. Manche GNOME-Setups benötigen zusätzlich eine
+AppIndicator-Shell-Erweiterung, damit das Icon erscheint.</p>
 <h2 id="pro-nutzer-pfade">Pro-Nutzer-Pfade<a class="headerlink" href="#pro-nutzer-pfade" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

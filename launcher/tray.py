@@ -1,5 +1,9 @@
 """Tray GUI shell (AP-34): pystray icon + menu wired to LauncherCore.
 Thin by design — all logic lives in launcher.core (headless-testable)."""
+import os
+import subprocess
+import sys
+
 import pystray
 from PIL import Image, ImageDraw
 
@@ -21,8 +25,11 @@ def build_tray(core):
         core.open_browser()
 
     def on_info(icon, item):
-        i = core.info()
-        icon.notify(f"{i['name']} v{i['version']}\n{i['url']}", "Info")
+        # Eigener Prozess: das Tkinter-Fenster kollidiert nicht mit der Tray-Mainloop.
+        env = dict(os.environ,
+                   LUCENT_INFO_URL=core.url or "",
+                   LUCENT_INFO_PORT=str(core.port or ""))
+        subprocess.Popen([sys.executable, "-m", "launcher.about"], env=env)
 
     def on_quit(icon, item):
         core.stop()
