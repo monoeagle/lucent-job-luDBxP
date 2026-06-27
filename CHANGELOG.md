@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.36.0] — 2026-06-27
+
+### Added
+- One-to-one fan-out detection: a descending foreign key whose child columns
+  carry a UNIQUE constraint (or are the primary key) is now classified as 1-1
+  instead of 1-N, so the join-builder no longer raises a false fan-out warning
+  for it.
+
 ## [0.35.0] — 2026-06-27
 ### Added
 - Production WSGI server: the app now serves via **waitress** in normal

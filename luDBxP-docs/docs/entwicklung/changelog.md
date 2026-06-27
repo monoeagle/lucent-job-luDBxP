@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.36.0] — 2026-06-27
+
+### Hinzugefügt
+- 1-1-Erkennung: absteigende FK mit eindeutiger Kind-Spalte (UNIQUE/PK) gilt
+  als 1-1 statt 1-N — keine falsche Fan-out-Warnung mehr.
+
 ## [0.35.0] — 2026-06-27
 ### Hinzugefügt
 - waitress als WSGI-Server im Normalbetrieb (Debug behält Dev-Server mit Auto-Reload).

@@ -1,20 +1,50 @@
 {
-  "generatedAt": "2026-06-27T22:11:51",
+  "generatedAt": "2026-06-27T22:59:26",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 95,
+      "commits": 101,
       "kinds": {
-        "feat": 26,
+        "feat": 29,
+        "docs": 41,
         "build": 1,
-        "docs": 38,
         "fix": 7,
         "other": 23
       },
       "list": [
+        {
+          "sha": "7201610",
+          "subject": "feat: AP-50 to_many=False for unique (one-to-one) FK steps",
+          "kind": "feat"
+        },
+        {
+          "sha": "d612936",
+          "subject": "feat: AP-50 JoinEdge.fk_unique — flag one-to-one FKs at graph build",
+          "kind": "feat"
+        },
+        {
+          "sha": "af3583e",
+          "subject": "feat: AP-50 reflect UNIQUE constraints into Table.unique_constraints",
+          "kind": "feat"
+        },
+        {
+          "sha": "5fc57b6",
+          "subject": "docs: Implementierungsplan AP-50 Unique-Fan-out-Klassifikation",
+          "kind": "docs"
+        },
+        {
+          "sha": "c1ee589",
+          "subject": "docs: Design AP-50 — Unique-Constraints → korrekte Fan-out-Klassifikation",
+          "kind": "docs"
+        },
+        {
+          "sha": "d37ca41",
+          "subject": "docs: Release v0.35.0 — waitress-WSGI-Server (AP-31), Doku/Badges/Changelog/Site",
+          "kind": "docs"
+        },
         {
           "sha": "5992f91",
           "subject": "feat: AP-31 waitress als WSGI-Server (Debug behält Dev-Server)",
@@ -1047,17 +1077,17 @@
     }
   },
   "stats": {
-    "totalCommits": 200,
+    "totalCommits": 206,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 81
+        "count": 84
       },
       {
         "kind": "feat",
-        "count": 56
+        "count": 59
       },
       {
         "kind": "other",
@@ -1084,7 +1114,7 @@
         "count": 1
       }
     ],
-    "testCount": 233
+    "testCount": 240
   },
   "phases": []
 }
