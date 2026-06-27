@@ -8,6 +8,7 @@ Macht den Projektverlauf auswertbar (Tokens/Commit, Tokens/Feature, Tests-Δ je 
 | 1 | 2026-06-25 | Opus 4.8 (1M) Hauptschleife; Subagenten haiku/sonnet/opus | 664.8k (`/context` Endstand; Messages 644.9k / Tools 13.2k) | 30 (1 FF-Merge) | 0 → 81 | (neu) → 0.1.0 | ~28 (v1-SDD: ~10 Implementer + ~10 Reviewer + ~6 Fixer + 1 Final-Review/opus) | 16 / 5 | 5065 / 64 | Browser (Chrome) + Playwright e2e ✓ | Session 1: neues Projekt von Null; Flask-Web statt PyQt6-Pattern |
 | 2 | 2026-06-26 | Opus 4.8 (1M) Hauptschleife; Subagenten sonnet (Verify/Screenshots) + general-purpose/opus (Deploy) | ~800k (Schätzung; Session lief in Auto-Compaction, `/context`-Endstand nicht abgerufen) | 26 (31→56; 1 fremd: 9d55a9c) | 81 → 111 | 0.1.0 → 0.3.1 | ~25 (Pre-Compaction: AP-1/2-SDD + Wheelhouse + Docs; Post-Compaction ~7: Verify + Screenshots + 4× Deploy) | 7 / 1 (Commit-Ebene; AP-8/AP-2-Fixes gebündelt) | 11267 / 98 (inkl. gener. SVG/JSON/Screenshots/Wheels) | Playwright e2e (21/21 + 7 Screenshots) + Chrome ✓ | Session 2: AP-1…AP-9; read-only-Ausführung eingeführt; Doku-Versions-Drift (icon-rail.js/zensical/poster) behoben; Startseite 2-spaltig + AP-Band 3-spaltig |
 | 3 | 2026-06-26 | Opus 4.8 (1M) Hauptschleife; **keine Subagenten** (alles inline); Playwright/Chromium zur UI-Verifikation | ~640k (Schätzung; letzter `/context` 584.7k bei 58 %) | 10 eigene (56→69; +7 Session-2-Commits beim Rebase integriert) | 111 → 118 | 0.3.1 → 0.10.0 | 0 | 6 / 1 (+ 8 docs, 1 build) | ~1419 ins. / 101 Dateien (inkl. der integrierten Session-2-Commits) | Playwright/Chromium (AP-10/13/20/21: Clipboard-, Höhen-, Filter-, Splitter-Checks) ✓ | Session 3: Remote-Divergenz → Rebase + AP-Umnummerierung; Python-3.14-Wheelhouse (cp314); AP-10/11/13/20/21 komplett + AP-12-Backend/AP-15-Windows; Backlog AP-16…25 dokumentiert; **Windows-only** (Linux abends) |
+| 4 | 2026-06-26 | Opus 4.8 (1M) Hauptschleife; **keine Subagenten** (alles inline, wie Session 3) | n/a (nicht erfasst — Windows-Session ohne `/context`-Endstand) | 18 eigene (0 Merges) | 118 → 118 (±0; reine UI-/Build-/Doku-Arbeit) | 0.10.0 → 0.11.3 | 0 | 1 / 4 (Commit-Ebene) | 4507 ins. / 32 Dateien (Code-only ~698 ins.; 3809 davon = gebündelte `dagre.min.js`) | Windows (PowerShell 5.1, Chrome) ✓ | Session 4 (Windows): AP-23/AP-16 (dagre-Layout lokal gebündelt) + App-Rename „LucentTools DB Explorer" + AP-26 Audit-Prozess + AP-28/AP-32 UI-Fixes + AP-17 Release-ZIP (GitHub-Releases v0.11.2/v0.11.3). Schwerpunkt **PS-5.1-Deployment** (run.ps1 ASCII+UTF-8-BOM, Start-Abbruch-Fix, `-DebugMode`). Insight `2026-06-26-ps51-deployment-und-dagre.md`. |
 | 5 | 2026-06-27 | Opus 4.8 (1M) Hauptschleife; Subagenten general-purpose/opus (Doku-Reconcile + UI-Screenshots) | ~799k (`/context` Endstand 799.2k bei 80 %) | 17 eigene (0 Merges; ab Pull 05de9a5) | 118 → 138 | 0.11.3 → 0.16.0 | 2 | feature-lastig (5 APs) | 3468 ins. / 68 Dateien (inkl. gener. SVG/Screenshots/Site) | Chrome + Playwright + **echtes MSSQL 2022** (podman) ✓ | Session 5 (Linux): AP-15/33/14/29/12 → v0.16.0; Python 3.14 via uv; MSSQL real getestet; Backlog konsolidiert (AP-17 gestrichen, AP-22/24 entschieden, AP-30 rescoped); Doku/Pages durchgehend deployed. **Session 4 (Windows, v0.10→0.11.3) noch nachzutragen.** |
 | 6 | 2026-06-27 | Opus 4.8 (1M) Hauptschleife; Subagenten **haiku** (Transkription) / **sonnet** (Task-Reviews+Integration) / **opus** (Final-Whole-Branch-Reviews) | ~473k (`/context` Endstand 473.3k bei 47 %) | 26 eigene (2 FF-Merges, 0 Merge-Commits) | 138 → 171 | 0.16.0 → 0.18.0 | ~32 (AP-30 ~16 + AP-25 ~16: Implementer+Task-Reviewer je Task, Fixer, 2× Final/opus) | 2 feat (AP-30, AP-25; beide minor) | 2788 ins. / 52 Dateien (Code-only 626 ins. / 9 Dateien; Rest gener. SVG/Site) | Chrome + Playwright (AP-30 Fan-out-Warnung, AP-25 Analyzer-Tab + Graph-Highlight) ✓ | Session 6 (Linux): AP-30 (N-1-Stern) + AP-25 (read-only SQL-Analyzer, sqlglot) → v0.18.0 via SDD; **finale opus-Reviews fingen 3 echte Bugs** (PG/MSSQL-500, NO_WHERE-Subquery, UNKNOWN_COLUMN-Case) die SQLite-only-Tests maskierten; Architekturbild + zensical-Drift nachgezogen; gh-pages deployed. **Session 4 (Windows) weiter offen.** |
 
@@ -74,6 +75,26 @@ Macht den Projektverlauf auswertbar (Tokens/Commit, Tokens/Feature, Tests-Δ je 
 - **Versionierung:** 0.3.1 → 0.10.0. Regel etabliert: **1.0.0 nur auf Ansage**, sonst Feature → minor / Fix → patch.
 - **Geräte-Scope:** Windows-only; Linux-Arbeiten (Doku-Site bauen, `run.sh`, AppImage,
   realer MSSQL-Test) bewusst auf die Abend-Session am anderen Rechner verschoben.
+
+## Details Session 4
+
+- **Modell-Mix:** Hauptschleife Opus 4.8 (1M), **ohne Subagenten/Workflows** — alle APs
+  inline (wie Session 3). Lief auf **Windows**; UI im Browser (Chrome) getrieben.
+- **Token-Erfassung:** Kein `/context`-Endstand notiert → Token-Gesamt **n/a**. Lehre für
+  künftige Windows-Sessions: Endstand vor dem Handoff abrufen.
+- **Arbeitspakete:** AP-23 (Join-Builder-Maske vereinheitlicht) + UI-Politur (Copy-Icon in
+  SELECT-Box, Default-Graphbreite, Resize-Autofit), AP-16 (Graph-Layout auf **dagre**
+  lokal gebündelt statt cose; `cytoscape-dagre` evaluiert + wieder entfernt), **App-Rename**
+  „Lucent DB Explorer" → „LucentTools DB Explorer", AP-26 (Audit-Prozess `docs/audits/`),
+  AP-18 (Multi-Tabellen-Join als bereits implementiert verifiziert), AP-28/AP-32 (UI-Fixes),
+  AP-27 (Insights-Ort/Prozess), AP-17 (Release-ZIP `tools/build_release.py` → GitHub-Releases).
+- **Deployment-Schwerpunkt (PowerShell 5.1 / RDS):** `run.ps1` reines ASCII + UTF-8-BOM,
+  Start-Abbruch behoben, `-DebugMode`, `threaded=True`. Releases v0.11.2 + v0.11.3 online.
+- **Tests:** 118 → 118 (Δ ±0; reine UI-/Build-/Doku-Arbeit ohne pytest-Abdeckung → per
+  Browser verifiziert).
+- **Versionierung:** 0.10.0 → 0.11.0 (minor) → 0.11.1 → 0.11.2 → 0.11.3 (3 Patches).
+- **LOC ehrlich:** 4507 Insertions, davon 3809 die gebündelte `dagre.min.js` (Vendored-Lib,
+  nicht selbst geschrieben) → **Code-only ~698 Insertions / 32 Dateien**.
 
 ## Details Session 6
 
