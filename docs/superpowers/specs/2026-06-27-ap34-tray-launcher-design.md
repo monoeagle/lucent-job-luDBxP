@@ -8,20 +8,29 @@ bewusst nicht Teil dieser Scheibe (siehe §9).
 
 ## 1 · Ziel & Nutzen
 
-Die App soll sich auf Windows (und Linux) **ohne sichtbares Konsolenfenster** über ein
-**Tray-Icon** starten und steuern lassen: beim Start automatisch den Browser öffnen, im
-Tray Version/URL anzeigen, die URL erneut öffnen und die App **sauber beenden** (was den
-Port freigibt — löst die AP-31-Notiz, dass ein Port bis Prozessende belegt bleibt).
+Der Nutzer soll **ein Icon klicken** und die App startet — **ohne selbst ein venv
+einzurichten**. Auf Windows (und Linux) läuft die App über ein **Tray-Icon**: beim Start
+automatisch den Browser öffnen, im Tray Version/URL anzeigen, die URL erneut öffnen und die
+App **sauber beenden** (was den Port freigibt — löst die AP-31-Notiz, dass ein Port bis
+Prozessende belegt bleibt).
 
-**Komplett ohne PowerShell:** Der Tray-Launcher ist reines Python. Auf Windows startet ihn
-eine Verknüpfung über `pythonw.exe` (von Haus aus fensterlos) — kein `run.ps1`-Eingriff,
-keine Re-Signatur. Variante B (PowerShell/.NET NotifyIcon) ist verworfen.
+**Auslieferung per Skript (kein `.exe`-Bau):** Das „eine Icon" ist eine Verknüpfung auf
+`run.ps1 -Action tray`. `run.ps1` **baut das venv beim ersten Start automatisch** (reuse der
+bestehenden adaptiven `Ensure-Venv`-Logik, AP-15 — legt das venv an und installiert die
+Pakete) und startet anschließend den Tray-Launcher **fensterlos** (`pythonw -m launcher`).
+Der Tray-Launcher selbst ist reines Python (Variante A); Variante B (PowerShell/.NET
+NotifyIcon) ist verworfen. PowerShell ist hier ausdrücklich erlaubt; das Hinzufügen der
+`tray`-Action erfordert eine **Re-Signatur** der signierten `run.ps1` (akzeptiert).
 
 **Erfolgskriterien:**
+- **Ein Klick genügt:** beim ersten Start wird das venv automatisch erzeugt + Pakete
+  installiert; danach öffnet sich die App. Spätere Starts gehen direkt durch.
 - Tray-Icon mit Menü **Im Browser öffnen · Info · Beenden**.
 - Beim Start öffnet sich der Standardbrowser automatisch, sobald der Server antwortet.
 - **Beenden** stoppt den App-Prozess → der Port wird frei.
-- Kein Konsolenfenster im Normalbetrieb (Windows: `pythonw`/`CREATE_NO_WINDOW`).
+- Kein dauerhaftes Konsolenfenster im Normalbetrieb (der Tray-Prozess läuft via `pythonw`;
+  das `run.ps1`-Fenster zeigt nur beim erstmaligen venv-Aufbau kurz den Fortschritt und
+  schließt dann).
 - Launcher-Logik durch Tests + Controller-E2E auf Linux verifiziert; volle Suite grün.
 
 ## 2 · Architektur (Ansatz A1)
@@ -73,14 +82,20 @@ Prozessende wird der Port vom OS freigegeben. Danach `icon.stop()` + Programmend
 Server-seitiger Stop-Endpoint nötig. (TOCTOU zwischen `pick_port` und dem Bind in `app.py`:
 kleines Fenster, akzeptiert wie in AP-31.)
 
-## 5 · Versteckte Konsole + Start (ohne PowerShell)
+## 5 · Auslieferung: ein Icon → venv-Bootstrap → versteckter Start
 
-- **Windows:** Verknüpfung-Ziel `…\venv\Scripts\pythonw.exe -m launcher`, „Ausführen in" =
-  App-Ordner (fensterlos, da `pythonw`). Alternativ ein doppelklickbares `tray.pyw` im
-  App-Ordner. Der Kindprozess `app.py` startet mit `CREATE_NO_WINDOW` (auch fensterlos).
-- **Linux:** `python -m launcher`; komforthalber neue `run.sh`-Action **`--tray`** (reines Bash).
-- Die Verknüpfung/`tray.pyw` wird auf der Betriebsseite dokumentiert.
-- **`run.ps1` bleibt unangetastet** (kein PowerShell in AP-34).
+- **Windows:** Verknüpfung-Ziel `run.ps1 -Action tray`. Neue Action **`tray`** → `Do-Tray`:
+  `Ensure-Venv` (legt das venv bei Bedarf an + installiert Pakete; bestehende AP-15-Logik) →
+  Tray-Launcher fensterlos starten: `Start-Process $VenvPythonw -ArgumentList '-m','launcher'`
+  (pythonw = ohne Konsole). Der Kindprozess `app.py` startet mit `CREATE_NO_WINDOW`.
+  Das `run.ps1`-Fenster ist nur beim erstmaligen venv-Aufbau kurz sichtbar (Fortschritt) und
+  schließt, sobald der Tray-Prozess läuft.
+- **Linux:** neue `run.sh`-Action **`--tray`** → `ensure_venv` + `python -m launcher`.
+- `$VenvPythonw` = `venv\Scripts\pythonw.exe` (analog zum vorhandenen `$VenvPy`).
+- Die Erstellung der Desktop-/Startmenü-Verknüpfung (Ziel `run.ps1 -Action tray`) wird auf der
+  Betriebsseite dokumentiert; das automatisierte Ausrollen der Verknüpfung bleibt die
+  Deployment-Scheibe.
+- **`run.ps1` wird modifiziert** (neue `tray`-Action) → Re-Signatur nötig (akzeptiert).
 
 ## 6 · Tray + Info + Icon (`launcher/tray.py`)
 
@@ -96,7 +111,9 @@ Binär-Asset im Repo, später durch ein echtes `.png`/`.ico` ersetzbar.
 
 `requirements.txt` += `pystray>=0.19`, `Pillow>=10`. Passende **Wheels in `wheels/`** für das
 Windows-Ziel (cp314, analog zu den vorhandenen win_amd64-Wheels); die Linux-Dev-Umgebung zieht
-aus PyPI. `core.py` importiert **kein** pystray/Pillow (nur Stdlib) → Tests laufen ohne GUI-Backend.
+aus PyPI. Da `Ensure-Venv`/`run.sh` aus `requirements.txt` installieren, werden die neuen Pakete
+beim **ersten** Tray-Start automatisch mitinstalliert — der Nutzer tut nichts. `core.py`
+importiert **kein** pystray/Pillow (nur Stdlib) → Tests laufen ohne GUI-Backend.
 
 ## 8 · Test- & Verifikationsplan
 
@@ -114,6 +131,10 @@ aus PyPI. `core.py` importiert **kein** pystray/Pillow (nur Stdlib) → Tests la
   `stop()` → Port frei. Verifiziert die gesamte Kern-Integration ohne GUI.
 - **Tray-Icon/Notify** (pystray/Pillow): headless **nicht** verifizierbar → manuell auf einem
   Desktop bzw. unter Windows später; in dieser Scheibe nicht abnahmeblockierend.
+- **`run.sh --tray`** (Bash): Aktion verdrahtet (`ensure_venv` + `python -m launcher`);
+  Controller prüft `bash -n run.sh` + dass die Aktion `python -m launcher` aufruft.
+- **`run.ps1 -Action tray`** (PowerShell): auf der Linux-Dev-Maschine **nicht** ausführbar;
+  textuell hinzugefügt (Re-Signatur + Live-Test später unter Windows).
 
 ## 9 · Bewusste Spec-Abweichungen
 
@@ -122,9 +143,13 @@ aus PyPI. `core.py` importiert **kein** pystray/Pillow (nur Stdlib) → Tests la
 - **Info „aktive Verbindung":** server-seitig existiert keine globale aktive Verbindung
   (read-only; die Verbindung wird im Browser/pro Tab gewählt) → Info zeigt Name/Version/URL/Port.
 - **Tray-Icon** zur Laufzeit generiert (Pillow) statt mitgeliefertem Asset.
-- **Variante B (PowerShell/.NET)** verworfen; AP-34 berührt **keine** PowerShell-Datei.
-- **Verteilung/Härtung** (Startmenü-Verknüpfung ausrollen, signierte `run.ps1`) bleibt der
-  Deployment-Scheibe; hier nur Launcher + Doku der Verknüpfung.
+- **Kein `.exe`-/Freeze-Bau** (organisatorisch nicht möglich) → Auslieferung per Skript
+  (`run.ps1`-venv-Bootstrap). Subprozess-Modell (kein In-Process-Server) ausreichend.
+- **Variante B (PowerShell/.NET NotifyIcon)** verworfen — der Launcher ist Python; PowerShell
+  dient nur als Bootstrap (`run.ps1 -Action tray`). Die `tray`-Action **modifiziert `run.ps1`**
+  → Re-Signatur nötig (akzeptiert).
+- **Automatisches Ausrollen** der Startmenü-/Desktop-Verknüpfung bleibt die Deployment-Scheibe;
+  hier nur Launcher + `tray`-Action + Doku der Verknüpfung.
 
 ## 10 · Risiken
 
