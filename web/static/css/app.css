@@ -15,7 +15,7 @@ body {
    forming the label area above the sidebar. */
 .topbar .brand-area {
   flex: 0 0 auto; width: var(--sidebar-width, 240px);
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: center; text-align: center;
   font-weight: bold; white-space: nowrap;
   padding: .45rem .8rem; border-right: 1px solid #2a2a44;
 }
