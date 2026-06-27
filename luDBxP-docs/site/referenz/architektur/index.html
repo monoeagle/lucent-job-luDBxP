@@ -560,6 +560,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#webserver-waitress-ap-31" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Webserver (waitress, AP-31)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#multi-user-tray-launcher-ap-31ap-34" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -572,6 +583,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#archiv-architektur-vor-dem-waitress-umstieg-bis-v034x" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Archiv: Architektur vor dem waitress-Umstieg (bis v0.34.x)
+      </span>
+    </span>
+  </a>
   
 </li>
       
@@ -1173,6 +1195,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#webserver-waitress-ap-31" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Webserver (waitress, AP-31)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#multi-user-tray-launcher-ap-31ap-34" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1185,6 +1218,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#archiv-architektur-vor-dem-waitress-umstieg-bis-v034x" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Archiv: Architektur vor dem waitress-Umstieg (bis v0.34.x)
+      </span>
+    </span>
+  </a>
   
 </li>
       
@@ -1206,13 +1250,16 @@
 <h1 id="architektur">Architektur<a class="headerlink" href="#architektur" title="Permanent link">&para;</a></h1>
 <h2 id="systemuberblick">Systemüberblick<a class="headerlink" href="#systemuberblick" title="Permanent link">&para;</a></h2>
 <p>LucentTools DB Explorer verbindet ein Browser-Frontend direkt mit einer
-Live-Datenbankverbindung über eine Flask-API. Der Core-Layer kapselt die
-gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.</p>
-<p><img src="../../images/mermaid/referenz-architektur-3.svg" alt="Systemüberblick: UI · Flask-API · Core-Layer"></p>
+Live-Datenbankverbindung über eine Flask-API, die im Normalbetrieb vom
+<strong>waitress</strong>-WSGI-Server bereitgestellt wird (im <code>--debug</code>-Modus vom
+Werkzeug-Dev-Server). Der Core-Layer kapselt die gesamte Datenbanklogik —
+das Frontend berührt niemals direkt die Datenbank.</p>
+<p><img src="../../images/mermaid/referenz-architektur-3.svg" alt="Systemüberblick: UI · Webserver (waitress) · Flask-API · Core-Layer"></p>
 <h2 id="schichten">Schichten<a class="headerlink" href="#schichten" title="Permanent link">&para;</a></h2>
 <p>LucentTools DB Explorer folgt einem zweischichtigen Aufbau: ein <code>core/</code>-Layer für
 die gesamte Datenbanklogik (kein Flask-Import) und ein <code>web/</code>-Layer für die Flask-API
-und das Frontend. Ein optionaler <code>launcher/</code>-Layer (Tray-Icon, AP-34) startet die App
+(im Normalbetrieb über den waitress-WSGI-Server) und das Frontend. Ein optionaler
+<code>launcher/</code>-Layer (Tray-Icon, AP-34) startet die App
 als eigenständigen Prozess — er nutzt <code>core/userpaths.py</code>, importiert aber keinen
 Web-Code.</p>
 <p><img src="../../images/mermaid/referenz-architektur-1.svg" alt="Diagramm 1 aus referenz/architektur.md"></p>
@@ -1263,6 +1310,13 @@ Lookup</strong> auf eine einzelne Spalte und <strong>nicht</strong> Teil des gen
 Vorschlagsliste des Wertfelds. (Davon zu unterscheiden ist die <strong><code>DISTINCT</code>-Checkbox</strong> des Builders,
 die sehr wohl als <code>SELECT DISTINCT</code> in die generierte Abfrage einfließt.) Das Setzen eines Filterwerts
 baut sofort neu, sodass die <code>WHERE</code>-Bedingung umgehend im SQL und Ergebnis erscheint.</p>
+<h3 id="webserver-waitress-ap-31">Webserver (waitress, AP-31)<a class="headerlink" href="#webserver-waitress-ap-31" title="Permanent link">&para;</a></h3>
+<p>Im Normalbetrieb wird die WSGI-/Flask-App vom <strong>waitress</strong>-Server bereitgestellt
+(reiner Python-Prod-WSGI-Server, identisch unter Windows und Linux, als
+plattformneutrales Wheel offline gebündelt). Der Werkzeug-Entwicklungsserver
+kommt nur noch im Debug-Modus (<code>--debug</code> / <code>LUCENT_DEBUG</code>) zum Einsatz — dort mit
+Auto-Reload. Die Server-Weiche liegt in <code>app.py::run_server(app, host, port, debug)</code>;
+<code>core/</code> bleibt server- und Flask-frei. Gebunden wird ausschließlich <code>127.0.0.1</code>.</p>
 <h3 id="multi-user-tray-launcher-ap-31ap-34">Multi-User &amp; Tray-Launcher (AP-31/AP-34)<a class="headerlink" href="#multi-user-tray-launcher-ap-31ap-34" title="Permanent link">&para;</a></h3>
 <p>Das pure Modul <code>core/userpaths.py</code> (stdlib-only, kein Flask-/<code>config</code>-Zyklus) macht den Betrieb
 <strong>mehrbenutzerfähig</strong>: <code>config.json</code> und Logs liegen pro Nutzer im OS-Standardpfad (Slug <code>luDBxP</code>,
@@ -1275,6 +1329,12 @@ den Browser; <code>tray.py</code> (pystray/Pillow) bietet das Menü <strong>Im B
 <code>about.py</code> einen Info-Dialog. „Beenden" stoppt den Kindprozess (Port frei); der Launcher räumt das Kind
 bei jedem Ende sauber ab. Die Logik in <code>core.py</code> ist stdlib-only und getestet; die GUI-Schale
 (<code>tray.py</code>/<code>about.py</code>) ist plattformabhängig (Windows nativ; Linux via AppIndicator/GTK).</p>
+<h2 id="archiv-architektur-vor-dem-waitress-umstieg-bis-v034x">Archiv: Architektur vor dem waitress-Umstieg (bis v0.34.x)<a class="headerlink" href="#archiv-architektur-vor-dem-waitress-umstieg-bis-v034x" title="Permanent link">&para;</a></h2>
+<p>Bis einschließlich v0.34.x lief die App direkt über den Flask-/Werkzeug-Server
+(<code>app.run</code>). Mit AP-31 (v0.35.0) wurde der Normalbetrieb auf den
+waitress-WSGI-Server umgestellt (siehe oben). Der historische Systemüberblick
+bleibt zur Nachvollziehbarkeit erhalten:</p>
+<p><img src="../../images/mermaid/referenz-architektur-archiv-1.svg" alt="Archiv: Systemüberblick vor dem waitress-Umstieg (Flask/Werkzeug-Server)"></p>
 
 
 

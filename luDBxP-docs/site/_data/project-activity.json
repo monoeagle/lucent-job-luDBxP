@@ -1,17 +1,23 @@
 {
-  "generatedAt": "2026-06-28T00:28:42",
+  "generatedAt": "2026-06-28T00:53:40",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 6,
+      "commits": 7,
       "kinds": {
+        "docs": 1,
         "feat": 5,
         "fix": 1
       },
       "list": [
+        {
+          "sha": "b93a003",
+          "subject": "docs: Release v0.38.0 — AP-52 Multi-Schema-Reflection (Doku/Badges/Changelog/Site)",
+          "kind": "docs"
+        },
         {
           "sha": "c1af636",
           "subject": "feat: AP-52 schema picker in the topbar (auto-applied to requests)",
@@ -1156,13 +1162,13 @@
     }
   },
   "stats": {
-    "totalCommits": 220,
+    "totalCommits": 221,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 90
+        "count": 91
       },
       {
         "kind": "feat",

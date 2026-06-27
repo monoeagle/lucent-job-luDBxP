@@ -1,6 +1,6 @@
 graph LR
     subgraph WEB["web/"]
-        APP["app.py\n(Flask-App-Factory)"]
+        APP["app.py\n(Flask-App-Factory + run_server:\nwaitress · --debug Werkzeug)"]
         ROUTES["routes.py\n(Blueprint /api/*)"]
         TPL["templates/\nindex.html"]
         STATIC["static/\njs · css · lib"]
@@ -17,9 +17,18 @@ graph LR
         DDL["ddl.py\ntable_ddl()"]
         CONN["connection.py\nbuild_url()"]
         SETTINGS["settings.py\nSettings.load/save"]
+        USERPATHS["userpaths.py\nPro-Nutzer-Pfade · Port\n(stdlib-only, AP-31)"]
+    end
+    subgraph LAUNCH["launcher/ (AP-34, optional)"]
+        LCORE["core.py\nTray-Prozess: Port wählen,\nstartet app.py, Browser"]
+        LGUI["tray.py · about.py\n(pystray / GTK)"]
+        LCORE ~~~ LGUI
     end
 
     APP --> ROUTES
+    APP --> USERPATHS
+    LCORE --> APP
+    LCORE --> USERPATHS
     ROUTES --> LOADER
     ROUTES --> GRAPH
     ROUTES --> PF

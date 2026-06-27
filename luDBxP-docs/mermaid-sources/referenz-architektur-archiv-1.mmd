@@ -1,13 +1,14 @@
 graph TB
+    %% ARCHIV — Systemüberblick vor dem waitress-Umstieg (Stand bis v0.34.x).
+    %% Damals lief die App direkt über den Flask/Werkzeug-Server (app.run).
+    %% Aktueller Stand: siehe referenz-architektur-3 (Webserver = waitress).
     subgraph UI["UI (Browser)"]
         OB["Objekt-Browser\n(Tabellen · Views)"]
         JB["Join-Builder\n(Start → Ziel → Filter → SQL)"]
         AN["SQL-Analyzer\n(Statement → Wirkung)"]
         GR["FK-Graph\n(Cytoscape.js)"]
     end
-    subgraph FLASK["Webserver: waitress (WSGI) · Flask-API (routes.py)"]
-        WS["waitress — Prod-WSGI-Server\n(--debug → Werkzeug-Dev-Server)"]
-        RT["lokal 127.0.0.1 · Port pro Session (5057→frei)\nPro-Nutzer config.json/Logs (core/userpaths.py)"]
+    subgraph FLASK["Flask-API (Werkzeug-Server, app.run)"]
         S["/api/schema"]
         J["/api/joinpath\n(+ /run, Join-Typ pro Schritt)"]
         OC["/api/orphan_check\n(Waisen-Hinweis, read-only)"]
@@ -15,8 +16,6 @@ graph TB
         D["/api/data"]
         A["/api/analyze"]
         C["/api/connect"]
-        SC["/api/schemas"]
-        WS ~~~ RT
     end
     subgraph CORE["Core-Layer"]
         SL["SQLAlchemy\nLoader"]
@@ -40,7 +39,6 @@ graph TB
     J --> PF
     G --> BG
     C --> SL
-    SC --> SL
     A --> SA
     A --> SL
     OC --> SG

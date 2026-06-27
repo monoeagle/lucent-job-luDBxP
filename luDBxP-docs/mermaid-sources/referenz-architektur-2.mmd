@@ -1,6 +1,6 @@
 sequenceDiagram
     participant B as Browser
-    participant F as Flask (routes.py)
+    participant F as waitress + Flask (routes.py)
     participant L as SqlAlchemyLoader
     participant G as build_graph()
     participant P as find_paths()

@@ -3,16 +3,19 @@
 ## Systemüberblick
 
 LucentTools DB Explorer verbindet ein Browser-Frontend direkt mit einer
-Live-Datenbankverbindung über eine Flask-API. Der Core-Layer kapselt die
-gesamte Datenbanklogik — das Frontend berührt niemals direkt die Datenbank.
+Live-Datenbankverbindung über eine Flask-API, die im Normalbetrieb vom
+**waitress**-WSGI-Server bereitgestellt wird (im `--debug`-Modus vom
+Werkzeug-Dev-Server). Der Core-Layer kapselt die gesamte Datenbanklogik —
+das Frontend berührt niemals direkt die Datenbank.
 
-<img src="../images/mermaid/referenz-architektur-3.svg" alt="Systemüberblick: UI · Flask-API · Core-Layer">
+<img src="../images/mermaid/referenz-architektur-3.svg" alt="Systemüberblick: UI · Webserver (waitress) · Flask-API · Core-Layer">
 
 ## Schichten
 
 LucentTools DB Explorer folgt einem zweischichtigen Aufbau: ein `core/`-Layer für
 die gesamte Datenbanklogik (kein Flask-Import) und ein `web/`-Layer für die Flask-API
-und das Frontend. Ein optionaler `launcher/`-Layer (Tray-Icon, AP-34) startet die App
+(im Normalbetrieb über den waitress-WSGI-Server) und das Frontend. Ein optionaler
+`launcher/`-Layer (Tray-Icon, AP-34) startet die App
 als eigenständigen Prozess — er nutzt `core/userpaths.py`, importiert aber keinen
 Web-Code.
 
@@ -80,6 +83,15 @@ Vorschlagsliste des Wertfelds. (Davon zu unterscheiden ist die **`DISTINCT`-Chec
 die sehr wohl als `SELECT DISTINCT` in die generierte Abfrage einfließt.) Das Setzen eines Filterwerts
 baut sofort neu, sodass die `WHERE`-Bedingung umgehend im SQL und Ergebnis erscheint.
 
+### Webserver (waitress, AP-31)
+
+Im Normalbetrieb wird die WSGI-/Flask-App vom **waitress**-Server bereitgestellt
+(reiner Python-Prod-WSGI-Server, identisch unter Windows und Linux, als
+plattformneutrales Wheel offline gebündelt). Der Werkzeug-Entwicklungsserver
+kommt nur noch im Debug-Modus (`--debug` / `LUCENT_DEBUG`) zum Einsatz — dort mit
+Auto-Reload. Die Server-Weiche liegt in `app.py::run_server(app, host, port, debug)`;
+`core/` bleibt server- und Flask-frei. Gebunden wird ausschließlich `127.0.0.1`.
+
 ### Multi-User & Tray-Launcher (AP-31/AP-34)
 
 Das pure Modul `core/userpaths.py` (stdlib-only, kein Flask-/`config`-Zyklus) macht den Betrieb
@@ -94,3 +106,12 @@ den Browser; `tray.py` (pystray/Pillow) bietet das Menü **Im Browser öffnen / 
 `about.py` einen Info-Dialog. „Beenden" stoppt den Kindprozess (Port frei); der Launcher räumt das Kind
 bei jedem Ende sauber ab. Die Logik in `core.py` ist stdlib-only und getestet; die GUI-Schale
 (`tray.py`/`about.py`) ist plattformabhängig (Windows nativ; Linux via AppIndicator/GTK).
+
+## Archiv: Architektur vor dem waitress-Umstieg (bis v0.34.x)
+
+Bis einschließlich v0.34.x lief die App direkt über den Flask-/Werkzeug-Server
+(`app.run`). Mit AP-31 (v0.35.0) wurde der Normalbetrieb auf den
+waitress-WSGI-Server umgestellt (siehe oben). Der historische Systemüberblick
+bleibt zur Nachvollziehbarkeit erhalten:
+
+<img src="../images/mermaid/referenz-architektur-archiv-1.svg" alt="Archiv: Systemüberblick vor dem waitress-Umstieg (Flask/Werkzeug-Server)">
