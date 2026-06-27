@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T14:09:29",
+  "generatedAt": "2026-06-27T14:22:35",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 49,
+      "commits": 50,
       "kinds": {
+        "fix": 3,
         "feat": 10,
         "other": 23,
-        "fix": 2,
         "docs": 14
       },
       "list": [
+        {
+          "sha": "bd7ac8b",
+          "subject": "fix: Graph bleibt beim Aufklappen der Detailkarten zentriert (CY.center, gleicher Zoom) — v0.28.1",
+          "kind": "fix"
+        },
         {
           "sha": "19a1db1",
           "subject": "feat: AP-46 Detailkarten folgen der Join-Builder-Auswahl (Graph zentriert wenn leer) — v0.28.0",
@@ -816,7 +821,7 @@
     }
   },
   "stats": {
-    "totalCommits": 154,
+    "totalCommits": 155,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -834,7 +839,7 @@
       },
       {
         "kind": "fix",
-        "count": 13
+        "count": 14
       },
       {
         "kind": "build",
@@ -853,7 +858,7 @@
         "count": 1
       }
     ],
-    "testCount": 194
+    "testCount": 196
   },
   "phases": []
 }
