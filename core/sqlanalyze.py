@@ -5,7 +5,7 @@ it, extracts the tables it reads and writes, and (in later layers) derives
 non-blocking warnings. On a parse failure no exception escapes: parse_error
 is set and the other fields stay empty.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import sqlglot
 from sqlglot import exp
@@ -46,6 +46,20 @@ class AnalysisResult:
     tables_written: tuple[str, ...]
     warnings: tuple[AnalysisWarning, ...]
     parse_error: "str | None"
+    # AP-39 — structure & clause analysis (all optional, default-empty so the
+    # parse-error/empty returns above stay valid 5-positional constructions).
+    columns: tuple[str, ...] = ()                      # SELECT-list expressions
+    joins: tuple[dict, ...] = ()                       # {kind, table, on}
+    edges: tuple[tuple[str, str], ...] = ()            # table pairs for the graph
+    filters: tuple[str, ...] = ()                      # WHERE predicates (split on AND)
+    group_by: tuple[str, ...] = ()
+    having: tuple[str, ...] = ()
+    order_by: tuple[str, ...] = ()                     # "col ASC" / "col DESC"
+    distinct: bool = False
+    limit: "str | None" = None
+    structure: dict = field(default_factory=dict)      # counts (tables, joins, …)
+    complexity_score: int = 0
+    complexity_grade: str = "A"
 
 
 def _statement_type(node) -> str:
@@ -66,6 +80,116 @@ def _written_table(node) -> "str | None":
         tgt = node.this
         return tgt.name if isinstance(tgt, exp.Table) else None
     return None
+
+
+def _join_kind(join) -> str:
+    """Human label for a JOIN's type, e.g. 'INNER', 'LEFT', 'LEFT OUTER', 'CROSS'."""
+    side = (join.args.get("side") or "").upper()
+    kind = (join.args.get("kind") or "").upper()
+    label = " ".join(p for p in (side, kind) if p).strip()
+    return label or "INNER"
+
+
+def _alias_map(node) -> dict:
+    """Map each table alias *and* real name (lowercased) to the real table name."""
+    amap: dict[str, str] = {}
+    for tbl in node.find_all(exp.Table):
+        real = tbl.name
+        amap[real.lower()] = real
+        if tbl.alias:
+            amap[tbl.alias.lower()] = real
+    return amap
+
+
+def _tables_in(expr, amap: dict) -> list:
+    """Distinct real table names referenced by the columns inside an expression."""
+    out: list[str] = []
+    if expr is None:
+        return out
+    for col in expr.find_all(exp.Column):
+        ref = col.table
+        if not ref:
+            continue
+        real = amap.get(ref.lower())
+        if real and real not in out:
+            out.append(real)
+    return out
+
+
+def _split_and(predicate) -> list:
+    """Flatten a boolean predicate tree into its top-level AND-separated parts."""
+    if predicate is None:
+        return []
+    parts: list = []
+    stack = [predicate]
+    while stack:
+        n = stack.pop()
+        if isinstance(n, exp.And):
+            stack.append(n.right)
+            stack.append(n.left)
+        else:
+            parts.append(n)
+    return parts
+
+
+def _structure_and_complexity(node) -> "tuple[dict, int, str]":
+    """Count structural features and derive a weighted complexity score + grade."""
+    n_tables = len({t.name for t in node.find_all(exp.Table)})
+    joins = list(node.find_all(exp.Join))
+    join_kinds: dict[str, int] = {}
+    for j in joins:
+        join_kinds[_join_kind(j)] = join_kinds.get(_join_kind(j), 0) + 1
+    # Subqueries: SELECTs nested below the root (root itself excluded).
+    n_subq = sum(1 for s in node.find_all(exp.Select) if s is not node)
+    n_cte = len(list(node.find_all(exp.CTE)))
+    n_union = len(list(node.find_all(exp.Union)))
+    n_window = len(list(node.find_all(exp.Window)))
+    n_agg = len(list(node.find_all(exp.AggFunc)))
+    n_case = len(list(node.find_all(exp.Case)))
+    structure = {
+        "tables": n_tables,
+        "joins": len(joins),
+        "join_kinds": join_kinds,
+        "subqueries": n_subq,
+        "ctes": n_cte,
+        "unions": n_union,
+        "window_functions": n_window,
+        "aggregates": n_agg,
+        "case_blocks": n_case,
+    }
+    score = (len(joins) * 1 + n_subq * 3 + n_cte * 2 + n_union * 1
+             + n_window * 2 + n_agg * 1 + n_case * 1)
+    # Grade buckets (A best … E worst).
+    grade = ("A" if score <= 2 else "B" if score <= 5 else "C" if score <= 9
+             else "D" if score <= 14 else "E")
+    return structure, score, grade
+
+
+def _static_lints(node) -> list:
+    """Schema-free static-quality lints (SELECT *, non-sargable predicates, …)."""
+    out: list[AnalysisWarning] = []
+    if any(isinstance(e, exp.Star) for e in node.find_all(exp.Star)):
+        out.append(AnalysisWarning(
+            "info", "SELECT_STAR",
+            "SELECT * — nur benötigte Spalten auswählen (klarer + weniger I/O)."))
+    # Leading-wildcard LIKE ('%…') cannot use a normal index.
+    for like in node.find_all(exp.Like):
+        pat = like.expression
+        if isinstance(pat, exp.Literal) and pat.is_string and pat.this.startswith("%"):
+            out.append(AnalysisWarning(
+                "warn", "LEADING_WILDCARD",
+                "LIKE mit führendem '%' ist nicht index-nutzbar (Full Scan)."))
+            break
+    # A function wrapping a column inside WHERE defeats an index on that column.
+    where = node.find(exp.Where)
+    if where is not None:
+        for fn in where.find_all(exp.Func):
+            if fn.find(exp.Column) is not None:
+                out.append(AnalysisWarning(
+                    "info", "FUNC_ON_COLUMN",
+                    "Funktion auf einer Spalte in WHERE — ein Index darauf wird ignoriert."))
+                break
+    return out
 
 
 def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResult:
@@ -153,10 +277,70 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
                     "warn", "UNKNOWN_COLUMN",
                     f'Spalte „{col.name}“ existiert nicht in Tabelle „{real}“.'))
 
+    # --- AP-39: clause & structure extraction (display + graph) ---
+    amap = _alias_map(node)
+    columns: tuple[str, ...] = ()
+    joins: list[dict] = []
+    edges: list[tuple[str, str]] = []
+    filters: tuple[str, ...] = ()
+    group_by: tuple[str, ...] = ()
+    having: tuple[str, ...] = ()
+    order_by: tuple[str, ...] = ()
+    distinct = False
+    limit_txt: "str | None" = None
+
+    if isinstance(node, exp.Select):
+        columns = tuple(e.sql() for e in node.expressions)
+        distinct = node.args.get("distinct") is not None
+        for j in node.find_all(exp.Join):
+            tbl = j.this
+            on = j.args.get("on")
+            joins.append({
+                "kind": _join_kind(j),
+                "table": tbl.name if isinstance(tbl, exp.Table) else tbl.sql(),
+                "on": on.sql() if on is not None else "",
+            })
+            # Graph edges: connect every distinct pair of tables named in the ON.
+            involved = _tables_in(on, amap)
+            for a in range(len(involved)):
+                for b in range(a + 1, len(involved)):
+                    pair = (involved[a], involved[b])
+                    if pair not in edges and (pair[1], pair[0]) not in edges:
+                        edges.append(pair)
+        where = node.args.get("where")
+        filters = tuple(p.sql() for p in _split_and(where.this if where else None))
+        grp = node.args.get("group")
+        if grp is not None:
+            group_by = tuple(e.sql() for e in grp.expressions)
+        hav = node.args.get("having")
+        if hav is not None:
+            having = tuple(p.sql() for p in _split_and(hav.this))
+        order = node.args.get("order")
+        if order is not None:
+            order_by = tuple(o.sql() for o in order.expressions)
+        lim = node.args.get("limit")
+        if lim is not None:
+            limit_txt = lim.expression.sql() if lim.expression is not None else lim.sql()
+
+    structure, score, grade = _structure_and_complexity(node)
+    warnings.extend(_static_lints(node))
+
     return AnalysisResult(
         statement_type=stmt_type,
         tables_read=tuple(sorted(read)),
         tables_written=tuple(sorted(written)),
         warnings=tuple(warnings),
         parse_error=None,
+        columns=columns,
+        joins=tuple(joins),
+        edges=tuple(edges),
+        filters=filters,
+        group_by=group_by,
+        having=having,
+        order_by=order_by,
+        distinct=distinct,
+        limit=limit_txt,
+        structure=structure,
+        complexity_score=score,
+        complexity_grade=grade,
     )

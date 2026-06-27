@@ -116,3 +116,34 @@ definiert.
 **Heuristik:** Spaltennamen der Form `<tabelle>_id` oder `<tabelle>id` werden
 auf einspaltigen Primärschlüssel einer anderen Tabelle abgebildet, wenn die
 Typen kompatibel sind.
+
+---
+
+## UC-7: Ein SQL-Statement read-only analysieren
+
+**Ziel:** Ein beliebiges SQL-Statement verstehen, ohne es auszuführen — Aufbau,
+gelesene/geschriebene Tabellen, Filter/Sortierung und mögliche Stolpersteine.
+
+**Ablauf:**
+
+1. Tools → **SQL-Analyzer** öffnen
+2. Statement einfügen (z. B. einen im Join-Builder gebauten SELECT) → **Analysieren**
+
+**Ausgabe:** Das Statement wird via **sqlglot** geparst — **nie ausgeführt** — und der
+AST ausgewertet:
+
+- **Typ** (SELECT/INSERT/…/DDL) und ein **Komplexitäts-Score** (Note A–E, gewichtet aus
+  Joins/Subqueries/CTEs/UNION/Window/CASE).
+- **Struktur-Zähler:** Tabellen · Joins · Subqueries · CTEs · UNION · Window · Aggregate · CASE.
+- **Klauseln:** Spalten, Joins (Typ + ON-Bedingung), **Filter (WHERE)**, GROUP BY/HAVING,
+  **Sortierung (ORDER BY)**, DISTINCT/LIMIT.
+- **Gelesen / Geschrieben:** die beteiligten Tabellen; mit aktiver Verbindung zusätzlich
+  Prüfung gegen das echte Schema (`UNKNOWN_TABLE`/`UNKNOWN_COLUMN`).
+- **Warnungen/Lints:** `WRITE_STATEMENT`, `NO_WHERE`, `CARTESIAN_JOIN` sowie die statischen
+  Hinweise `SELECT *`, `LIKE '%…'` (nicht index-nutzbar) und Funktion-auf-Spalte-in-WHERE.
+
+**Graph:** Die beteiligten Tabellen werden im Schema-Graph markiert (gelesen = blau) und die
+**JOIN-Kanten des Statements hervorgehoben** — so ist der Pfad des SELECTs sofort sichtbar.
+
+**Hinweis:** Funktioniert mit und ohne Verbindung; schema-abhängige Prüfungen nur mit
+aktiver Verbindung. Es wird ausschließlich gelesen/analysiert — kein Schreibzugriff.

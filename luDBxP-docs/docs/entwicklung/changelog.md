@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.22.0] — 2026-06-27
+### Hinzugefügt
+- **AP-39 — SQL-Analyzer: Struktur-/Klauselanalyse, Graph-Zeichnung, Lints, Komplexität:**
+  Der Analyzer wertet den sqlglot-AST jetzt deutlich tiefer aus (statt nur Typ + gelesene/
+  geschriebene Tabellen). Neu im Panel: **Spalten**, **Joins** (Typ + ON-Bedingung),
+  **Filter (WHERE)**, **GROUP BY/HAVING**, **Sortierung (ORDER BY)**, **DISTINCT/LIMIT**,
+  ein **Struktur-Zähler** (Tabellen/Joins/Subqueries/CTEs/UNION/Window/Aggregate/CASE) und
+  ein **Komplexitäts-Score** (gewichtet, Note A–E). Der **Schema-Graph zeichnet die JOIN-Kanten**
+  des Statements (nicht mehr nur die Knoten einfärben). Zusätzliche statische Lints ohne DB:
+  `SELECT_STAR`, `LEADING_WILDCARD` (LIKE '%…'), `FUNC_ON_COLUMN`. Weiterhin **read-only —
+  nie ausgeführt**. `/api/analyze` liefert die neuen Felder. 190 Tests grün, 1 skipped.
+
 ## [0.21.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-38 — Kopierbares, lauffähiges SQL (Werte eingesetzt):** Die SQL-Anzeige und das

@@ -242,3 +242,13 @@ body {
 .an-l-warn   { background: #fff4e5; color: #8a5300; }
 .an-l-info   { background: #e8f0fe; color: #1a4480; }
 .an-type { margin-bottom: 6px; }
+.an-struct { font-size: .82em; color: #555; margin: 0 0 8px; }
+.an-pill { font-size: .7rem; font-weight: 700; background: #ececf3; color: #444;
+  padding: 0 .35rem; border-radius: 3px; vertical-align: 1px; }
+.an-grade { font-size: .72rem; font-weight: 700; padding: 0 .4rem; border-radius: 3px;
+  vertical-align: 1px; }
+.an-g-A { background: #e3f4e8; color: #1e7e34; }
+.an-g-B { background: #eaf4e0; color: #4d7c1f; }
+.an-g-C { background: #fbf3d6; color: #8a6d00; }
+.an-g-D { background: #fbe6cf; color: #9a5300; }
+.an-g-E { background: #fdecea; color: #b71c1c; }

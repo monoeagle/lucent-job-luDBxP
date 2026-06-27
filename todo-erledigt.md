@@ -4,6 +4,15 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-39 — SQL-Analyzer vertieft (Struktur/Klauseln/Graph/Lints/Komplexität) (v0.22.0)
+- [x] `core/sqlanalyze.py`: Klausel-/Strukturextraktion aus AST — `columns`, `joins` (kind+ON), `edges`, `filters`, `group_by`, `having`, `order_by`, `distinct`, `limit`, `structure`-Zähler
+- [x] Komplexitäts-Score (gewichtet: Joins/Subqueries/CTEs/UNION/Window/Aggregate/CASE) + Note A–E
+- [x] Statische Lints ohne DB: `SELECT_STAR`, `LEADING_WILDCARD` (LIKE '%…'), `FUNC_ON_COLUMN`
+- [x] `/api/analyze` liefert alle neuen Felder; Frontend-Panel mit Sektionen (Spalten/Joins/Filter/Sortierung/Gruppierung/Struktur/Komplexität)
+- [x] Schema-Graph zeichnet die JOIN-Kanten des Statements (`analyze-edge`), nicht nur Knoten-Färbung
+- [x] read-only — nie ausgeführt; 10 neue Tests, 190 grün; Playwright-verifiziert (Panel + Graph-Kanten)
+- [ ] Spätere Scheiben (Roadmap): AP-40 Indexanalyse (Loader-Index-Reflection), AP-41 EXPLAIN-Plan (opt-in, read-only)
+
 ## AP-38 — Kopierbares, lauffähiges SQL (Werte eingesetzt) (v0.21.0)
 - [x] `core/sqlgen.py`: `GeneratedSQL.sql_inline` — Filterwerte als Literale (Zahlen roh, Strings `'…'` mit `''`-Escaping, führende Nullen & LIKE als String); `_inline_literal`/`_looks_numeric`
 - [x] `:p0` + `params` bleiben die parametrisierte read-only-Ausführungsschiene

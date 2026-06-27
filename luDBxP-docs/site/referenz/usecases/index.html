@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.21.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.22.0">
       
       
         <meta name="author" content="LucentTools">
@@ -579,6 +579,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#uc-7-ein-sql-statement-read-only-analysieren" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        UC-7: Ein SQL-Statement read-only analysieren
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -977,6 +988,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#uc-7-ein-sql-statement-read-only-analysieren" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        UC-7: Ein SQL-Statement read-only analysieren
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1086,6 +1108,32 @@ definiert.</p>
 <p><strong>Heuristik:</strong> Spaltennamen der Form <code>&lt;tabelle&gt;_id</code> oder <code>&lt;tabelle&gt;id</code> werden
 auf einspaltigen Primärschlüssel einer anderen Tabelle abgebildet, wenn die
 Typen kompatibel sind.</p>
+<hr />
+<h2 id="uc-7-ein-sql-statement-read-only-analysieren">UC-7: Ein SQL-Statement read-only analysieren<a class="headerlink" href="#uc-7-ein-sql-statement-read-only-analysieren" title="Permanent link">&para;</a></h2>
+<p><strong>Ziel:</strong> Ein beliebiges SQL-Statement verstehen, ohne es auszuführen — Aufbau,
+gelesene/geschriebene Tabellen, Filter/Sortierung und mögliche Stolpersteine.</p>
+<p><strong>Ablauf:</strong></p>
+<ol>
+<li>Tools → <strong>SQL-Analyzer</strong> öffnen</li>
+<li>Statement einfügen (z. B. einen im Join-Builder gebauten SELECT) → <strong>Analysieren</strong></li>
+</ol>
+<p><strong>Ausgabe:</strong> Das Statement wird via <strong>sqlglot</strong> geparst — <strong>nie ausgeführt</strong> — und der
+AST ausgewertet:</p>
+<ul>
+<li><strong>Typ</strong> (SELECT/INSERT/…/DDL) und ein <strong>Komplexitäts-Score</strong> (Note A–E, gewichtet aus
+  Joins/Subqueries/CTEs/UNION/Window/CASE).</li>
+<li><strong>Struktur-Zähler:</strong> Tabellen · Joins · Subqueries · CTEs · UNION · Window · Aggregate · CASE.</li>
+<li><strong>Klauseln:</strong> Spalten, Joins (Typ + ON-Bedingung), <strong>Filter (WHERE)</strong>, GROUP BY/HAVING,
+  <strong>Sortierung (ORDER BY)</strong>, DISTINCT/LIMIT.</li>
+<li><strong>Gelesen / Geschrieben:</strong> die beteiligten Tabellen; mit aktiver Verbindung zusätzlich
+  Prüfung gegen das echte Schema (<code>UNKNOWN_TABLE</code>/<code>UNKNOWN_COLUMN</code>).</li>
+<li><strong>Warnungen/Lints:</strong> <code>WRITE_STATEMENT</code>, <code>NO_WHERE</code>, <code>CARTESIAN_JOIN</code> sowie die statischen
+  Hinweise <code>SELECT *</code>, <code>LIKE '%…'</code> (nicht index-nutzbar) und Funktion-auf-Spalte-in-WHERE.</li>
+</ul>
+<p><strong>Graph:</strong> Die beteiligten Tabellen werden im Schema-Graph markiert (gelesen = blau) und die
+<strong>JOIN-Kanten des Statements hervorgehoben</strong> — so ist der Pfad des SELECTs sofort sichtbar.</p>
+<p><strong>Hinweis:</strong> Funktioniert mit und ohne Verbindung; schema-abhängige Prüfungen nur mit
+aktiver Verbindung. Es wird ausschließlich gelesen/analysiert — kein Schreibzugriff.</p>
 
 
 

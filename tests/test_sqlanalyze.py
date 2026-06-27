@@ -158,3 +158,78 @@ def test_lowercase_column_name_no_unknown(inv_schema):
 def test_genuinely_unknown_qualified_column_still_warns(inv_schema):
     r = analyze("SELECT n.NoSuchCol FROM Networks n", schema=inv_schema)
     assert "UNKNOWN_COLUMN" in {w.code for w in r.warnings}
+
+
+# ===== AP-39: Struktur-/Klausel-Analyse, Graph-Kanten, Lints, Komplexität =====
+
+_EX2 = (
+    'SELECT "Cluster"."ClusterID", "Host"."HostID", "Folder"."FolderID" '
+    'FROM "Cluster" '
+    'JOIN "Host" ON "Cluster"."ClusterID" = "Host"."ClusterID" '
+    'JOIN "VirtualMachine" ON "Host"."HostID" = "VirtualMachine"."HostID" '
+    'JOIN "Folder" ON "VirtualMachine"."FolderID" = "Folder"."FolderID" '
+    'WHERE "Cluster"."ClusterID" = 1 '
+    'ORDER BY "Cluster"."ClusterID" ASC'
+)
+
+
+def test_columns_extracted():
+    r = analyze(_EX2)
+    joined = " ".join(r.columns)
+    assert "ClusterID" in joined and "HostID" in joined and "FolderID" in joined
+    assert len(r.columns) == 3
+
+
+def test_joins_and_count():
+    r = analyze(_EX2)
+    assert len(r.joins) == 3
+    assert all(j["kind"] for j in r.joins)            # every join has a kind label
+    assert r.structure["joins"] == 3
+
+
+def test_filters_and_order_by_extracted():
+    r = analyze(_EX2)
+    assert any("ClusterID" in f and "1" in f for f in r.filters)
+    assert any("ClusterID" in o and o.strip().upper().endswith("ASC") for o in r.order_by)
+
+
+def test_graph_edges_follow_joins():
+    r = analyze(_EX2)
+    pairs = {frozenset(e) for e in r.edges}
+    assert frozenset({"Cluster", "Host"}) in pairs
+    assert frozenset({"Host", "VirtualMachine"}) in pairs
+    assert frozenset({"VirtualMachine", "Folder"}) in pairs
+
+
+def test_structure_counts_basic():
+    r = analyze(_EX2)
+    s = r.structure
+    assert s["tables"] == 4
+    assert s["subqueries"] == 0 and s["ctes"] == 0 and s["unions"] == 0
+
+
+def test_complexity_score_and_grade():
+    r = analyze(_EX2)
+    assert isinstance(r.complexity_score, int) and r.complexity_score >= 3  # 3 joins
+    assert r.complexity_grade in ("A", "B", "C", "D", "E")
+
+
+def test_lint_select_star():
+    r = analyze("SELECT * FROM Host")
+    assert "SELECT_STAR" in _codes(r)
+
+
+def test_lint_leading_wildcard_like():
+    r = analyze("SELECT HostID FROM Host WHERE Hostname LIKE '%web'")
+    assert "LEADING_WILDCARD" in _codes(r)
+
+
+def test_lint_function_on_column_in_where():
+    r = analyze("SELECT HostID FROM Host WHERE LOWER(Hostname) = 'web01'")
+    assert "FUNC_ON_COLUMN" in _codes(r)
+
+
+def test_clean_select_has_no_lint_noise():
+    r = analyze('SELECT "Host"."HostID" FROM "Host" WHERE "Host"."HostID" = 1')
+    assert "SELECT_STAR" not in _codes(r)
+    assert "LEADING_WILDCARD" not in _codes(r)

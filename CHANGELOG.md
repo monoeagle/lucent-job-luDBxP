@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.22.0] — 2026-06-27
+### Added
+- **AP-39 — SQL Analyzer: structure/clause analysis, graph drawing, lints, complexity:**
+  the analyzer now reads the sqlglot AST far more deeply (beyond type + read/written tables).
+  New in the panel: **columns**, **joins** (type + ON), **filters (WHERE)**, **GROUP BY/HAVING**,
+  **ORDER BY**, **DISTINCT/LIMIT**, a **structure counter** (tables/joins/subqueries/CTEs/UNION/
+  window/aggregate/CASE) and a weighted **complexity score** (grade A–E). The **schema graph now
+  draws the statement's JOIN edges** (not only colours the nodes). Extra schema-free static lints:
+  `SELECT_STAR`, `LEADING_WILDCARD` (LIKE '%…'), `FUNC_ON_COLUMN`. Still **read-only — never executed**.
+  `/api/analyze` returns the new fields. 190 tests green, 1 skipped.
+
 ## [0.21.0] — 2026-06-27
 ### Added
 - **AP-38 — Copyable, runnable SQL (values inlined):** the SQL display and copy icon now

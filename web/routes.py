@@ -513,4 +513,17 @@ def api_analyze():
         warnings=[{"level": w.level, "code": w.code, "message": w.message}
                   for w in result.warnings],
         parse_error=result.parse_error,
+        # AP-39 — structure & clause analysis + graph edges
+        columns=list(result.columns),
+        joins=list(result.joins),
+        edges=[list(e) for e in result.edges],
+        filters=list(result.filters),
+        group_by=list(result.group_by),
+        having=list(result.having),
+        order_by=list(result.order_by),
+        distinct=result.distinct,
+        limit=result.limit,
+        structure=result.structure,
+        complexity={"score": result.complexity_score,
+                    "grade": result.complexity_grade},
     )

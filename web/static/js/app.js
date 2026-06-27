@@ -335,17 +335,26 @@ function openJoinBuilder() {
   if (SCHEMA.tables.length) refillJoinBuilder();
 }
 
-// ===== SQL-Analyzer (AP-25) =====
+// ===== SQL-Analyzer (AP-25 / AP-39) =====
 function clearAnalyzeMarkers() {
   if (!CY) return;
   CY.nodes().removeClass("analyze-read analyze-write");
+  CY.edges().removeClass("analyze-edge");
 }
 
-function applyAnalyzeMarkers(read, written) {
+// Colour the read/written nodes and draw the statement's JOIN edges in the graph
+// (AP-39: edges, not only nodes — so the SELECT is visibly traced).
+function applyAnalyzeMarkers(read, written, edges) {
   if (!CY) return;
   clearAnalyzeMarkers();
   read.forEach((t) => CY.$id(t).addClass("analyze-read"));
   written.forEach((t) => CY.$id(t).addClass("analyze-write"));
+  (edges || []).forEach(([a, b]) => {
+    CY.edges().forEach((e) => {
+      const s = e.source().id(), t = e.target().id();
+      if ((s === a && t === b) || (s === b && t === a)) e.addClass("analyze-edge");
+    });
+  });
 }
 
 function renderAnalyzeResult(panel, res) {
@@ -355,19 +364,44 @@ function renderAnalyzeResult(panel, res) {
     clearAnalyzeMarkers();
     return;
   }
-  const list = (items) => items.length
+  const list = (items) => (items && items.length)
     ? `<ul class="objlist">${items.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`
     : `<p class="hint">—</p>`;
+  // A section is only rendered when it has content (keeps the panel focused).
+  const section = (title, items) => (items && items.length)
+    ? `<h4>${esc(title)}</h4>${list(items)}` : "";
+  const s = res.structure || {};
+  const cx = res.complexity || {};
+  const joinsTxt = (res.joins || []).map((j) =>
+    `${j.kind} ${j.table}${j.on ? " · ON " + j.on : ""}`);
+  const structBits = [
+    `Tabellen ${s.tables ?? 0}`, `Joins ${s.joins ?? 0}`,
+    `Subqueries ${s.subqueries ?? 0}`, `CTEs ${s.ctes ?? 0}`,
+    `UNION ${s.unions ?? 0}`, `Window ${s.window_functions ?? 0}`,
+    `Aggregate ${s.aggregates ?? 0}`, `CASE ${s.case_blocks ?? 0}`,
+  ].join(" · ");
   const warns = res.warnings.length
     ? res.warnings.map((w) =>
         `<div class="an-warn an-l-${esc(w.level)}">${esc(w.message)}</div>`).join("")
     : `<p class="hint">keine Warnungen</p>`;
   out.innerHTML =
-    `<div class="an-type">Typ: <strong>${esc(res.statement_type)}</strong></div>` +
-    `<h4>Gelesen</h4>${list(res.tables_read)}` +
-    `<h4>Geschrieben/verändert</h4>${list(res.tables_written)}` +
+    `<div class="an-type">Typ: <strong>${esc(res.statement_type)}</strong>` +
+    (cx.grade ? ` <span class="an-grade an-g-${esc(cx.grade)}" ` +
+      `title="Komplexitäts-Score (gewichtet aus Joins/Subqueries/CTEs/Window/CASE)">` +
+      `Komplexität ${esc(String(cx.score))} · ${esc(cx.grade)}</span>` : "") +
+    (res.distinct ? ` <span class="an-pill">DISTINCT</span>` : "") + `</div>` +
+    `<div class="an-struct">${esc(structBits)}</div>` +
+    section("Gelesen", res.tables_read) +
+    section("Geschrieben/verändert", res.tables_written) +
+    section("Spalten", res.columns) +
+    section("Joins", joinsTxt) +
+    section("Filter (WHERE)", res.filters) +
+    section("Gruppierung (GROUP BY)", res.group_by) +
+    section("HAVING", res.having) +
+    section("Sortierung (ORDER BY)", res.order_by) +
+    (res.limit ? `<h4>LIMIT</h4><p>${esc(res.limit)}</p>` : "") +
     `<h4>Warnungen</h4>${warns}`;
-  applyAnalyzeMarkers(res.tables_read, res.tables_written);
+  applyAnalyzeMarkers(res.tables_read, res.tables_written, res.edges);
 }
 
 async function runAnalyze(panel) {
@@ -872,6 +906,8 @@ async function drawGraph() {
         "border-width": 4, "border-color": "#c0392b" } },
       { selector: "node.analyze-read",  style: { "background-color": "#1a73e8" } },
       { selector: "node.analyze-write", style: { "background-color": "#d93025" } },
+      { selector: "edge.analyze-edge", style: {
+        "line-color": "#1a73e8", width: 4, "target-arrow-color": "#1a73e8" } },
     ],
   });
   // Register dbltap handler: opens the UML card for the clicked table node
