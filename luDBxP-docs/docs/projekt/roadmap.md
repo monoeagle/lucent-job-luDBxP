@@ -8,6 +8,8 @@
 
 ## Offene Arbeitspakete
 
+- **AP-45** — Ergebnis-Hilfen Teil 2: Spaltenkopf-Aktionen (Sortieren/Filtern/
+  Spalte entfernen) + Filter-Dropdown mit echten DISTINCT-Werten
 - **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
   zusammenführen
 - **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,

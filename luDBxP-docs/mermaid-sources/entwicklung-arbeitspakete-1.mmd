@@ -48,7 +48,18 @@ flowchart LR
         J12["AP-36 · Fan-out-Richtung pro Join (N-1/1-N)"]
         J13["AP-37 · Start⇄Ziel-Tausch-Knopf"]
         J14["AP-38 · Kopierbares lauffähiges SQL"]
-        J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5 ~~~ J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10 ~~~ J11 ~~~ J12 ~~~ J13 ~~~ J14
+        J15["AP-39 · SQL-Analyzer vertieft (Struktur/Lints)"]
+        J16["AP-40 · Graph-Legende + Marker-Fix"]
+        J17["AP-41 · Join-Typ pro Schritt (LEFT/RIGHT/FULL)"]
+        J18["AP-42 · Join-Builder-Politur"]
+        J19["AP-43 · Lesbares mehrzeiliges SQL-Layout"]
+        J20["AP-44 · Join-Builder kompakter + NULL/Status"]
+        J21["AP-46 · Detailkarten folgen der Auswahl"]
+        J22["AP-47 · Pfad-Indikator + Waisen-Chip"]
+        J23["AP-48 · Analyzer-Textbox + Tippfehler-Lint"]
+        J24["AP-49 · Analyzer-Feinschliff + ANSI-Fix"]
+        J25["AP-45 · Spaltenkopf-Aktionen + Filter-DISTINCT"]
+        J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5 ~~~ J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10 ~~~ J11 ~~~ J12 ~~~ J13 ~~~ J14 ~~~ J15 ~~~ J16 ~~~ J17 ~~~ J18 ~~~ J19 ~~~ J20 ~~~ J21 ~~~ J22 ~~~ J23 ~~~ J24 ~~~ J25
     end
 
     %% ── C4 · Graph-Visualisierung ────────────────────────────────────────
@@ -119,10 +130,10 @@ flowchart LR
 
     class E1,E2,E3,E4,E5,E6,E7,E8 done
     class V1,V2,V3,V4,V5 done
-    class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14 done
+    class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14,J15,J16,J17,J18,J19,J20,J21,J22,J23,J24 done
     class G1,G2,G3,G4,G5,G6,G7,G8,G9 done
     class D1,D2,D3,D4 done
     class B1,B2,B3,B4,B8 done
     class B5,B7,B9 plan
     class K1,K2,K3,K5 done
-    class K4 plan
+    class K4,J25 plan
