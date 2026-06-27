@@ -1,19 +1,59 @@
 {
-  "generatedAt": "2026-06-27T18:41:13",
+  "generatedAt": "2026-06-27T20:31:16",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 77,
+      "commits": 85,
       "kinds": {
-        "docs": 28,
-        "fix": 5,
-        "feat": 21,
+        "fix": 6,
+        "feat": 24,
+        "docs": 32,
         "other": 23
       },
       "list": [
+        {
+          "sha": "bf6bf1a",
+          "subject": "fix: AP-34 wait_until_ready exits early when the app process dies (no 20s hang)",
+          "kind": "fix"
+        },
+        {
+          "sha": "e197ebf",
+          "subject": "feat: AP-34 launch integration — run.sh --tray + run.ps1 -Action tray (venv-bootstrap)",
+          "kind": "feat"
+        },
+        {
+          "sha": "d0c5875",
+          "subject": "feat: AP-34 tray shell + deps — pystray/Pillow icon, python -m launcher entry",
+          "kind": "feat"
+        },
+        {
+          "sha": "b08c525",
+          "subject": "feat: AP-34 launcher core — port handoff, readiness poll, clean stop",
+          "kind": "feat"
+        },
+        {
+          "sha": "d6e32d9",
+          "subject": "docs(plan): AP-34 Kern — Tray-Icon-Launcher (Implementierungsplan)",
+          "kind": "docs"
+        },
+        {
+          "sha": "e18ac6c",
+          "subject": "docs(spec): AP-34 — Auslieferung per run.ps1-venv-Bootstrap (kein .exe), 1 Klick",
+          "kind": "docs"
+        },
+        {
+          "sha": "16b3383",
+          "subject": "docs(spec): AP-34 Kern — Tray-Icon-Launcher (Variante A, Python, ohne PowerShell) Design",
+          "kind": "docs"
+        },
+        {
+          "sha": "f6bae2e",
+          "subject": "docs: Betriebs-Seite 'Terminalserver (Multi-User)' — Rollout-Anleitung",
+          "kind": "docs"
+        },
         {
           "sha": "12639ac",
           "subject": "docs: AP-31 (Kern) Release v0.33.0 — Pro-Nutzer-Pfade + dynamischer Port",
@@ -956,17 +996,17 @@
     }
   },
   "stats": {
-    "totalCommits": 182,
+    "totalCommits": 190,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 71
+        "count": 75
       },
       {
         "kind": "feat",
-        "count": 51
+        "count": 54
       },
       {
         "kind": "other",
@@ -974,7 +1014,7 @@
       },
       {
         "kind": "fix",
-        "count": 16
+        "count": 17
       },
       {
         "kind": "build",
@@ -993,7 +1033,7 @@
         "count": 1
       }
     ],
-    "testCount": 219
+    "testCount": 226
   },
   "phases": []
 }

@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: **AP-45** (Spaltenkopf-Aktionen + DISTINCT-Werte, v0.32.0), **AP-31 (Kern)** (dynamischer Port + Pro-Nutzer-Pfade, v0.33.0). Offen: **AP-31-Rest** (waitress/Idle-Shutdown/Deployment), AP-19, AP-34/35.
+Zuletzt erledigt: **AP-31 (Kern)** (dynamischer Port + Pro-Nutzer-Pfade, v0.33.0), **AP-34 (Kern)** (Tray-Icon-Launcher, v0.34.0). Offen: **AP-31-Rest** (waitress/Idle-Shutdown/Deployment), **AP-34-Rest** (Log-Fenster/Verknüpfungs-Ausrollen), AP-19, AP-35.
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach

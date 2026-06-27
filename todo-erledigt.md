@@ -4,6 +4,17 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-34 (Kern) — Tray-Icon-Launcher (v0.34.0)
+- [x] **Neues Paket `launcher/`** (Variante A, Python): `core.py` (stdlib-only, testbar) + `tray.py` (pystray/Pillow) + `__main__.py`
+- [x] **Ein-Klick-Start ohne Nutzer-venv-Setup:** `run.ps1 -Action tray` / `run.sh --tray` → `Ensure-Venv` baut venv beim ersten Start automatisch → fensterloser Tray (`pythonw -m launcher`)
+- [x] **Tray-Menü:** Im Browser öffnen · Info (Version/URL/Port) · Beenden (stoppt App-Prozess → Port frei)
+- [x] **Auto-Browser** beim Start (pollt bis HTTP-Antwort); **versteckte Konsole** (pythonw + `CREATE_NO_WINDOW`)
+- [x] **Port-Handoff:** Launcher wählt Port (`userpaths.pick_port`) + übergibt per `LUCENT_PORT` an `app.py`
+- [x] `pystray`/`Pillow` + Wheels (cp314 win_amd64) im Wheelhouse; 7 launcher-Tests + Controller-E2E; 227 grün; SDD mit Per-Task- + Final-Review (opus), Fix T1a (kein 20s-Hang bei Kind-Crash)
+- [ ] **Offen (eigene Scheiben):** Live-Log-Fenster (Tkinter, Bezug AP-33); automatisches Ausrollen der Startmenü-/Desktop-Verknüpfung; Tray-GUI-Live-Verifikation auf Windows
+
+---
+
 ## AP-31 (Kern) — Multi-User-Basis: dynamischer Port + Pro-Nutzer-Pfade (v0.33.0)
 - [x] **Neues `core/userpaths.py`** (pur, stdlib-only, kein Flask/`config`-Import): Pro-Nutzer-Pfade (XDG/`%LOCALAPPDATA%`, Slug `luDBxP`), `pick_port`/`resolve_port`, `migrate_legacy_config`
 - [x] **Dynamischer Port pro Session:** ohne `LUCENT_PORT` erst 5057 (Hub), sonst freier Port; `LUCENT_PORT=<n>` fest, `=0` dynamisch; tatsächliche URL beim Start ausgegeben; Bind nur `127.0.0.1`

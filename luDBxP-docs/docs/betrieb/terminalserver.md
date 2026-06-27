@@ -49,6 +49,18 @@ Die Launcher **brechen bei belegtem Port nicht mehr ab** — sie weisen darauf h
 dass automatisch ein freier Port gewählt wird, und starten durch. Jeder Nutzer
 öffnet die in seiner Konsole/seinem Log angezeigte URL (`http://127.0.0.1:<Port>`).
 
+## Ein-Klick-Start (Tray, seit v0.34.0)
+
+Statt einer Konsole kann pro Nutzer eine **Verknüpfung** angelegt werden, deren Ziel
+`run.ps1 -Action tray` (Windows) bzw. `run.sh --tray` (Linux) ist. Beim **ersten** Klick wird
+das venv automatisch eingerichtet (Fortschritt kurz sichtbar) — der **Nutzer muss nichts
+einrichten**; danach startet ein **fensterloses Tray-Icon** und der Browser öffnet sich
+automatisch, sobald der Server antwortet. Tray-Menü: **Im Browser öffnen**, **Info**
+(Version/URL/Port), **Beenden** (stoppt die App → Port frei). Spätere Starts gehen direkt durch.
+
+> Hinweis: Die `tray`-Action wurde der signierten `run.ps1` hinzugefügt → einmalige
+> **Re-Signatur** nötig. Ein `.exe`-Bau ist nicht erforderlich.
+
 ## Pro-Nutzer-Pfade
 
 | Inhalt | Windows | Linux/mac |

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.33.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.34.0">
       
       
         <meta name="author" content="LucentTools">
@@ -712,6 +712,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ein-klick-start-tray-seit-v0340" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Ein-Klick-Start (Tray, seit v0.34.0)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pro-nutzer-pfade" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1089,6 +1100,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ein-klick-start-tray-seit-v0340" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Ein-Klick-Start (Tray, seit v0.34.0)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pro-nutzer-pfade" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1230,6 +1252,17 @@ nötig.</p>
 <p>Die Launcher <strong>brechen bei belegtem Port nicht mehr ab</strong> — sie weisen darauf hin,
 dass automatisch ein freier Port gewählt wird, und starten durch. Jeder Nutzer
 öffnet die in seiner Konsole/seinem Log angezeigte URL (<code>http://127.0.0.1:&lt;Port&gt;</code>).</p>
+<h2 id="ein-klick-start-tray-seit-v0340">Ein-Klick-Start (Tray, seit v0.34.0)<a class="headerlink" href="#ein-klick-start-tray-seit-v0340" title="Permanent link">&para;</a></h2>
+<p>Statt einer Konsole kann pro Nutzer eine <strong>Verknüpfung</strong> angelegt werden, deren Ziel
+<code>run.ps1 -Action tray</code> (Windows) bzw. <code>run.sh --tray</code> (Linux) ist. Beim <strong>ersten</strong> Klick wird
+das venv automatisch eingerichtet (Fortschritt kurz sichtbar) — der <strong>Nutzer muss nichts
+einrichten</strong>; danach startet ein <strong>fensterloses Tray-Icon</strong> und der Browser öffnet sich
+automatisch, sobald der Server antwortet. Tray-Menü: <strong>Im Browser öffnen</strong>, <strong>Info</strong>
+(Version/URL/Port), <strong>Beenden</strong> (stoppt die App → Port frei). Spätere Starts gehen direkt durch.</p>
+<blockquote>
+<p>Hinweis: Die <code>tray</code>-Action wurde der signierten <code>run.ps1</code> hinzugefügt → einmalige
+<strong>Re-Signatur</strong> nötig. Ein <code>.exe</code>-Bau ist nicht erforderlich.</p>
+</blockquote>
 <h2 id="pro-nutzer-pfade">Pro-Nutzer-Pfade<a class="headerlink" href="#pro-nutzer-pfade" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

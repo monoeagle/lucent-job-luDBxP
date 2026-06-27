@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.34.0] — 2026-06-27
+### Added
+- **AP-34 (Kern) — Tray-Icon-Launcher:** Ein-Klick-Start, ohne dass der Nutzer ein venv
+  einrichtet. Eine Verknüpfung auf `run.ps1 -Action tray` (Linux: `run.sh --tray`) baut beim
+  ersten Start das venv automatisch (bestehende adaptive Logik) und startet einen **fensterlosen**
+  Python-Tray-Launcher (`launcher/`): Tray-Menü **Im Browser öffnen · Info · Beenden**,
+  Auto-Browser beim Start (pollt bis der Server antwortet), „Beenden" stoppt den App-Prozess →
+  Port frei. Neue Pakete `pystray`/`Pillow` (als Wheels gebündelt, NO-CDN). `launcher/core.py`
+  ist stdlib-only und vollständig getestet; Tray-GUI auf Windows/Desktop zu verifizieren.
+  *Offen:* Live-Log-Fenster, automatisches Ausrollen der Verknüpfung.
+
 ## [0.33.0] — 2026-06-27
 ### Added
 - **AP-31 (Kern) — Multi-User-Basis:** Mehrere Nutzer können die App kollisionsfrei auf einer
