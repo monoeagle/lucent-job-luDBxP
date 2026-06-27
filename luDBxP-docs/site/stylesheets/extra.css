@@ -1778,9 +1778,9 @@ body:has(.adb-home-layout) .md-content {
 /* AP-Matching als rechtes Band: "normale" Lookup-Liste, 2-spaltig (CSS-Columns),
    nimmt nur so viel Breite wie nötig, scrollt vertikal. */
 .adb-home-arch__band.adb-ap-match {
-  flex: 0 0 46%;          /* Tabelle breiter — Board-Feld schrumpft entsprechend */
-  width: 46%;
-  max-width: 46%;
+  flex: 0 0 auto;         /* max. 2 Spalten → schmaler; Board-Feld wird breiter */
+  width: 480px;
+  max-width: 480px;
   overflow: auto;
   align-items: stretch;
   justify-content: flex-start;
@@ -1798,7 +1798,7 @@ body:has(.adb-home-layout) .md-content {
   font-weight: 600;
 }
 .adb-ap-match-grid {
-  column-count: 3;
+  column-count: 2;       /* max. 2 Spalten (Vorgabe) */
   column-gap: 16px;
   font-size: 11px;
   line-height: 1.3;
