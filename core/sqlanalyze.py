@@ -81,10 +81,36 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
     written = {written_name} if written_name else set()
     read = {t.name for t in node.find_all(exp.Table)} - written
 
+    warnings: list[AnalysisWarning] = []
+    stmt_type = _statement_type(node)
+
+    if stmt_type in ("INSERT", "UPDATE", "DELETE", "DDL"):
+        warnings.append(AnalysisWarning(
+            "danger", "WRITE_STATEMENT",
+            "Dieses Statement würde Daten bzw. das Schema verändern — "
+            "das Tool führt es nicht aus."))
+
+    if isinstance(node, (exp.Update, exp.Delete)) and node.find(exp.Where) is None:
+        warnings.append(AnalysisWarning(
+            "danger", "NO_WHERE",
+            "UPDATE/DELETE ohne WHERE — betrifft alle Zeilen der Tabelle."))
+
+    # Cartesian heuristic: a JOIN/comma-join without ON/USING and no WHERE to
+    # link the tables. A present WHERE is assumed to provide the link.
+    joins_without_on = any(
+        j.args.get("on") is None and j.args.get("using") is None
+        for j in node.find_all(exp.Join)
+    )
+    if joins_without_on and node.find(exp.Where) is None:
+        warnings.append(AnalysisWarning(
+            "warn", "CARTESIAN_JOIN",
+            "Join ohne Verknüpfungsbedingung — möglicher kartesischer Join "
+            "(Zeilen-Explosion)."))
+
     return AnalysisResult(
-        statement_type=_statement_type(node),
+        statement_type=stmt_type,
         tables_read=tuple(sorted(read)),
         tables_written=tuple(sorted(written)),
-        warnings=(),
+        warnings=tuple(warnings),
         parse_error=None,
     )

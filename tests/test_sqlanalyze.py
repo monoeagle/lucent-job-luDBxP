@@ -40,3 +40,44 @@ def test_unparseable_sets_parse_error_no_exception():
 def test_determinism_sorted_dedup():
     a = analyze("SELECT * FROM A, B, A")
     assert a.tables_read == ("A", "B")
+
+
+def _codes(r):
+    return {w.code for w in r.warnings}
+
+
+def test_write_statement_warns_danger():
+    r = analyze("DELETE FROM Host WHERE HostID = 1")
+    assert "WRITE_STATEMENT" in _codes(r)
+    assert any(w.code == "WRITE_STATEMENT" and w.level == "danger" for w in r.warnings)
+
+
+def test_update_without_where_warns():
+    r = analyze("UPDATE Host SET Hostname = 'x'")
+    assert {"WRITE_STATEMENT", "NO_WHERE"} <= _codes(r)
+
+
+def test_delete_with_where_no_nowhere_warning():
+    r = analyze("DELETE FROM Host WHERE HostID = 1")
+    assert "NO_WHERE" not in _codes(r)
+
+
+def test_select_has_no_write_warning():
+    r = analyze("SELECT * FROM Host WHERE HostID = 1")
+    assert "WRITE_STATEMENT" not in _codes(r)
+
+
+def test_cartesian_join_without_on_warns():
+    r = analyze("SELECT * FROM A JOIN B")
+    assert "CARTESIAN_JOIN" in _codes(r)
+
+
+def test_comma_join_with_linking_where_not_flagged():
+    # heuristic: a WHERE clause is assumed to link the tables -> no cartesian warning
+    r = analyze("SELECT * FROM A, B WHERE A.id = B.id")
+    assert "CARTESIAN_JOIN" not in _codes(r)
+
+
+def test_ddl_is_write_statement():
+    r = analyze("DROP TABLE Host")
+    assert "WRITE_STATEMENT" in _codes(r)
