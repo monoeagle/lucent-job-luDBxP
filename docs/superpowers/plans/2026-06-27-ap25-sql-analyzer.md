@@ -513,10 +513,10 @@ def test_analyze_parse_error_returns_200_with_error(client):
 def test_analyze_bad_connection_returns_400(client):
     resp = client.post("/api/analyze", json={
         "sql": "SELECT 1",
-        "connection_url": "sqlite:////nonexistent/zzz.db",
+        "connection_url": "sqlite:////nonexistent_dir_xyz/zzz.db",
     })
-    # a connection that cannot reflect → 400 (analysis needs the schema it asked for)
-    assert resp.status_code in (200, 400)  # see note in implementation
+    # a connection that cannot reflect → 400 (reflection raises ConnectionError)
+    assert resp.status_code == 400
 ```
 
 - [ ] **Step 2: Tests laufen lassen, Fehlschlag prüfen**
