@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T16:40:41",
+  "generatedAt": "2026-06-27T16:45:54",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 60,
+      "commits": 61,
       "kinds": {
-        "docs": 18,
+        "docs": 19,
         "feat": 15,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "0fa30a8",
+          "subject": "docs: AP-Board-Kacheln zweizeilig (AP-N / 1 Wort) + Join-Builder als Gitter; Matching-Tabelle schmaler + 9px",
+          "kind": "docs"
+        },
         {
           "sha": "53df67b",
           "subject": "docs: AP-Board lesbarer — kurze Boxen (AP-N Stichwort) + separate Matching-Tabelle rechts",
@@ -871,13 +876,13 @@
     }
   },
   "stats": {
-    "totalCommits": 165,
+    "totalCommits": 166,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 61
+        "count": 62
       },
       {
         "kind": "feat",

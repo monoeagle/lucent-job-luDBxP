@@ -5,66 +5,65 @@
     <img src="images/mermaid/entwicklung-arbeitspakete-1.svg" alt="Arbeitspakete — thematischer Baum mit Abhängigkeiten (grün = erledigt, blau = geplant)">
   </div>
   <div class="adb-home-arch__band adb-ap-match">
-    <table class="adb-ap-match-table">
-      <thead><tr><th colspan="2">📑 AP-Matching · Kurzbeschreibung</th></tr></thead>
-      <tbody>
-        <tr class="grp"><td colspan="2">⚙️ Engine / Fundament</td></tr>
-        <tr><td>AP-11</td><td>Composite-FK: ON … AND …</td></tr>
-        <tr class="grp"><td colspan="2">🔌 Verbindungen & Backends</td></tr>
-        <tr><td>AP-2</td><td>Verbinden-Fehler entschärft</td></tr>
-        <tr><td>AP-10</td><td>Verbindungen in der Topbar</td></tr>
-        <tr><td>AP-12</td><td>MSSQL real testbar</td></tr>
-        <tr><td>AP-22</td><td>Implizite FKs (opt-in)</td></tr>
-        <tr class="grp"><td colspan="2">🧩 Join-Builder & SQL-Ausgabe</td></tr>
-        <tr><td>AP-3</td><td>SQL-Optionen: DISTINCT/ORDER BY/LIMIT/IN</td></tr>
-        <tr><td>AP-4</td><td>Mehrere SELECT-Spalten</td></tr>
-        <tr><td>AP-5</td><td>Ausgabebereich: SELECT → Tabelle</td></tr>
-        <tr><td>AP-6</td><td>Ausgabe-Steuerung: Zeilen/Refresh</td></tr>
-        <tr><td>AP-9</td><td>Ergebnisliste maximiert</td></tr>
-        <tr><td>AP-20</td><td>Copy-Icon am SELECT</td></tr>
-        <tr><td>AP-23</td><td>Join-Maske vereinheitlicht</td></tr>
-        <tr><td>AP-25</td><td>SQL-Statement-Analyzer</td></tr>
-        <tr><td>AP-29</td><td>SQL-Dialekt umschalten</td></tr>
-        <tr><td>AP-30</td><td>N-1-Stern (mehrere Lookup-Ziele)</td></tr>
-        <tr><td>AP-36</td><td>Fan-out-Richtung pro Join (N-1/1-N)</td></tr>
-        <tr><td>AP-37</td><td>Start⇄Ziel-Tausch</td></tr>
-        <tr><td>AP-38</td><td>Kopierbares lauffähiges SQL</td></tr>
-        <tr><td>AP-39</td><td>SQL-Analyzer vertieft (Struktur/Lints)</td></tr>
-        <tr><td>AP-40</td><td>Graph-Legende + Marker-Fix</td></tr>
-        <tr><td>AP-41</td><td>Join-Typ pro Schritt (LEFT/RIGHT/FULL)</td></tr>
-        <tr><td>AP-42</td><td>Join-Builder-Politur</td></tr>
-        <tr><td>AP-43</td><td>Lesbares mehrzeiliges SQL-Layout</td></tr>
-        <tr><td>AP-44</td><td>Kompakter + NULL/Status</td></tr>
-        <tr><td>AP-45</td><td>Spaltenkopf-Aktionen + Filter-DISTINCT</td></tr>
-        <tr><td>AP-46</td><td>Detailkarten folgen der Auswahl</td></tr>
-        <tr><td>AP-47</td><td>Pfad-Indikator + Waisen-Chip</td></tr>
-        <tr><td>AP-48</td><td>Analyzer-Textbox + Tippfehler-Lint</td></tr>
-        <tr><td>AP-49</td><td>Analyzer-Feinschliff + ANSI-Fix</td></tr>
-        <tr class="grp"><td colspan="2">🕸️ Graph-Visualisierung</td></tr>
-        <tr><td>AP-1</td><td>Graph-Interaktion: UML-Karte → Pfad</td></tr>
-        <tr><td>AP-7</td><td>Feiner Graph-Zoom</td></tr>
-        <tr><td>AP-8</td><td>Fix Auswahl-Reset</td></tr>
-        <tr><td>AP-13</td><td>UI-Politur: Suchfeld/Splitter/Re-Layout</td></tr>
-        <tr><td>AP-16</td><td>dagre-Layout (minimale Kreuzungen)</td></tr>
-        <tr><td>AP-21</td><td>Kosmetik: Balkenhöhe</td></tr>
-        <tr><td>AP-28</td><td>Scroll nur im Ergebnis</td></tr>
-        <tr><td>AP-32</td><td>Zoom-Slider in der Kopfzeile</td></tr>
-        <tr class="grp"><td colspan="2">🗂️ Daten & UI-Rahmen</td></tr>
-        <tr><td>AP-18</td><td>Multi-Tabellen-Join</td></tr>
-        <tr class="grp"><td colspan="2">🚀 Deployment & Betrieb</td></tr>
-        <tr><td>AP-14</td><td>Python-3.14 / AppImage</td></tr>
-        <tr><td>AP-15</td><td>abbruchsicher + idempotent</td></tr>
-        <tr><td>AP-31</td><td>Terminal-Server (Multi-User)</td></tr>
-        <tr><td>AP-33</td><td>Logging sauber</td></tr>
-        <tr><td>AP-34</td><td>Tray-Icon-Launcher</td></tr>
-        <tr><td>AP-35</td><td>run.ps1: leeres venv-Fix</td></tr>
-        <tr class="grp"><td colspan="2">📚 Doku & Prozess</td></tr>
-        <tr><td>AP-19</td><td>.pattern_transfer</td></tr>
-        <tr><td>AP-24</td><td>Session-KPIs (dev-intern)</td></tr>
-        <tr><td>AP-26</td><td>Audit-Sessions</td></tr>
-        <tr><td>AP-27</td><td>Insights</td></tr>
-      </tbody>
-    </table>
+    <div class="adb-ap-match-title">📑 AP-Matching · Kurzbeschreibung</div>
+    <div class="adb-ap-match-grid">
+      <div class="grp">⚙️ Engine / Fundament</div>
+      <div class="row"><b>AP-11</b> Composite-FK: ON … AND …</div>
+      <div class="grp">🔌 Verbindungen &amp; Backends</div>
+      <div class="row"><b>AP-2</b> Verbinden-Fehler entschärft</div>
+      <div class="row"><b>AP-10</b> Verbindungen in der Topbar</div>
+      <div class="row"><b>AP-12</b> MSSQL real testbar</div>
+      <div class="row"><b>AP-22</b> Implizite FKs (opt-in)</div>
+      <div class="grp">🧩 Join-Builder &amp; SQL-Ausgabe</div>
+      <div class="row"><b>AP-3</b> SQL-Optionen: DISTINCT/ORDER BY/LIMIT/IN</div>
+      <div class="row"><b>AP-4</b> Mehrere SELECT-Spalten</div>
+      <div class="row"><b>AP-5</b> Ausgabebereich: SELECT → Tabelle</div>
+      <div class="row"><b>AP-6</b> Ausgabe-Steuerung: Zeilen/Refresh</div>
+      <div class="row"><b>AP-9</b> Ergebnisliste maximiert</div>
+      <div class="row"><b>AP-20</b> Copy-Icon am SELECT</div>
+      <div class="row"><b>AP-23</b> Join-Maske vereinheitlicht</div>
+      <div class="row"><b>AP-25</b> SQL-Statement-Analyzer</div>
+      <div class="row"><b>AP-29</b> SQL-Dialekt umschalten</div>
+      <div class="row"><b>AP-30</b> N-1-Stern (mehrere Lookup-Ziele)</div>
+      <div class="row"><b>AP-36</b> Fan-out-Richtung pro Join (N-1/1-N)</div>
+      <div class="row"><b>AP-37</b> Start⇄Ziel-Tausch</div>
+      <div class="row"><b>AP-38</b> Kopierbares lauffähiges SQL</div>
+      <div class="row"><b>AP-39</b> SQL-Analyzer vertieft (Struktur/Lints)</div>
+      <div class="row"><b>AP-40</b> Graph-Legende + Marker-Fix</div>
+      <div class="row"><b>AP-41</b> Join-Typ pro Schritt (LEFT/RIGHT/FULL)</div>
+      <div class="row"><b>AP-42</b> Join-Builder-Politur</div>
+      <div class="row"><b>AP-43</b> Lesbares mehrzeiliges SQL-Layout</div>
+      <div class="row"><b>AP-44</b> Kompakter + NULL/Status</div>
+      <div class="row"><b>AP-45</b> Spaltenkopf-Aktionen + Filter-DISTINCT</div>
+      <div class="row"><b>AP-46</b> Detailkarten folgen der Auswahl</div>
+      <div class="row"><b>AP-47</b> Pfad-Indikator + Waisen-Chip</div>
+      <div class="row"><b>AP-48</b> Analyzer-Textbox + Tippfehler-Lint</div>
+      <div class="row"><b>AP-49</b> Analyzer-Feinschliff + ANSI-Fix</div>
+      <div class="grp">🕸️ Graph-Visualisierung</div>
+      <div class="row"><b>AP-1</b> Graph-Interaktion: UML-Karte → Pfad</div>
+      <div class="row"><b>AP-7</b> Feiner Graph-Zoom</div>
+      <div class="row"><b>AP-8</b> Fix Auswahl-Reset</div>
+      <div class="row"><b>AP-13</b> UI-Politur: Suchfeld/Splitter/Re-Layout</div>
+      <div class="row"><b>AP-16</b> dagre-Layout (minimale Kreuzungen)</div>
+      <div class="row"><b>AP-21</b> Kosmetik: Balkenhöhe</div>
+      <div class="row"><b>AP-28</b> Scroll nur im Ergebnis</div>
+      <div class="row"><b>AP-32</b> Zoom-Slider in der Kopfzeile</div>
+      <div class="grp">🗂️ Daten &amp; UI-Rahmen</div>
+      <div class="row"><b>AP-18</b> Multi-Tabellen-Join</div>
+      <div class="grp">🚀 Deployment &amp; Betrieb</div>
+      <div class="row"><b>AP-14</b> Python-3.14 / AppImage</div>
+      <div class="row"><b>AP-15</b> abbruchsicher + idempotent</div>
+      <div class="row struck"><b>AP-17</b> Delivery-Verzeichnis (gestrichen → GitHub-Releases)</div>
+      <div class="row"><b>AP-31</b> Terminal-Server (Multi-User)</div>
+      <div class="row"><b>AP-33</b> Logging sauber</div>
+      <div class="row"><b>AP-34</b> Tray-Icon-Launcher</div>
+      <div class="row"><b>AP-35</b> run.ps1: leeres venv-Fix</div>
+      <div class="grp">📚 Doku &amp; Prozess</div>
+      <div class="row"><b>AP-19</b> .pattern_transfer</div>
+      <div class="row"><b>AP-24</b> Session-KPIs (dev-intern)</div>
+      <div class="row"><b>AP-26</b> Audit-Sessions</div>
+      <div class="row"><b>AP-27</b> Insights</div>
+    </div>
   </div>
 </div>
 
