@@ -15,6 +15,7 @@ from core.settings import Settings
 from core.ddl import table_ddl
 from core.datapreview import fetch_rows, execute_select
 from core.connection import build_url
+from core.sqlanalyze import analyze as analyze_sql
 
 # Connection fields that may be persisted (never the password).
 _CONN_FIELDS = ("db_type", "host", "port", "database", "user", "filepath",
@@ -470,3 +471,36 @@ def api_joinpath_run():
 
     return jsonify(columns=result["columns"], rows=result["rows"],
                    sql=gen.sql, row_cap=max_rows)
+
+
+@bp.post("/api/analyze")
+def api_analyze():
+    """Analyze a pasted SQL statement read-only — never executes it.
+
+    With a connection_url the reflected schema and the connection dialect feed
+    table/column cross-checks; without one, the analysis is text-only.
+    """
+    data = request.get_json(silent=True) or {}
+    sql = data.get("sql", "")
+    if not sql.strip():
+        return jsonify(error="Bitte ein SQL-Statement eingeben."), 400
+
+    schema = None
+    dialect = None
+    url = (data.get("connection_url") or "").strip()
+    if url:
+        try:
+            schema = SqlAlchemyLoader(url).load()
+        except ConnectionError as exc:
+            return jsonify(error=str(exc)), 400
+        dialect = _dialect_from_url(url).name
+
+    result = analyze_sql(sql, schema=schema, dialect=dialect)
+    return jsonify(
+        statement_type=result.statement_type,
+        tables_read=list(result.tables_read),
+        tables_written=list(result.tables_written),
+        warnings=[{"level": w.level, "code": w.code, "message": w.message}
+                  for w in result.warnings],
+        parse_error=result.parse_error,
+    )

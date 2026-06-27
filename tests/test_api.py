@@ -546,3 +546,44 @@ def test_joinpath_ascending_star_has_no_warning(client, inventory_url):
     })
     assert resp.status_code == 200
     assert resp.get_json()["paths"][0]["warnings"] == []
+
+
+# ===== AP-25: /api/analyze =====
+
+def test_analyze_text_mode_no_connection(client):
+    resp = client.post("/api/analyze", json={
+        "sql": "UPDATE Host SET Hostname='x'",
+    })
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["statement_type"] == "UPDATE"
+    assert data["tables_written"] == ["Host"]
+    codes = {w["code"] for w in data["warnings"]}
+    assert {"WRITE_STATEMENT", "NO_WHERE"} <= codes
+    # text mode: no schema-dependent warnings
+    assert "UNKNOWN_TABLE" not in codes
+
+
+def test_analyze_with_connection_flags_unknown_table(client, inventory_url):
+    resp = client.post("/api/analyze", json={
+        "sql": "SELECT * FROM NoSuchTable",
+        "connection_url": inventory_url,
+    })
+    assert resp.status_code == 200
+    codes = {w["code"] for w in resp.get_json()["warnings"]}
+    assert "UNKNOWN_TABLE" in codes
+
+
+def test_analyze_parse_error_returns_200_with_error(client):
+    resp = client.post("/api/analyze", json={"sql": "NOT SQL @@@"})
+    assert resp.status_code == 200
+    assert resp.get_json()["parse_error"] is not None
+
+
+def test_analyze_bad_connection_returns_400(client):
+    resp = client.post("/api/analyze", json={
+        "sql": "SELECT 1",
+        "connection_url": "sqlite:////nonexistent_dir_xyz/zzz.db",
+    })
+    # a connection that cannot reflect → 400 (reflection raises ConnectionError)
+    assert resp.status_code == 400
