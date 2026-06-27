@@ -7,7 +7,8 @@ graph TB
     end
     subgraph FLASK["Flask-API"]
         S["/api/schema"]
-        J["/api/joinpath"]
+        J["/api/joinpath\n(+ /run, Join-Typ pro Schritt)"]
+        OC["/api/orphan_check\n(Waisen-Hinweis, read-only)"]
         G["/api/graph"]
         D["/api/data"]
         A["/api/analyze"]
@@ -25,6 +26,7 @@ graph TB
 
     OB --> S
     JB --> J
+    JB --> OC
     JB --> G
     GR --> G
     OB --> D
@@ -36,6 +38,8 @@ graph TB
     C --> SL
     A --> SA
     A --> SL
+    OC --> SG
+    OC --> SL
     SL --> DB
     PF --> BG
     PF --> SG

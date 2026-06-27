@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T15:19:28",
+  "generatedAt": "2026-06-27T15:24:48",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 55,
+      "commits": 56,
       "kinds": {
+        "docs": 16,
         "feat": 13,
-        "docs": 15,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "bafc2a8",
+          "subject": "docs: Session-7-Handoff + Insight (Effekt-Hinweise echtes Ergebnis zählen) + KPI-Zeile #7 + Gantt/Board bis AP-49 + AP-45 offen",
+          "kind": "docs"
+        },
         {
           "sha": "08e9163",
           "subject": "feat: AP-49 Analyzer-Feinschliff + Fix ANSI-Codes im Parsefehler — v0.31.0",
@@ -846,13 +851,13 @@
     }
   },
   "stats": {
-    "totalCommits": 160,
+    "totalCommits": 161,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 58
+        "count": 59
       },
       {
         "kind": "feat",

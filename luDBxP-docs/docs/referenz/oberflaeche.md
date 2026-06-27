@@ -106,3 +106,45 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:
 Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 (`Quelle: VirtualMachine.HostID → Ziel: Host.HostID`) und bietet einen
 „Auswahl zurücksetzen"-Button.
+
+---
+
+## Join-Builder — aktuelle Funktionen (Stand v0.31.0)
+
+Über die obigen Screenshots hinaus bietet der Join-Builder inzwischen:
+
+- **Start ⇄ Ziel tauschen** per ⇄-Knopf neben den Ziel-Dropdowns (Tabelle + Spalte;
+  baut sofort neu) — die warnungsfreie Richtung ist oft die umgekehrte.
+- **Pfad-Auswahl-Indikator:** Die Kandidatenpfade tragen `[*]` (aktiv) / `[ ]` statt
+  Bullets; jeder Join-Schritt hat einen **Richtungs-Chip** grün `N-1` / gelb `1-N`.
+  Eine kompakte Kachel oben rechts erklärt `1-N` (Fan-out → siehe
+  [Fan-out-Warnung](fanout-warnung.md)).
+- **Join-Typ pro Schritt** (INNER/LEFT/RIGHT/FULL) über der SQL-Ausgabe; ein
+  **Waisen-Chip** zeigt datengetrieben, welcher Typ hier *tatsächlich* zusätzliche
+  Zeilen bringt (siehe [Outer Joins & Waisen](outer-joins.md)).
+- **Lesbares, mehrzeiliges SQL** (eine Spalte/JOIN/ON-Bedingung pro Zeile,
+  ausgerichtete `=`); das angezeigte/kopierte SELECT ist **direkt lauffähig**
+  (Filterwerte eingesetzt, endet mit `;`) — intern wird parametrisiert read-only
+  ausgeführt.
+- **Ergebnistabelle:** Statuszeile *Zeilen · Join-Typ · Fan-out*; **NULL-Zellen**
+  (Outer-Join-/Waisen-Zeilen) hervorgehoben.
+- **Detailkarten:** Sind Start/Ziel gewählt (auch per Dropdown), rückt der Graph nach
+  oben und darunter erscheinen die Tabellen-Detailkarten für Start/Ziel; ohne Auswahl
+  bleibt der Graph zentriert.
+
+## Schema-Graph — Legende
+
+Oben links erklärt eine kleine Legende die Hervorhebungen: **blau** = Analyzer
+(gelesen/Joins), **rot** = Analyzer (geschrieben), **orange** = Join-Pfad,
+**N-1/1-N** = Join-Richtung, **grün/amber** = Start/Ziel. Join-Pfad- und
+Analyzer-Markierungen sind wechselseitig exklusiv.
+
+## SQL-Analyzer
+
+Der **SQL-Analyzer**-Tab parst ein eingefügtes Statement **read-only** (nie
+ausgeführt) via sqlglot und zeigt: Typ, **Komplexitäts-Score** (A–E),
+Struktur-Zähler, Spalten, **Joins (Typ + ON)**, **Filter/GROUP BY/HAVING/ORDER BY**,
+gelesene/geschriebene Tabellen sowie Warnungen/Lints (u. a. `SELECT *`, `LIKE '%…'`,
+Funktion-auf-Spalte, sowie `SUSPICIOUS_ALIAS` für vertippte Join-Schlüsselwörter).
+Die JOIN-Kanten des Statements werden im Graph gezeichnet. Mit aktiver Verbindung
+zusätzlich `UNKNOWN_TABLE`/`UNKNOWN_COLUMN`.

@@ -671,6 +671,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#join-builder-aktuelle-funktionen-stand-v0310" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Join-Builder — aktuelle Funktionen (Stand v0.31.0)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-graph-legende" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Schema-Graph — Legende
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        SQL-Analyzer
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1026,6 +1059,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#join-builder-aktuelle-funktionen-stand-v0310" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Join-Builder — aktuelle Funktionen (Stand v0.31.0)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema-graph-legende" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Schema-Graph — Legende
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        SQL-Analyzer
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1118,6 +1184,42 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:</p>
 <p>Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 (<code>Quelle: VirtualMachine.HostID → Ziel: Host.HostID</code>) und bietet einen
 „Auswahl zurücksetzen"-Button.</p>
+<hr />
+<h2 id="join-builder-aktuelle-funktionen-stand-v0310">Join-Builder — aktuelle Funktionen (Stand v0.31.0)<a class="headerlink" href="#join-builder-aktuelle-funktionen-stand-v0310" title="Permanent link">&para;</a></h2>
+<p>Über die obigen Screenshots hinaus bietet der Join-Builder inzwischen:</p>
+<ul>
+<li><strong>Start ⇄ Ziel tauschen</strong> per ⇄-Knopf neben den Ziel-Dropdowns (Tabelle + Spalte;
+  baut sofort neu) — die warnungsfreie Richtung ist oft die umgekehrte.</li>
+<li><strong>Pfad-Auswahl-Indikator:</strong> Die Kandidatenpfade tragen <code>[*]</code> (aktiv) / <code>[ ]</code> statt
+  Bullets; jeder Join-Schritt hat einen <strong>Richtungs-Chip</strong> grün <code>N-1</code> / gelb <code>1-N</code>.
+  Eine kompakte Kachel oben rechts erklärt <code>1-N</code> (Fan-out → siehe
+  <a href="../fanout-warnung/">Fan-out-Warnung</a>).</li>
+<li><strong>Join-Typ pro Schritt</strong> (INNER/LEFT/RIGHT/FULL) über der SQL-Ausgabe; ein
+  <strong>Waisen-Chip</strong> zeigt datengetrieben, welcher Typ hier <em>tatsächlich</em> zusätzliche
+  Zeilen bringt (siehe <a href="../outer-joins/">Outer Joins &amp; Waisen</a>).</li>
+<li><strong>Lesbares, mehrzeiliges SQL</strong> (eine Spalte/JOIN/ON-Bedingung pro Zeile,
+  ausgerichtete <code>=</code>); das angezeigte/kopierte SELECT ist <strong>direkt lauffähig</strong>
+  (Filterwerte eingesetzt, endet mit <code>;</code>) — intern wird parametrisiert read-only
+  ausgeführt.</li>
+<li><strong>Ergebnistabelle:</strong> Statuszeile <em>Zeilen · Join-Typ · Fan-out</em>; <strong>NULL-Zellen</strong>
+  (Outer-Join-/Waisen-Zeilen) hervorgehoben.</li>
+<li><strong>Detailkarten:</strong> Sind Start/Ziel gewählt (auch per Dropdown), rückt der Graph nach
+  oben und darunter erscheinen die Tabellen-Detailkarten für Start/Ziel; ohne Auswahl
+  bleibt der Graph zentriert.</li>
+</ul>
+<h2 id="schema-graph-legende">Schema-Graph — Legende<a class="headerlink" href="#schema-graph-legende" title="Permanent link">&para;</a></h2>
+<p>Oben links erklärt eine kleine Legende die Hervorhebungen: <strong>blau</strong> = Analyzer
+(gelesen/Joins), <strong>rot</strong> = Analyzer (geschrieben), <strong>orange</strong> = Join-Pfad,
+<strong>N-1/1-N</strong> = Join-Richtung, <strong>grün/amber</strong> = Start/Ziel. Join-Pfad- und
+Analyzer-Markierungen sind wechselseitig exklusiv.</p>
+<h2 id="sql-analyzer">SQL-Analyzer<a class="headerlink" href="#sql-analyzer" title="Permanent link">&para;</a></h2>
+<p>Der <strong>SQL-Analyzer</strong>-Tab parst ein eingefügtes Statement <strong>read-only</strong> (nie
+ausgeführt) via sqlglot und zeigt: Typ, <strong>Komplexitäts-Score</strong> (A–E),
+Struktur-Zähler, Spalten, <strong>Joins (Typ + ON)</strong>, <strong>Filter/GROUP BY/HAVING/ORDER BY</strong>,
+gelesene/geschriebene Tabellen sowie Warnungen/Lints (u. a. <code>SELECT *</code>, <code>LIKE '%…'</code>,
+Funktion-auf-Spalte, sowie <code>SUSPICIOUS_ALIAS</code> für vertippte Join-Schlüsselwörter).
+Die JOIN-Kanten des Statements werden im Graph gezeichnet. Mit aktiver Verbindung
+zusätzlich <code>UNKNOWN_TABLE</code>/<code>UNKNOWN_COLUMN</code>.</p>
 
 
 

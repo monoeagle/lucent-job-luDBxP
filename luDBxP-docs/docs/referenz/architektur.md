@@ -52,7 +52,16 @@ Der SQL-Analyzer (`core/sqlanalyze.py`, Endpoint `/api/analyze`) parst ein
 eingefügtes Statement ausschließlich über den sqlglot-AST und **führt es nie
 aus**. Er bestimmt Statement-Typ, gelesene und geschriebene Tabellen sowie
 nicht-blockierende Warnungen (Schreib-/DDL-Statement, fehlendes WHERE,
-kartesischer Join; mit aktiver Verbindung zusätzlich unbekannte Tabellen/Spalten
-gegen das reflektierte Schema). Er arbeitet **mit und ohne Verbindung**: ohne
-Verbindung rein textuell, mit Verbindung zusätzlich mit Schema-Abgleich und
-Graph-Highlight. `sqlglot` ist lokal als Wheel gebündelt (kein CDN).
+kartesischer Join; statische Lints wie `SELECT *`, nicht-sargbares `LIKE '%…'`,
+Funktion-auf-Spalte, vertippte Join-Schlüsselwörter `SUSPICIOUS_ALIAS`; mit aktiver
+Verbindung zusätzlich unbekannte Tabellen/Spalten gegen das reflektierte Schema).
+Darüber hinaus Struktur-/Klauselanalyse (Spalten, Joins+ON, Filter, GROUP/ORDER BY),
+Komplexitäts-Score und das Zeichnen der JOIN-Kanten im Graph. Er arbeitet **mit und
+ohne Verbindung**: ohne Verbindung rein textuell, mit Verbindung zusätzlich mit
+Schema-Abgleich und Graph-Highlight. `sqlglot` ist lokal als Wheel gebündelt (kein CDN).
+
+Der **Join-Builder** (`/api/joinpath`, Ausführung `/api/joinpath/run`) erlaubt einen
+**Join-Typ pro Schritt** (INNER/LEFT/RIGHT/FULL); das read-only Endpoint
+`/api/orphan_check` zählt je Schritt, welcher Typ das Ergebnis tatsächlich ändert
+(Waisen-Hinweis). Die generierte Abfrage wird parametrisiert und read-only ausgeführt;
+die Anzeige/Copy-Variante setzt die Filterwerte als Literale ein (direkt lauffähig).
