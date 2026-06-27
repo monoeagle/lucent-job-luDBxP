@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T17:00:09",
+  "generatedAt": "2026-06-27T17:08:07",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 64,
+      "commits": 65,
       "kinds": {
-        "docs": 22,
+        "docs": 23,
         "feat": 15,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "9dd3eda",
+          "subject": "docs: Matching-Tabelle entfernt — Board vollbreit + etwas mehr Text pro Box",
+          "kind": "docs"
+        },
         {
           "sha": "3b9743f",
           "subject": "docs: Matching-Tabelle wieder max. 2-spaltig (Vorgabe), Board-Feld dafür breiter",
@@ -891,13 +896,13 @@
     }
   },
   "stats": {
-    "totalCommits": 169,
+    "totalCommits": 170,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 65
+        "count": 66
       },
       {
         "kind": "feat",
