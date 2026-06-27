@@ -1,19 +1,34 @@
 {
-  "generatedAt": "2026-06-27T20:31:16",
+  "generatedAt": "2026-06-27T21:23:25",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 85,
+      "commits": 88,
       "kinds": {
-        "fix": 6,
+        "fix": 7,
+        "docs": 34,
         "feat": 24,
-        "docs": 32,
         "other": 23
       },
       "list": [
+        {
+          "sha": "b85ffdf",
+          "subject": "fix: AP-34 Launcher räumt app.py-Kind bei jedem Ende sauber ab (atexit + SIGTERM/SIGINT) — keine Waisen",
+          "kind": "fix"
+        },
+        {
+          "sha": "20b0bbc",
+          "subject": "docs: Session-8-Handoff + Insight + KPI-Zeile #8 + projekt-kennzahlen.html",
+          "kind": "docs"
+        },
+        {
+          "sha": "720173c",
+          "subject": "docs: AP-34 (Kern) Release v0.34.0 — Tray-Icon-Launcher (Changelog/Roadmap/todo/CLAUDE/Betrieb/Board/Site)",
+          "kind": "docs"
+        },
         {
           "sha": "bf6bf1a",
           "subject": "fix: AP-34 wait_until_ready exits early when the app process dies (no 20s hang)",
@@ -996,13 +1011,13 @@
     }
   },
   "stats": {
-    "totalCommits": 190,
+    "totalCommits": 193,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 75
+        "count": 77
       },
       {
         "kind": "feat",
@@ -1014,7 +1029,7 @@
       },
       {
         "kind": "fix",
-        "count": 17
+        "count": 18
       },
       {
         "kind": "build",
@@ -1033,7 +1048,7 @@
         "count": 1
       }
     ],
-    "testCount": 226
+    "testCount": 231
   },
   "phases": []
 }
