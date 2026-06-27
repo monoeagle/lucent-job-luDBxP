@@ -101,3 +101,32 @@ def test_wait_until_ready_false_when_child_dies():
     t0 = time.monotonic()
     assert c.wait_until_ready(timeout=10, interval=0.2) is False
     assert time.monotonic() - t0 < 3                            # returned fast, not full 10s
+
+
+def test_install_cleanup_reaps_child_on_exit_and_signal(monkeypatch):
+    """Der Launcher räumt den Kindprozess bei Exit (atexit) UND bei SIGTERM/SIGINT
+    sauber ab → keine Waisen, Port frei."""
+    import atexit as _atexit
+    import signal as _signal
+    import pytest
+    from launcher import __main__ as m
+
+    stopped = []
+
+    class FakeCore:
+        def stop(self):
+            stopped.append("stop")
+
+    reg = {}
+    monkeypatch.setattr(_atexit, "register", lambda fn: reg.setdefault("atexit", fn))
+    handlers = {}
+    monkeypatch.setattr(_signal, "signal", lambda s, h: handlers.setdefault(s, h))
+
+    core = FakeCore()
+    m._install_cleanup(core)
+
+    assert reg["atexit"] == core.stop                 # atexit reapt den Kindprozess
+    assert _signal.SIGTERM in handlers and _signal.SIGINT in handlers
+    with pytest.raises(SystemExit):                   # Signal-Handler stoppt + beendet
+        handlers[_signal.SIGTERM](_signal.SIGTERM, None)
+    assert stopped == ["stop"]
