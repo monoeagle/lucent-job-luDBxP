@@ -32,6 +32,9 @@ nav = [
     { "Outer Joins & Waisen" = "referenz/outer-joins.md" },
     { "Oberfläche"      = "referenz/oberflaeche.md" },
   ]},
+  { "Betrieb" = [
+    { "Terminalserver (Multi-User)" = "betrieb/terminalserver.md" },
+  ]},
   { "Entwicklung" = [
     { "Projektstruktur" = "entwicklung/projektstruktur.md" },
     { "Testing"         = "entwicklung/testing.md" },
