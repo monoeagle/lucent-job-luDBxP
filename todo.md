@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: **AP-43** (lesbares mehrzeiliges SQL-Layout, v0.26.0), **AP-44** (Join-Builder kompakter + NULL-Hervorhebung + Status-Kopfzeile, v0.27.0). Offen: **AP-45** (Spaltenkopf-Aktionen + Filter-Dropdown mit echten DISTINCT-Werten).
+Zuletzt erledigt: **AP-44** (Join-Builder kompakter + NULL/Status, v0.27.0), **AP-46** (Detailkarten folgen Join-Builder-Auswahl, v0.28.0). Offen: **AP-45** (Spaltenkopf-Aktionen + Filter-Dropdown mit echten DISTINCT-Werten).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach

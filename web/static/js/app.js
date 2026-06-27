@@ -761,6 +761,15 @@ async function runBuild(preserveIndex = false) {
       GRAPH_SEL.source = { table: body.start.table, column: body.start.column };
       GRAPH_SEL.target = { table: body.target.table, column: body.target.column };
       _updateGraphNodeMarkers();
+      // AP-46: a fresh build opens the field cards for start + target (the same
+      // cards a node double-click shows), so they appear even when the selection
+      // was made via the dropdowns rather than by clicking the graph.
+      if (!preserveIndex) {
+        if ($("uml_cards")) $("uml_cards").innerHTML = "";
+        showUmlCard(body.target.table);   // added last -> ends up on top
+        showUmlCard(body.start.table);
+        _updateUmlMarks();                // mark the chosen start/target columns
+      }
     }
     const prev = JB_PATH_IDX;
     JB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
@@ -795,6 +804,21 @@ async function runBuild(preserveIndex = false) {
 }
 
 // ===== UML card area (AP-1) =====
+// AP-46: the detail area below the graph is hidden while nothing is selected
+// (graph stays centered) and appears — pushing the graph up — once a table is
+// selected (via a node double-click OR via the join-builder start/target).
+function _updateUmlAreaVisibility() {
+  const area = $("uml_area");
+  if (!area) return;
+  const hasCards = $("uml_cards") && $("uml_cards").children.length > 0;
+  const hasSel = !!(GRAPH_SEL.source || GRAPH_SEL.target);
+  const next = (hasCards || hasSel) ? "block" : "none";
+  if (area.style.display !== next) {
+    area.style.display = next;
+    if (CY) CY.resize();   // graph height changed -> recompute the canvas/fit
+  }
+}
+
 function showUmlCard(tableName) {
   const t = tableByName(tableName);
   if (!t) return;
@@ -803,7 +827,7 @@ function showUmlCard(tableName) {
 
   // If card already exists, move it to the front
   let card = cards.querySelector(`.uml-card[data-table="${CSS.escape(tableName)}"]`);
-  if (card) { cards.insertBefore(card, cards.firstChild); return; }
+  if (card) { cards.insertBefore(card, cards.firstChild); _updateUmlAreaVisibility(); return; }
 
   card = document.createElement("div");
   card.className = "uml-card";
@@ -819,6 +843,7 @@ function showUmlCard(tableName) {
     row.addEventListener("click", () => selectColumn(row.dataset.table, row.dataset.col));
   });
   cards.insertBefore(card, cards.firstChild);
+  _updateUmlAreaVisibility();
 }
 
 function _updateUmlMarks() {
@@ -844,6 +869,7 @@ function _updateGraphNodeMarkers() {
   CY.nodes().removeClass("sel-source sel-target");
   if (GRAPH_SEL.source) CY.$id(GRAPH_SEL.source.table).addClass("sel-source");
   if (GRAPH_SEL.target) CY.$id(GRAPH_SEL.target.table).addClass("sel-target");
+  _updateUmlAreaVisibility();
 }
 
 function _updateStatusBar() {
@@ -910,6 +936,7 @@ function clearSelectionAndCards() {
   resetGraphSelection();
   clearGraphHighlights();   // join path + analyzer markers
   if ($("uml_cards")) $("uml_cards").innerHTML = "";  // close the cards below
+  _updateUmlAreaVisibility();   // nothing selected -> hide area, graph re-centers
 }
 
 // ===== Schema graph =====
@@ -923,6 +950,7 @@ async function drawGraph() {
   GRAPH_SEL = { source: null, target: null };
   if ($("uml_cards")) $("uml_cards").innerHTML = "";
   if ($("uml_status")) $("uml_status").textContent = "";
+  _updateUmlAreaVisibility();   // freshly drawn graph starts centered (area hidden)
 
   const elements = [
     ...g.nodes.map((n) => ({ data: { id: n.id } })),

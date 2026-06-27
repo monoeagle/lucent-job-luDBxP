@@ -91,6 +91,7 @@ body {
 
 /* --- UML card area (interactive join-path selection, below graph) --- */
 #uml_area {
+  display: none;   /* AP-46: hidden until a table is selected (graph stays centered) */
   flex: 0 0 auto; max-height: 40%; overflow-y: auto;
   border-top: 1px solid #ccc; background: #fafafa;
 }

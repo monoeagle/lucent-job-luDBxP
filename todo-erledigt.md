@@ -4,6 +4,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-46 — Detailkarten folgen der Join-Builder-Auswahl (v0.28.0)
+- [x] `#uml_area` initial versteckt (CSS `display:none`) → Graph zentriert wenn nichts gewählt
+- [x] `_updateUmlAreaVisibility()`: zeigt Area bei Auswahl/Karten, sonst versteckt; CY.resize() bei Sichtbarkeitswechsel
+- [x] Frischer Build öffnet Start+Ziel-Karten (auch bei Dropdown-Auswahl, nicht nur Graph-Doppelklick) + markiert Spalten (`_updateUmlMarks`)
+- [x] Verdrahtet in showUmlCard/_updateGraphNodeMarkers/clearSelectionAndCards/drawGraph
+- [x] Playwright-verifiziert (leer=versteckt, Build=2 Karten Cluster/OperatingSystem + markierte Spalten, Reset=versteckt)
+
 ## AP-44 — Join-Builder kompakter + Ergebnis-Hilfen (v0.27.0)
 - [x] Zwei Button-Zeilen → eine (`.jb-controls`); 1-N-Info als absolute Kachel oben rechts (keine eigene Zeile); engere Row-Abstände + kompakteres SQL-Feld → mehr Tabellenhöhe
 - [x] NULL-Zellen hervorgehoben (`.null-cell`) — Outer-Join-/Waisen-Zeilen sofort sichtbar

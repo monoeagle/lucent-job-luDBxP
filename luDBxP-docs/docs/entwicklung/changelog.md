@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.28.0] — 2026-06-27
+### Geändert
+- **AP-46 — Detailkarten folgen der Join-Builder-Auswahl:** Solange **nichts ausgewählt**
+  ist, bleibt der Schema-Graph **zentriert** (der Detailbereich darunter ist ausgeblendet).
+  Sobald Start/Ziel gesetzt sind — **auch wenn über die Dropdowns statt per Graph-Klick** —
+  rückt der Graph nach oben und darunter erscheinen die **Tabellen-Detailkarten** für Start
+  und Ziel (mit markierten Spalten), wie sonst beim Doppelklick auf einen Knoten. „Auswahl
+  zurücksetzen" blendet den Bereich wieder aus. 195 Tests grün, 1 skipped.
+
 ## [0.27.0] — 2026-06-27
 ### Geändert
 - **AP-44 — Join-Builder kompakter + Ergebnis-Hilfen:** Der obere Bereich ist gestrafft —

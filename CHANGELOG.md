@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.28.0] — 2026-06-27
+### Changed
+- **AP-46 — Detail cards follow the join-builder selection:** while **nothing is selected**,
+  the schema graph stays **centered** (the detail area below is hidden). Once start/target are
+  set — **even via the dropdowns instead of clicking the graph** — the graph moves up and the
+  **table detail cards** for start and target appear below it (with the chosen columns marked),
+  just like double-clicking a node. "Reset selection" hides the area again. 195 tests green, 1 skipped.
+
 ## [0.27.0] — 2026-06-27
 ### Changed
 - **AP-44 — Join-builder more compact + result helpers:** the top area is tightened — the two
