@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.1] — 2026-06-27
+### Behoben
+- **Graph bleibt beim Aufklappen der Detailkarten zentriert:** Erscheint unten der
+  Detailbereich (Start/Ziel-Karten), rückt der Graph nach oben und wird in seinem
+  kleineren Bereich **zentriert** — bei **gleichem Zoom** (`CY.center()` statt zu fitten),
+  ohne Überlauf in den Kartenbereich. Beim Ausblenden zentriert er sich wieder im vollen Panel.
+
 ## [0.28.0] — 2026-06-27
 ### Geändert
 - **AP-46 — Detailkarten folgen der Join-Builder-Auswahl:** Solange **nichts ausgewählt**

@@ -815,7 +815,12 @@ function _updateUmlAreaVisibility() {
   const next = (hasCards || hasSel) ? "block" : "none";
   if (area.style.display !== next) {
     area.style.display = next;
-    if (CY) CY.resize();   // graph height changed -> recompute the canvas/fit
+    // Graph height changed: recompute the canvas and re-center at the SAME zoom
+    // so the graph slides up/down and stays centered in its area (no zoom jump).
+    if (CY) requestAnimationFrame(() => {
+      CY.resize();
+      CY.center();
+    });
   }
 }
 

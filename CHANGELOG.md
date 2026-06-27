@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.1] — 2026-06-27
+### Fixed
+- **Graph stays centered when the detail cards expand:** when the detail area (start/target
+  cards) appears below, the graph slides up and is **centered** in its smaller area at the
+  **same zoom** (`CY.center()` instead of refitting), without overflowing into the cards.
+  When the area hides, it re-centers in the full panel.
+
 ## [0.28.0] — 2026-06-27
 ### Changed
 - **AP-46 — Detail cards follow the join-builder selection:** while **nothing is selected**,

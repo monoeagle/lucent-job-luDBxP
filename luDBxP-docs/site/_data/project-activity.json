@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T14:02:40",
+  "generatedAt": "2026-06-27T14:09:29",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 48,
+      "commits": 49,
       "kinds": {
-        "feat": 9,
+        "feat": 10,
         "other": 23,
         "fix": 2,
         "docs": 14
       },
       "list": [
+        {
+          "sha": "19a1db1",
+          "subject": "feat: AP-46 Detailkarten folgen der Join-Builder-Auswahl (Graph zentriert wenn leer) — v0.28.0",
+          "kind": "feat"
+        },
         {
           "sha": "d24ef6f",
           "subject": "feat: AP-44 Join-Builder kompakter + Ergebnis-Hilfen (NULL-Highlight, Status-Kopfzeile) — v0.27.0",
@@ -811,7 +816,7 @@
     }
   },
   "stats": {
-    "totalCommits": 153,
+    "totalCommits": 154,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -821,7 +826,7 @@
       },
       {
         "kind": "feat",
-        "count": 39
+        "count": 40
       },
       {
         "kind": "other",
