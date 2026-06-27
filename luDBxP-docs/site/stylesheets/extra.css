@@ -1779,18 +1779,19 @@ body:has(.adb-home-layout) .md-content {
    nimmt nur so viel Breite wie ihr Inhalt braucht (gedeckelt), scrollt vertikal. */
 .adb-home-arch__band.adb-ap-match {
   flex: 0 0 auto;
-  max-width: 42%;
+  width: 210px;          /* schmal: nur Lookup-Spalte, Text bricht um */
+  max-width: 210px;
   overflow: auto;
   align-items: stretch;
   justify-content: flex-start;
-  padding: 0 0 0 16px;
+  padding: 0 0 0 12px;
 }
 .adb-ap-match-table {
   border-collapse: collapse;
-  font-size: 0.74rem;
-  line-height: 1.25;
-  width: max-content;
-  max-width: 100%;
+  font-size: 9px;        /* = Insights-Text (.adb-act-stats-grid span) */
+  line-height: 1.2;
+  width: 100%;
+  table-layout: fixed;   /* feste Breite → Beschreibung bricht um statt zu spreizen */
 }
 .adb-ap-match-table thead th {
   position: sticky;
@@ -1798,16 +1799,18 @@ body:has(.adb-home-layout) .md-content {
   background: #1A1A2E;
   color: #fff;
   text-align: left;
-  padding: 5px 8px;
-  font-size: 0.78rem;
+  padding: 3px 6px;
+  font-size: 10px;
 }
 .adb-ap-match-table td {
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   vertical-align: top;
+  overflow-wrap: anywhere;
 }
 .adb-ap-match-table td:first-child {
   white-space: nowrap;
+  width: 38px;
   font-weight: 600;
   color: #2E6FAE;
 }
@@ -1815,8 +1818,8 @@ body:has(.adb-home-layout) .md-content {
   background: #eef2f7;
   font-weight: 700;
   color: #444;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 [data-md-color-scheme="slate"] .adb-ap-match-table td {
   border-bottom-color: rgba(255, 255, 255, 0.1);
