@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T16:13:49",
+  "generatedAt": "2026-06-27T16:32:11",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 58,
+      "commits": 59,
       "kinds": {
-        "feat": 14,
+        "feat": 15,
         "docs": 17,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "cb829b8",
+          "subject": "feat: AP-45 Feinschliff — Filter sofort wirksam + DISTINCT-Race-Fix — v0.32.1",
+          "kind": "feat"
+        },
         {
           "sha": "c5cba4b",
           "subject": "feat: AP-45 Ergebnis-Hilfen Teil 2 — Spaltenkopf-Aktionen + DISTINCT-Filterwerte — v0.32.0",
@@ -861,7 +866,7 @@
     }
   },
   "stats": {
-    "totalCommits": 163,
+    "totalCommits": 164,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -871,7 +876,7 @@
       },
       {
         "kind": "feat",
-        "count": 44
+        "count": 45
       },
       {
         "kind": "other",
