@@ -1,18 +1,23 @@
 {
-  "generatedAt": "2026-06-27T11:28:53",
+  "generatedAt": "2026-06-27T11:39:17",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 36,
+      "commits": 37,
       "kinds": {
-        "feat": 2,
+        "feat": 3,
         "docs": 13,
         "other": 21
       },
       "list": [
+        {
+          "sha": "1cd9533",
+          "subject": "feat: AP-38 kopierbares lauffähiges SQL — Filterwerte als Literale eingesetzt (sql_inline) — v0.21.0",
+          "kind": "feat"
+        },
         {
           "sha": "c18318d",
           "subject": "feat: AP-37 Start⇄Ziel-Tausch-Knopf + Fan-out-Doku Beispiel 3 (verkürzen oder filtern) — v0.20.0",
@@ -750,7 +755,7 @@
     }
   },
   "stats": {
-    "totalCommits": 141,
+    "totalCommits": 142,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -760,7 +765,7 @@
       },
       {
         "kind": "feat",
-        "count": 32
+        "count": 33
       },
       {
         "kind": "other",
