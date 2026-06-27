@@ -1745,7 +1745,7 @@ body:has(.adb-home-layout) .md-content {
   min-height: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;   /* Board linksbündig statt zentriert */
 }
 .adb-home-arch--split .adb-home-arch__main img {
   max-width: 100%;
@@ -1775,56 +1775,68 @@ body:has(.adb-home-layout) .md-content {
   object-fit: contain;
 }
 
-/* AP-Matching als schmales rechtes Band: eine "normale" Tabelle statt Bild,
-   nimmt nur so viel Breite wie ihr Inhalt braucht (gedeckelt), scrollt vertikal. */
+/* AP-Matching als rechtes Band: "normale" Lookup-Liste, 2-spaltig (CSS-Columns),
+   nimmt nur so viel Breite wie nötig, scrollt vertikal. */
 .adb-home-arch__band.adb-ap-match {
   flex: 0 0 auto;
-  width: 210px;          /* schmal: nur Lookup-Spalte, Text bricht um */
-  max-width: 210px;
+  width: 360px;
+  max-width: 360px;
   overflow: auto;
   align-items: stretch;
   justify-content: flex-start;
   padding: 0 0 0 12px;
+  flex-direction: column;
 }
-.adb-ap-match-table {
-  border-collapse: collapse;
-  font-size: 9px;        /* = Insights-Text (.adb-act-stats-grid span) */
-  line-height: 1.2;
-  width: 100%;
-  table-layout: fixed;   /* feste Breite → Beschreibung bricht um statt zu spreizen */
-}
-.adb-ap-match-table thead th {
+.adb-ap-match-title {
   position: sticky;
   top: 0;
+  z-index: 1;
   background: #1A1A2E;
   color: #fff;
-  text-align: left;
-  padding: 3px 6px;
-  font-size: 10px;
-}
-.adb-ap-match-table td {
-  padding: 1px 6px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  vertical-align: top;
-  overflow-wrap: anywhere;
-}
-.adb-ap-match-table td:first-child {
-  white-space: nowrap;
-  width: 38px;
+  padding: 3px 8px;
+  font-size: 11px;
   font-weight: 600;
-  color: #2E6FAE;
 }
-.adb-ap-match-table tr.grp td {
+.adb-ap-match-grid {
+  column-count: 2;
+  column-gap: 14px;
+  font-size: 10.5px;     /* etwas größer als die 9px-Variante */
+  line-height: 1.25;
+  padding-top: 2px;
+}
+.adb-ap-match-grid .grp,
+.adb-ap-match-grid .row {
+  break-inside: avoid;
+}
+.adb-ap-match-grid .grp {
+  break-after: avoid;
   background: #eef2f7;
   font-weight: 700;
   color: #444;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  padding: 2px 6px;
+  margin-top: 3px;
 }
-[data-md-color-scheme="slate"] .adb-ap-match-table td {
+.adb-ap-match-grid .row {
+  padding: 1px 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  overflow-wrap: anywhere;
+}
+.adb-ap-match-grid .row b {
+  color: #2E6FAE;
+  font-weight: 600;
+}
+.adb-ap-match-grid .row.struck {
+  color: #999;
+  text-decoration: line-through;
+  text-decoration-color: #bbb;
+}
+.adb-ap-match-grid .row.struck b {
+  color: #999;
+}
+[data-md-color-scheme="slate"] .adb-ap-match-grid .row {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
-[data-md-color-scheme="slate"] .adb-ap-match-table tr.grp td {
+[data-md-color-scheme="slate"] .adb-ap-match-grid .grp {
   background: #232838;
   color: #ccc;
 }
