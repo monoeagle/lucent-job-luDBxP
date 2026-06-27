@@ -1,19 +1,29 @@
 {
-  "generatedAt": "2026-06-27T13:30:44",
+  "generatedAt": "2026-06-27T13:48:23",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 45,
+      "commits": 47,
       "kinds": {
-        "feat": 7,
-        "other": 22,
+        "other": 23,
+        "feat": 8,
         "fix": 2,
         "docs": 14
       },
       "list": [
+        {
+          "sha": "92a3e7e",
+          "subject": "data: viele weitere Waisen-Zeilen in die Demo-CMDB (Outer Joins überall sichtbar)",
+          "kind": "other"
+        },
+        {
+          "sha": "d2b3cb4",
+          "subject": "feat: AP-43 lesbares mehrzeiliges SQL-Layout (eine Spalte/JOIN/ON pro Zeile, = ausgerichtet, ; am Copy) — v0.26.0",
+          "kind": "feat"
+        },
         {
           "sha": "7e146a9",
           "subject": "feat: AP-42 Join-Builder-Politur — Fan-out-Kachel statt verbose Warntext, SQL-Umbruch ohne H-Scroll — v0.25.0",
@@ -796,7 +806,7 @@
     }
   },
   "stats": {
-    "totalCommits": 150,
+    "totalCommits": 152,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -806,11 +816,11 @@
       },
       {
         "kind": "feat",
-        "count": 37
+        "count": 38
       },
       {
         "kind": "other",
-        "count": 30
+        "count": 31
       },
       {
         "kind": "fix",

@@ -149,8 +149,9 @@ body {
 .joinbuilder {
   --jb-ctrl-w: 150px;   /* gemeinsame Breite aller Dropdowns/Eingaben */
   --jb-ctrl-h: 30px;    /* gemeinsame Höhe aller Steuerelemente/Buttons */
+  position: relative;   /* AP-44: anchor for the top-right fan-out tile */
 }
-.joinbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .4rem 0; }
+.joinbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .25rem 0; }
 .joinbuilder label { min-width: 3rem; }
 .filter-row, .orderby-row, .col-row {
   display: flex; gap: .4rem; align-items: center; margin: .3rem 0;
@@ -199,7 +200,7 @@ body {
 /* Soft-wrap long lines so the SQL box never scrolls horizontally. pre-wrap keeps
    the real newlines + indentation, so copy/paste yields the original statement
    (the wrapping is visual only); overflow-wrap breaks over-long quoted tokens. */
-.sql_out { background: #1A1A2E; color: #eaeaea; padding: 1rem;
+.sql_out { background: #1A1A2E; color: #eaeaea; padding: .55rem .7rem;
   white-space: pre-wrap; overflow-wrap: anywhere; border-radius: 4px; margin: 0; }
 /* AP-20: copy icon in the SELECT's top-right corner */
 /* Spacing lives on the wrapper so the <pre>'s top edge == the box edge —
@@ -249,11 +250,17 @@ body {
   border-radius: 3px; }
 .viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
-/* Compact fan-out hint tile (replaces the verbose per-branch warning text). */
+/* Compact fan-out hint tile — pinned top-right of the join-builder (AP-44),
+   so it no longer consumes a full row above the path list. */
 .jb-fanout-hint:empty { display: none; }
-.jb-fanout-hint { display: inline-flex; align-items: center; gap: 5px;
+.jb-fanout-hint { position: absolute; top: 2px; right: 2px; z-index: 4;
+  display: inline-flex; align-items: center; gap: 5px;
   background: #fff8ec; border: 1px solid #f0d9a8; color: #8a5300;
-  font-size: 0.78rem; padding: 2px 8px; border-radius: 4px; margin: 2px 0 6px; }
+  font-size: 0.74rem; padding: 1px 7px; border-radius: 4px; }
+/* Outer-join NULL cells stand out so orphan rows are obvious. */
+.null-cell { background: #fdf6e3; }
+.null-cell i { color: #b08900; font-style: italic; }
+.info-fanout { color: #9a6700; font-weight: 600; }
 /* Per-join direction chip in the path list: green N-1 (safe) / amber 1-N (fan-out). */
 .step-dir { font-size: .68rem; font-weight: 700; padding: 0 .3rem; border-radius: 3px;
   vertical-align: 1px; white-space: nowrap; }

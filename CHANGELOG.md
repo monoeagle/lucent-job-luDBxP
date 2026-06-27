@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.27.0] — 2026-06-27
+### Changed
+- **AP-44 — Join-builder more compact + result helpers:** the top area is tightened — the two
+  button rows are now **one** row, the 1-N hint sits as a **small tile top-right** (no longer a
+  full row), tighter spacing + a more compact SQL box → **more room for the result table**.
+- **Result helpers:** **NULL cells** (outer-join / orphan rows) are highlighted; the status line
+  now shows **rows · join type · fan-out** (e.g. "8 Zeilen · LEFT · ⚠ 1-N"). 195 tests green, 1 skipped.
+
 ## [0.26.0] — 2026-06-27
 ### Changed
 - **AP-43 — Readable SQL layout:** generated SQL is now **multi-line formatted** — one column

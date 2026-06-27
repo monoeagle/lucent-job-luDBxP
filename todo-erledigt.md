@@ -4,6 +4,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-44 — Join-Builder kompakter + Ergebnis-Hilfen (v0.27.0)
+- [x] Zwei Button-Zeilen → eine (`.jb-controls`); 1-N-Info als absolute Kachel oben rechts (keine eigene Zeile); engere Row-Abstände + kompakteres SQL-Feld → mehr Tabellenhöhe
+- [x] NULL-Zellen hervorgehoben (`.null-cell`) — Outer-Join-/Waisen-Zeilen sofort sichtbar
+- [x] Statuszeile: Zeilen · Join-Typ · Fan-out (z. B. „8 Zeilen · LEFT · ⚠ 1-N")
+- [x] Playwright-verifiziert (eine Steuer-Zeile, Kachel absolut top-right, 2 NULL-Zellen, Info-Text)
+- [ ] Folge-Scheibe **AP-45**: Spaltenkopf-Aktionen (Sort/Filter/Spalte entfernen) + Filter-Dropdown mit echten DISTINCT-Werten (neues read-only Endpoint)
+
 ## AP-43 — Lesbares mehrzeiliges SQL-Layout (v0.26.0)
 - [x] `core/sqlgen.py`: eine Spalte/Zeile, jeder JOIN eigene Zeile mit `ON`/`AND` darunter, `=` ausgerichtet (Composite-Keys via ljust-Padding)
 - [x] WHERE mehrzeilig (`WHERE …` / `  AND …`); ORDER BY/LIMIT unverändert

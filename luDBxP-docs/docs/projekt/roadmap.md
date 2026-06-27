@@ -70,6 +70,7 @@ Doku/AppImage/Projektposter.
 - **AP-41** — Join-Typ pro Schritt (INNER/LEFT/RIGHT/FULL) im Join-Builder; `join_types` in sqlgen/API; Fix Start/Ziel-Einfärbung (grün/rot) passend zur Legende — v0.24.0
 - **AP-42** — Join-Builder-Politur: verbose Fan-out-Warntext raus → kompakte 1-N-Kachel; SQL-Fenster bricht um statt H-Scroll (Copy/Paste bleibt lauffähig); Ziel-Knoten amber statt rot — v0.24.1–v0.25.0
 - **AP-43** — Lesbares SQL-Layout: mehrzeilig (eine Spalte/JOIN/ON-Bedingung pro Zeile, `=` ausgerichtet bei Composite-Keys), Copy endet mit `;` — v0.26.0
+- **AP-44** — Join-Builder kompakter (Button-Zeilen zusammengelegt, 1-N-Kachel oben rechts, mehr Tabellenhöhe) + Ergebnis-Hilfen: NULL-Hervorhebung, Statuszeile Zeilen·Join-Typ·Fan-out — v0.27.0
 - **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
 - **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
 

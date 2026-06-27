@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.27.0] — 2026-06-27
+### Geändert
+- **AP-44 — Join-Builder kompakter + Ergebnis-Hilfen:** Der obere Bereich ist gestrafft —
+  die beiden Button-Zeilen (`Filter+/Sortierung+/Spalten+` und `DISTINCT/LIMIT/Dialekt/Bauen`)
+  sind **eine** Zeile, die 1-N-Info sitzt als **kleine Kachel oben rechts** (keine eigene Zeile),
+  engere Abstände + kompakteres SQL-Feld → **mehr Platz für die Ergebnistabelle**.
+- **Ergebnis-Hilfen:** **NULL-Zellen** (Outer-Join-/Waisen-Zeilen) werden hervorgehoben;
+  die Statuszeile zeigt jetzt **Zeilen · Join-Typ · Fan-out** (z. B. „8 Zeilen · LEFT · ⚠ 1-N").
+  195 Tests grün, 1 skipped.
+
 ## [0.26.0] — 2026-06-27
 ### Geändert
 - **AP-43 — Lesbares SQL-Layout:** Das generierte SQL ist jetzt **mehrzeilig formatiert** —

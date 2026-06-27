@@ -288,11 +288,10 @@ function openJoinBuilder() {
     `<div class="filters" id="filters"></div>` +
     `<div class="filters" id="order_bys"></div>` +
     `<div class="filters" id="extra_cols"></div>` +
-    `<div class="row jb-actions">` +
+    `<div class="row jb-controls">` +
     `<button id="btn_add_filter" title="Filterbedingung (mit UND verknüpft)">Filter +</button>` +
     `<button id="btn_add_orderby" title="Sortierungsspalte hinzufügen">Sortierung +</button>` +
-    `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Spalten +</button></div>` +
-    `<div class="row jb-options">` +
+    `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Spalten +</button>` +
     `<label class="jb-check"><input type="checkbox" id="jb_distinct"> DISTINCT</label>` +
     `<label class="jb-limit">LIMIT <input id="jb_limit" type="number" min="1" placeholder="–"></label>` +
     `<label class="jb-dialect" title="SQL-Dialekt der generierten Abfrage">Dialekt ` +
@@ -303,8 +302,8 @@ function openJoinBuilder() {
     `<option value="mssql">MSSQL</option>` +
     `<option value="oracle">Oracle</option></select></label>` +
     `<button id="btn_build">Join-Pfad bauen</button></div>` +
-    `<ul class="path_list" id="path_list"></ul>` +
     `<div class="jb-fanout-hint" id="jb_fanout_hint"></div>` +
+    `<ul class="path_list" id="path_list"></ul>` +
     `<div class="row jb-join-types" id="jb_join_types"></div>` +
     `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
     `title="SELECT in die Zwischenablage kopieren" aria-label="SELECT kopieren">` +
@@ -698,17 +697,29 @@ async function renderJoinResult(i) {
     }
     const thead = res.columns.map((c) => `<th>${esc(c)}</th>`).join("");
     const tbody = res.rows.map((r) =>
-      "<tr>" + r.map((v) =>
-        `<td>${v === null ? "<i>NULL</i>" : esc(v)}</td>`).join("") + "</tr>"
+      "<tr>" + r.map((v) => v === null
+        ? `<td class="null-cell"><i>NULL</i></td>`   // AP-44: orphan/outer-join cells stand out
+        : `<td>${esc(v)}</td>`).join("") + "</tr>"
     ).join("");
     resultEl.innerHTML =
       `<table class="cols"><thead><tr>${thead}</tr></thead>` +
       `<tbody>${tbody}</tbody></table>`;
     if (info) {
+      // AP-44: richer status line — rows · join-type · fan-out flag.
       const cap = res.row_cap || res.rows.length;
-      info.textContent = res.rows.length >= cap
-        ? `${res.rows.length} Zeilen (begrenzt auf ${cap})`
-        : `${res.rows.length} Zeilen`;
+      const steps = JB_LAST.paths[i].steps || [];
+      const types = steps.map((s, k) => (JB_JOIN_TYPES[k] || "INNER").toUpperCase());
+      const uniq = [...new Set(types)];
+      const typeLabel = uniq.length === 0 ? "" : uniq.length === 1 ? uniq[0] : "gemischt";
+      const fanout = steps.some((s) => s.to_many);
+      const parts = [
+        res.rows.length >= cap
+          ? `${res.rows.length} Zeilen (begrenzt auf ${cap})`
+          : `${res.rows.length} Zeilen`,
+      ];
+      if (typeLabel) parts.push(typeLabel);
+      info.innerHTML = esc(parts.join(" · ")) +
+        (fanout ? ` · <span class="info-fanout">⚠ 1-N</span>` : "");
     }
   } catch (e) {
     resultEl.innerHTML = `<p class='hint'>Fehler: ${esc(e.message)}</p>`;
