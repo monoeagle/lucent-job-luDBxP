@@ -227,6 +227,11 @@ body {
 .viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
 .path-warn { color: #b26a00; font-size: 0.85em; margin: 2px 0 6px 1em; }
+/* Per-join direction chip in the path list: green N-1 (safe) / amber 1-N (fan-out). */
+.step-dir { font-size: .68rem; font-weight: 700; padding: 0 .3rem; border-radius: 3px;
+  vertical-align: 1px; white-space: nowrap; }
+.step-dir.one  { background: #e3f4e8; color: #1e7e34; }
+.step-dir.many { background: #fbeccf; color: #9a6700; }
 
 /* --- SQL-Analyzer (AP-25) --- */
 .an-warn { padding: 4px 8px; margin: 3px 0; border-radius: 3px; font-size: 0.9em; }

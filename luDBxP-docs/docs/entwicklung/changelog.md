@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.19.0] — 2026-06-27
+### Hinzugefügt
+- **AP-36 — Fan-out-Richtung pro Join sichtbar:** Jeder Join-Schritt eines Pfads
+  trägt jetzt einen **Richtungs-Chip** — grün `N-1` (aufsteigend, sicher) oder
+  gelb `1-N` (absteigend, kann Zeilen vervielfachen) — sowohl in der **Pfad-Liste**
+  als auch als **Label an der hervorgehobenen Kante** im Schema-Graph. Macht
+  sichtbar, dass ein Pfad eine *Mischung* aus N-1- und 1-N-Schritten ist, statt
+  „alles 1-N". `/api/joinpath` liefert dafür pro Pfad ein neues `steps`-Feld
+  (`left`/`right`/`to_many`); die bestehende `.path-warn`-Box bleibt. 172 Tests grün, 1 skipped.
+- **Doku:** Neue Referenzseite **Fan-out-Warnung (1-N)** mit durchgerechneten
+  Beispielen, inkl. Abschnitt „Warum beide Richtungen warnen — und eines trotzdem N-1 ist".
+
 ## [0.18.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-25 — Read-only SQL-Statement-Analyzer:** Neuer **SQL-Analyzer**-Tab; Statement

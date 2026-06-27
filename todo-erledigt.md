@@ -4,6 +4,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-36 — Fan-out-Richtung pro Join sichtbar (v0.19.0)
+- [x] `/api/joinpath` liefert pro Pfad ein `steps`-Feld (`left`/`right`/`to_many`)
+- [x] Pfad-Liste: Richtungs-Chip pro Join — grün `N-1` (sicher) / gelb `1-N` (Fan-out)
+- [x] Schema-Graph: hervorgehobene Kanten tragen Richtungs-Label (`N-1`/`1-N`) + Farbe
+- [x] Referenzseite „Fan-out-Warnung (1-N)" mit durchgerechneten Beispielen + Abschnitt „Warum beide Richtungen warnen"
+- [x] Test `test_joinpath_steps_carry_direction`; Playwright-verifiziert (Chips + CY-Kantenlabels)
+
 ## AP-E01 — Core-Domänenmodell
 - [x] `core/model.py`: Schema, Table, Column, ForeignKey, View — typisiertes Domänenmodell
 

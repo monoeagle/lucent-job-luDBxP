@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.18.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.19.0">
       
       
         <meta name="author" content="LucentTools">
@@ -602,6 +602,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#warum-beide-richtungen-warnen-und-eines-trotzdem-n-1-ist" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Warum beide Richtungen warnen — und eines trotzdem N-1 ist
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#was-tun" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -979,6 +990,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#warum-beide-richtungen-warnen-und-eines-trotzdem-n-1-ist" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Warum beide Richtungen warnen — und eines trotzdem N-1 ist
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#was-tun" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1213,6 +1235,53 @@ jedem Kandidatenpfad eine ⚠-Zeile zu sehen. Das ist <strong>erwartetes Verhalt
 kein Defekt: Sterntopologien erzeugen fast zwangsläufig Fan-out, sobald man
 zwei Spokes über ihren gemeinsamen Hub verbindet.</p>
 <hr />
+<h2 id="warum-beide-richtungen-warnen-und-eines-trotzdem-n-1-ist">Warum beide Richtungen warnen — und eines trotzdem N-1 ist<a class="headerlink" href="#warum-beide-richtungen-warnen-und-eines-trotzdem-n-1-ist" title="Permanent link">&para;</a></h2>
+<p>Ein häufiger Stolperstein: Man wählt <strong>Start Datastore → Ziel Host</strong>, sieht eine
+Warnung, dreht auf <strong>Start Host → Ziel Datastore</strong> um — und es warnt <em>immer noch</em>.
+Müsste beim Umdrehen nicht eine der beiden Richtungen N-1 (sicher) werden?</p>
+<p><strong>Antwort: Eines <em>ist</em> N-1 — in jedem Pfad.</strong> Es wird nur nicht beschriftet,
+weil die Warnung ausschließlich den riskanten, absteigenden Schritt markiert.
+Der kürzeste Pfad zwischen den beiden lautet in beiden Richtungen
+<code>… → Cluster → …</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Richtung</th>
+<th>Schritt 1</th>
+<th>Schritt 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Datastore → Host</td>
+<td><code>Datastore → Cluster</code> = <strong>N-1</strong> (sicher)</td>
+<td><code>Cluster → Host</code> = <strong>1-N</strong> ⚠</td>
+</tr>
+<tr>
+<td>Host → Datastore</td>
+<td><code>Host → Cluster</code> = <strong>N-1</strong> (sicher)</td>
+<td><code>Cluster → Datastore</code> = <strong>1-N</strong> ⚠</td>
+</tr>
+</tbody>
+</table>
+<p>In <strong>jedem</strong> Pfad ist also genau ein Schritt aufsteigend (N-1) und einer
+absteigend (1-N). Es ist <strong>nicht</strong> „alles 1-N" — der N-1-Teil schweigt nur,
+weil er ungefährlich ist.</p>
+<p>Dass in <em>beiden</em> Richtungen eine Warnung erscheint, liegt daran, dass
+<code>Datastore</code> und <code>Host</code> <strong>Geschwister</strong> unter dem gemeinsamen Hub <code>Cluster</code> sind
+(beide halten einen FK auf <code>Cluster</code>, keiner auf den anderen). Um zwei
+Geschwister zu verbinden, muss man <strong>immer</strong> zum Hub hoch (N-1, sicher) und dann
+ins andere Geschwister hinab (1-N, Fan-out). Beim Umdrehen <strong>wandert</strong> die
+Warnung deshalb nur auf die andere Tabelle — sie verschwindet nicht.</p>
+<blockquote>
+<p><strong>Wann das Umdrehen die Warnung <em>wegnimmt</em>:</strong> nur bei einer direkten
+Eltern-Kind-Kante ohne Hub dazwischen. <code>Host → Cluster</code> (Ziel = Eltern) ist
+rein N-1 → keine Warnung; <code>Cluster → Host</code> (Ziel = Kind) ist 1-N → Warnung.
+Da kippt es sauber, weil kein gemeinsamer Hub im Spiel ist.</p>
+</blockquote>
+<p>Im Join-Builder ist diese Mischung direkt ablesbar: <strong>jeder Join trägt einen
+Richtungs-Chip</strong> — grün <code>N-1</code> (sicher) oder gelb <code>1-N</code> (Fan-out) — sowohl in
+der Pfad-Liste als auch als Label an der hervorgehobenen Kante im Schema-Graph.</p>
 <h2 id="was-tun">Was tun?<a class="headerlink" href="#was-tun" title="Permanent link">&para;</a></h2>
 <p>Die Warnung heißt <strong>nicht</strong> „falsches SQL", sondern „prüfe, ob die Zeilenzahl
 deiner Absicht entspricht". Je nach Ziel:</p>

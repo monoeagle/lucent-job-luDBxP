@@ -136,6 +136,42 @@ zwei Spokes über ihren gemeinsamen Hub verbindet.
 
 ---
 
+## Warum beide Richtungen warnen — und eines trotzdem N-1 ist
+
+Ein häufiger Stolperstein: Man wählt **Start Datastore → Ziel Host**, sieht eine
+Warnung, dreht auf **Start Host → Ziel Datastore** um — und es warnt *immer noch*.
+Müsste beim Umdrehen nicht eine der beiden Richtungen N-1 (sicher) werden?
+
+**Antwort: Eines *ist* N-1 — in jedem Pfad.** Es wird nur nicht beschriftet,
+weil die Warnung ausschließlich den riskanten, absteigenden Schritt markiert.
+Der kürzeste Pfad zwischen den beiden lautet in beiden Richtungen
+`… → Cluster → …`:
+
+| Richtung | Schritt 1 | Schritt 2 |
+|---|---|---|
+| Datastore → Host | `Datastore → Cluster` = **N-1** (sicher) | `Cluster → Host` = **1-N** ⚠ |
+| Host → Datastore | `Host → Cluster` = **N-1** (sicher) | `Cluster → Datastore` = **1-N** ⚠ |
+
+In **jedem** Pfad ist also genau ein Schritt aufsteigend (N-1) und einer
+absteigend (1-N). Es ist **nicht** „alles 1-N" — der N-1-Teil schweigt nur,
+weil er ungefährlich ist.
+
+Dass in *beiden* Richtungen eine Warnung erscheint, liegt daran, dass
+`Datastore` und `Host` **Geschwister** unter dem gemeinsamen Hub `Cluster` sind
+(beide halten einen FK auf `Cluster`, keiner auf den anderen). Um zwei
+Geschwister zu verbinden, muss man **immer** zum Hub hoch (N-1, sicher) und dann
+ins andere Geschwister hinab (1-N, Fan-out). Beim Umdrehen **wandert** die
+Warnung deshalb nur auf die andere Tabelle — sie verschwindet nicht.
+
+> **Wann das Umdrehen die Warnung *wegnimmt*:** nur bei einer direkten
+> Eltern-Kind-Kante ohne Hub dazwischen. `Host → Cluster` (Ziel = Eltern) ist
+> rein N-1 → keine Warnung; `Cluster → Host` (Ziel = Kind) ist 1-N → Warnung.
+> Da kippt es sauber, weil kein gemeinsamer Hub im Spiel ist.
+
+Im Join-Builder ist diese Mischung direkt ablesbar: **jeder Join trägt einen
+Richtungs-Chip** — grün `N-1` (sicher) oder gelb `1-N` (Fan-out) — sowohl in
+der Pfad-Liste als auch als Label an der hervorgehobenen Kante im Schema-Graph.
+
 ## Was tun?
 
 Die Warnung heißt **nicht** „falsches SQL", sondern „prüfe, ob die Zeilenzahl

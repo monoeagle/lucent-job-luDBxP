@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.18.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.19.0">
       
       
         <meta name="author" content="LucentTools">
@@ -981,6 +981,7 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-12</strong> (Abschluss) — MSSQL real getestet (ODBC 18 + Integrationstest) + UI-Felder Encrypt/Trust — v0.16.0</li>
 <li><strong>AP-30</strong> — N-1-Stern: Auto-Weaving der Select-/ORDER-BY-/Filter-Tabellen in den Join-Baum; stilles Verwerfen entfällt; 1-N-Äste lösen nicht-blockierende Fan-out-Warnung aus — v0.17.0</li>
 <li><strong>AP-25</strong> — SQL-Statement-Analyzer: neuer Tab parst via sqlglot (lokal, kein CDN), zeigt Typ/Tabellen/Warnungen (WRITE_STATEMENT/NO_WHERE/CARTESIAN_JOIN; mit Verbindung UNKNOWN_TABLE/UNKNOWN_COLUMN), markiert beteiligte Tabellen im Graphen; funktioniert mit und ohne Verbindung — v0.18.0</li>
+<li><strong>AP-36</strong> — Fan-out-Richtung pro Join sichtbar: jeder Join-Schritt trägt einen Richtungs-Chip (grün N-1 / gelb 1-N) in der Pfad-Liste <strong>und</strong> als Kantenlabel im Graph; <code>/api/joinpath</code> liefert ein <code>steps</code>-Feld; neue Referenzseite „Fan-out-Warnung (1-N)" — v0.19.0</li>
 <li><strong>AP-22</strong> — Implizite FKs: Default geklärt → bleibt <strong>opt-in</strong> (Entscheidung)</li>
 <li><strong>AP-24</strong> — Session-KPIs: erhoben &amp; dev-intern dokumentiert (<code>session-kennzahlen.md</code>) (Entscheidung)</li>
 </ul>

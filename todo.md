@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: AP-30 (N-1-Stern, v0.17.0), **AP-25** (SQL-Analyzer Scheibe 1, v0.18.0).
+Zuletzt erledigt: **AP-25** (SQL-Analyzer Scheibe 1, v0.18.0), **AP-36** (Fan-out-Richtung pro Join sichtbar, v0.19.0).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach

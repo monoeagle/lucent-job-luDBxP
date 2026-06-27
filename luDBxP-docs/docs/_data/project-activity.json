@@ -1,17 +1,22 @@
 {
-  "generatedAt": "2026-06-27T03:29:03",
+  "generatedAt": "2026-06-27T10:47:34",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 33,
+      "commits": 34,
       "kinds": {
-        "docs": 12,
+        "docs": 13,
         "other": 21
       },
       "list": [
+        {
+          "sha": "b09f1d6",
+          "subject": "docs: Referenz-Seite \"Fan-out-Warnung (1-N)\" mit durchgerechneten Beispielen + UC-1-Querverweis, Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "84878c7",
           "subject": "docs: Session-4-KPI-Zeile nachgetragen (Windows, v0.10.0→0.11.3) + Detailblock",
@@ -734,13 +739,13 @@
     }
   },
   "stats": {
-    "totalCommits": 138,
+    "totalCommits": 139,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 55
+        "count": 56
       },
       {
         "kind": "feat",
@@ -771,7 +776,7 @@
         "count": 1
       }
     ],
-    "testCount": 170
+    "testCount": 171
   },
   "phases": []
 }

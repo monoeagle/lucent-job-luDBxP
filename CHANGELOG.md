@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.19.0] — 2026-06-27
+### Added
+- **AP-36 — Per-join fan-out direction made visible:** every join step of a path now
+  carries a **direction chip** — green `N-1` (ascending, safe) or amber `1-N`
+  (descending, can multiply rows) — both in the **path list** and as a **label on the
+  highlighted edge** in the schema graph. Makes it obvious that a path is a *mix* of
+  N-1 and 1-N steps rather than "all descending". `/api/joinpath` now returns a per-path
+  `steps` field (`left`/`right`/`to_many`) for this; the existing `.path-warn` box stays.
+  172 tests green, 1 skipped.
+- **Docs:** new reference page **Fan-out warning (1-N)** with worked examples, including a
+  section explaining why both join directions warn while one step is still N-1.
+
 ## [0.18.0] — 2026-06-27
 ### Added
 - **AP-25 — Read-only SQL-Statement-Analyzer:** New **SQL Analyzer** tab lets users

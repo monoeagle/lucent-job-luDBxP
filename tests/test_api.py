@@ -532,6 +532,27 @@ def test_joinpath_descending_branch_warns(client, inventory_url):
     assert any("1-N" in w and "VirtualMachines" in w for w in p["warnings"])
 
 
+def test_joinpath_steps_carry_direction(client, inventory_url):
+    """Each join step exposes its direction (to_many) so the UI can label every
+    edge N-1 / 1-N — not only flag the descending ones via warnings."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VirtualMachines", "column": "VMID"},
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert p["steps"]
+    # one entry per edge, identical order/orientation
+    assert len(p["steps"]) == len(p["edges"])
+    for s, e in zip(p["steps"], p["edges"]):
+        assert [s["left"], s["right"]] == e
+        assert isinstance(s["to_many"], bool)
+    # descending into VirtualMachines → that step is to_many
+    assert any(s["to_many"] and s["right"] == "VirtualMachines" for s in p["steps"])
+
+
 def test_joinpath_ascending_star_has_no_warning(client, inventory_url):
     """AP-30: a pure N-1 star (all branches ascend) carries no fan-out warning."""
     resp = client.post("/api/joinpath", json={

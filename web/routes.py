@@ -384,6 +384,13 @@ def api_joinpath():
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],
+                # Per-step direction so the UI can label every join N-1 / 1-N,
+                # not only flag the descending (to_many) ones via warnings.
+                "steps": [
+                    {"left": s.left_table, "right": s.right_table,
+                     "to_many": s.to_many}
+                    for s in p.steps
+                ],
                 "sql": gen.sql,
                 "params": gen.params,
                 "warnings": _path_warnings(p),

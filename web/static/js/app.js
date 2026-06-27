@@ -594,7 +594,7 @@ async function renderJoinResult(i) {
   if (!JB_LAST || !JB_LAST.paths[i]) return;
   JB_PATH_IDX = i;
   $("sql_out").textContent = JB_LAST.paths[i].sql;
-  highlightPath(JB_LAST.paths[i].edges || []);
+  highlightPath(JB_LAST.paths[i].steps || JB_LAST.paths[i].edges || []);
   const resultEl = $("join_result");
   if (!resultEl) return;
   resultEl.innerHTML = "<p class='hint'>lädt…</p>";
@@ -627,6 +627,24 @@ async function renderJoinResult(i) {
   }
 }
 
+// Render a join path as a table sequence with a direction chip on every join:
+// green "N-1" (ascending, safe) or amber "1-N" (descending, can fan out). Makes
+// it obvious that a path is a *mix*, not "all descending". Falls back to a plain
+// arrow sequence if the API didn't send per-step directions.
+function renderPathSeq(p) {
+  if (!p.steps || !p.steps.length) return p.tables.map(esc).join(" → ");
+  let html = esc(p.steps[0].left);
+  for (const s of p.steps) {
+    const cls = s.to_many ? "step-dir many" : "step-dir one";
+    const lbl = s.to_many ? "1-N" : "N-1";
+    const tip = s.to_many
+      ? "1-N (absteigend) — kann Zeilen vervielfachen"
+      : "N-1 (aufsteigend) — sicher";
+    html += ` <span class="${cls}" title="${tip}">${lbl}</span> ${esc(s.right)}`;
+  }
+  return html;
+}
+
 // Build join paths from the current form. `preserveIndex` keeps the selected
 // path (used by "Aktualisieren" after a sort/column change); a fresh build
 // from "Join-Pfad bauen" resets to the first path.
@@ -642,7 +660,7 @@ async function runBuild(preserveIndex = false) {
       const warn = (p.warnings && p.warnings.length)
         ? `<div class="path-warn">⚠ ${p.warnings.map(esc).join(" ")}</div>`
         : "";
-      return `<li><a href="#" data-i="${i}">${p.tables.map(esc).join(" → ")}</a>${warn}</li>`;
+      return `<li><a href="#" data-i="${i}">${renderPathSeq(p)}</a>${warn}</li>`;
     }).join("");
     list.querySelectorAll("a").forEach((a) =>
       a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
@@ -772,7 +790,7 @@ function resetGraphSelection() {
 // the user can click on a card to start a fresh selection.)
 function clearSelectionAndCards() {
   resetGraphSelection();
-  if (CY) CY.elements().removeClass("hl");        // clear highlighted join path
+  if (CY) CY.elements().removeClass("hl dir-many dir-one");  // clear highlighted join path
   if ($("uml_cards")) $("uml_cards").innerHTML = "";  // close the cards below
 }
 
@@ -814,7 +832,17 @@ async function drawGraph() {
         "line-style": "dashed", "line-color": "#9b59b6" } },
       { selector: "node.hl", style: {
         "background-color": "#E0532E", "border-width": 2, "border-color": "#7a1f0a" } },
-      { selector: "edge.hl", style: { "line-color": "#E0532E", width: 4 } },
+      // Highlighted join path: orange edges, each carrying a direction label
+      // (N-1 / 1-N) so the whole path reads as a mix, not "all descending".
+      { selector: "edge.hl", style: {
+        "line-color": "#E0532E", width: 4,
+        label: "data(dir)", "font-size": 9, "font-weight": "bold",
+        "text-rotation": "autorotate",
+        "text-background-color": "#fff", "text-background-opacity": 0.9,
+        "text-background-padding": 2,
+        "text-border-width": 1, "text-border-opacity": 1, "text-border-color": "#ccc" } },
+      { selector: "edge.hl.dir-many", style: { color: "#9a6700" } },  // amber = 1-N (fan-out)
+      { selector: "edge.hl.dir-one",  style: { color: "#1e7e34" } },  // green = N-1 (safe)
       { selector: "node.sel-source", style: {
         "border-width": 4, "border-color": "#1e7e34" } },
       { selector: "node.sel-target", style: {
@@ -899,16 +927,25 @@ function setupZoomControl() {
   });
 }
 
-function highlightPath(edges) {
+// Highlight the active join path in the graph. Accepts step objects
+// ({left, right, to_many}) so each edge gets a direction label (N-1 / 1-N) and
+// colour; falls back to legacy [a, b] pairs (then unlabelled).
+function highlightPath(steps) {
   if (!CY) return;
-  CY.elements().removeClass("hl");
+  CY.elements().removeClass("hl dir-many dir-one");
   const nodes = new Set();
-  for (const [a, b] of edges) {
+  for (const st of steps) {
+    const a = st.left ?? st[0];
+    const b = st.right ?? st[1];
+    const toMany = !!st.to_many;
     nodes.add(a);
     nodes.add(b);
     CY.edges().forEach((e) => {
       const s = e.source().id(), t = e.target().id();
-      if ((s === a && t === b) || (s === b && t === a)) e.addClass("hl");
+      if ((s === a && t === b) || (s === b && t === a)) {
+        e.addClass("hl").addClass(toMany ? "dir-many" : "dir-one");
+        if (st.left !== undefined) e.data("dir", toMany ? "1-N" : "N-1");
+      }
     });
   }
   nodes.forEach((id) => CY.$id(id).addClass("hl"));
