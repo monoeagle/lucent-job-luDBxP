@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LucentTools DB Explorer — Projekt-Kennzahlen</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#171d26; --panel2:#1d2530; --line:#2a3340;
+    --ink:#e6edf3; --muted:#8b97a7; --accent:#3fb950; --accent2:#58a6ff;
+    --warn:#d29922; --bad:#f85149; --good:#3fb950; --plan:#3d4757;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    padding:32px 18px;
+  }
+  .wrap{max-width:1080px; margin:0 auto}
+  header{margin-bottom:26px}
+  h1{font-size:26px; margin:0 0 4px; letter-spacing:.3px}
+  .sub{color:var(--muted); font-size:13.5px}
+  .sub b{color:var(--accent2)}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:22px 0}
+  .card{background:linear-gradient(160deg,var(--panel),var(--panel2)); border:1px solid var(--line);
+        border-radius:12px; padding:16px 18px}
+  .card .lbl{color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.7px}
+  .card .val{font-size:30px; font-weight:700; margin-top:6px; line-height:1.1}
+  .card .val small{font-size:14px; color:var(--muted); font-weight:500}
+  .card .note{color:var(--muted); font-size:11.5px; margin-top:4px}
+  .v-good{color:var(--good)} .v-warn{color:var(--warn)} .v-acc{color:var(--accent2)}
+
+  h2{font-size:16px; margin:30px 0 12px; padding-bottom:7px; border-bottom:1px solid var(--line); color:var(--ink)}
+
+  table{border-collapse:collapse; width:100%; background:var(--panel); border:1px solid var(--line);
+        border-radius:10px; overflow:hidden; font-size:14px}
+  caption{caption-side:top; text-align:left; color:var(--muted); font-size:12px; margin-bottom:6px}
+  th,td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--line)}
+  thead th{background:var(--panel2); color:var(--muted); font-weight:600; font-size:12px;
+           text-transform:uppercase; letter-spacing:.5px}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#1b2330}
+  td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+  td.metric{font-weight:600}
+  .tag{display:inline-block; font-size:10.5px; padding:1px 7px; border-radius:20px; vertical-align:middle}
+  .tag.m{background:#1f2d3d; color:var(--accent2)}
+  .tag.s{background:#2d2a1a; color:var(--warn)}
+
+  .bar{position:relative; height:9px; background:#0c1117; border-radius:6px; overflow:hidden; min-width:120px}
+  .bar>span{position:absolute; left:0; top:0; bottom:0; border-radius:6px; background:linear-gradient(90deg,var(--accent),#2ea043)}
+  .barrow{display:grid; grid-template-columns:160px 1fr 70px; gap:12px; align-items:center; margin:9px 0}
+  .barrow .k{color:var(--muted); font-size:13px}
+  .barrow .p{text-align:right; font-variant-numeric:tabular-nums; font-size:13px}
+
+  .stack{display:flex; height:30px; border-radius:8px; overflow:hidden; border:1px solid var(--line); margin:6px 0 14px}
+  .stack>div{display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:#0b0f14}
+  .seg-done{background:var(--good)} .seg-wip{background:var(--warn)} .seg-plan{background:var(--plan); color:var(--muted)!important}
+  .legend{display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin-bottom:6px}
+  .legend i{display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:middle}
+  .aplist{font-size:12.5px; color:var(--muted); margin:2px 0 0}
+  .aplist code{background:#0c1117; padding:1px 5px; border-radius:4px; color:#c9d1d9}
+
+  footer{margin-top:30px; color:var(--muted); font-size:12px; border-top:1px solid var(--line); padding-top:14px}
+  code{background:#0c1117; padding:1px 6px; border-radius:5px; font-size:12.5px; color:#c9d1d9}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>LucentTools DB Explorer — Projekt-Kennzahlen</h1>
+    <div class="sub">Stand <b>v0.34.0</b> · 2026-06-27 · Branch <code>master</code> · Python/Flask · read-only Join-Pfad-Builder</div>
+  </header>
+
+  <div class="cards">
+    <div class="card">
+      <div class="lbl">Umsetzung (Roadmap)</div>
+      <div class="val v-good">98 <small>%</small></div>
+      <div class="note">46 / 47 Produkt-APs fertig · 1 offen (AP-35, Windows)</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Tempo</div>
+      <div class="val">191 <small>Commits</small></div>
+      <div class="note">8 Sessions an 3 Kalendertagen (25.–27.06.)</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Costs (COCOMO)</div>
+      <div class="val v-acc">~242 <small>k €</small></div>
+      <div class="note">organic, 7,6 kSLOC · real: solo + KI</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Technische Schulden</div>
+      <div class="val v-good">≈ 0 <small>%</small></div>
+      <div class="note">pyflakes: 2 Info (ungenutzte <code>exc</code>)</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Testabdeckung</div>
+      <div class="val v-good">89 <small>%</small></div>
+      <div class="note">227 Tests grün (1 skip MSSQL) · 1241 Statements</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Doku-Abdeckung</div>
+      <div class="val v-good">93 <small>% Module</small></div>
+      <div class="note">25/27 Module · 64 % öffentl. API (54/85 Funktionen/Klassen)</div>
+    </div>
+    <div class="card">
+      <div class="lbl">LOC (handgeschrieben)</div>
+      <div class="val">3.249 <small>Py-Code</small></div>
+      <div class="note">+ 2.330 Test · + 2.013 Frontend (JS/CSS/HTML)</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Read-Only-Garantie</div>
+      <div class="val v-good">0 <small>Mutationen</small></div>
+      <div class="note">nur SELECT · kein INSERT/UPDATE/DELETE/DDL</div>
+    </div>
+  </div>
+
+  <h2>Umsetzungsstand — Arbeitspakete (Roadmap)</h2>
+  <div class="legend">
+    <span><i style="background:var(--good)"></i>Abgeschlossen 46</span>
+    <span><i style="background:var(--plan)"></i>Offen 1 (AP&#8209;35, Windows)</span>
+    <span style="margin-left:auto">47 Produkt-APs (AP&#8209;1…49 ohne AP&#8209;17 gestrichen &amp; AP&#8209;19 Meta)</span>
+  </div>
+  <div class="stack">
+    <div class="seg-done" style="width:98%">98% fertig</div>
+    <div class="seg-plan" style="width:2%">2%</div>
+  </div>
+  <p class="aplist"><b style="color:var(--good)">✅ Fertig (46):</b> Core (Modell/Loader/FK-Graph/Pathfinder/SQL-Generator/Flask-API) · <code>AP-11</code> Composite-FK · <code>AP-25/39/48/49</code> SQL-Analyzer · <code>AP-30</code> N-1-Stern · <code>AP-36…47</code> Join-Builder-Ausbau · <code>AP-45</code> Spaltenkopf-Aktionen + DISTINCT · <code>AP-31</code> Multi-User-Pfade+Port (Kern) · <code>AP-34</code> Tray-Launcher (Kern) … u. v. m.</p>
+  <p class="aplist"><b style="color:var(--muted)">⬜ Offen (1):</b> <code>AP-35</code> — <code>run.ps1</code>: leeres venv gilt fälschlich als „vollständig" (Windows-Fix)</p>
+  <p class="aplist"><b style="color:var(--muted)">Nicht gezählt:</b> <code>AP-17</code> <i>gestrichen</i> (Auslieferung via GitHub-Releases) · <code>AP-19</code> <code>.pattern_transfer</code> = übergeordnetes Meta-/Destillat-AP (projektübergreifend), kein Produkt-AP. <code>AP-31</code>/<code>AP-34</code>: Kerne fertig, Reste = dokumentierte Folge-Scheiben.</p>
+
+  <h2>Kennzahlen-Übersicht</h2>
+  <table>
+    <caption>Tabelle markieren &amp; kopieren — übernimmt sauber nach Sheets/Word/Markdown</caption>
+    <thead>
+      <tr><th>Kennzahl</th><th>Wert</th><th>Detail / Quelle</th><th>Art</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="metric">Umsetzung (Roadmap)</td><td class="num">≈ 98 %</td><td>46/47 Produkt-APs fertig · 1 offen (AP-35, Windows) · AP-17 gestrichen + AP-19 (Meta) nicht gezählt (Quelle: roadmap.md / todo-erledigt.md)</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Commits</td><td class="num">191</td><td>2026-06-25 → 06-27 · 3 Kalendertage · 8 Sessions · 3 FF-Merges (SDD-Branches)</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Aktuelle Version</td><td class="num">v0.34.0</td><td>SemVer je AP (sync_version.py) · von 0.1.0 in 8 Sessions</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Effort (COCOMO)</td><td class="num">~20 PM</td><td>organic · E = 2,4·KSLOC^1,05 · T ≈ 7,8 Monate Kalender</td><td><span class="tag s">Modell</span></td></tr>
+      <tr><td class="metric">Costs (COCOMO)</td><td class="num">~242.000 €</td><td>Overhead 2,4 · ~60 k€/J · ohne Overhead ~101.000 €</td><td><span class="tag s">Modell</span></td></tr>
+      <tr><td class="metric">Technische Schulden</td><td class="num">≈ 0 %</td><td>pyflakes: 0 Fehler · 2 Info (ungenutzte <code>exc</code> in routes.py)</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Testabdeckung</td><td class="num">89 %</td><td>1241 Statements, 132 ungedeckt · <code>pytest --cov</code> (core/web/launcher/config/app)</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Tests</td><td class="num">227</td><td>alle grün · 1 skipped (optionaler MSSQL-Live-Test) · ~8 s Laufzeit</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Doku-Abdeckung (Module)</td><td class="num">93 %</td><td>25/27 Python-Module mit Modul-Docstring (AST-Zählung)</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Doku-Abdeckung (öffentl. API)</td><td class="num">64 %</td><td>54/85 öffentliche Funktionen/Klassen mit Docstring · gesamt 79/112 ≈ 70 %</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">LOC Python (Produkt)</td><td class="num">3.249</td><td>core 1.579 · web 664 · launcher 133 · root 187 · sample/sonst Rest</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">LOC Tests</td><td class="num">2.330</td><td>pytest (tests/) · ~0,7× des Produktcodes</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">LOC Frontend</td><td class="num">2.013</td><td>vanilla JS (app.js) + CSS + Jinja-Template · NO-CDN, lokal gebündelt</td><td><span class="tag m">gemessen</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Testabdeckung nach Modul/Layer</h2>
+  <div class="barrow"><span class="k">core/ (Geschäftslogik)</span><div class="bar"><span style="width:95%"></span></div><span class="p">~95 %</span></div>
+  <div class="barrow"><span class="k">web/ (Flask-Routes)</span><div class="bar"><span style="width:86%"></span></div><span class="p">86 %</span></div>
+  <div class="barrow"><span class="k">launcher/core.py</span><div class="bar"><span style="width:89%"></span></div><span class="p">89 %</span></div>
+  <div class="barrow"><span class="k" style="color:var(--muted)">launcher/ GUI (Tray)</span><div class="bar"><span style="width:0%"></span></div><span class="p" style="color:var(--muted)">0 % *</span></div>
+  <div class="barrow"><span class="k" style="color:var(--ink);font-weight:600">GESAMT</span><div class="bar"><span style="width:89%"></span></div><span class="p" style="color:var(--good)">89 %</span></div>
+  <p class="aplist">* <code>tray.py</code>/<code>__main__.py</code> sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten <code>launcher/core.py</code> (per Controller-E2E zusätzlich gegen echtes <code>app.py</code> verifiziert).</p>
+
+  <h2>Code-Qualität (pyflakes, Produktcode)</h2>
+  <table>
+    <thead><tr><th>Schweregrad</th><th>Anzahl</th><th>Befund</th></tr></thead>
+    <tbody>
+      <tr><td class="metric" style="color:var(--bad)">error</td><td class="num">0</td><td>—</td></tr>
+      <tr><td class="metric" style="color:var(--warn)">warning</td><td class="num">0</td><td>—</td></tr>
+      <tr><td class="metric" style="color:var(--muted)">info</td><td class="num">2</td><td>ungenutzte <code>exc</code>-Variable in 2 <code>except</code>-Blöcken (<code>web/routes.py</code>)</td></tr>
+      <tr><td class="metric">Summe</td><td class="num">2</td><td>kosmetisch · keine Funktions-/Importfehler</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    <b>Hinweise zur Methodik.</b>
+    <em>Umsetzung</em> = Produkt-Arbeitspakete aus <code>roadmap.md</code>/<code>todo-erledigt.md</code>: AP&#8209;1…49
+    <b>ohne</b> AP&#8209;17 (gestrichen) und AP&#8209;19 (<code>.pattern_transfer</code> = übergeordnetes Meta-/Destillat-AP,
+    kein Produkt-AP) → 47 APs, davon 46 fertig (AP&#8209;31/AP&#8209;34 als Kern gezählt; Reste = eigene Folge-Scheiben),
+    1 offen (AP&#8209;35, Windows-<code>run.ps1</code>-Fix).
+    <em>Effort/Costs (COCOMO)</em> = Basic-COCOMO „organic" über ≈ 7,6 kSLOC handgeschriebenen Code
+    (a=2,4·b=1,05·c=2,5·d=0,38); EUR-Annahmen explizit (Overhead 2,4, ~60 k€/J) — Modellwert, kein Ist
+    (real: ein Entwickler + KI in 3 Tagen).
+    <em>Technische Schulden</em>: <code>pyflakes</code> über <code>core/ web/ launcher/ app.py config.py</code> — 0 Fehler, 2 Info.
+    <em>Doku-Abdeckung</em> (AST-Zählung): 93 % der Module mit Modul-Docstring; auf öffentlicher API-Ebene
+    (Funktionen/Klassen) 64 % — die verbleibenden Lücken sind private Helfer-nahe bzw. selbsterklärende
+    kleine Funktionen (Folge-Arbeit, kein Lint-Gate erzwungen).
+    <em>Testabdeckung</em>: <code>pytest --cov</code> über die App-Pakete (Frontend-JS und die pystray-GUI sind nicht
+    Teil des Python-Coverage-Nenners). <em>Read-Only-Garantie</em>: das Werkzeug liest nur Schema-Metadaten und
+    erzeugt/führt SELECT aus — keine DB-Mutation (Projekt-Invariante).
+    Alle <span class="tag m">gemessen</span>-Werte aus <code>git</code>, <code>pytest --cov</code>, <code>pyflakes</code>
+    und Quellcode-Zählung (<code>wc -l</code>) vom 2026-06-27.
+  </footer>
+
+</div>
+</body>
+</html>
