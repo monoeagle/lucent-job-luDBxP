@@ -45,3 +45,14 @@ Die Heuristik (`core/implied.py`) vergleicht Spaltennamen mit Primärschlüsseln
 anderer Tabellen (z. B. `user_id` → `user.id`). Nur kompatible Typen werden
 berücksichtigt. Die Ergebnisse werden im Graph als gestrichelte Kanten
 dargestellt und sind per Checkbox deaktivierbar.
+
+### SQL-Analyzer (read-only)
+
+Der SQL-Analyzer (`core/sqlanalyze.py`, Endpoint `/api/analyze`) parst ein
+eingefügtes Statement ausschließlich über den sqlglot-AST und **führt es nie
+aus**. Er bestimmt Statement-Typ, gelesene und geschriebene Tabellen sowie
+nicht-blockierende Warnungen (Schreib-/DDL-Statement, fehlendes WHERE,
+kartesischer Join; mit aktiver Verbindung zusätzlich unbekannte Tabellen/Spalten
+gegen das reflektierte Schema). Er arbeitet **mit und ohne Verbindung**: ohne
+Verbindung rein textuell, mit Verbindung zusätzlich mit Schema-Abgleich und
+Graph-Highlight. `sqlglot` ist lokal als Wheel gebündelt (kein CDN).

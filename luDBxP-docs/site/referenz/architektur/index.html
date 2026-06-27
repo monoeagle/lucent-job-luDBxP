@@ -548,6 +548,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sql-analyzer-read-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        SQL-Analyzer (read-only)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1001,6 +1012,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sql-analyzer-read-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        SQL-Analyzer (read-only)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1051,6 +1073,15 @@ Werte werden niemals direkt in die SQL-Zeichenkette eingebettet.</p>
 anderer Tabellen (z. B. <code>user_id</code> → <code>user.id</code>). Nur kompatible Typen werden
 berücksichtigt. Die Ergebnisse werden im Graph als gestrichelte Kanten
 dargestellt und sind per Checkbox deaktivierbar.</p>
+<h3 id="sql-analyzer-read-only">SQL-Analyzer (read-only)<a class="headerlink" href="#sql-analyzer-read-only" title="Permanent link">&para;</a></h3>
+<p>Der SQL-Analyzer (<code>core/sqlanalyze.py</code>, Endpoint <code>/api/analyze</code>) parst ein
+eingefügtes Statement ausschließlich über den sqlglot-AST und <strong>führt es nie
+aus</strong>. Er bestimmt Statement-Typ, gelesene und geschriebene Tabellen sowie
+nicht-blockierende Warnungen (Schreib-/DDL-Statement, fehlendes WHERE,
+kartesischer Join; mit aktiver Verbindung zusätzlich unbekannte Tabellen/Spalten
+gegen das reflektierte Schema). Er arbeitet <strong>mit und ohne Verbindung</strong>: ohne
+Verbindung rein textuell, mit Verbindung zusätzlich mit Schema-Abgleich und
+Graph-Highlight. <code>sqlglot</code> ist lokal als Wheel gebündelt (kein CDN).</p>
 
 
 

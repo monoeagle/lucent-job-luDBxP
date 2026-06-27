@@ -11,6 +11,7 @@ graph LR
         GRAPH["graph.py\nbuild_graph()\nNetworkX DiGraph"]
         PF["pathfinder.py\nfind_paths()\nk-shortest"]
         SQLGEN["sqlgen.py\ngenerate_sql()\nSELECT+JOIN"]
+        SQLANALYZE["sqlanalyze.py\nanalyze()\nread-only (sqlglot)"]
         IMPLIED["implied.py\nguess_implicit_fks()"]
         PREVIEW["datapreview.py\nfetch_rows()"]
         DDL["ddl.py\ntable_ddl()"]
@@ -23,6 +24,7 @@ graph LR
     ROUTES --> GRAPH
     ROUTES --> PF
     ROUTES --> SQLGEN
+    ROUTES --> SQLANALYZE
     ROUTES --> PREVIEW
     ROUTES --> DDL
     ROUTES --> CONN
