@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T16:45:54",
+  "generatedAt": "2026-06-27T16:51:23",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 61,
+      "commits": 62,
       "kinds": {
-        "docs": 19,
+        "docs": 20,
         "feat": 15,
         "fix": 4,
         "other": 23
       },
       "list": [
+        {
+          "sha": "031e542",
+          "subject": "docs: Matching-Tabelle 2-spaltig + größere Schrift (10.5px), AP-17 gestrichen, Board linksbündig",
+          "kind": "docs"
+        },
         {
           "sha": "0fa30a8",
           "subject": "docs: AP-Board-Kacheln zweizeilig (AP-N / 1 Wort) + Join-Builder als Gitter; Matching-Tabelle schmaler + 9px",
@@ -876,13 +881,13 @@
     }
   },
   "stats": {
-    "totalCommits": 166,
+    "totalCommits": 167,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 62
+        "count": 63
       },
       {
         "kind": "feat",
