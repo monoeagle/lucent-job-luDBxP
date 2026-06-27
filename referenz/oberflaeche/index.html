@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.32.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.32.1">
       
       
         <meta name="author" content="LucentTools">
@@ -1155,8 +1155,37 @@ beteiligten Tabellen und Kanten farblich hervorgehoben.</p>
 <p><strong>Interaktive Ergebnistabelle (AP-45):</strong> Ein Klick auf einen <strong>Spaltenkopf</strong> öffnet ein Menü mit
 <strong>Sortieren ASC/DESC</strong>, <strong>Als Filter…</strong> und <strong>Spalte entfernen</strong>. Sortieren ergänzt eine
 Sortierzeile und baut neu, „Als Filter" legt eine vorbefüllte Filterzeile an, „Spalte entfernen"
-entfernt Zusatzspalten (Start-/Ziel-Spalten definieren den Pfad und sind geschützt). Filter-Wertfelder
-bieten zusätzlich ein <strong>Dropdown der echten DISTINCT-Werte</strong> der Spalte an (Freitext bleibt möglich).</p>
+entfernt Zusatzspalten (Start-/Ziel-Spalten definieren den Pfad und sind geschützt). Sobald ein
+<strong>Filterwert gesetzt</strong> ist (getippt oder aus dem Dropdown gewählt), wird sofort neu gebaut — die
+<code>WHERE</code>-Bedingung erscheint umgehend im SQL und im Ergebnis.</p>
+<p><strong>Zwei verschiedene „DISTINCT" — nicht verwechseln:</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>erscheint im generierten SQL?</th>
+<th>Zweck</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>DISTINCT</code>-Checkbox</strong> (neben LIMIT/Dialekt)</td>
+<td><strong>ja</strong> — <code>SELECT DISTINCT …</code></td>
+<td>doppelte Ergebniszeilen unterdrücken</td>
+</tr>
+<tr>
+<td><strong>Filter-Wertdropdown</strong> (<code>/api/distinct</code>)</td>
+<td><strong>nein</strong></td>
+<td>Komfort-Lookup: zeigt die echten Werte der Spalte als Auswahlliste</td>
+</tr>
+</tbody>
+</table>
+<p>Das <strong>Filter-Wertdropdown</strong> ist eine <strong>separate Hintergrundabfrage</strong> auf <em>eine</em> Tabelle/Spalte
+(<code>SELECT DISTINCT col FROM tabelle WHERE col IS NOT NULL ORDER BY col</code>, begrenzt auf
+<code>config.DISTINCT_LIMIT</code>). Sie beantwortet nur die Frage „welche Werte gibt es in dieser Spalte?"
+und füllt damit die Vorschlagsliste (<code>&lt;datalist&gt;</code>) des Wertfelds. Sie fließt <strong>nicht</strong> in das
+angezeigte/kopierbare Join-SQL ein — dort steht weiterhin nur deine eigentliche Abfrage
+(Join + deine Filter). Freitext bleibt jederzeit möglich.</p>
 <hr />
 <h2 id="join-builder-parallele-tab-ansicht">Join-Builder — parallele Tab-Ansicht<a class="headerlink" href="#join-builder-parallele-tab-ansicht" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_05_luDBxP.jpg"
