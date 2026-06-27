@@ -145,12 +145,17 @@ _DATA = [
         (1, "PROD-CL01", 1),
         (2, "PROD-CL02", 1),
         (3, "TEST-CL01", 2),
+        # Orphan on the child side: no Datastore and no Host reference this cluster.
+        # Makes INNER vs LEFT/FULL joins visibly differ (AP-41 demo).
+        (4, "EMPTY-CL01", 1),
     ]),
     ("Network", [
         (1, 100, 1),
         (2, 200, 1),
         (3, 300, 2),
         (4, 110, 1),
+        # Orphan: no VirtualMachine uses this network -> visible under RIGHT/FULL joins.
+        (5, 999, 1),
     ]),
     ("Host", [
         (1, "esxi-01", 1, 1),
