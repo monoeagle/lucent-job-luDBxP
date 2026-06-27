@@ -1,18 +1,24 @@
 {
-  "generatedAt": "2026-06-27T12:53:00",
+  "generatedAt": "2026-06-27T13:02:04",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 41,
+      "commits": 42,
       "kinds": {
+        "fix": 1,
         "feat": 6,
         "docs": 14,
         "other": 21
       },
       "list": [
+        {
+          "sha": "a96d845",
+          "subject": "fix: Graph-Endpunkte voll einfärben (Start grün/Ziel rot/Zwischen orange) — Ziel war auf Orange schlecht lesbar — v0.24.1",
+          "kind": "fix"
+        },
         {
           "sha": "37f484e",
           "subject": "feat: AP-41 Join-Typ pro Schritt (INNER/LEFT/RIGHT/FULL) + Fix Start/Ziel-Einfärbung — v0.24.0",
@@ -775,7 +781,7 @@
     }
   },
   "stats": {
-    "totalCommits": 146,
+    "totalCommits": 147,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -793,7 +799,7 @@
       },
       {
         "kind": "fix",
-        "count": 11
+        "count": 12
       },
       {
         "kind": "build",
