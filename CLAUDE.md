@@ -69,6 +69,7 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 ## Bekannte Einschränkungen
 
 - **Database backends:** PostgreSQL/MySQL support is implemented via SQLAlchemy but is only covered by automated tests against SQLite. **MS SQL Server** has an optional, skip-guarded live integration test (`tests/test_mssql_integration.py`, set `LUCENT_MSSQL_TEST_URL`) verified against SQL Server 2022.
+  Ein einzelnes, wählbares Schema ist reflektierbar (AP-52): `/api/schemas` listet die Schemas, der gewählte Name wird durch Reflection und SQL-Erzeugung (`schema.table`) gefädelt. Gleichzeitiges Multi-Schema und Cross-Schema-Joins sind noch nicht unterstützt.
 
 > **Composite foreign keys** are fully supported since AP-11 (v0.5.0): a multi-column FK is carried as one `ForeignKey` with all `(local, ref)` column pairs and emitted as `JOIN … ON a.x = b.x AND a.y = b.y`. Two *separate* single-column FKs between the same tables stay distinct alternative join routes.
 

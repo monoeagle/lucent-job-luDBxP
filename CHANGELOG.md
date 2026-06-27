@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.38.0] — 2026-06-28
+
+### Added
+- Multi-schema support: a schema picker lets you reflect and query any one
+  database schema. The chosen schema is threaded through reflection and SQL
+  generation, so the generated SQL is schema-qualified (`schema.table`) and
+  runs regardless of the search path. New `/api/schemas` endpoint.
+
 ## [0.37.0] — 2026-06-27
 
 ### Added

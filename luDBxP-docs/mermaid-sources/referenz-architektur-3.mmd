@@ -13,6 +13,7 @@ graph TB
         D["/api/data"]
         A["/api/analyze"]
         C["/api/connect"]
+        SC["/api/schemas"]
     end
     subgraph CORE["Core-Layer"]
         SL["SQLAlchemy\nLoader"]
@@ -36,6 +37,7 @@ graph TB
     J --> PF
     G --> BG
     C --> SL
+    SC --> SL
     A --> SA
     A --> SL
     OC --> SG

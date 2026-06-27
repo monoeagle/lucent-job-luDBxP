@@ -1,20 +1,74 @@
 {
-  "generatedAt": "2026-06-27T23:28:23",
+  "generatedAt": "2026-06-28T00:28:42",
   "range": {
-    "from": "2025-06-28",
-    "to": "2026-06-27"
+    "from": "2025-06-29",
+    "to": "2026-06-28"
   },
   "byDay": {
-    "2026-06-27": {
-      "commits": 106,
+    "2026-06-28": {
+      "commits": 6,
       "kinds": {
+        "feat": 5,
+        "fix": 1
+      },
+      "list": [
+        {
+          "sha": "c1af636",
+          "subject": "feat: AP-52 schema picker in the topbar (auto-applied to requests)",
+          "kind": "feat"
+        },
+        {
+          "sha": "47f4db5",
+          "subject": "feat: AP-52 thread schema through joinpath/distinct/orphan SQL",
+          "kind": "feat"
+        },
+        {
+          "sha": "2f122a2",
+          "subject": "feat: AP-52 /api/schemas + schema param on reflect endpoints",
+          "kind": "feat"
+        },
+        {
+          "sha": "25316e9",
+          "subject": "fix: AP-52 restore datapreview tests overwritten in schema task",
+          "kind": "fix"
+        },
+        {
+          "sha": "0226772",
+          "subject": "feat: AP-52 schema-qualified SQL in sqlgen + datapreview",
+          "kind": "feat"
+        },
+        {
+          "sha": "d65a614",
+          "subject": "feat: AP-52 loader reflects a named schema + list_schemas()",
+          "kind": "feat"
+        }
+      ]
+    },
+    "2026-06-27": {
+      "commits": 109,
+      "kinds": {
+        "docs": 47,
         "feat": 31,
-        "docs": 44,
         "build": 1,
         "fix": 7,
         "other": 23
       },
       "list": [
+        {
+          "sha": "9ad4d2f",
+          "subject": "docs: Implementierungsplan AP-52 Multi-Schema-Reflection",
+          "kind": "docs"
+        },
+        {
+          "sha": "e7d068c",
+          "subject": "docs: Design AP-52 — Multi-Schema-Reflection (ein wählbares Schema)",
+          "kind": "docs"
+        },
+        {
+          "sha": "c8256d0",
+          "subject": "docs: Release v0.37.0 — AP-51 Unique-Index als Uniqueness-Quelle (Doku/Badges/Changelog/Site)",
+          "kind": "docs"
+        },
         {
           "sha": "a40f262",
           "subject": "feat: AP-51 _columns_unique honors UNIQUE indexes (+ composite coverage tests)",
@@ -1102,17 +1156,17 @@
     }
   },
   "stats": {
-    "totalCommits": 211,
-    "activeDays": 3,
-    "longestStreak": 3,
+    "totalCommits": 220,
+    "activeDays": 4,
+    "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 87
+        "count": 90
       },
       {
         "kind": "feat",
-        "count": 61
+        "count": 66
       },
       {
         "kind": "other",
@@ -1120,7 +1174,7 @@
       },
       {
         "kind": "fix",
-        "count": 18
+        "count": 19
       },
       {
         "kind": "build",
@@ -1139,7 +1193,7 @@
         "count": 1
       }
     ],
-    "testCount": 247
+    "testCount": 256
   },
   "phases": []
 }

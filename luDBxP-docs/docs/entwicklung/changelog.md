@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.38.0] — 2026-06-28
+
+### Hinzugefügt
+- Multi-Schema: ein Schema-Wähler reflektiert/abfragt jedes einzelne Schema;
+  erzeugte SQL ist schema-qualifiziert (`schema.table`). Neues `/api/schemas`.
+
 ## [0.37.0] — 2026-06-27
 
 ### Hinzugefügt

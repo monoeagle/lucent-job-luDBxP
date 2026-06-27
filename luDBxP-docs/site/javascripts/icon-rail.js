@@ -14,9 +14,9 @@
   'use strict';
 
   // ── Versionen ──────────────────────────────────────────────────────────
-  const APP_VERSION   = '0.37.0';                       // ADAPT: bei Release anpassen
-  const TEST_COUNT    = '248';                          // ADAPT: bei Release anpassen
-  const TEST_DATE     = '2026-06-27';                   // ADAPT: bei Release anpassen
+  const APP_VERSION   = '0.38.0';                       // ADAPT: bei Release anpassen
+  const TEST_COUNT    = '257';                          // ADAPT: bei Release anpassen
+  const TEST_DATE     = '2026-06-28';                   // ADAPT: bei Release anpassen
   const HEADER_PREFIX = `LucentTools DB Explorer v${APP_VERSION}`;
 
   // ── Icon-Map: Titel-Schluesselwort → Emoji ─────────────────────────────
