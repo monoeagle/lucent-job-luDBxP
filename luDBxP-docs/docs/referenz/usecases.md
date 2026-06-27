@@ -16,6 +16,11 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.
 **Ausgabe:** Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative
 Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.
 
+> **Fan-out-Warnung:** Enthält ein Pfad einen absteigenden (1-N) Schritt, zeigt
+> der Builder eine gelbe ⚠-Zeile, weil das Ergebnis Zeilen vervielfachen kann.
+> Was das genau bedeutet und wann es zu erwarten ist, erklärt
+> [Fan-out-Warnung (1-N)](fanout-warnung.md) mit durchgerechneten Beispielen.
+
 > **Mehr als zwei Tabellen:** Ein Pfad verbindet Start und Ziel über **beliebig viele
 > Zwischentabellen** (mehrere Join-Stationen) — z. B. in der Demo-CMDB
 > `Network → Datacenter → Host → VirtualMachine → VMDisk → Datastore → Replication`

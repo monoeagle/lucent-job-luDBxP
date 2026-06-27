@@ -16,7 +16,7 @@
         <link rel="prev" href="../datenmodell/">
       
       
-        <link rel="next" href="../oberflaeche/">
+        <link rel="next" href="../fanout-warnung/">
       
       
         
@@ -595,6 +595,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../fanout-warnung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Fan-out-Warnung
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../oberflaeche/" class="md-nav__link">
         
   
@@ -980,6 +1007,10 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.</p>
 <p><strong>Ausgabe:</strong> Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative
 Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.</p>
 <blockquote>
+<p><strong>Fan-out-Warnung:</strong> Enthält ein Pfad einen absteigenden (1-N) Schritt, zeigt
+der Builder eine gelbe ⚠-Zeile, weil das Ergebnis Zeilen vervielfachen kann.
+Was das genau bedeutet und wann es zu erwarten ist, erklärt
+<a href="../fanout-warnung/">Fan-out-Warnung (1-N)</a> mit durchgerechneten Beispielen.</p>
 <p><strong>Mehr als zwei Tabellen:</strong> Ein Pfad verbindet Start und Ziel über <strong>beliebig viele
 Zwischentabellen</strong> (mehrere Join-Stationen) — z. B. in der Demo-CMDB
 <code>Network → Datacenter → Host → VirtualMachine → VMDisk → Datastore → Replication</code>

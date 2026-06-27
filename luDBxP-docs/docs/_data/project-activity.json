@@ -1,17 +1,32 @@
 {
-  "generatedAt": "2026-06-27T03:09:33",
+  "generatedAt": "2026-06-27T03:29:03",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 30,
+      "commits": 33,
       "kinds": {
-        "docs": 9,
+        "docs": 12,
         "other": 21
       },
       "list": [
+        {
+          "sha": "84878c7",
+          "subject": "docs: Session-4-KPI-Zeile nachgetragen (Windows, v0.10.0→0.11.3) + Detailblock",
+          "kind": "docs"
+        },
+        {
+          "sha": "cf6ae30",
+          "subject": "docs: Session-6-Handoff + Insight (Final-Review fängt SQLite-Blindspot) + KPI-Zeile #6",
+          "kind": "docs"
+        },
+        {
+          "sha": "e84fe20",
+          "subject": "docs(AP-25): zensical.toml Site-Description auf v0.18.0 (Task-7-Restdrift), Site neu gebaut",
+          "kind": "docs"
+        },
         {
           "sha": "87f1b2e",
           "subject": "docs(AP-25): Architekturbild um SQL-Analyzer (Modul sqlanalyze + /api/analyze) erweitert, Site neu gebaut",
@@ -719,13 +734,13 @@
     }
   },
   "stats": {
-    "totalCommits": 135,
+    "totalCommits": 138,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 52
+        "count": 55
       },
       {
         "kind": "feat",

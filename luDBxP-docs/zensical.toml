@@ -28,6 +28,7 @@ nav = [
     { "Architektur"     = "referenz/architektur.md" },
     { "Datenmodell"     = "referenz/datenmodell.md" },
     { "UseCases"        = "referenz/usecases.md" },
+    { "Fan-out-Warnung" = "referenz/fanout-warnung.md" },
     { "Oberfläche"      = "referenz/oberflaeche.md" },
   ]},
   { "Entwicklung" = [
