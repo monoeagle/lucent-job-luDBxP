@@ -4,6 +4,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-38 — Kopierbares, lauffähiges SQL (Werte eingesetzt) (v0.21.0)
+- [x] `core/sqlgen.py`: `GeneratedSQL.sql_inline` — Filterwerte als Literale (Zahlen roh, Strings `'…'` mit `''`-Escaping, führende Nullen & LIKE als String); `_inline_literal`/`_looks_numeric`
+- [x] `:p0` + `params` bleiben die parametrisierte read-only-Ausführungsschiene
+- [x] `/api/joinpath` liefert `sql` **und** `sql_inline`
+- [x] UI zeigt/kopiert `sql_inline` (Copy-Icon übernimmt den Box-Text); Execution unverändert über Body
+- [x] 8 neue Tests (7 sqlgen inline + 1 api), 180 grün; Playwright: Box `= 1`, Clipboard ohne `:p0`
+
 ## AP-37 — Start ⇄ Ziel tauschen (v0.20.0)
 - [x] ⇄-Knopf neben den Ziel-Dropdowns; tauscht Start/Ziel (Tabelle + Spalte)
 - [x] Spiegelt Graph-Marker (`sel-source`/`sel-target`) und baut bei vorhandenem Pfad neu

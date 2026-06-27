@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.21.0] — 2026-06-27
+### Hinzugefügt
+- **AP-38 — Kopierbares, lauffähiges SQL (Werte eingesetzt):** Die SQL-Anzeige und das
+  Copy-Icon liefern jetzt **direkt ausführbares** SQL — Filterwerte werden als Literale
+  eingesetzt (Zahlen roh, Strings in `'…'` mit `''`-Escaping, führende Nullen & LIKE bleiben
+  String). Damit ist ein in einen externen SQL-Editor eingefügter SELECT sofort lauffähig,
+  ohne `:p0`-Bind-Variablen ausfüllen zu müssen. Die **parametrisierte** Form (`:p0` + `params`)
+  bleibt intern die read-only-**Ausführungs**­schiene (injection-sicher); `/api/joinpath`
+  liefert beide als `sql` und `sql_inline`. 180 Tests grün, 1 skipped.
+
 ## [0.20.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-37 — Start ⇄ Ziel tauschen:** Neuer **⇄-Knopf** neben den Ziel-Dropdowns

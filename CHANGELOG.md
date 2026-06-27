@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.21.0] — 2026-06-27
+### Added
+- **AP-38 — Copyable, runnable SQL (values inlined):** the SQL display and copy icon now
+  produce **directly runnable** SQL — filter values are inlined as literals (numbers bare,
+  strings single-quoted with `''` escaping; leading zeros and LIKE operands stay strings).
+  A SELECT pasted into an external SQL editor runs as-is, without filling in `:p0` bind
+  variables. The **parameterised** form (`:p0` + `params`) stays the internal read-only
+  **execution** path (injection-safe); `/api/joinpath` returns both as `sql` and `sql_inline`.
+  180 tests green, 1 skipped.
+
 ## [0.20.0] — 2026-06-27
 ### Added
 - **AP-37 — Swap start ⇄ target:** new **⇄ button** next to the target dropdowns swaps

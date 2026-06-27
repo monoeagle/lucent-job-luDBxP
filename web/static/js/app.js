@@ -614,7 +614,9 @@ function jbSelectedMaxRows() {
 async function renderJoinResult(i) {
   if (!JB_LAST || !JB_LAST.paths[i]) return;
   JB_PATH_IDX = i;
-  $("sql_out").textContent = JB_LAST.paths[i].sql;
+  // Show the runnable, value-inlined SQL (copy uses this text too); the server
+  // still executes the parameterised form server-side from the form body.
+  $("sql_out").textContent = JB_LAST.paths[i].sql_inline || JB_LAST.paths[i].sql;
   highlightPath(JB_LAST.paths[i].steps || JB_LAST.paths[i].edges || []);
   const resultEl = $("join_result");
   if (!resultEl) return;

@@ -553,6 +553,23 @@ def test_joinpath_steps_carry_direction(client, inventory_url):
     assert any(s["to_many"] and s["right"] == "VirtualMachines" for s in p["steps"])
 
 
+def test_joinpath_sql_inline_has_runnable_literal(client, inventory_url):
+    """The path carries a runnable `sql_inline` with the filter value substituted,
+    while `sql` keeps the :p0 placeholder + params (execution path)."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID"},
+        "filters": [{"table": "VMwareCluster", "column": "ClusterID",
+                     "op": "=", "value": "1"}],
+    })
+    assert resp.status_code == 200
+    p = resp.get_json()["paths"][0]
+    assert ":p0" in p["sql"] and p["params"] == {"p0": "1"}
+    assert ":p0" not in p["sql_inline"]
+    assert '"VMwareCluster"."ClusterID" = 1' in p["sql_inline"]
+
+
 def test_joinpath_ascending_star_has_no_warning(client, inventory_url):
     """AP-30: a pure N-1 star (all branches ascend) carries no fan-out warning."""
     resp = client.post("/api/joinpath", json={

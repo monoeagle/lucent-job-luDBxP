@@ -392,6 +392,9 @@ def api_joinpath():
                     for s in p.steps
                 ],
                 "sql": gen.sql,
+                # Runnable variant with filter values inlined (for copy/display);
+                # `sql` + `params` remain the parameterised execution path.
+                "sql_inline": gen.sql_inline,
                 "params": gen.params,
                 "warnings": _path_warnings(p),
             })

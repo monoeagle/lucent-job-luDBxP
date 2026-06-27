@@ -49,6 +49,56 @@ def test_filter_uses_named_placeholder():
     assert "= 7" not in g.sql
 
 
+def test_sql_inline_substitutes_numeric_literal():
+    # Parameterised form keeps :p0; the inline form (for copy/display) renders the
+    # literal so it is directly runnable in an external SQL client.
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("VirtualMachines", "OSID", "=", 7),))
+    assert 'WHERE "VirtualMachines"."OSID" = :p0' in g.sql
+    assert 'WHERE "VirtualMachines"."OSID" = 7' in g.sql_inline
+    assert ":p0" not in g.sql_inline
+
+
+def test_sql_inline_numeric_string_is_bare():
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("VirtualMachines", "OSID", "=", "7"),))
+    assert '= 7' in g.sql_inline
+    assert "'7'" not in g.sql_inline
+
+
+def test_sql_inline_quotes_strings_and_escapes_single_quote():
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("Networks", "Name", "LIKE", "O'Brien%"),))
+    assert "LIKE 'O''Brien%'" in g.sql_inline
+
+
+def test_sql_inline_like_numeric_value_stays_quoted():
+    # LIKE operands are always strings — even a numeric-looking one must be quoted.
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("Networks", "Name", "LIKE", "123"),))
+    assert "LIKE '123'" in g.sql_inline
+
+
+def test_sql_inline_in_and_between():
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("VirtualMachines", "OSID", "IN", [1, 2]),
+                              Filter("VirtualMachines", "VMID", "BETWEEN", [10, 20])))
+    assert "IN (1, 2)" in g.sql_inline
+    assert "BETWEEN 10 AND 20" in g.sql_inline
+
+
+def test_sql_inline_is_null_identical():
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("Networks", "VLAN", "IS NULL", None),))
+    assert 'WHERE "Networks"."VLAN" IS NULL' in g.sql_inline
+
+
+def test_sql_inline_leading_zero_preserved_as_string():
+    g = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),),
+                     filters=(Filter("Networks", "Code", "=", "01234"),))
+    assert "= '01234'" in g.sql_inline
+
+
 def test_determinism():
     a = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))
     b = generate_sql(_path(), selects=(Selection("Networks", "VLAN"),))

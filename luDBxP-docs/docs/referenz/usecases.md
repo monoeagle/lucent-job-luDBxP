@@ -47,7 +47,12 @@ Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.
    - Wert eingeben
 3. Mehrere Filter werden mit UND verknüpft
 
-**Ausgabe:** SQL mit `WHERE`-Klausel und parametrisierten Platzhaltern.
+**Ausgabe:** SQL mit `WHERE`-Klausel. Der **angezeigte und kopierte** SELECT ist
+**direkt lauffähig** — die Filterwerte sind als Literale eingesetzt (z. B.
+`WHERE "Cluster"."ClusterID" = 1`), sodass er sich ohne Nacharbeit in einen externen
+SQL-Editor einfügen lässt. Intern führt das Tool die Abfrage **parametrisiert**
+(`:p0` + gebundene Werte) read-only aus — injection-sicher; die `:p0`-Form taucht in der
+Oberfläche nicht mehr auf.
 
 ---
 

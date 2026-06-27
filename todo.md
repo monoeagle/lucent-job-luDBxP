@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: **AP-36** (Fan-out-Richtung pro Join sichtbar, v0.19.0), **AP-37** (Start⇄Ziel-Tausch + Fan-out-Doku Beispiel 3, v0.20.0).
+Zuletzt erledigt: **AP-37** (Start⇄Ziel-Tausch + Fan-out-Doku Beispiel 3, v0.20.0), **AP-38** (kopierbares lauffähiges SQL, Werte eingesetzt, v0.21.0).
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
