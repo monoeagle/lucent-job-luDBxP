@@ -81,3 +81,34 @@ def test_comma_join_with_linking_where_not_flagged():
 def test_ddl_is_write_statement():
     r = analyze("DROP TABLE Host")
     assert "WRITE_STATEMENT" in _codes(r)
+
+
+import pytest
+from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
+
+
+@pytest.fixture
+def inv_schema(inventory_url):
+    return SqlAlchemyLoader(inventory_url).load()
+
+
+def test_unknown_table_warns_with_schema(inv_schema):
+    r = analyze("SELECT * FROM NoSuchTable", schema=inv_schema)
+    assert "UNKNOWN_TABLE" in {w.code for w in r.warnings}
+
+
+def test_known_table_case_insensitive_no_warning(inv_schema):
+    # inventory has table "Networks"; lowercase must still be recognized
+    r = analyze("SELECT NetworkID FROM networks", schema=inv_schema)
+    assert "UNKNOWN_TABLE" not in {w.code for w in r.warnings}
+
+
+def test_unknown_qualified_column_warns(inv_schema):
+    r = analyze("SELECT n.NoSuchCol FROM Networks n", schema=inv_schema)
+    assert "UNKNOWN_COLUMN" in {w.code for w in r.warnings}
+
+
+def test_no_schema_no_unknown_warnings():
+    r = analyze("SELECT * FROM TotallyUnknown")
+    codes = {w.code for w in r.warnings}
+    assert "UNKNOWN_TABLE" not in codes and "UNKNOWN_COLUMN" not in codes

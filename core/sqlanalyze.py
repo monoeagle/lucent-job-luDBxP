@@ -107,6 +107,34 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             "Join ohne Verknüpfungsbedingung — möglicher kartesischer Join "
             "(Zeilen-Explosion)."))
 
+    if schema is not None:
+        known = {t.name.lower() for t in schema.tables}
+        known |= {v.name.lower() for v in getattr(schema, "views", ())}
+        # Map alias -> real table name for qualified-column resolution.
+        alias_to_table: dict[str, str] = {}
+        for tbl in node.find_all(exp.Table):
+            real = tbl.name
+            alias_to_table[real.lower()] = real
+            alias = tbl.alias
+            if alias:
+                alias_to_table[alias.lower()] = real
+            if real.lower() not in known:
+                warnings.append(AnalysisWarning(
+                    "warn", "UNKNOWN_TABLE",
+                    f'Tabelle „{real}" ist im verbundenen Schema nicht vorhanden.'))
+        # Qualified columns only (table.column); unqualified columns are skipped.
+        for col in node.find_all(exp.Column):
+            tbl_ref = col.table
+            if not tbl_ref:
+                continue
+            real = alias_to_table.get(tbl_ref.lower())
+            if real is None or real.lower() not in known:
+                continue  # unknown table already warned; don't double-warn
+            if not schema.has_column(real, col.name):
+                warnings.append(AnalysisWarning(
+                    "warn", "UNKNOWN_COLUMN",
+                    f'Spalte „{col.name}" existiert nicht in Tabelle „{real}".'))
+
     return AnalysisResult(
         statement_type=stmt_type,
         tables_read=tuple(sorted(read)),
