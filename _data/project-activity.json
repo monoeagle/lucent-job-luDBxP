@@ -1,19 +1,29 @@
 {
-  "generatedAt": "2026-06-27T21:23:25",
+  "generatedAt": "2026-06-27T21:34:02",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 88,
+      "commits": 90,
       "kinds": {
+        "docs": 35,
+        "feat": 25,
         "fix": 7,
-        "docs": 34,
-        "feat": 24,
         "other": 23
       },
       "list": [
+        {
+          "sha": "f8f4552",
+          "subject": "docs: Session-8-Handoff-Nachtrag (v0.34.1) + KPI-Zeile aktualisiert + Insight (Tray-Backend umgebungsabhängig)",
+          "kind": "docs"
+        },
+        {
+          "sha": "6c91a13",
+          "subject": "feat: AP-34 Info-Dialog (Ersteller/Stack/…, primär-Monitor-zentriert) + Linux-Tray-Menü (AppIndicator) + Release v0.34.1",
+          "kind": "feat"
+        },
         {
           "sha": "b85ffdf",
           "subject": "fix: AP-34 Launcher räumt app.py-Kind bei jedem Ende sauber ab (atexit + SIGTERM/SIGINT) — keine Waisen",
@@ -1011,17 +1021,17 @@
     }
   },
   "stats": {
-    "totalCommits": 193,
+    "totalCommits": 195,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 77
+        "count": 78
       },
       {
         "kind": "feat",
-        "count": 54
+        "count": 55
       },
       {
         "kind": "other",
