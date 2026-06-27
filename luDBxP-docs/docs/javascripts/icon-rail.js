@@ -14,8 +14,8 @@
   'use strict';
 
   // ── Versionen ──────────────────────────────────────────────────────────
-  const APP_VERSION   = '0.31.0';                       // ADAPT: bei Release anpassen
-  const TEST_COUNT    = '200';                          // ADAPT: bei Release anpassen
+  const APP_VERSION   = '0.35.0';                       // ADAPT: bei Release anpassen
+  const TEST_COUNT    = '234';                          // ADAPT: bei Release anpassen
   const TEST_DATE     = '2026-06-27';                   // ADAPT: bei Release anpassen
   const HEADER_PREFIX = `LucentTools DB Explorer v${APP_VERSION}`;
 

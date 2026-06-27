@@ -38,6 +38,7 @@ Tray-Menü (Öffnen/Info/Beenden): Windows nativ. **Linux** braucht das AppIndic
 (sonst nur Icon ohne Menü → Xorg-Fallback). `launcher/core.py` ist stdlib-only + getestet; die GUI (`tray.py`/`about.py`) nicht headless-testbar.
 
 Server listens at `http://127.0.0.1:5057`.
+Normalbetrieb läuft auf dem waitress-WSGI-Server; `--debug` nutzt den Werkzeug-Dev-Server mit Auto-Reload.
 
 ## How to Test
 ```bash
@@ -63,7 +64,7 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 `core/userpaths.py` (pur, stdlib-only, kein Flask/`config`-Import) löst pro Nutzer auf:
 - **config.json + Logs** im OS-Nutzerverzeichnis (Slug `luDBxP`): Linux `~/.config/luDBxP/` bzw. `~/.local/state/luDBxP/logs/` (XDG), Windows `%LOCALAPPDATA%\luDBxP\`. Overrides: `LUCENT_CONFIG_DIR`, `LUCENT_LOG_DIR`. Eine alte App-Verzeichnis-`config.json` wird beim ersten Start einmalig übernommen.
 - **Port pro Session:** ohne `LUCENT_PORT` erst 5057 (Hub-reserviert), sonst ein freier Port; `LUCENT_PORT=<n>` erzwingt fest, `=0` immer dynamisch. Die tatsächliche URL gibt `app.py` beim Start aus. Bind nur `127.0.0.1`. `run.sh`/`run.ps1` brechen bei belegtem Port nicht mehr ab.
-- **Offen (Rest von AP-31):** lokaler WSGI-Server (waitress), Idle-Shutdown/sauberer Stop, Deployment-Packaging.
+- **Offen (Rest von AP-31):** Idle-Shutdown/sauberer Stop (lokaler WSGI-Server via waitress erledigt), Deployment-Packaging via AppImage.
 
 ## Bekannte Einschränkungen
 

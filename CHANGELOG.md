@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.35.0] — 2026-06-27
+### Added
+- Production WSGI server: the app now serves via **waitress** in normal
+  operation; `--debug` keeps the Werkzeug dev server with auto-reload.
+
 ## [0.34.1] — 2026-06-27
 ### Added
 - **AP-34 — Info-Dialog:** Das Tray-„Info" öffnet jetzt einen echten Dialog (eigener Prozess,

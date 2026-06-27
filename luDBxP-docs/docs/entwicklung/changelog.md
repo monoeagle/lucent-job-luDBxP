@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.35.0] — 2026-06-27
+### Hinzugefügt
+- waitress als WSGI-Server im Normalbetrieb (Debug behält Dev-Server mit Auto-Reload).
+
 ## [0.34.1] — 2026-06-27
 ### Hinzugefügt
 - **AP-34 — Info-Dialog:** Das Tray-„Info" öffnet jetzt einen echten Dialog (eigener Prozess,

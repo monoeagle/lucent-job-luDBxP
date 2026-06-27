@@ -1,19 +1,45 @@
 {
-  "generatedAt": "2026-06-27T21:34:02",
+  "generatedAt": "2026-06-27T22:11:51",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 90,
+      "commits": 95,
       "kinds": {
-        "docs": 35,
-        "feat": 25,
+        "feat": 26,
+        "build": 1,
+        "docs": 38,
         "fix": 7,
         "other": 23
       },
       "list": [
+        {
+          "sha": "5992f91",
+          "subject": "feat: AP-31 waitress als WSGI-Server (Debug behält Dev-Server)",
+          "kind": "feat"
+        },
+        {
+          "sha": "ef16002",
+          "subject": "build: AP-31 waitress als Dependency + Offline-Wheel",
+          "kind": "build"
+        },
+        {
+          "sha": "f9e8637",
+          "subject": "docs: Implementierungsplan AP-31 waitress-WSGI-Server",
+          "kind": "docs"
+        },
+        {
+          "sha": "a53630a",
+          "subject": "docs: Design AP-31 (Rest, Scheibe 1) — waitress als WSGI-Server",
+          "kind": "docs"
+        },
+        {
+          "sha": "5cae875",
+          "subject": "docs: Doku-Drift geschlossen (Sessionende-Nachprüfung) — Testzahlen 232, launcher/+userpaths/sqlanalyze im Strukturbaum, Multi-User/Tray in Architektur-Referenz, Testdatei-Tabelle",
+          "kind": "docs"
+        },
         {
           "sha": "f8f4552",
           "subject": "docs: Session-8-Handoff-Nachtrag (v0.34.1) + KPI-Zeile aktualisiert + Insight (Tray-Backend umgebungsabhängig)",
@@ -1021,17 +1047,17 @@
     }
   },
   "stats": {
-    "totalCommits": 195,
+    "totalCommits": 200,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 78
+        "count": 81
       },
       {
         "kind": "feat",
-        "count": 55
+        "count": 56
       },
       {
         "kind": "other",
@@ -1043,7 +1069,7 @@
       },
       {
         "kind": "build",
-        "count": 5
+        "count": 6
       },
       {
         "kind": "chore",
@@ -1058,7 +1084,7 @@
         "count": 1
       }
     ],
-    "testCount": 231
+    "testCount": 233
   },
   "phases": []
 }
