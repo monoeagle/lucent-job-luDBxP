@@ -490,24 +490,16 @@ def api_joinpath_run():
                    sql=gen.sql, row_cap=max_rows)
 
 
-def _orphan_probe_sql(dialect, base_table: str, other_table: str,
-                      conds: list) -> str:
-    """A read-only EXISTS probe: do rows in base_table have no match in
-    other_table under the join condition? (Table/column names come from the
-    reflected schema, not user text, so quoting is enough — no injection.)"""
-    on = " AND ".join(conds)
-    return (f"SELECT 1 FROM {dialect.quote(base_table)} a "
-            f"WHERE NOT EXISTS (SELECT 1 FROM {dialect.quote(other_table)} b "
-            f"WHERE {on})")
-
-
 @bp.post("/api/orphan_check")
 def api_orphan_check():
-    """Per join step of the chosen path: do unmatched (orphan) rows exist on the
-    left/right side? Read-only probes that let the UI flag which outer-join types
-    (LEFT/RIGHT/FULL) would actually change the result. Returns
-    ``{"steps": [{"left_orphans": bool, "right_orphans": bool}, …]}``; an empty
-    list in text-mode or on any error (best-effort hint, never blocks)."""
+    """Per join step of the chosen path: which join types would *actually* change
+    the result row count (vs INNER at that step, with the other steps kept at the
+    client's current types)? This counts the real query — so it accounts for path
+    context (unreachable orphans) and downstream joins (orphans filtered out),
+    avoiding the false positives an isolated per-table probe would give.
+
+    Returns ``{"steps": [{"left": bool, "right": bool, "full": bool}, …]}``; an
+    empty list in text-mode or on any error (best-effort hint, never blocks)."""
     data = request.get_json(silent=True) or {}
     url = (data.get("connection_url") or "").strip()
     if not url:
@@ -527,24 +519,33 @@ def api_orphan_check():
     if not (0 <= path_index < len(paths)):
         return jsonify(steps=[])
 
+    p = paths[path_index]
+    n = len(p.steps)
     dialect = _dialect_from_url(url)
-    out = []
-    for s in paths[path_index].steps:
-        # join is left.lc = right.rc; probe each side for rows without a partner.
-        left_conds = [f"a.{dialect.quote(lc)} = b.{dialect.quote(rc)}"
-                      for lc, rc in s.column_pairs]
-        right_conds = [f"b.{dialect.quote(lc)} = a.{dialect.quote(rc)}"
-                       for lc, rc in s.column_pairs]
+    cur = list(data.get("join_types") or [])
+    current = [(cur[i] if i < len(cur) else "INNER") or "INNER" for i in range(n)]
+
+    def row_count(types) -> "int | None":
         try:
-            lo = bool(execute_select(
-                url, _orphan_probe_sql(dialect, s.left_table, s.right_table, left_conds),
-                {}, max_rows=1)["rows"])
-            ro = bool(execute_select(
-                url, _orphan_probe_sql(dialect, s.right_table, s.left_table, right_conds),
-                {}, max_rows=1)["rows"])
-        except ConnectionError:
-            lo = ro = False
-        out.append({"left_orphans": lo, "right_orphans": ro})
+            gen = _make_path_gen(p, start, target, extra_selections, filters,
+                                 distinct, None, [], dialect, join_types=tuple(types))
+            wrapped = f"SELECT COUNT(*) AS c FROM (\n{gen.sql}\n) sub"
+            res = execute_select(url, wrapped, gen.params, max_rows=1)
+            return res["rows"][0][0] if res["rows"] else None
+        except (ConnectionError, ValueError):
+            return None
+
+    out = []
+    for k in range(n):
+        base = list(current); base[k] = "INNER"
+        c_inner = row_count(base)
+        flags = {"left": False, "right": False, "full": False}
+        if c_inner is not None:
+            for key, kw in (("left", "LEFT"), ("right", "RIGHT"), ("full", "FULL")):
+                t = list(current); t[k] = kw
+                c = row_count(t)
+                flags[key] = (c is not None and c != c_inner)
+        out.append(flags)
     return jsonify(steps=out)
 
 

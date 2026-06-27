@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.29.1] — 2026-06-27
+### Fixed
+- **Orphan chip was a false positive:** the probe tested each join **in isolation** and flagged
+  orphans that never appear in the path context (unreachable from the FROM table, or filtered out
+  by downstream INNER joins) — so the chip promised a change that switching to LEFT didn't deliver.
+  `/api/orphan_check` now **counts the real result** (COUNT per join type vs INNER, other steps at
+  their current types) and only flags types that actually change the row count. Chip and table now agree.
+
 ## [0.29.0] — 2026-06-27
 ### Added
 - **AP-47 — Visible path selection + orphan hint on join type:**

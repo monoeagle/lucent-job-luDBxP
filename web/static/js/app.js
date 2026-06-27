@@ -675,45 +675,44 @@ function renderJoinTypeControls(i) {
   _loadOrphans(i).then(() => _applyOrphanHints(i));   // AP-47: flag orphan-revealing types
 }
 
-// AP-47: which join types would actually reveal orphan (unmatched) rows per step.
-// Cached per path index; cleared on a fresh build. Best-effort, never blocks.
+// AP-47: which join types at each step would actually change the result (count-
+// based, path-context aware). Result depends on the other steps' current types,
+// so the cache key includes the join-type signature. Best-effort, never blocks.
 let JB_ORPHANS_CACHE = {};
+function _orphanKey(i) { return i + ":" + JB_JOIN_TYPES.join(","); }
 async function _loadOrphans(i) {
-  if (JB_ORPHANS_CACHE[i] || !JB_LAST) return;
+  const key = _orphanKey(i);
+  if (JB_ORPHANS_CACHE[key] || !JB_LAST) return;
   try {
     const res = await postJSON("/api/orphan_check",
       Object.assign({}, JB_LAST.body, { path_index: i }));
-    JB_ORPHANS_CACHE[i] = res.steps || [];
-  } catch (e) { JB_ORPHANS_CACHE[i] = []; }
+    JB_ORPHANS_CACHE[key] = res.steps || [];
+  } catch (e) { JB_ORPHANS_CACHE[key] = []; }
 }
 
 function _applyOrphanHints(i) {
-  const flags = JB_ORPHANS_CACHE[i];
+  const flags = JB_ORPHANS_CACHE[_orphanKey(i)];
   const box = $("jb_join_types");
   if (!flags || !box) return;
   box.querySelectorAll("select").forEach((sel) => {
     const f = flags[+sel.dataset.step];
     if (!f) return;
-    // Tint the outer-join options that would reveal orphans (best effort — native
+    // Tint the join types that would change the result (best effort — native
     // <option> background support varies by browser/OS).
     [...sel.options].forEach((opt) => {
-      const t = opt.value.toUpperCase();
-      const orphan = (t === "LEFT" && f.left_orphans) ||
-                     (t === "RIGHT" && f.right_orphans) ||
-                     (t === "FULL" && (f.left_orphans || f.right_orphans));
-      opt.style.background = orphan ? "#fbeccf" : "";
-      opt.classList.toggle("opt-orphan", !!orphan);
+      const t = opt.value.toLowerCase();
+      const eff = !!f[t];
+      opt.style.background = eff ? "#fbeccf" : "";
+      opt.classList.toggle("opt-orphan", eff);
     });
   });
   // Reliable, always-visible marker chip next to each dropdown.
   box.querySelectorAll(".jt-orphan").forEach((span) => {
-    const f = flags[+span.dataset.step];
-    const marks = [];
-    if (f && f.left_orphans) marks.push("LEFT");
-    if (f && f.right_orphans) marks.push("RIGHT");
-    if (f && (f.left_orphans || f.right_orphans)) marks.push("FULL");
+    const f = flags[+span.dataset.step] || {};
+    const marks = ["left", "right", "full"]
+      .filter((t) => f[t]).map((t) => t.toUpperCase());
     span.innerHTML = marks.length
-      ? `<span class="jt-orphan-chip" title="Diese Join-Typen zeigen hier zusätzlich unverknüpfte (Waisen-)Zeilen">⚠ ${marks.join("/")}</span>`
+      ? `<span class="jt-orphan-chip" title="Diese Join-Typen ändern hier das Ergebnis (zusätzliche unverknüpfte Zeilen)">⚠ ${marks.join("/")}</span>`
       : "";
   });
 }

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.29.1] — 2026-06-27
+### Behoben
+- **Waisen-Chip war falsch-positiv:** Die Probe testete jeden Join **isoliert** und meldete
+  Waisen, die im Pfad-Kontext gar nicht erscheinen (unerreichbar von der FROM-Tabelle, oder
+  von nachfolgenden INNER-Joins wieder herausgefiltert) — der Chip versprach eine Änderung,
+  die das Umschalten auf LEFT dann nicht brachte. `/api/orphan_check` **zählt jetzt das echte
+  Ergebnis** (COUNT je Join-Typ vs. INNER, übrige Schritte auf aktuellem Stand) und meldet nur
+  Typen, die die Zeilenzahl **tatsächlich** ändern. Chip und Tabelle sind damit konsistent.
+
 ## [0.29.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-47 — Pfad-Auswahl sichtbar + Waisen-Hinweis am Join-Typ:**

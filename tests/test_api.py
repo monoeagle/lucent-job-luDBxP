@@ -585,8 +585,8 @@ def test_joinpath_per_step_join_type(client, inventory_url):
 
 
 def test_orphan_check_returns_per_step_bool_flags(client, inventory_url):
-    """AP-47: per join step, the endpoint reports whether unmatched (orphan) rows
-    exist on the left/right side (read-only probes)."""
+    """AP-47: per join step, the endpoint reports which join types would actually
+    change the result row count (count-based, path-context aware)."""
     resp = client.post("/api/orphan_check", json={
         "connection_url": inventory_url,
         "start": {"table": "Networks", "column": "VLAN"},
@@ -598,8 +598,9 @@ def test_orphan_check_returns_per_step_bool_flags(client, inventory_url):
     steps = resp.get_json()["steps"]
     assert isinstance(steps, list) and steps
     for s in steps:
-        assert isinstance(s["left_orphans"], bool)
-        assert isinstance(s["right_orphans"], bool)
+        assert isinstance(s["left"], bool)
+        assert isinstance(s["right"], bool)
+        assert isinstance(s["full"], bool)
 
 
 def test_orphan_check_text_mode_returns_empty(client):

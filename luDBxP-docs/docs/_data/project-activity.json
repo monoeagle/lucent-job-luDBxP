@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T14:22:35",
+  "generatedAt": "2026-06-27T14:34:01",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 50,
+      "commits": 51,
       "kinds": {
+        "feat": 11,
         "fix": 3,
-        "feat": 10,
         "other": 23,
         "docs": 14
       },
       "list": [
+        {
+          "sha": "b14758c",
+          "subject": "feat: AP-47 Pfad-Indikator [*]/[ ] + datengetriebener Waisen-Chip pro Join-Typ — v0.29.0",
+          "kind": "feat"
+        },
         {
           "sha": "bd7ac8b",
           "subject": "fix: Graph bleibt beim Aufklappen der Detailkarten zentriert (CY.center, gleicher Zoom) — v0.28.1",
@@ -821,7 +826,7 @@
     }
   },
   "stats": {
-    "totalCommits": 155,
+    "totalCommits": 156,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -831,7 +836,7 @@
       },
       {
         "kind": "feat",
-        "count": 40
+        "count": 41
       },
       {
         "kind": "other",
