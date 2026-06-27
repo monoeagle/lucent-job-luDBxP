@@ -4,6 +4,13 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-42 — Join-Builder-Politur (v0.24.1–v0.25.0)
+- [x] Verbose Fan-out-Warntext pro Ast entfernt (Richtung steht als N-1/1-N-Chip am Join)
+- [x] Eine kompakte Kachel „1-N kann Zeilen vervielfachen (Fan-out)" unter der Pfadliste, nur bei vorhandenem 1-N
+- [x] SQL-Fenster `white-space: pre-wrap` + `overflow-wrap` → kein H-Scroll; Copy/Paste behält echte Zeilenumbrüche (Playwright: 5 Newlines, JOINs intakt)
+- [x] Ziel-Knoten amber/gold (#f3b305) statt rot + dunkle Schrift (v0.24.2); Endpunkte voll eingefärbt (v0.24.1)
+- [x] Demo-CMDB um Waisen ergänzt, damit Outer Joins sichtbar werden (INNER 4 → LEFT 5)
+
 ## AP-41 — Join-Typ pro Schritt + Start/Ziel-Color-Fix (v0.24.0)
 - [x] `core/sqlgen.py`: `generate_sql(join_types=…)` — pro Schritt INNER/LEFT/RIGHT/FULL (`_JOIN_KEYWORDS`); ungültiger Typ → ValueError; Default INNER
 - [x] `/api/joinpath` + `/api/joinpath/run` nehmen `join_types` (positionsweise); read-only-Ausführung bleibt parametrisiert

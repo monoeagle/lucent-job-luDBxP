@@ -196,8 +196,11 @@ body {
 /* Optionszeile: DISTINCT/LIMIT kompakt. */
 .jb-check, .jb-limit { display: inline-flex; align-items: center; gap: .3rem; }
 .path_list { padding-left: 1.2rem; }
-.sql_out { background: #1A1A2E; color: #eaeaea; padding: 1rem; overflow-x: auto;
-  white-space: pre; border-radius: 4px; margin: 0; }
+/* Soft-wrap long lines so the SQL box never scrolls horizontally. pre-wrap keeps
+   the real newlines + indentation, so copy/paste yields the original statement
+   (the wrapping is visual only); overflow-wrap breaks over-long quoted tokens. */
+.sql_out { background: #1A1A2E; color: #eaeaea; padding: 1rem;
+  white-space: pre-wrap; overflow-wrap: anywhere; border-radius: 4px; margin: 0; }
 /* AP-20: copy icon in the SELECT's top-right corner */
 /* Spacing lives on the wrapper so the <pre>'s top edge == the box edge —
    otherwise the icon floats in the pre's default margin, above the box. */
@@ -246,7 +249,11 @@ body {
   border-radius: 3px; }
 .viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
-.path-warn { color: #b26a00; font-size: 0.85em; margin: 2px 0 6px 1em; }
+/* Compact fan-out hint tile (replaces the verbose per-branch warning text). */
+.jb-fanout-hint:empty { display: none; }
+.jb-fanout-hint { display: inline-flex; align-items: center; gap: 5px;
+  background: #fff8ec; border: 1px solid #f0d9a8; color: #8a5300;
+  font-size: 0.78rem; padding: 2px 8px; border-radius: 4px; margin: 2px 0 6px; }
 /* Per-join direction chip in the path list: green N-1 (safe) / amber 1-N (fan-out). */
 .step-dir { font-size: .68rem; font-weight: 700; padding: 0 .3rem; border-radius: 3px;
   vertical-align: 1px; white-space: nowrap; }

@@ -1,19 +1,29 @@
 {
-  "generatedAt": "2026-06-27T13:02:04",
+  "generatedAt": "2026-06-27T13:17:42",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 42,
+      "commits": 44,
       "kinds": {
-        "fix": 1,
+        "other": 22,
+        "fix": 2,
         "feat": 6,
-        "docs": 14,
-        "other": 21
+        "docs": 14
       },
       "list": [
+        {
+          "sha": "dff375c",
+          "subject": "data: Demo-CMDB um Waisen-Zeilen ergänzt (Cluster EMPTY-CL01 ohne Datastore/Host, Network ohne VM)",
+          "kind": "other"
+        },
+        {
+          "sha": "07adf4d",
+          "subject": "fix: Ziel-Knoten amber/gold statt rot (auf Orange schlecht trennbar) — v0.24.2",
+          "kind": "fix"
+        },
         {
           "sha": "a96d845",
           "subject": "fix: Graph-Endpunkte voll einfärben (Start grün/Ziel rot/Zwischen orange) — Ziel war auf Orange schlecht lesbar — v0.24.1",
@@ -781,7 +791,7 @@
     }
   },
   "stats": {
-    "totalCommits": 147,
+    "totalCommits": 149,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -795,11 +805,11 @@
       },
       {
         "kind": "other",
-        "count": 29
+        "count": 30
       },
       {
         "kind": "fix",
-        "count": 12
+        "count": 13
       },
       {
         "kind": "build",

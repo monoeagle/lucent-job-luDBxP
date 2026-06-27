@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.25.0] — 2026-06-27
+### Changed
+- **AP-42 — Join-builder polish:** the verbose per-branch fan-out warning text ("branch X is
+  1-N (descending) — may multiply rows") is **gone** — direction already shows as an **N-1/1-N
+  chip** on each join. Instead, one compact tile under the path list: "**1-N** may multiply rows
+  (fan-out)", only when a path has a 1-N step. Saves noticeable space.
+- **SQL box now wraps** instead of scrolling horizontally (`white-space: pre-wrap`). The wrap is
+  purely **visual** — copy/paste yields the statement with its real line breaks, so it stays runnable.
+
 ## [0.24.2] — 2026-06-27
 ### Changed
 - **Target node now amber/gold** instead of red: red was still too close to the orange path

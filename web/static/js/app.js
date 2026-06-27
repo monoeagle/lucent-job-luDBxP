@@ -304,6 +304,7 @@ function openJoinBuilder() {
     `<option value="oracle">Oracle</option></select></label>` +
     `<button id="btn_build">Join-Pfad bauen</button></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
+    `<div class="jb-fanout-hint" id="jb_fanout_hint"></div>` +
     `<div class="row jb-join-types" id="jb_join_types"></div>` +
     `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
     `title="SELECT in die Zwischenablage kopieren" aria-label="SELECT kopieren">` +
@@ -753,14 +754,21 @@ async function runBuild(preserveIndex = false) {
     const prev = JB_PATH_IDX;
     JB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
     const list = $("path_list");
-    list.innerHTML = data.paths.map((p, i) => {
-      const warn = (p.warnings && p.warnings.length)
-        ? `<div class="path-warn">⚠ ${p.warnings.map(esc).join(" ")}</div>`
-        : "";
-      return `<li><a href="#" data-i="${i}">${renderPathSeq(p)}</a>${warn}</li>`;
-    }).join("");
+    // The verbose per-branch fan-out text is dropped — the inline 1-N / N-1 chips
+    // already mark direction. A single compact hint tile (below) explains 1-N.
+    list.innerHTML = data.paths.map((p, i) =>
+      `<li><a href="#" data-i="${i}">${renderPathSeq(p)}</a></li>`).join("");
     list.querySelectorAll("a").forEach((a) =>
       a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
+    // Show the fan-out hint once if any candidate path has a descending (1-N) step.
+    const hint = $("jb_fanout_hint");
+    if (hint) {
+      const hasFanout = data.paths.some((p) =>
+        (p.steps || []).some((s) => s.to_many));
+      hint.innerHTML = hasFanout
+        ? `<span class="step-dir many">1-N</span> kann Zeilen vervielfachen (Fan-out)`
+        : "";
+    }
     const bar = $("jb_result_bar");
     if (data.paths.length) {
       if (bar) bar.style.display = "";
@@ -770,6 +778,7 @@ async function runBuild(preserveIndex = false) {
       $("sql_out").textContent = "";
       $("join_result").innerHTML = "";
       if ($("jb_join_types")) $("jb_join_types").innerHTML = "";
+      if ($("jb_fanout_hint")) $("jb_fanout_hint").innerHTML = "";
     }
   } catch (e) { alert(e.message); }
 }

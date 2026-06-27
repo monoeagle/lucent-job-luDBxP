@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.25.0] — 2026-06-27
+### Geändert
+- **AP-42 — Join-Builder-Politur:** Der verbose Fan-out-Warntext pro Ast („Ast „X" ist
+  1-N (absteigend) — kann Zeilen vervielfachen") ist **raus** — die Richtung steht ohnehin
+  als **N-1/1-N-Chip** an jedem Join. Stattdessen **eine** kompakte Kachel unter der
+  Pfadliste: „**1-N** kann Zeilen vervielfachen (Fan-out)", nur wenn ein Pfad einen
+  1-N-Schritt hat. Spart deutlich Platz.
+- **SQL-Fenster bricht jetzt um** statt waagerecht zu scrollen (`white-space: pre-wrap`).
+  Der Umbruch ist rein **visuell** — Copy/Paste liefert das Statement mit den echten
+  Zeilenumbrüchen, bleibt also lauffähig.
+
 ## [0.24.2] — 2026-06-27
 ### Geändert
 - **Ziel-Knoten jetzt Amber/Gold** statt Rot: Das Rot war auf der orangenen Pfad-Füllung
