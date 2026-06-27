@@ -49,3 +49,35 @@ def user_log_dir(app_slug):
         d = os.path.join(base, "Logs" if os.name == "nt" else "logs")
     os.makedirs(d, exist_ok=True)
     return d
+
+
+def _port_free(port, host):
+    """True if `port` can be exclusively bound on `host`."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind((host, port))
+            return True
+        except OSError:
+            return False
+
+
+def pick_port(preferred, host="127.0.0.1"):
+    """Return `preferred` if bindable on `host`, else a free OS-assigned port.
+    `preferred == 0` always yields a free port. (A tiny TOCTOU window remains
+    until the server actually binds — accepted for this tool.)"""
+    if preferred and _port_free(preferred, host):
+        return preferred
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((host, 0))
+        return s.getsockname()[1]
+
+
+def resolve_port(forced, preferred, host="127.0.0.1"):
+    """Resolve the listen port from a LUCENT_PORT value `forced`:
+    None/"" → pick_port(preferred); "0" → free port; "<n>" → fixed int n."""
+    if forced is None or str(forced).strip() == "":
+        return pick_port(preferred, host)
+    forced = str(forced).strip()
+    if forced == "0":
+        return pick_port(0, host)
+    return int(forced)
