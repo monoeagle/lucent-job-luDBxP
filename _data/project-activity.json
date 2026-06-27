@@ -1,19 +1,24 @@
 {
-  "generatedAt": "2026-06-27T15:00:20",
+  "generatedAt": "2026-06-27T15:08:51",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 53,
+      "commits": 54,
       "kinds": {
+        "feat": 12,
         "docs": 15,
         "fix": 4,
-        "feat": 11,
         "other": 23
       },
       "list": [
+        {
+          "sha": "97f1f83",
+          "subject": "feat: AP-48 SQL-Analyzer — größere/nur-vertikal-Textbox + Tippfehler-Lint SUSPICIOUS_ALIAS — v0.30.0",
+          "kind": "feat"
+        },
         {
           "sha": "9f59d0f",
           "subject": "docs: Referenz-Seite 'Outer Joins & Waisen' (LEFT/RIGHT/FULL, Waisen-Chip, Stolperstein) + UC-1-Querverweis, Site neu gebaut",
@@ -836,7 +841,7 @@
     }
   },
   "stats": {
-    "totalCommits": 158,
+    "totalCommits": 159,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
@@ -846,7 +851,7 @@
       },
       {
         "kind": "feat",
-        "count": 41
+        "count": 42
       },
       {
         "kind": "other",
@@ -873,7 +878,7 @@
         "count": 1
       }
     ],
-    "testCount": 198
+    "testCount": 199
   },
   "phases": []
 }
