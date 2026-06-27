@@ -49,10 +49,16 @@ LUCENT_MSSQL_TEST_URL='mssql+pyodbc://user:pw@host:1433/db?driver=ODBC+Driver+18
 
 ## Logging
 `core/log.py::init_logging` writes to stdout + a rotating `app.log`. Overridable per environment:
-- `LUCENT_LOG_DIR` — log directory (per-user path hook; full terminal-server wiring is AP-31)
+- `LUCENT_LOG_DIR` — log directory (else per-user OS path, see below)
 - `LUCENT_LOG_LEVEL` — `DEBUG`/`INFO`/… (`LUCENT_DEBUG` truthy implies `DEBUG`)
 
 Request logging (method · path · status · duration) lives in the `web/` app factory — `core/` stays Flask-free.
+
+## Per-Nutzer-Pfade & Port (AP-31 Kern, v0.33.0)
+`core/userpaths.py` (pur, stdlib-only, kein Flask/`config`-Import) löst pro Nutzer auf:
+- **config.json + Logs** im OS-Nutzerverzeichnis (Slug `luDBxP`): Linux `~/.config/luDBxP/` bzw. `~/.local/state/luDBxP/logs/` (XDG), Windows `%LOCALAPPDATA%\luDBxP\`. Overrides: `LUCENT_CONFIG_DIR`, `LUCENT_LOG_DIR`. Eine alte App-Verzeichnis-`config.json` wird beim ersten Start einmalig übernommen.
+- **Port pro Session:** ohne `LUCENT_PORT` erst 5057 (Hub-reserviert), sonst ein freier Port; `LUCENT_PORT=<n>` erzwingt fest, `=0` immer dynamisch. Die tatsächliche URL gibt `app.py` beim Start aus. Bind nur `127.0.0.1`. `run.sh`/`run.ps1` brechen bei belegtem Port nicht mehr ab.
+- **Offen (Rest von AP-31):** lokaler WSGI-Server (waitress), Idle-Shutdown/sauberer Stop, Deployment-Packaging.
 
 ## Bekannte Einschränkungen
 

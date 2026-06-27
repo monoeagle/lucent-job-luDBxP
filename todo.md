@@ -1,7 +1,7 @@
 # Arbeitspakete — LucentTools DB Explorer
 
 Offene APs (erledigte wandern nach `todo-erledigt.md`).
-Zuletzt erledigt: **AP-49** (Analyzer-Feinschliff + ANSI-Fix im Parsefehler, v0.31.0), **AP-45** (Spaltenkopf-Aktionen + Filter-Wertfeld mit echten DISTINCT-Werten, v0.32.0). Offen: nur noch nicht-UI-APs (AP-19/31/34/35).
+Zuletzt erledigt: **AP-45** (Spaltenkopf-Aktionen + DISTINCT-Werte, v0.32.0), **AP-31 (Kern)** (dynamischer Port + Pro-Nutzer-Pfade, v0.33.0). Offen: **AP-31-Rest** (waitress/Idle-Shutdown/Deployment), AP-19, AP-34/35.
 
 **Definition of Done (jedes AP):** Code + Tests grün · betroffene Doku aktualisiert
 (CLAUDE.md + Zensical-Doku) · `sync_version.py`-Versionsbump + CHANGELOG · AP nach
@@ -48,6 +48,8 @@ Design-Spec: `docs/superpowers/specs/2026-06-27-ap30-n1-stern-design.md` · Plan
 - [x] Betroffen: `core/pathfinder.py`, `core/sqlgen.py`, `web/static/js/app.js`/`index.html` (mehrere Ziel-Zeilen)
 
 ## AP-31 — Terminal-Server-Tauglichkeit (Multi-User)
+> **Kern erledigt (v0.33.0):** dynamischer Pro-Session-Port (5057 bevorzugt, sonst frei; `LUCENT_PORT`-Override) + Pro-Nutzer-`config.json`/`Logs/` (Slug `luDBxP`, XDG/`%LOCALAPPDATA%`, Overrides `LUCENT_CONFIG_DIR`/`LUCENT_LOG_DIR`) + einmalige Migration + URL-Ausgabe; `run.sh`/`run.ps1` ohne Port-Abbruch. Details s. `core/userpaths.py`, Spec/Plan unter `docs/superpowers/`. **Offen unten:** WSGI-Server (waitress), Idle-Shutdown/sauberer Stop, Deployment-Packaging.
+
 **Frage:** Läuft die App korrekt für **mehrere gleichzeitige** Nutzer auf einem (RDS-)Terminal-Server?
 **Befund — Single-User pro Maschine: ja; gleichzeitige Mehrbenutzung: aktuell NEIN.**
 - [ ] **Fester Port 5057 auf gemeinsamem Loopback:** Windows-RDS teilt `127.0.0.1` über alle Sessions → zweite Instanz kann 5057 nicht binden (run.ps1 bricht mit „Port belegt" ab); fremder Browser auf `127.0.0.1:5057` erreicht die fremde Instanz (keine Session-Isolation)

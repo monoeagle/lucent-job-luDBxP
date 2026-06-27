@@ -4,6 +4,16 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-31 (Kern) — Multi-User-Basis: dynamischer Port + Pro-Nutzer-Pfade (v0.33.0)
+- [x] **Neues `core/userpaths.py`** (pur, stdlib-only, kein Flask/`config`-Import): Pro-Nutzer-Pfade (XDG/`%LOCALAPPDATA%`, Slug `luDBxP`), `pick_port`/`resolve_port`, `migrate_legacy_config`
+- [x] **Dynamischer Port pro Session:** ohne `LUCENT_PORT` erst 5057 (Hub), sonst freier Port; `LUCENT_PORT=<n>` fest, `=0` dynamisch; tatsächliche URL beim Start ausgegeben; Bind nur `127.0.0.1`
+- [x] **Pro-Nutzer `config.json` + Logs** (`core/settings.py`/`core/log.py` umgestellt; Overrides `LUCENT_CONFIG_DIR`/`LUCENT_LOG_DIR`); App-Verzeichnis-`config.json` wird einmalig übernommen
+- [x] **`run.sh`/`run.ps1`** brechen bei belegtem Port nicht mehr ab → `app.py` wählt freien Port
+- [x] TDD (13 neue userpaths-Tests, 220 grün); Controller-verifiziert (2 Instanzen: 5057-Fallback, fester/dynamischer Port, Migration, nur 127.0.0.1); SDD mit Per-Task-Reviews + Final-Review (opus)
+- [ ] **Offen (eigene Scheiben):** lokaler WSGI-Server (waitress), Idle-Shutdown/sauberer Stop, shared read-only venv / signierte run.ps1 / Betriebs-Doku
+
+---
+
 ## AP-45 — Ergebnis-Hilfen Teil 2: Spaltenkopf-Aktionen + DISTINCT-Filterwerte (v0.32.0)
 - [x] **`/api/distinct`** (read-only): `SELECT DISTINCT col FROM table WHERE col IS NOT NULL ORDER BY col`,
       spalten-validiert gegen das reflektierte Schema, begrenzt auf `config.DISTINCT_LIMIT`,

@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.33.0] — 2026-06-27
+### Hinzugefügt
+- **AP-31 (Kern) — Multi-User-Basis:** Mehrere Nutzer können die App kollisionsfrei auf einer
+  Maschine betreiben.
+  - **Dynamische Port-Wahl pro Session:** ohne `LUCENT_PORT` erst 5057 (Hub-reserviert), sonst
+    automatisch ein freier Port; `LUCENT_PORT=<n>` erzwingt fest, `=0` immer dynamisch. Die
+    tatsächliche URL wird beim Start ausgegeben. Bind weiterhin nur `127.0.0.1`.
+  - **Pro-Nutzer-Datenpfade:** `config.json` + Logs liegen im OS-Nutzerverzeichnis (Slug `luDBxP`;
+    Linux `~/.config` bzw. `~/.local/state`, Windows `%LOCALAPPDATA%`). Overrides `LUCENT_CONFIG_DIR`/
+    `LUCENT_LOG_DIR`. Eine vorhandene App-Verzeichnis-`config.json` wird einmalig übernommen.
+  - Neues pures Stdlib-Modul `core/userpaths.py` (Pfade + `pick_port`/`resolve_port` + Migration).
+  - `run.sh`/`run.ps1` brechen bei belegtem Port **nicht mehr ab** — `app.py` wählt selbst einen
+    freien Port. 220 Tests grün (1 skipped).
+  - *Offen (Rest von AP-31):* lokaler WSGI-Server (waitress), Idle-Shutdown/Stop, Deployment-Packaging.
+
 ## [0.32.1] — 2026-06-27
 ### Geändert
 - **AP-45 Feinschliff — Filter sofort wirksam:** Wird ein Filterwert gesetzt (getippt oder aus dem

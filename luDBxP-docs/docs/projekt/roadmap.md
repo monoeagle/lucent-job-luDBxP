@@ -10,8 +10,9 @@
 
 - **AP-19** — `.pattern_transfer`: projektlokale Pattern sammeln und global
   zusammenführen
-- **AP-31** — Terminal-Server-Tauglichkeit (Multi-User: dynamischer Port,
-  Pro-Nutzer-`config.json`/`Logs/`, WSGI-Server)
+- **AP-31** — Terminal-Server-Tauglichkeit (Multi-User). **Kern erledigt v0.33.0**
+  (dynamischer Port + Pro-Nutzer-`config.json`/`Logs/`); **offen:** WSGI-Server (waitress),
+  Idle-Shutdown/sauberer Stop, Deployment-Packaging
 - **AP-34** — Tray-Icon-Launcher (versteckte Konsole, sauberes Beenden, Auto-Browser)
 - **AP-35** — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund
   aus AP-15; Fix wie in `run.sh`, signiertes Skript → eigene Windows-Session)
@@ -76,6 +77,7 @@ Doku/AppImage/Projektposter.
 - **AP-48** — SQL-Analyzer: Eingabe-Textbox größer + nur vertikal verstellbar; Tippfehler-Lint `SUSPICIOUS_ALIAS` (Alias ähnelt Join-Schlüsselwort) — v0.30.0
 - **AP-49** — Analyzer-Feinschliff: größere Default-Textbox + read-only-Badge; Fix: ANSI-Codes aus Parsefehler entfernt, mehrzeiliges Fehler-Layout — v0.31.0
 - **AP-45** — Ergebnis-Hilfen Teil 2: klickbare Spaltenköpfe in der Ergebnistabelle (Menü: Sortieren ASC/DESC, Als Filter, Spalte entfernen — Start/Ziel-Anker geschützt) + Filter-Wertfeld mit echten DISTINCT-Werten (neues read-only Endpoint `/api/distinct`); `/api/joinpath/run` liefert `columns_meta` für eindeutiges Spalten-Mapping (auch bei gleichnamigen Spalten) — v0.32.0
+- **AP-31 (Kern)** — Multi-User-Basis: dynamischer Port pro Session (5057 bevorzugt, sonst frei; `LUCENT_PORT`-Override) + Pro-Nutzer-`config.json`/`Logs/` (Slug `luDBxP`, XDG/`%LOCALAPPDATA%`); neues `core/userpaths.py`, einmalige Migration, URL-Ausgabe, Launcher ohne Port-Abbruch — v0.33.0 *(Rest: waitress/Idle-Shutdown/Deployment offen)*
 - **AP-22** — Implizite FKs: Default geklärt → bleibt **opt-in** (Entscheidung)
 - **AP-24** — Session-KPIs: erhoben & dev-intern dokumentiert (`session-kennzahlen.md`) (Entscheidung)
 
