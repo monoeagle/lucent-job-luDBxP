@@ -90,3 +90,14 @@ def test_stop_terminates_child():
     c.stop(timeout=5)
     assert c.is_running() is False
     assert c._proc.poll() is not None
+
+
+def test_wait_until_ready_false_when_child_dies():
+    import time
+    c = LauncherCore()
+    c._proc = subprocess.Popen([sys.executable, "-c", "pass"])  # exits immediately
+    c._proc.wait()                                              # now dead
+    c.url = f"http://127.0.0.1:{_free_port()}"                  # nothing listening
+    t0 = time.monotonic()
+    assert c.wait_until_ready(timeout=10, interval=0.2) is False
+    assert time.monotonic() - t0 < 3                            # returned fast, not full 10s

@@ -41,6 +41,8 @@ class LauncherCore:
         """Poll self.url until the server answers (any HTTP status) or timeout."""
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
+            if self._proc is not None and self._proc.poll() is not None:
+                return False   # the app process died → stop waiting
             try:
                 with urllib.request.urlopen(self.url, timeout=1):
                     return True
