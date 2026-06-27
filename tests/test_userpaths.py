@@ -107,3 +107,14 @@ def test_settings_default_path_is_per_user(tmp_path, monkeypatch):
     s.save()
     assert (tmp_path / "config.json").exists()
     assert Settings.load().get("default_connection") == "sqlite:///x.db"
+
+
+def test_log_default_dir_uses_userpaths_not_config(tmp_path, monkeypatch):
+    # kein log_dir-Arg, kein LUCENT_LOG_DIR → muss über userpaths auflösen,
+    # NICHT über ein (entferntes) config.LOG_DIR.
+    monkeypatch.delenv("LUCENT_LOG_DIR", raising=False)
+    monkeypatch.setattr(os, "name", "posix")
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "st"))
+    from core import log as log_mod
+    d = log_mod._resolve_dir(None)
+    assert d == str(tmp_path / "st" / "luDBxP" / "logs")

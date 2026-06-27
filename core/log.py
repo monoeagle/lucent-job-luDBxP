@@ -2,7 +2,7 @@
 
 Configuration is resolved from explicit arguments first, then environment, then
 config.py defaults:
-  * directory : log_dir arg → LUCENT_LOG_DIR → config.LOG_DIR
+  * directory : log_dir arg → per-user log dir (core/userpaths, honours LUCENT_LOG_DIR)
   * level     : level arg   → LUCENT_LOG_LEVEL → (LUCENT_DEBUG ⇒ DEBUG) → config.LOG_LEVEL
 
 LUCENT_LOG_DIR is the hook for a per-user log path (e.g. on a terminal server);
@@ -13,13 +13,15 @@ import os
 from logging.handlers import RotatingFileHandler
 
 import config
+from core import userpaths
 
 _TRUTHY = ("1", "true", "yes", "on")
 
 
 def _resolve_dir(log_dir):
     if log_dir is None:
-        log_dir = os.environ.get("LUCENT_LOG_DIR") or config.LOG_DIR
+        # LUCENT_LOG_DIR + OS-Standardpfad werden in userpaths aufgelöst (AP-31).
+        log_dir = userpaths.user_log_dir(config.APP_SLUG)
     return log_dir
 
 

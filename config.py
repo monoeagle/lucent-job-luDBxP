@@ -8,7 +8,6 @@ APP_AUTHOR = "Tobias Philipp / LucentTools"
 CYTOSCAPE_VERSION = "3.30.2"  # bundled in web/static/lib/cytoscape.min.js
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_DIR = os.path.join(BASE_DIR, "Logs")  # entfällt in Task 5
 # AP-31: Daten liegen jetzt pro Nutzer (core/userpaths). Der alte App-Verzeichnis-
 # Pfad bleibt nur als einmalige Migrationsquelle erhalten.
 LEGACY_CONFIG_JSON = os.path.join(BASE_DIR, "config.json")
