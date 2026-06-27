@@ -1,20 +1,45 @@
 {
-  "generatedAt": "2026-06-27T22:59:26",
+  "generatedAt": "2026-06-27T23:28:23",
   "range": {
     "from": "2025-06-28",
     "to": "2026-06-27"
   },
   "byDay": {
     "2026-06-27": {
-      "commits": 101,
+      "commits": 106,
       "kinds": {
-        "feat": 29,
-        "docs": 41,
+        "feat": 31,
+        "docs": 44,
         "build": 1,
         "fix": 7,
         "other": 23
       },
       "list": [
+        {
+          "sha": "a40f262",
+          "subject": "feat: AP-51 _columns_unique honors UNIQUE indexes (+ composite coverage tests)",
+          "kind": "feat"
+        },
+        {
+          "sha": "d489a8f",
+          "subject": "feat: AP-51 reflect qualifying UNIQUE indexes into Table.unique_indexes",
+          "kind": "feat"
+        },
+        {
+          "sha": "869f0df",
+          "subject": "docs: Implementierungsplan AP-51 Unique-Index als Uniqueness-Quelle",
+          "kind": "docs"
+        },
+        {
+          "sha": "ed7c01b",
+          "subject": "docs: Design AP-51 — Unique-Index als Uniqueness-Quelle (+ Composite-Test)",
+          "kind": "docs"
+        },
+        {
+          "sha": "f018e52",
+          "subject": "docs: Release v0.36.0 — AP-50 1-1-Fan-out-Erkennung (Doku/Badges/Changelog/Site)",
+          "kind": "docs"
+        },
         {
           "sha": "7201610",
           "subject": "feat: AP-50 to_many=False for unique (one-to-one) FK steps",
@@ -1077,17 +1102,17 @@
     }
   },
   "stats": {
-    "totalCommits": 206,
+    "totalCommits": 211,
     "activeDays": 3,
     "longestStreak": 3,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 84
+        "count": 87
       },
       {
         "kind": "feat",
-        "count": 59
+        "count": 61
       },
       {
         "kind": "other",
@@ -1114,7 +1139,7 @@
         "count": 1
       }
     ],
-    "testCount": 240
+    "testCount": 247
   },
   "phases": []
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.0] — 2026-06-27
+
+### Hinzugefügt
+- 1-1-Erkennung berücksichtigt jetzt auch Unique-Indizes (voll-spaltig,
+  nicht-partiell) — nicht nur UNIQUE-Constraints/PK. Partielle und
+  Expression-Indizes bleiben bewusst ausgeschlossen.
+
 ## [0.36.0] — 2026-06-27
 
 ### Hinzugefügt

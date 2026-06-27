@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.37.0] — 2026-06-27
+
+### Added
+- One-to-one detection now also recognizes uniqueness backed by a UNIQUE
+  index (full-column, non-partial), not just UNIQUE constraints and primary
+  keys — so a descending FK that is unique only through an index no longer
+  raises a false fan-out warning. Partial and expression unique indexes are
+  deliberately ignored.
+
 ## [0.36.0] — 2026-06-27
 
 ### Added

@@ -72,7 +72,7 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **Composite foreign keys** are fully supported since AP-11 (v0.5.0): a multi-column FK is carried as one `ForeignKey` with all `(local, ref)` column pairs and emitted as `JOIN … ON a.x = b.x AND a.y = b.y`. Two *separate* single-column FKs between the same tables stay distinct alternative join routes.
 
-> **One-to-one detection (AP-50):** a descending FK whose child columns are themselves UNIQUE (constraint or PK) is treated as 1-1, not 1-N — no false fan-out warning. Uniqueness expressed *only* as a unique index is not yet detected (AP-51).
+> **One-to-one detection (AP-50/51):** a descending FK whose child columns are themselves UNIQUE (constraint or PK) is treated as 1-1, not 1-N — no false fan-out warning. Uniqueness backed by a UNIQUE index (full-column, non-partial) is detected too (AP-51); only partial and expression unique indexes are deliberately ignored.
 
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:
