@@ -122,6 +122,54 @@ gegenseitig (quasi-kartesisch).
 
 ---
 
+## Beispiel 3 — längeren Pfad erkennen und verkürzen oder filtern
+
+Manchmal wählt der Builder einen **längeren** Pfad mit einem 1-N-Schritt, obwohl
+ein kürzerer, warnungsfreier daneben in der Liste steht. Klassiker:
+
+```
+Network 1-N VirtualMachine N-1 Host N-1 Cluster N-1 Datacenter
+⚠ Ast „VirtualMachine" ist 1-N (absteigend) — kann Zeilen vervielfachen.
+```
+```sql
+SELECT "Network"."NetworkID", "Datacenter"."DatacenterID"
+FROM "Network"
+JOIN "VirtualMachine" ON "Network"."NetworkID" = "VirtualMachine"."NetworkID"
+JOIN "Host"           ON "VirtualMachine"."HostID" = "Host"."HostID"
+JOIN "Cluster"        ON "Host"."ClusterID" = "Cluster"."ClusterID"
+JOIN "Datacenter"     ON "Cluster"."DatacenterID" = "Datacenter"."DatacenterID"
+```
+
+**So liest du ihn:** Der einzige absteigende Schritt ist `Network → VirtualMachine`
+— dort vervielfacht es sich (jede Network-Zeile mal Anzahl ihrer VMs). Ab
+`VirtualMachine` aufwärts ist alles N-1 (jede VM hat genau ein Host/Cluster/
+Datacenter), also keine weitere Multiplikation. **Ergebnis:** eine Zeile **je VM**
+(die ein Netz hat), die `Datacenter`-Spalte wiederholt sich — *nicht* eine Zeile je
+Network.
+
+**Zwei Auswege:**
+
+1. **Kette verkürzen (bevorzugt).** `Network` und `Datacenter` sind **direkt**
+   verbunden (`Network.DatacenterID → Datacenter`). Der erste Kandidat in der Liste
+   ist `Network → Datacenter` (rein N-1, **keine** Warnung). Brauchst du
+   `VirtualMachine` für deine Frage gar nicht, nimm den kürzeren Pfad — der VM-Umweg
+   erzeugt nur Fan-out ohne Mehrwert.
+2. **Expliziten Filter setzen — auf die „Viele"-Tabelle.** Der Filter muss die
+   Tabelle **unmittelbar hinter der 1-N-Kante** (`VirtualMachine`) auf ≤1 Zeile je
+   Network eindampfen, sonst löst er das Fan-out nicht auf. Ein Filter auf `Host`,
+   `Cluster` oder `Datacenter` (den N-1-Schwanz) **hilft nicht** gegen die
+   Multiplikation — er schränkt nur ein, welche Gruppen erscheinen. Willst du eine
+   Übersicht je Network, **aggregiere** statt zu filtern:
+   `COUNT(DISTINCT "VirtualMachine"."VMID") … GROUP BY "Network"."NetworkID"`.
+
+> **Faustregel beim Anblick einer 1-N-Warnung:** Zuerst fragen *„brauche ich den
+> absteigenden Ast überhaupt — oder gibt es einen kürzeren Pfad ohne ihn?"*; erst
+> wenn ja, einen Filter auf genau die multiplizierte Tabelle setzen (oder
+> aggregieren). Mit dem **⇄-Knopf** (Start/Ziel tauschen) prüfst du schnell, ob die
+> umgekehrte Richtung hinauf zeigt und damit warnungsfrei ist.
+
+---
+
 ## Warum in der Demo-CMDB fast *jeder* Pfad warnt
 
 Die Demo-CMDB ist ein **Stern (Hub-and-Spoke)** um `Datacenter` und `Cluster`:

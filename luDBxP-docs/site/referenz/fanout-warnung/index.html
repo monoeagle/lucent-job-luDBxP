@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.19.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.20.0">
       
       
         <meta name="author" content="LucentTools">
@@ -591,6 +591,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#beispiel-3-langeren-pfad-erkennen-und-verkurzen-oder-filtern" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Beispiel 3 — längeren Pfad erkennen und verkürzen oder filtern
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#warum-in-der-demo-cmdb-fast-jeder-pfad-warnt" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -979,6 +990,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#beispiel-3-langeren-pfad-erkennen-und-verkurzen-oder-filtern" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Beispiel 3 — längeren Pfad erkennen und verkürzen oder filtern
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#warum-in-der-demo-cmdb-fast-jeder-pfad-warnt" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1223,6 +1245,48 @@ liefert der Pfad pro Datacenter <code>5 × 20 = 100</code> Zeilen — die abstei
 multiplizieren ihre Mengen miteinander. Hängen mehrere absteigende Äste am
 <strong>selben</strong> Knoten (ein Stern), multiplizieren sich auch deren Mengen
 gegenseitig (quasi-kartesisch).</p>
+<hr />
+<h2 id="beispiel-3-langeren-pfad-erkennen-und-verkurzen-oder-filtern">Beispiel 3 — längeren Pfad erkennen und verkürzen oder filtern<a class="headerlink" href="#beispiel-3-langeren-pfad-erkennen-und-verkurzen-oder-filtern" title="Permanent link">&para;</a></h2>
+<p>Manchmal wählt der Builder einen <strong>längeren</strong> Pfad mit einem 1-N-Schritt, obwohl
+ein kürzerer, warnungsfreier daneben in der Liste steht. Klassiker:</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Network 1-N VirtualMachine N-1 Host N-1 Cluster N-1 Datacenter
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>⚠ Ast „VirtualMachine&quot; ist 1-N (absteigend) — kann Zeilen vervielfachen.
+</span></code></pre></div>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="ss">&quot;Network&quot;</span><span class="p">.</span><span class="ss">&quot;NetworkID&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Datacenter&quot;</span><span class="p">.</span><span class="ss">&quot;DatacenterID&quot;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;Network&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;VirtualMachine&quot;</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="ss">&quot;Network&quot;</span><span class="p">.</span><span class="ss">&quot;NetworkID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;VirtualMachine&quot;</span><span class="p">.</span><span class="ss">&quot;NetworkID&quot;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;Host&quot;</span><span class="w">           </span><span class="k">ON</span><span class="w"> </span><span class="ss">&quot;VirtualMachine&quot;</span><span class="p">.</span><span class="ss">&quot;HostID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;Host&quot;</span><span class="p">.</span><span class="ss">&quot;HostID&quot;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;Cluster&quot;</span><span class="w">        </span><span class="k">ON</span><span class="w"> </span><span class="ss">&quot;Host&quot;</span><span class="p">.</span><span class="ss">&quot;ClusterID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;Cluster&quot;</span><span class="p">.</span><span class="ss">&quot;ClusterID&quot;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;Datacenter&quot;</span><span class="w">     </span><span class="k">ON</span><span class="w"> </span><span class="ss">&quot;Cluster&quot;</span><span class="p">.</span><span class="ss">&quot;DatacenterID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;Datacenter&quot;</span><span class="p">.</span><span class="ss">&quot;DatacenterID&quot;</span>
+</span></code></pre></div></p>
+<p><strong>So liest du ihn:</strong> Der einzige absteigende Schritt ist <code>Network → VirtualMachine</code>
+— dort vervielfacht es sich (jede Network-Zeile mal Anzahl ihrer VMs). Ab
+<code>VirtualMachine</code> aufwärts ist alles N-1 (jede VM hat genau ein Host/Cluster/
+Datacenter), also keine weitere Multiplikation. <strong>Ergebnis:</strong> eine Zeile <strong>je VM</strong>
+(die ein Netz hat), die <code>Datacenter</code>-Spalte wiederholt sich — <em>nicht</em> eine Zeile je
+Network.</p>
+<p><strong>Zwei Auswege:</strong></p>
+<ol>
+<li><strong>Kette verkürzen (bevorzugt).</strong> <code>Network</code> und <code>Datacenter</code> sind <strong>direkt</strong>
+   verbunden (<code>Network.DatacenterID → Datacenter</code>). Der erste Kandidat in der Liste
+   ist <code>Network → Datacenter</code> (rein N-1, <strong>keine</strong> Warnung). Brauchst du
+   <code>VirtualMachine</code> für deine Frage gar nicht, nimm den kürzeren Pfad — der VM-Umweg
+   erzeugt nur Fan-out ohne Mehrwert.</li>
+<li><strong>Expliziten Filter setzen — auf die „Viele"-Tabelle.</strong> Der Filter muss die
+   Tabelle <strong>unmittelbar hinter der 1-N-Kante</strong> (<code>VirtualMachine</code>) auf ≤1 Zeile je
+   Network eindampfen, sonst löst er das Fan-out nicht auf. Ein Filter auf <code>Host</code>,
+   <code>Cluster</code> oder <code>Datacenter</code> (den N-1-Schwanz) <strong>hilft nicht</strong> gegen die
+   Multiplikation — er schränkt nur ein, welche Gruppen erscheinen. Willst du eine
+   Übersicht je Network, <strong>aggregiere</strong> statt zu filtern:
+   <code>COUNT(DISTINCT "VirtualMachine"."VMID") … GROUP BY "Network"."NetworkID"</code>.</li>
+</ol>
+<blockquote>
+<p><strong>Faustregel beim Anblick einer 1-N-Warnung:</strong> Zuerst fragen <em>„brauche ich den
+absteigenden Ast überhaupt — oder gibt es einen kürzeren Pfad ohne ihn?"</em>; erst
+wenn ja, einen Filter auf genau die multiplizierte Tabelle setzen (oder
+aggregieren). Mit dem <strong>⇄-Knopf</strong> (Start/Ziel tauschen) prüfst du schnell, ob die
+umgekehrte Richtung hinauf zeigt und damit warnungsfrei ist.</p>
+</blockquote>
 <hr />
 <h2 id="warum-in-der-demo-cmdb-fast-jeder-pfad-warnt">Warum in der Demo-CMDB fast <em>jeder</em> Pfad warnt<a class="headerlink" href="#warum-in-der-demo-cmdb-fast-jeder-pfad-warnt" title="Permanent link">&para;</a></h2>
 <p>Die Demo-CMDB ist ein <strong>Stern (Hub-and-Spoke)</strong> um <code>Datacenter</code> und <code>Cluster</code>:

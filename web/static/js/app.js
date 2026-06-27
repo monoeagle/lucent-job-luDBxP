@@ -281,7 +281,9 @@ function openJoinBuilder() {
     `<div class="row"><label>Start</label>` +
     `<select id="start_table"></select> . <select id="start_col"></select></div>` +
     `<div class="row"><label>Ziel</label>` +
-    `<select id="target_table"></select> . <select id="target_col"></select></div>` +
+    `<select id="target_table"></select> . <select id="target_col"></select>` +
+    `<button id="btn_swap" class="jb-swap" type="button" title="Start und Ziel vertauschen" ` +
+    `aria-label="Start und Ziel vertauschen">⇅</button></div>` +
     `<div class="filters" id="filters"></div>` +
     `<div class="filters" id="order_bys"></div>` +
     `<div class="filters" id="extra_cols"></div>` +
@@ -318,6 +320,7 @@ function openJoinBuilder() {
     `<div id="join_result"></div></div>`;
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
+  $("btn_swap").addEventListener("click", swapStartTarget);
   $("btn_add_filter").addEventListener("click", addFilterRow);
   $("btn_add_orderby").addEventListener("click", addOrderByRow);
   $("btn_add_col").addEventListener("click", addColRow);
@@ -558,6 +561,24 @@ function collectExtraSelects() {
 }
 
 // Read the full join-builder form into a /api/joinpath request body.
+// Swap Start ⇄ Ziel (table + column). Handy because the warning-free direction
+// is often just the reverse: ascending toward a parent never fans out. Repopulates
+// each column dropdown for its new table before restoring the column value, mirrors
+// the graph source/target markers, and rebuilds if a path was already shown.
+function swapStartTarget() {
+  const stv = $("start_table").value, scv = $("start_col").value;
+  const ttv = $("target_table").value, tcv = $("target_col").value;
+  $("start_table").value = ttv; fillCols("start_table", "start_col"); $("start_col").value = tcv;
+  $("target_table").value = stv; fillCols("target_table", "target_col"); $("target_col").value = scv;
+  // Keep the graph markers consistent with the selection
+  const s = GRAPH_SEL.source;
+  GRAPH_SEL.source = GRAPH_SEL.target;
+  GRAPH_SEL.target = s;
+  _updateUmlMarks();
+  _updateGraphNodeMarkers();
+  if (JB_LAST) runBuild();
+}
+
 function collectJoinBody() {
   const limitRaw = $("jb_limit") ? $("jb_limit").value.trim() : "";
   return {

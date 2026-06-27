@@ -4,6 +4,12 @@ Abgeschlossene APs (umgehängt aus `todo.md`). Offene APs stehen in `todo.md`.
 
 ---
 
+## AP-37 — Start ⇄ Ziel tauschen (v0.20.0)
+- [x] ⇄-Knopf neben den Ziel-Dropdowns; tauscht Start/Ziel (Tabelle + Spalte)
+- [x] Spiegelt Graph-Marker (`sel-source`/`sel-target`) und baut bei vorhandenem Pfad neu
+- [x] Fan-out-Doku um Beispiel 3 erweitert (langen Pfad lesen → verkürzen oder Filter auf Viele-Seite)
+- [x] Playwright-verifiziert (Swap tauscht Werte korrekt, kein Console-Error)
+
 ## AP-36 — Fan-out-Richtung pro Join sichtbar (v0.19.0)
 - [x] `/api/joinpath` liefert pro Pfad ein `steps`-Feld (`left`/`right`/`to_many`)
 - [x] Pfad-Liste: Richtungs-Chip pro Join — grün `N-1` (sicher) / gelb `1-N` (Fan-out)

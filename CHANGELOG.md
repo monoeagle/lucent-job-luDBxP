@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.20.0] — 2026-06-27
+### Added
+- **AP-37 — Swap start ⇄ target:** new **⇄ button** next to the target dropdowns swaps
+  start and target (table + column), mirrors the graph markers, and rebuilds immediately
+  if a path was already shown. Handy because the **warning-free direction is often the
+  reverse** (ascending toward a parent never fans out).
+- **Docs:** fan-out page extended with **Example 3** (reading a long path → shorten the
+  chain *or* filter the "many"-side table; rule of thumb + ⇄ hint).
+
 ## [0.19.0] — 2026-06-27
 ### Added
 - **AP-36 — Per-join fan-out direction made visible:** every join step of a path now

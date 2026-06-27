@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.20.0] — 2026-06-27
+### Hinzugefügt
+- **AP-37 — Start ⇄ Ziel tauschen:** Neuer **⇄-Knopf** neben den Ziel-Dropdowns
+  vertauscht Start- und Ziel-(Tabelle+Spalte), spiegelt die Graph-Marker und baut
+  bei bereits gezeigtem Pfad sofort neu. Praktisch, weil die **warnungsfreie
+  Richtung oft die umgekehrte** ist (aufsteigend zum Elternteil erzeugt kein Fan-out).
+- **Doku:** Fan-out-Seite um **Beispiel 3** erweitert (langen Pfad lesen → Kette
+  verkürzen *oder* Filter auf die „Viele"-Tabelle setzen; Faustregel + ⇄-Hinweis).
+
 ## [0.19.0] — 2026-06-27
 ### Hinzugefügt
 - **AP-36 — Fan-out-Richtung pro Join sichtbar:** Jeder Join-Schritt eines Pfads
