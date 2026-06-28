@@ -16,6 +16,7 @@ from core.ddl import table_ddl
 from core.datapreview import fetch_rows, execute_select
 from core.connection import build_url
 from core.sqlanalyze import analyze as analyze_sql
+from core.implied import find_implied_fks
 
 # Connection fields that may be persisted (never the password).
 _CONN_FIELDS = ("db_type", "host", "port", "database", "user", "filepath",
@@ -148,6 +149,12 @@ def api_schema():
             "definition": v.definition,
         } for v in schema.views],
         cross_schema_fks=list(schema.cross_schema_fks(schema_name)),
+        implied_fks=[
+            {"from_table": i.table, "column": i.column,
+             "to_table": i.ref_table, "to_column": i.ref_column,
+             "confidence": i.confidence, "reason": i.reason}
+            for i in find_implied_fks(schema)
+        ],
     )
 
 

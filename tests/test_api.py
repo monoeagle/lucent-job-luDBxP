@@ -1023,3 +1023,14 @@ def test_schema_includes_cross_schema_fks_key(client, inventory_url):
     data = resp.get_json()
     assert "cross_schema_fks" in data
     assert data["cross_schema_fks"] == []   # SQLite has no cross-schema FKs
+
+
+def test_schema_endpoint_returns_implied_fks(client, inventory_nofk_url):
+    data = client.post("/api/schema", json={"connection_url": inventory_nofk_url}).get_json()
+    assert "implied_fks" in data
+    entry = next(e for e in data["implied_fks"]
+                 if e["from_table"] == "VirtualMachines" and e["column"] == "OSID")
+    assert entry["to_table"] == "OperatingSystems"
+    assert entry["to_column"] == "OSID"
+    assert entry["confidence"] == "hoch"
+    assert entry["reason"]
