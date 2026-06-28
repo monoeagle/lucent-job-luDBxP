@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.44.0] — 2026-06-28
+
+### Hinzugefügt
+- SQL-Builder: jede Sortier-Zeile (ORDER BY) und jede Spalten-Zeile trägt jetzt
+  kleine ↑/↓-Buttons (kein Drag & Drop), um Zeilen innerhalb ihrer Sektion zu
+  verschieben. Da das Formular in DOM-Reihenfolge gelesen wird, ändert das
+  Verschieben die erzeugte SQL: ORDER BY = Sortier-Priorität, Spalten =
+  SELECT-/GROUP-BY-Reihenfolge. Das ↑ der ersten und das ↓ der letzten Zeile
+  sind deaktiviert. Verschieben bleibt gestaged (kein Auto-Rebuild) — mit
+  „Generieren" anwenden. WHERE/HAVING bewusst ohne Move (Reihenfolge dort
+  kosmetisch). Nur Markup/CSS + JS — keine Route, kein `core/`. (AP-E)
+
+### Behoben
+- Schema-Graph-Legende: der `1-N`-Chip fluchtet jetzt linksbündig mit dem
+  `N-1`-Chip (überflüssiges `margin-left` entfernt, das ihn leicht nach rechts
+  schob). Nur CSS.
+
 ## [0.43.4] — 2026-06-28
 
 ### Geändert

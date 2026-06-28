@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.40.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.44.0">
       
       
         <meta name="author" content="LucentTools">
@@ -672,10 +672,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sql-builder-aktuelle-funktionen-stand-v0434" class="md-nav__link">
+  <a href="#sql-builder-aktuelle-funktionen-stand-v0440" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        SQL-Builder — aktuelle Funktionen (Stand v0.43.4)
+        SQL-Builder — aktuelle Funktionen (Stand v0.44.0)
       </span>
     </span>
   </a>
@@ -1144,10 +1144,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sql-builder-aktuelle-funktionen-stand-v0434" class="md-nav__link">
+  <a href="#sql-builder-aktuelle-funktionen-stand-v0440" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        SQL-Builder — aktuelle Funktionen (Stand v0.43.4)
+        SQL-Builder — aktuelle Funktionen (Stand v0.44.0)
       </span>
     </span>
   </a>
@@ -1308,7 +1308,7 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:</p>
 (<code>Quelle: VirtualMachine.HostID → Ziel: Host.HostID</code>) und bietet einen
 „Auswahl zurücksetzen"-Button.</p>
 <hr />
-<h2 id="sql-builder-aktuelle-funktionen-stand-v0434">SQL-Builder — aktuelle Funktionen (Stand v0.43.4)<a class="headerlink" href="#sql-builder-aktuelle-funktionen-stand-v0434" title="Permanent link">&para;</a></h2>
+<h2 id="sql-builder-aktuelle-funktionen-stand-v0440">SQL-Builder — aktuelle Funktionen (Stand v0.44.0)<a class="headerlink" href="#sql-builder-aktuelle-funktionen-stand-v0440" title="Permanent link">&para;</a></h2>
 <p>Über die obigen Screenshots hinaus bietet der SQL-Builder inzwischen:</p>
 <ul>
 <li><strong>Layout — vier Klausel-Sektionen + Aktionsleiste:</strong> Die Klausel-Builder
@@ -1326,6 +1326,12 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:</p>
   in der aktiven Kandidatenpfad-Zeile, neben den Richtungs-Chips. Es gibt keine
   separate Join-Typ-Zeile mehr. Ein <strong>Waisen-Chip</strong> zeigt datengetrieben, welcher Typ
   hier <em>tatsächlich</em> zusätzliche Zeilen bringt (siehe <a href="../outer-joins/">Outer Joins &amp; Waisen</a>).</li>
+<li><strong>Zeilen-Reihenfolge per ↑/↓ (AP-E):</strong> Sortier-Zeilen (ORDER BY) und Spalten-Zeilen
+  tragen kleine ↑/↓-Buttons zum Verschieben innerhalb ihrer Sektion. Die Reihenfolge
+  bestimmt die erzeugte SQL: ORDER BY = Sortier-Priorität, Spalten = SELECT-/GROUP-BY-
+  Reihenfolge. Das ↑ der ersten und das ↓ der letzten Zeile sind deaktiviert; das
+  Verschieben wird mit „Generieren" angewandt. WHERE/HAVING haben bewusst kein Move
+  (ihre Reihenfolge ist kosmetisch).</li>
 <li><strong>Lesbares, mehrzeiliges SQL</strong> (eine Spalte/JOIN/ON-Bedingung pro Zeile,
   ausgerichtete <code>=</code>); das angezeigte/kopierte SELECT ist <strong>direkt lauffähig</strong>
   (Filterwerte eingesetzt, endet mit <code>;</code>) — intern wird parametrisiert read-only

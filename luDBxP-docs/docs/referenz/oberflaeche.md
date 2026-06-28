@@ -135,7 +135,7 @@ Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 
 ---
 
-## SQL-Builder — aktuelle Funktionen (Stand v0.43.4)
+## SQL-Builder — aktuelle Funktionen (Stand v0.44.0)
 
 Über die obigen Screenshots hinaus bietet der SQL-Builder inzwischen:
 
@@ -154,6 +154,12 @@ Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
   in der aktiven Kandidatenpfad-Zeile, neben den Richtungs-Chips. Es gibt keine
   separate Join-Typ-Zeile mehr. Ein **Waisen-Chip** zeigt datengetrieben, welcher Typ
   hier *tatsächlich* zusätzliche Zeilen bringt (siehe [Outer Joins & Waisen](outer-joins.md)).
+- **Zeilen-Reihenfolge per ↑/↓ (AP-E):** Sortier-Zeilen (ORDER BY) und Spalten-Zeilen
+  tragen kleine ↑/↓-Buttons zum Verschieben innerhalb ihrer Sektion. Die Reihenfolge
+  bestimmt die erzeugte SQL: ORDER BY = Sortier-Priorität, Spalten = SELECT-/GROUP-BY-
+  Reihenfolge. Das ↑ der ersten und das ↓ der letzten Zeile sind deaktiviert; das
+  Verschieben wird mit „Generieren" angewandt. WHERE/HAVING haben bewusst kein Move
+  (ihre Reihenfolge ist kosmetisch).
 - **Lesbares, mehrzeiliges SQL** (eine Spalte/JOIN/ON-Bedingung pro Zeile,
   ausgerichtete `=`); das angezeigte/kopierte SELECT ist **direkt lauffähig**
   (Filterwerte eingesetzt, endet mit `;`) — intern wird parametrisiert read-only

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.44.0] — 2026-06-28
+
+### Added
+- SQL-Builder: each ORDER BY row and each extra SELECT/column row now carries
+  small ↑/↓ move buttons (no drag & drop) to reorder rows within their section.
+  Because the form is read in DOM order, reordering changes the generated SQL:
+  ORDER BY rows set the sort priority, column rows set the SELECT/GROUP BY
+  order. The first row's ↑ and the last row's ↓ are disabled. Moving stays
+  staged (no auto-rebuild) — click „Generieren" to apply. WHERE/HAVING rows are
+  deliberately left without move buttons (their order is cosmetic). Markup/CSS
+  + JS only — no route, no `core/` change. (AP-E)
+
+### Fixed
+- Schema-graph legend: the `1-N` chip is now left-aligned with the `N-1` chip
+  (removed a stray `margin-left` that pushed it slightly right). CSS only.
+
 ## [0.43.4] — 2026-06-28
 
 ### Changed

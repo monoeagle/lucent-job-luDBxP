@@ -112,6 +112,22 @@ Doku/AppImage/Projektposter.
 
 - **Fix GROUP-BY-Ableitung**: GROUP BY wird jetzt auch aus Aggregaten in HAVING/ORDER BY abgeleitet, nicht nur aus der SELECT-Liste — vorher erzeugte ein Aggregat allein in HAVING/ORDER BY (bei nicht-aggregierter SELECT-Spalte) GROUP-BY-loses, in strikten DBs ungültiges SQL. Rückwärtskompatibel. Änderung in `core/sqlgen.py` — v0.43.1
 
+**v0.43.2** (2026-06-28):
+
+- **AP-A** — Umbenennung „Join-Builder" → „SQL-Builder" durchgängig im UI (Menü, Tab, Button „Generieren") und in der aktuellen Doku; interne Bezeichner mit umbenannt (`jb-`→`sb-`, `jb_`→`sb_`, `JB_`→`SB_`, `joinbuilder`→`sqlbuilder`). Keine Verhaltensänderung; Endpoint `/api/joinpath` unverändert — v0.43.2
+
+**v0.43.3** (2026-06-28):
+
+- **AP-B** — SQL-Builder-Layout: die Klausel-Builder sind jetzt vier beschriftete Sektionen (Filter, Sortierung, Spalten, HAVING) mit je eigenem kompaktem „+"-Button; Ausgabe-Optionen (DISTINCT, LIMIT, Dialekt) + „Generieren" in einer getrennten Aktionsleiste unten. Nur Markup/CSS — keine Verhaltensänderung, IDs und erzeugte SQL unverändert — v0.43.3
+
+**v0.43.4** (2026-06-28):
+
+- **AP-C+D** — Join-Typ inline + 1-N-Erklärung in Graph-Legende: die Join-Typ-Dropdowns sitzen inline in der aktiven Kandidatenpfad-Zeile (neben den 1-N/N-1-Richtungs-Chips), die separate Join-Typ-Zeile entfällt; die Fan-out-Erklärung wanderte aus der Builder-Hinweiskachel in die Schema-Graph-Legende. Nur Markup/CSS — keine Verhaltensänderung — v0.43.4
+
+**v0.44.0** (2026-06-28):
+
+- **AP-E** — SQL-Builder Zeilen-Move ↑/↓: ORDER-BY- und Spalten-Zeilen tragen kleine ↑/↓-Buttons (kein Drag & Drop) zum Verschieben innerhalb ihrer Sektion. Da das Formular in DOM-Reihenfolge gelesen wird, ändert das Verschieben die SQL: ORDER BY = Sortier-Priorität, Spalten = SELECT-/GROUP-BY-Reihenfolge; ↑ der ersten / ↓ der letzten Zeile deaktiviert; gestaged (kein Auto-Rebuild). WHERE/HAVING bewusst ohne Move. Zusätzlich Legenden-Fix (1-N linksbündig wie N-1). Nur `web/` (JS/CSS) — v0.44.0
+
 > **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:
