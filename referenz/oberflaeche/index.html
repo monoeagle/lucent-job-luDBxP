@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.47.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.48.0">
       
       
         <meta name="author" content="LucentTools">
@@ -716,6 +716,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#modus-entitat-exportieren-database-subsetting-ap-56a" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Modus „Entität exportieren" — Database-Subsetting (AP-56a)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1237,6 +1248,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#modus-entitat-exportieren-database-subsetting-ap-56a" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Modus „Entität exportieren" — Database-Subsetting (AP-56a)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1441,6 +1463,19 @@ Schema</strong> als das reflektierte zeigen, und — falls vorhanden — darunte
 <code>Tabelle.Spalte → Schema.Tabelle.Spalte</code>. Damit ist read-only ablesbar, ob die verbundene
 Datenbank Cross-Schema-FKs nutzt (Entscheidungsgrundlage für eine spätere volle
 Cross-Schema-Join-Unterstützung). SQLite hat keine Schemas → dort immer 0.</p>
+<h2 id="modus-entitat-exportieren-database-subsetting-ap-56a">Modus „Entität exportieren" — Database-Subsetting (AP-56a)<a class="headerlink" href="#modus-entitat-exportieren-database-subsetting-ap-56a" title="Permanent link">&para;</a></h2>
+<p>Der Tab <strong>„Entität exportieren"</strong> berechnet aus einer <strong>Start-Tabelle</strong> und einem optionalen
+<strong>Wurzel-Filter</strong> (Spalte / Operator / Wert) die <strong>referenzielle FK-Hülle</strong> der Start-Entität:
+abhängige Kind-Tabellen werden abwärts verfolgt (Tabellen, die über einen FK auf die
+Start-Tabelle zeigen), Lookup-Eltern aufwärts (Tabellen, auf die die Start-Tabelle zeigt) —
+„down-then-up" ohne Re-Descent, zyklus-sicher und tiefenbegrenzt.</p>
+<p>Jede einbezogene Tabelle erhält eine <strong>Rolle</strong> (<code>root</code> / <code>child</code> / <code>parent</code>) und eine
+Einstufung per <code>via_table</code>-Kante. Der Modus generiert je Tabelle ein <strong>read-only
+SELECT-Skelett</strong>, das zur Wurzel zurückjoined und — falls ein Wurzel-Filter angegeben ist —
+die Zeilen auf den Teilgraphen der gefilterten Wurzel-Entität einschränkt. Der Endpunkt
+<code>/api/subset</code> liefert die Tabellenliste (<code>tables</code>) und die SQL-Skelette (<code>scripts</code>) als JSON.</p>
+<p><strong>Führt nichts aus:</strong> Die Skelette sind Vorschläge — kein Datenbankinhalt wird gelesen,
+verändert oder exportiert. Der Live-Walk gegen echte Zeilenzahlen ist das zurückgestellte AP-56b.</p>
 <h2 id="info-ubersicht-implizite-geratene-foreign-keys-ap-55">Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)<a class="headerlink" href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel listet zusätzlich die <strong>implizit erkannten (geratenen) Foreign Keys</strong>
 mit ihrer Confidence-Stufe (hoch/mittel/niedrig). Jeder Eintrag ist klar als Schätzung
