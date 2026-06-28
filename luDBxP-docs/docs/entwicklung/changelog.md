@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.45.2] — 2026-06-28
+
+### Geändert
+- SQL-Builder-Layout: jede Klausel-Sektion (Filter, Sortierung, Spalten, HAVING)
+  ist jetzt ein einzelner „+ Label"-Button in der linken Spalte mit der ersten
+  Zeile auf derselben Linie — statt einer eigenen „Label [+]"-Kopfzeile. Der
+  ganze Builder ist ein 2-Spalten-Raster; alle Feld-Spalten fluchten mit
+  Start/Ziel. Spart eine Zeile je gefüllter Sektion. Nur Markup/CSS — IDs und
+  erzeugte SQL unverändert. (AP-59)
+
 ## [0.45.1] — 2026-06-28
 
 ### Behoben

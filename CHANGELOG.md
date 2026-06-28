@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.45.2] — 2026-06-28
+
+### Changed
+- SQL-Builder layout: each clause section (Filter, Sortierung, Spalten, HAVING)
+  is now a single „+ Label" button in the left column with its first row on the
+  same line, instead of a separate „Label [+]" header row. The whole builder is
+  one 2-column grid — every field column aligns with Start/Ziel. Saves a row per
+  populated section. Markup/CSS only — IDs and generated SQL unchanged. (AP-59)
+
 ## [0.45.1] — 2026-06-28
 
 ### Fixed

@@ -1,21 +1,51 @@
 {
-  "generatedAt": "2026-06-28T18:59:17",
+  "generatedAt": "2026-06-28T19:31:28",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 79,
+      "commits": 85,
       "kinds": {
-        "docs": 41,
-        "fix": 7,
-        "feat": 26,
+        "docs": 44,
+        "fix": 9,
+        "feat": 27,
         "refactor": 3,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "4fef41b",
+          "subject": "docs: AP-59 — Kommentar zu --sb-label-w (durch '+ Sortierung' begrenzt) (Final-Review-Nit)",
+          "kind": "docs"
+        },
+        {
+          "sha": "7088543",
+          "subject": "fix: AP-59 — Zeilen-Abstand straffen (gap statt gap+margin; :first-child-Regel entfällt)",
+          "kind": "fix"
+        },
+        {
+          "sha": "63fe905",
+          "subject": "feat: SQL-Builder — 2-Spalten-Raster, Sektions-Label als '+ Label'-Button (AP-59)",
+          "kind": "feat"
+        },
+        {
+          "sha": "64922cd",
+          "subject": "docs: Plan AP-59 — SQL-Builder 2-Spalten-Raster (Markup+CSS / Release)",
+          "kind": "docs"
+        },
+        {
+          "sha": "a787b33",
+          "subject": "docs: Design AP-59 — SQL-Builder als einheitliches 2-Spalten-Raster (Sektions-Button + Felder einreihig)",
+          "kind": "docs"
+        },
+        {
+          "sha": "f30725b",
+          "subject": "fix: SQL-Builder HAVING-Layout angeglichen + Release v0.45.1 (AP-58)",
+          "kind": "fix"
+        },
         {
           "sha": "4c8f1ed",
           "subject": "docs: AP-34 in Offene-Arbeitspakete-Liste ergänzt (Gantt/Roadmap-Drift geglättet)",
@@ -1525,17 +1555,17 @@
     }
   },
   "stats": {
-    "totalCommits": 293,
+    "totalCommits": 299,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 131
+        "count": 134
       },
       {
         "kind": "feat",
-        "count": 87
+        "count": 88
       },
       {
         "kind": "other",
@@ -1543,7 +1573,7 @@
       },
       {
         "kind": "fix",
-        "count": 25
+        "count": 27
       },
       {
         "kind": "build",

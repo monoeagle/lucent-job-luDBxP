@@ -147,6 +147,10 @@ Doku/AppImage/Projektposter.
 
 - **AP-58** — Fix HAVING-Layout: die HAVING-Zeilen fluchten jetzt wie Filter/Sortierung/Spalten (gleiches Flex-Layout, gleiche Einrückung, kleiner quadratischer Löschbutton statt 140px-Kasten). HAVING (v0.42.0) entstand vor dem AP-B-Layout und hatte kein eigenes CSS. Nur CSS — v0.45.1
 
+**v0.45.2** (2026-06-28):
+
+- **AP-59** — SQL-Builder 2-Spalten-Raster: die Klausel-Sektionen werden zu „+ Label"-Buttons in der linken Spalte (erste Zeile auf gleicher Linie); alle Felder fluchten mit Start/Ziel, eine Kopfzeile je Sektion gespart. Nur Markup/CSS — v0.45.2
+
 > **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:
