@@ -162,13 +162,14 @@ body {
 .sqlbuilder {
   --sb-ctrl-w: 150px;   /* gemeinsame Breite aller Dropdowns/Eingaben */
   --sb-ctrl-h: 30px;    /* gemeinsame Höhe aller Steuerelemente/Buttons */
+  --sb-label-w: 6.5rem; /* Breite der linken Label-/Button-Spalte */
   position: relative;   /* AP-44: anchor for the top-right fan-out tile */
 }
 .sqlbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .25rem 0; }
 .sqlbuilder label { min-width: 3rem; }
+.sqlbuilder label.sb-rl { min-width: var(--sb-label-w); }  /* Spezifität schlägt die 3rem-Regel */
 .filter-row, .orderby-row, .col-row, .having-row {
   display: flex; gap: .4rem; align-items: center; margin: .3rem 0;
-  padding-left: calc(3rem + .4rem);   /* unter Start/Ziel einrücken */
 }
 
 /* Jeder Dropdown gleich breit; Text-Eingaben fluchten mit. */
@@ -217,14 +218,15 @@ body {
 .sb-move:hover { background: #eef0f4; }
 .sb-move:disabled { opacity: .35; cursor: default; }
 
-/* AP-B: clause sections (label + compact "+") and bottom action bar. */
-.sb-section { margin: .3rem 0; }
-.sb-section-head { display: flex; align-items: center; gap: .4rem; }
-.sb-section-label { min-width: 5.5rem; font-size: .8rem; font-weight: 600; color: #555; }
+/* AP-B/AP-59: clause sections as flex rows — button left, rows right. */
+.sb-section { display: flex; align-items: flex-start; gap: .4rem; margin: .25rem 0; }
+.sb-section .filters { display: flex; flex-direction: column; gap: .3rem; flex: 1 1 auto; min-width: 0; }
+.sb-section .filters > :first-child { margin-top: 0; }
 .sb-add {
-  width: var(--sb-ctrl-h); height: var(--sb-ctrl-h); padding: 0; flex: 0 0 auto;
+  min-width: var(--sb-label-w); height: var(--sb-ctrl-h);
+  padding: 0 .5rem; flex: 0 0 auto; text-align: left;
   border: 1px solid #bcbcc6; border-radius: 4px; background: #f3f3f6;
-  cursor: pointer; line-height: 1; font-size: 1rem;
+  cursor: pointer; font-size: .85rem; line-height: 1;
 }
 .sb-add:hover { background: #e8e8ef; }
 .sb-actions { margin-top: .5rem; }

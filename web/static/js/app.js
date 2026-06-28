@@ -320,30 +320,26 @@ function openSqlBuilder() {
   panel.dataset.built = "1";
   panel.innerHTML =
     `<div class="sqlbuilder">` +
-    `<div class="row"><label>Start</label>` +
+    `<div class="row"><label class="sb-rl">Start</label>` +
     `<select id="start_table"></select> . <select id="start_col"></select>` +
     `<select id="start_agg" class="sb-agg" title="Aggregatfunktion">${aggOptions()}</select></div>` +
-    `<div class="row"><label>Ziel</label>` +
+    `<div class="row"><label class="sb-rl">Ziel</label>` +
     `<select id="target_table"></select> . <select id="target_col"></select>` +
     `<select id="target_agg" class="sb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<button id="btn_swap" class="sb-swap" type="button" title="Start und Ziel vertauschen" ` +
     `aria-label="Start und Ziel vertauschen">⇅</button></div>` +
-    `<div class="sb-section"><div class="sb-section-head">` +
-    `<span class="sb-section-label">Filter</span>` +
-    `<button id="btn_add_filter" class="sb-add" title="Filterbedingung (mit UND verknüpft)">+</button>` +
-    `</div><div class="filters" id="filters"></div></div>` +
-    `<div class="sb-section"><div class="sb-section-head">` +
-    `<span class="sb-section-label">Sortierung</span>` +
-    `<button id="btn_add_orderby" class="sb-add" title="Sortierungsspalte hinzufügen">+</button>` +
-    `</div><div class="filters" id="order_bys"></div></div>` +
-    `<div class="sb-section"><div class="sb-section-head">` +
-    `<span class="sb-section-label">Spalten</span>` +
-    `<button id="btn_add_col" class="sb-add" title="Weitere SELECT-Spalte hinzufügen">+</button>` +
-    `</div><div class="filters" id="extra_cols"></div></div>` +
-    `<div class="sb-section"><div class="sb-section-head">` +
-    `<span class="sb-section-label">HAVING</span>` +
-    `<button id="btn_add_having" class="sb-add" title="Gruppen nach Aggregat filtern (HAVING)">+</button>` +
-    `</div><div class="filters" id="havings"></div></div>` +
+    `<div class="sb-section">` +
+    `<button id="btn_add_filter" class="sb-add" title="Filterbedingung (mit UND verknüpft)">+ Filter</button>` +
+    `<div class="filters" id="filters"></div></div>` +
+    `<div class="sb-section">` +
+    `<button id="btn_add_orderby" class="sb-add" title="Sortierungsspalte hinzufügen">+ Sortierung</button>` +
+    `<div class="filters" id="order_bys"></div></div>` +
+    `<div class="sb-section">` +
+    `<button id="btn_add_col" class="sb-add" title="Weitere SELECT-Spalte hinzufügen">+ Spalten</button>` +
+    `<div class="filters" id="extra_cols"></div></div>` +
+    `<div class="sb-section">` +
+    `<button id="btn_add_having" class="sb-add" title="Gruppen nach Aggregat filtern (HAVING)">+ HAVING</button>` +
+    `<div class="filters" id="havings"></div></div>` +
     `<div class="row sb-actions">` +
     `<label class="sb-check"><input type="checkbox" id="sb_distinct"> DISTINCT</label>` +
     `<label class="sb-limit">LIMIT <input id="sb_limit" type="number" min="1" placeholder="–"></label>` +
