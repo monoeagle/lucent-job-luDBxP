@@ -974,3 +974,33 @@ def test_joinpath_run_executes_having(client, demo_url):
     data = resp.get_json()
     assert "HAVING" in data["sql"]
     assert isinstance(data["rows"], list) and len(data["rows"]) >= 1
+
+
+# ===== COUNT(*) + COUNT(DISTINCT) via route layer =====
+
+def test_joinpath_count_distinct_in_sql(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID", "agg": "COUNT DISTINCT"},
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    assert 'COUNT(DISTINCT "VMwareCluster"."ClusterID")' in resp.get_json()["paths"][0]["sql"]
+
+
+def test_joinpath_run_executes_count_star(client, demo_url):
+    """COUNT(*) per host over the joined VirtualMachine rows, read-only run."""
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Host", "column": "Hostname"},
+        "target": {"table": "VirtualMachine", "column": "VMID", "agg": "COUNT*"},
+        "having": [{"table": "VirtualMachine", "column": "VMID", "agg": "COUNT*", "op": ">=", "value": 1}],
+        "filters": [],
+        "path_index": 0,
+    })
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert "COUNT(*)" in data["sql"]
+    assert "HAVING COUNT(*) >=" in data["sql"]
+    assert isinstance(data["rows"], list) and len(data["rows"]) >= 1

@@ -23,7 +23,7 @@ _ALLOWED_DIRECTIONS = frozenset({"ASC", "DESC"})
 _ALLOWED_HAVING_OPS = frozenset({"=", "!=", "<", ">", "<=", ">="})
 
 # Tier-3: aggregate functions allowed on a Selection. Empty agg = no aggregate.
-_ALLOWED_AGGS = frozenset({"COUNT", "SUM", "AVG", "MIN", "MAX"})
+_ALLOWED_AGGS = frozenset({"COUNT", "SUM", "AVG", "MIN", "MAX", "COUNT*", "COUNT DISTINCT"})
 
 
 def _looks_numeric(s: str) -> bool:
@@ -64,6 +64,19 @@ def _inline_literal(value: object, *, force_string: bool = False) -> str:
     if not force_string and _looks_numeric(s):
         return s.strip()
     return "'" + s.replace("'", "''") + "'"
+
+
+def _render_agg(agg: str, expr: str) -> str:
+    """Render an aggregate over a qualified column expression.
+
+    COUNT* ignores the column and renders COUNT(*); COUNT DISTINCT dedups the
+    column; every other token renders the plain FUNC(col) form.
+    """
+    if agg == "COUNT*":
+        return "COUNT(*)"
+    if agg == "COUNT DISTINCT":
+        return f"COUNT(DISTINCT {expr})"
+    return f"{agg}({expr})"
 
 
 @dataclass(frozen=True)
@@ -208,7 +221,7 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
         if s.agg:
             if s.agg not in _ALLOWED_AGGS:
                 raise ValueError(f"Unsupported aggregate: {s.agg!r}")
-            expr = f"{s.agg}({expr})"
+            expr = _render_agg(s.agg, expr)
         lines.append(f"    {expr}{comma}")
     lines.append(f"FROM {dialect.table_ref(path.tables[0], schema)}")
 
@@ -291,7 +304,7 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
             if agg:
                 if agg not in _ALLOWED_AGGS:
                     raise ValueError(f"Unsupported aggregate: {agg!r}")
-                expr = f"{agg}({expr})"
+                expr = _render_agg(agg, expr)
             ob_parts.append(f"{expr} {direction_upper}")
         tail.append("ORDER BY " + ", ".join(ob_parts))
 
@@ -322,7 +335,7 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
             raise ValueError(f"Unsupported HAVING operator: {h.op}")
         if h.agg not in _ALLOWED_AGGS:
             raise ValueError(f"HAVING requires an aggregate, got: {h.agg!r}")
-        expr = f"{h.agg}({dialect.qualify(h.table, h.column, schema)})"
+        expr = _render_agg(h.agg, dialect.qualify(h.table, h.column, schema))
         key = f"h{i}"
         having_clauses.append(f"{expr} {h.op} :{key}")
         having_inline.append(f"{expr} {h.op} {_inline_literal(h.value)}")

@@ -145,3 +145,16 @@ def test_having_and_order_by_agg_quoted_per_dialect():
                      dialect=MSSQL, schema="dbo")
     assert "HAVING COUNT([dbo].[VirtualMachine].[VMID]) > :h0" in g.sql
     assert "ORDER BY COUNT([dbo].[VirtualMachine].[VMID]) DESC" in g.sql
+
+
+def test_count_distinct_and_star_quoted_per_dialect():
+    from core.sqlgen import MSSQL
+    path = JoinPath(tables=("Host", "VirtualMachine"),
+                    steps=(JoinStep("Host", "VirtualMachine", (("HostID", "HostID"),)),))
+    g = generate_sql(path,
+                     selects=(Selection("Host", "Hostname"),
+                              Selection("VirtualMachine", "VMID", agg="COUNT DISTINCT"),
+                              Selection("VirtualMachine", "VMID", agg="COUNT*")),
+                     dialect=MSSQL, schema="dbo")
+    assert "COUNT(DISTINCT [dbo].[VirtualMachine].[VMID])" in g.sql
+    assert "COUNT(*)" in g.sql            # COUNT(*) is dialect-independent

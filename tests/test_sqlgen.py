@@ -427,3 +427,53 @@ def test_no_having_no_orderby_agg_unchanged():
                      selects=(Selection("Networks", "VLAN"),
                               Selection("VMwareCluster", "ClusterID", agg="COUNT")))
     assert "HAVING" not in g.sql
+
+
+# ===== COUNT(*) + COUNT(DISTINCT) =====
+
+def test_count_star_renders_ignoring_column():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT*")))
+    assert "COUNT(*)" in g.sql
+    # the column attached to the COUNT* selection is ignored in the rendered expr
+    assert 'COUNT(*)("' not in g.sql and 'COUNT("VMwareCluster"."ClusterID")' not in g.sql
+    # group by the non-aggregated select
+    assert 'GROUP BY "Networks"."VLAN"' in g.sql
+
+
+def test_count_distinct_renders_with_column():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT DISTINCT")))
+    assert 'COUNT(DISTINCT "VMwareCluster"."ClusterID")' in g.sql
+    assert 'GROUP BY "Networks"."VLAN"' in g.sql
+
+
+def test_count_star_in_having_and_order_by():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT*")),
+                     having=(Having("VMwareCluster", "ClusterID", "COUNT*", ">", 5),),
+                     order_by=(("VMwareCluster", "ClusterID", "DESC", "COUNT*"),))
+    assert "HAVING COUNT(*) > :h0" in g.sql
+    assert "ORDER BY COUNT(*) DESC" in g.sql
+
+
+def test_count_distinct_in_having_and_order_by():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     having=(Having("VMwareCluster", "ClusterID", "COUNT DISTINCT", ">", 2),),
+                     order_by=(("VMwareCluster", "ClusterID", "ASC", "COUNT DISTINCT"),))
+    assert 'HAVING COUNT(DISTINCT "VMwareCluster"."ClusterID") > :h0' in g.sql
+    assert 'ORDER BY COUNT(DISTINCT "VMwareCluster"."ClusterID") ASC' in g.sql
+
+
+def test_existing_aggregates_unchanged():
+    # Backward compat: the five original tokens still render func(col).
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")))
+    assert 'COUNT("VMwareCluster"."ClusterID")' in g.sql
+    assert "COUNT(*)" not in g.sql
+    assert "DISTINCT" not in g.sql
