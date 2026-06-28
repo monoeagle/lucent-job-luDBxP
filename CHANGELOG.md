@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.43.0] — 2026-06-28
+
+### Added
+- COUNT(*) + COUNT(DISTINCT): two new aggregate options. COUNT(*) counts rows
+  per group (column-ignored; the entry's table is still joined, so
+  'COUNT(*) on table T + GROUP BY K' counts the joined T-rows per group).
+  COUNT(DISTINCT col) counts distinct values. Both work across SELECT, HAVING,
+  and ORDER BY. No route or core-module change (changes in `core/sqlgen.py`
+  and `web/static/js/app.js`). Still open: Cross-Schema joins.
+
 ## [0.42.0] — 2026-06-28
 
 ### Added

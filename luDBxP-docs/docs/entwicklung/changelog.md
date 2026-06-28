@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.43.0] — 2026-06-28
+
+### Hinzugefügt
+- COUNT(*) + COUNT(DISTINCT): zwei neue Aggregat-Optionen. COUNT(*) zählt
+  Zeilen pro Gruppe (Spalte wird ignoriert; die zugehörige Tabelle wird dennoch
+  in den Join eingebunden, d. h. „COUNT(*) auf Tabelle T + GROUP BY K" zählt
+  die eingebundenen T-Zeilen je Gruppe). COUNT(DISTINCT Spalte) zählt
+  eindeutige Werte. Beide Optionen funktionieren in SELECT, HAVING und ORDER BY.
+  Kein neues Core-Modul, kein neuer Endpoint (Änderungen in `core/sqlgen.py`
+  und `web/static/js/app.js`). Noch offen: Cross-Schema-Joins.
+
 ## [0.42.0] — 2026-06-28
 
 ### Hinzugefügt

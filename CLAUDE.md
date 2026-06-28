@@ -79,7 +79,9 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **GROUP BY / Aggregates (Tier-3, v0.41.0):** Each SELECT column may carry an aggregate (COUNT/SUM/AVG/MIN/MAX); GROUP BY is auto-derived from the non-aggregated columns. The generated SQL gains GROUP BY and the read-only run path executes grouped queries.
 
-> **Aggregat-Operationen — HAVING + ORDER BY auf Aggregaten (v0.42.0):** ORDER BY may sort by an aggregate (`ORDER BY COUNT(...) DESC`) and a new HAVING clause filters groups by an aggregate (scalar comparison, parametrised). Clause order: WHERE → GROUP BY → HAVING → ORDER BY → LIMIT. Still open: COUNT(*)/COUNT(DISTINCT), Cross-Schema-Joins.
+> **Aggregat-Operationen — HAVING + ORDER BY auf Aggregaten (v0.42.0):** ORDER BY may sort by an aggregate (`ORDER BY COUNT(...) DESC`) and a new HAVING clause filters groups by an aggregate (scalar comparison, parametrised). Clause order: WHERE → GROUP BY → HAVING → ORDER BY → LIMIT.
+
+> **COUNT(*) + COUNT(DISTINCT) (v0.43.0):** COUNT(*) counts rows per group (column-ignored; the entry's table is still joined) and COUNT(DISTINCT col) counts distinct values. Both work across SELECT, HAVING, and ORDER BY. Still open: Cross-Schema-Joins.
 
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:
