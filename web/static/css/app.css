@@ -99,7 +99,7 @@ body {
 .lg-ring-t { background: #f3b305; margin-left: 4px; }
 .lg-chip { font-size: .6rem; font-weight: 700; padding: 0 .25rem; border-radius: 3px; }
 .lg-one  { background: #e3f4e8; color: #1e7e34; }
-.lg-many { background: #fbeccf; color: #9a6700; margin-left: 3px; }
+.lg-many { background: #fbeccf; color: #9a6700; }
 
 /* --- UML card area (interactive join-path selection, below graph) --- */
 #uml_area {
