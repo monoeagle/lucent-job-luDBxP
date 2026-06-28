@@ -100,6 +100,55 @@ angezeigte/kopierbare Join-SQL ein — dort steht weiterhin nur deine eigentlich
 
 ---
 
+## SQL-Builder — Filter, Sortierung & zusätzliche Spalten
+
+<img src="../images/screenshots/Screenshot_08_luDBxP.jpg"
+     alt="SQL-Builder mit gefüllten Klausel-Sektionen: Start VirtualMachine.Name, Ziel Host.Hostname, eine Zusatzspalte VirtualMachine.OSID, ein Filter VirtualMachine.Name LIKE 'WEB%' und eine Sortierung Host.Hostname ASC. Das generierte SQL zeigt eine mehrspaltige SELECT-Liste, JOIN, WHERE und ORDER BY; die Ergebnistabelle listet zwei Web-VMs.">
+
+Die Klausel-Sektionen (**Filter**, **Sortierung**, **Spalten**) wirken zusammen.
+Beispiel: Start `VirtualMachine.Name`, Ziel `Host.Hostname`, dazu eine **Zusatzspalte**
+(`+ Spalten` → `VirtualMachine.OSID`), ein **Filter** (`+ Filter` → `VirtualMachine.Name
+LIKE 'WEB%'`) und eine **Sortierung** (`+ Sortierung` → `Host.Hostname ASC`). Das erzeugte,
+read-only SQL bündelt sie zu mehrspaltigem `SELECT` + `JOIN` + `WHERE` + `ORDER BY`:
+
+```sql
+SELECT "main"."VirtualMachine"."Name",
+       "main"."Host"."Hostname",
+       "main"."VirtualMachine"."OSID"
+FROM "main"."VirtualMachine"
+JOIN "main"."Host" ON "main"."VirtualMachine"."HostID" = "main"."Host"."HostID"
+WHERE "main"."VirtualMachine"."Name" LIKE 'WEB%'
+ORDER BY "main"."Host"."Hostname" ASC;
+```
+
+---
+
+## SQL-Builder — Aggregat mit GROUP BY & HAVING
+
+<img src="../images/screenshots/Screenshot_09_luDBxP.jpg"
+     alt="SQL-Builder mit Aggregat: Ziel VirtualMachine.VMID mit COUNT-Aggregat, GROUP BY auf Host.Hostname automatisch abgeleitet, eine HAVING-Bedingung COUNT(VMID) > 1 und eine Sortierung nach COUNT DESC. Das SQL zeigt die volle Klauselkette SELECT … COUNT(…) … JOIN … GROUP BY … HAVING … ORDER BY; die Ergebnistabelle listet vier Hosts mit mehr als einer VM.">
+
+Trägt eine SELECT-Spalte ein **Aggregat** (COUNT/SUM/AVG/MIN/MAX), wird das **GROUP BY**
+automatisch aus den nicht-aggregierten Spalten abgeleitet. Beispiel „Hosts mit mehr als
+einer VM": Start `Host.Hostname`, Ziel `VirtualMachine.VMID` mit Aggregat **COUNT**, eine
+**HAVING**-Bedingung (`+ HAVING` → `COUNT(VMID) > 1`) filtert die Gruppen, eine **Sortierung**
+nach `COUNT(VMID) DESC` ordnet sie. Klauselreihenfolge: **WHERE → GROUP BY → HAVING → ORDER BY**.
+
+```sql
+SELECT "main"."Host"."Hostname",
+       COUNT("main"."VirtualMachine"."VMID")
+FROM "main"."Host"
+JOIN "main"."VirtualMachine" ON "main"."Host"."HostID" = "main"."VirtualMachine"."HostID"
+GROUP BY "main"."Host"."Hostname"
+HAVING COUNT("main"."VirtualMachine"."VMID") > 1
+ORDER BY COUNT("main"."VirtualMachine"."VMID") DESC;
+```
+
+Der HAVING-Vergleichswert wird für die read-only Vorschau-Ausführung typgerecht gebunden
+(numerische Werte als Zahl), damit die Gruppenfilterung auch in SQLite korrekt greift.
+
+---
+
 ## SQL-Builder — parallele Tab-Ansicht
 
 <img src="../images/screenshots/Screenshot_05_luDBxP.jpg"
