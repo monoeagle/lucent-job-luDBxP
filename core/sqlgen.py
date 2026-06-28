@@ -315,11 +315,16 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
             tail.append(f"FETCH FIRST {n} ROWS ONLY")
         # "top" was already injected into the SELECT head above.
 
-    # Tier-3 auto-GROUP-BY: group by every non-aggregated select, but only when
-    # at least one select IS aggregated (else this is a plain row query). All
-    # columns aggregated -> empty group_cols -> single-row aggregate, no GROUP BY.
+    # Auto-GROUP-BY: group by every non-aggregated select, but only when there
+    # IS an aggregate somewhere (else this is a plain row query). An aggregate in
+    # SELECT, HAVING, or ORDER BY all count — deriving this from the SELECT list
+    # alone emitted invalid GROUP-BY-less SQL when the sole aggregate sat in
+    # HAVING/ORDER BY. All select columns aggregated -> empty group_cols ->
+    # single-row aggregate, no GROUP BY.
     group_lines: list[str] = []
-    has_agg = any(s.agg for s in selects)
+    has_agg = (any(s.agg for s in selects)
+               or bool(having)
+               or any(len(e) > 3 and e[3] for e in order_by))
     group_cols = [s for s in selects if not s.agg]
     if has_agg and group_cols:
         parts = [dialect.qualify(s.table, s.column, schema) for s in group_cols]

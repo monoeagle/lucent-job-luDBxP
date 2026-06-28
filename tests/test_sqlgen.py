@@ -477,3 +477,39 @@ def test_existing_aggregates_unchanged():
     assert 'COUNT("VMwareCluster"."ClusterID")' in g.sql
     assert "COUNT(*)" not in g.sql
     assert "DISTINCT" not in g.sql
+
+
+def test_aggregate_only_in_having_triggers_group_by():
+    # An aggregate that appears ONLY in HAVING (not in the SELECT list) must still
+    # force GROUP BY over the non-aggregated select columns — else strict engines
+    # reject "Networks.VLAN must appear in GROUP BY".
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     having=(Having("VMwareCluster", "ClusterID", "COUNT", ">", 1),))
+    assert 'GROUP BY "Networks"."VLAN"' in g.sql
+
+
+def test_aggregate_only_in_order_by_triggers_group_by():
+    # Same for an aggregate that appears ONLY in ORDER BY.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     order_by=(("VMwareCluster", "ClusterID", "DESC", "COUNT"),))
+    assert 'GROUP BY "Networks"."VLAN"' in g.sql
+
+
+def test_no_aggregate_anywhere_still_no_group_by():
+    # Backward compat guard: a plain ORDER BY (no aggregate) and no HAVING must
+    # NOT introduce a GROUP BY.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     order_by=(("Networks", "VLAN", "ASC"),))
+    assert "GROUP BY" not in g.sql
+
+
+def test_all_selects_aggregated_with_having_emits_no_group_by():
+    # All select columns aggregated -> no group key -> single-row aggregate, no
+    # GROUP BY, even though HAVING carries an aggregate.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN", agg="COUNT"),),
+                     having=(Having("Networks", "VLAN", "COUNT", ">", 1),))
+    assert "GROUP BY" not in g.sql
