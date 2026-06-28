@@ -11,6 +11,7 @@ from collections import deque
 from dataclasses import dataclass
 
 from core.model import Schema
+from core.sqlgen import Dialect, SQLITE
 
 
 @dataclass(frozen=True)
@@ -122,3 +123,69 @@ def compute_subset(schema: Schema, start_table: str, *,
         SubsetTable(name, deriv[name][0], deriv[name][1]) for name in order
     )
     return SubsetResult(start_table, tables, truncated)
+
+
+_ALLOWED_OPS = {"=", "!=", "<", ">", "<=", ">=", "IN"}
+
+
+@dataclass(frozen=True)
+class SubsetScript:
+    table: str
+    sql: str
+    params: dict
+
+
+def _chain(table: str, edges: dict) -> list:
+    """Tables from ``table`` up to the root, following derivation edges."""
+    chain = [table]
+    while edges[chain[-1]] is not None:
+        chain.append(edges[chain[-1]].via_table)
+    return chain
+
+
+def generate_subset_sql(schema: Schema, result: SubsetResult, root_filter: dict, *,
+                        dialect: Dialect = SQLITE, schema_name: str = "") -> tuple:
+    """Render one parameterised SELECT per closure table, joining back to the
+    root table along its derivation path and filtering by ``root_filter``.
+    Executes nothing."""
+    op = root_filter["op"]
+    if op not in _ALLOWED_OPS:
+        raise ValueError(f"unsupported operator: {op}")
+    col = dialect.quote(root_filter["column"])
+    if op == "IN":
+        vals = root_filter["value"]
+        if not isinstance(vals, (list, tuple)) or not vals:
+            raise ValueError("IN requires a non-empty list value")
+        keys = [f"root{i}" for i in range(len(vals))]
+        params_template = dict(zip(keys, vals))
+        where_tail = "IN (" + ", ".join(f":{k}" for k in keys) + ")"
+    else:
+        params_template = {"root": root_filter["value"]}
+        where_tail = f"{op} :root"
+
+    edges = {t.name: t.edge for t in result.tables}
+    scripts = []
+    for st in result.tables:
+        chain = _chain(st.name, edges)                 # [T, via, …, root]
+        chain_edges = [edges[chain[i]] for i in range(len(chain) - 1)]
+        distinct = any(e.kind == "parent" for e in chain_edges)
+        alias = {i: f"t{i}" for i in range(len(chain))}
+
+        joins = []
+        for i, e in enumerate(chain_edges):
+            a, b = chain[i], chain[i + 1]              # a.edge points to b (via)
+            child_alias = alias[i] if e.child_table == a else alias[i + 1]
+            parent_alias = alias[i + 1] if e.child_table == a else alias[i]
+            conds = " AND ".join(
+                f"{child_alias}.{dialect.quote(lc)} = {parent_alias}.{dialect.quote(rc)}"
+                for lc, rc in e.pairs
+            )
+            joins.append(f"JOIN {dialect.table_ref(b, schema_name)} {alias[i + 1]} ON {conds}")
+
+        root_alias = alias[len(chain) - 1]
+        select = "SELECT DISTINCT t0.*" if distinct else "SELECT t0.*"
+        lines = [select, f"FROM {dialect.table_ref(chain[0], schema_name)} t0"]
+        lines += joins
+        lines.append(f"WHERE {root_alias}.{col} {where_tail}")
+        scripts.append(SubsetScript(st.name, "\n".join(lines) + ";", dict(params_template)))
+    return tuple(scripts)

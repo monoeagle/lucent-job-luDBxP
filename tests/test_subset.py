@@ -111,3 +111,56 @@ def test_unknown_start_table_raises():
     import pytest
     with pytest.raises(ValueError):
         compute_subset(_shop_schema(), "Nope")
+
+
+from core.subset import generate_subset_sql
+from core.sqlgen import SQLITE
+
+
+def _scripts(start="Customer", **kw):
+    r = compute_subset(_shop_schema(), start)
+    flt = kw.pop("flt", {"column": "id", "op": "=", "value": 5})
+    return {s.table: s for s in generate_subset_sql(_shop_schema(), r, flt, **kw)}
+
+
+def test_root_select_filters_on_root():
+    s = _scripts()["Customer"]
+    assert "FROM" in s.sql and "Customer" in s.sql
+    assert ":root" in s.sql and s.params == {"root": 5}
+    assert "DISTINCT" not in s.sql            # root has no parent edge
+
+
+def test_child_select_joins_back_to_root_no_distinct():
+    s = _scripts()["Order"]
+    assert "JOIN" in s.sql and "Customer" in s.sql
+    assert "DISTINCT" not in s.sql            # pure downward path
+    assert s.sql.rstrip().endswith(":root;") or ":root" in s.sql
+
+
+def test_parent_lookup_select_is_distinct():
+    s = _scripts()["Country"]                 # upward lookup of Customer
+    assert s.sql.lstrip().startswith("SELECT DISTINCT")
+    assert "Customer" in s.sql                # joins through Customer back to root
+
+
+def test_schema_qualification_when_given():
+    r = compute_subset(_shop_schema(), "Customer")
+    s = {x.table: x for x in generate_subset_sql(
+        _shop_schema(), r, {"column": "id", "op": "=", "value": 1},
+        dialect=SQLITE, schema_name="dbo")}["Order"]
+    assert '"dbo"."Order"' in s.sql
+
+
+def test_in_operator_expands_params():
+    r = compute_subset(_shop_schema(), "Customer")
+    s = {x.table: x for x in generate_subset_sql(
+        _shop_schema(), r, {"column": "id", "op": "IN", "value": [1, 2, 3]})}["Customer"]
+    assert "IN (" in s.sql
+    assert s.params == {"root0": 1, "root1": 2, "root2": 3}
+
+
+def test_bad_operator_raises():
+    import pytest
+    r = compute_subset(_shop_schema(), "Customer")
+    with pytest.raises(ValueError):
+        generate_subset_sql(_shop_schema(), r, {"column": "id", "op": "DROP", "value": 1})
