@@ -19,7 +19,7 @@ from core.sqlanalyze import analyze as analyze_sql
 
 # Connection fields that may be persisted (never the password).
 _CONN_FIELDS = ("db_type", "host", "port", "database", "user", "filepath",
-                "encrypt", "trust_server_certificate")
+                "encrypt", "trust_server_certificate", "service_name")
 
 _log = logging.getLogger("luDBxP")
 

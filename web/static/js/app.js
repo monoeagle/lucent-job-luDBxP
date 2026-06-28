@@ -11,8 +11,9 @@ const DB_TYPES = [
   { v: "postgresql", label: "PostgreSQL" },
   { v: "mysql", label: "MySQL / MariaDB" },
   { v: "mssql", label: "MS SQL Server" },
+  { v: "oracle", label: "Oracle" },
 ];
-const PORT_DEFAULTS = { postgresql: 5432, mysql: 3306, mssql: 1433 };
+const PORT_DEFAULTS = { postgresql: 5432, mysql: 3306, mssql: 1433, oracle: 1521 };
 
 // ===== Graph selection state (AP-1: interactive join-path selection) =====
 let GRAPH_SEL = { source: null, target: null };
@@ -1437,9 +1438,16 @@ function connFieldsHtml(dbType, c) {
     `<div class="row"><label>Host</label><input id="cf_host" type="text" ` +
     `placeholder="localhost" value="${esc(c.host || "")}"></div>` +
     `<div class="row"><label>Port</label><input id="cf_port" type="number" ` +
-    `value="${esc(port)}"></div>` +
-    `<div class="row"><label>Datenbank</label><input id="cf_database" type="text" ` +
-    `value="${esc(c.database || "")}"></div>` +
+    `value="${esc(port)}"></div>`;
+  // Oracle uses service_name instead of database
+  if (dbType === "oracle") {
+    html += `<div class="row"><label>Service-Name</label><input id="cf_service_name" ` +
+      `type="text" placeholder="XEPDB1" value="${esc(c.service_name || "")}"></div>`;
+  } else {
+    html += `<div class="row"><label>Datenbank</label><input id="cf_database" type="text" ` +
+      `value="${esc(c.database || "")}"></div>`;
+  }
+  html +=
     `<div class="row"><label>Benutzer</label><input id="cf_user" type="text" ` +
     `value="${esc(c.user || "")}"></div>` +
     `<div class="row"><label>Passwort</label><input id="cf_password" type="password"></div>`;
@@ -1467,9 +1475,11 @@ function formParams() {
   if (t === "sqlite") return { db_type: t, filepath: $("cf_filepath").value };
   const p = {
     db_type: t, host: $("cf_host").value, port: $("cf_port").value,
-    database: $("cf_database").value, user: $("cf_user").value,
-    password: $("cf_password").value,
+    user: $("cf_user").value, password: $("cf_password").value,
   };
+  // Oracle uses service_name; all other network types use database
+  if (t === "oracle") p.service_name = $("cf_service_name").value;
+  else p.database = $("cf_database").value;
   if (t === "mssql") {
     p.encrypt = $("cf_encrypt") ? $("cf_encrypt").value : "";
     p.trust_server_certificate = $("cf_trust") ? $("cf_trust").value : "";

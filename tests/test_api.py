@@ -814,3 +814,17 @@ def test_joinpath_run_with_schema_executes(client, inventory_url):
     })
     assert resp.status_code == 200
     assert "columns" in resp.get_json()
+
+
+def test_oracle_connection_persists_service_name(client, tmp_path, monkeypatch):
+    monkeypatch.setenv("LUCENT_CONFIG_DIR", str(tmp_path))
+    save = client.post("/api/connections", json={
+        "name": "Ora", "db_type": "oracle", "host": "h", "port": 1521,
+        "service_name": "XEPDB1", "user": "u",
+    })
+    assert save.status_code == 200
+    got = client.get("/api/connections").get_json()["connections"]
+    ora = next(c for c in got if c["name"] == "Ora")
+    assert ora["db_type"] == "oracle"
+    assert ora["service_name"] == "XEPDB1"
+    assert "password" not in ora
