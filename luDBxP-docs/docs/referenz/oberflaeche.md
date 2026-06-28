@@ -205,6 +205,23 @@ Schema** als das reflektierte zeigen, und — falls vorhanden — darunter die K
 Datenbank Cross-Schema-FKs nutzt (Entscheidungsgrundlage für eine spätere volle
 Cross-Schema-Join-Unterstützung). SQLite hat keine Schemas → dort immer 0.
 
+## Modus „Entität exportieren" — Database-Subsetting (AP-56a)
+
+Der Tab **„Entität exportieren"** berechnet aus einer **Start-Tabelle** und einem optionalen
+**Wurzel-Filter** (Spalte / Operator / Wert) die **referenzielle FK-Hülle** der Start-Entität:
+abhängige Kind-Tabellen werden abwärts verfolgt (Tabellen, die über einen FK auf die
+Start-Tabelle zeigen), Lookup-Eltern aufwärts (Tabellen, auf die die Start-Tabelle zeigt) —
+„down-then-up" ohne Re-Descent, zyklus-sicher und tiefenbegrenzt.
+
+Jede einbezogene Tabelle erhält eine **Rolle** (`root` / `child` / `parent`) und eine
+Einstufung per `via_table`-Kante. Der Modus generiert je Tabelle ein **read-only
+SELECT-Skelett**, das zur Wurzel zurückjoined und — falls ein Wurzel-Filter angegeben ist —
+die Zeilen auf den Teilgraphen der gefilterten Wurzel-Entität einschränkt. Der Endpunkt
+`/api/subset` liefert die Tabellenliste (`tables`) und die SQL-Skelette (`scripts`) als JSON.
+
+**Führt nichts aus:** Die Skelette sind Vorschläge — kein Datenbankinhalt wird gelesen,
+verändert oder exportiert. Der Live-Walk gegen echte Zeilenzahlen ist das zurückgestellte AP-56b.
+
 ## Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)
 
 Das **Info**-Panel listet zusätzlich die **implizit erkannten (geratenen) Foreign Keys**

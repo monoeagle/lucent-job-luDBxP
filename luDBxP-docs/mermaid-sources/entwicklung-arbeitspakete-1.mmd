@@ -152,9 +152,10 @@ flowchart TB
         direction TB
         M1["AP-54\nCross-Schema-FK-Diagnose"]
         M2["AP-55\nImplied-FK-Schärfung"]
-        M3["AP-56\nSubset-Export (FK-Closure)"]
+        M3["AP-56a\nSubset-Footprint"]
+        M3b["AP-56b\nSubset Live-Walk"]
         M4["AP-57\nCross-Schema-Joins (bedingt)"]
-        M1 ~~~ M2 ~~~ M3 ~~~ M4
+        M1 ~~~ M2 ~~~ M3 ~~~ M3b ~~~ M4
     end
 
     %% ── C9 · DB-Objekt-Kategorien (geplant) ──────────────────────────────
@@ -199,7 +200,8 @@ flowchart TB
     class B5 plan
     class K1,K2,K3,K5 done
     class K4 plan
-    class M3,M4 plan
+    class M3 done
+    class M3b,M4 plan
     class M2 done
     class M1 done
     class O1,O2,O3 plan

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.48.0] — 2026-06-28
+
+### Hinzugefügt
+- Database-Subsetting — Schema-Footprint + Export-Skelett (AP-56a): aus Start-Tabelle
+  + Wurzel-Filter wird die referenzielle FK-Hülle berechnet (abhängige Kinder abwärts,
+  Lookup-Eltern aufwärts; „down-then-up" ohne Re-Descent, zyklus-sicher, tiefenbegrenzt)
+  und je einbezogener Tabelle ein read-only SELECT erzeugt, das zur Wurzel zurück-joint.
+  Neuer Modus „Entität exportieren" + read-only Endpoint `/api/subset`. Führt nichts aus;
+  der Live-Walk mit echten Zeilenzahlen ist das zurückgestellte AP-56b.
+
 ## [0.47.0] — 2026-06-28
 
 ### Hinzugefügt

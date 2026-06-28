@@ -1,21 +1,66 @@
 {
-  "generatedAt": "2026-06-28T22:07:52",
+  "generatedAt": "2026-06-28T23:12:39",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 104,
+      "commits": 113,
       "kinds": {
-        "docs": 56,
-        "feat": 32,
+        "feat": 36,
+        "test": 2,
+        "docs": 60,
         "fix": 11,
         "refactor": 3,
-        "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "19a217f",
+          "subject": "feat: AP-56a — UI-Modus 'Entität exportieren' (Footprint-Vorschau + SELECT-Skelett)",
+          "kind": "feat"
+        },
+        {
+          "sha": "7e9a533",
+          "subject": "feat: AP-56a — /api/subset (read-only Footprint + SELECT-Skelett)",
+          "kind": "feat"
+        },
+        {
+          "sha": "fb8b6c4",
+          "subject": "test: AP-56a — Assertion in test_child_select… verschärft (WHERE terminal, kein vacuous or)",
+          "kind": "test"
+        },
+        {
+          "sha": "d804468",
+          "subject": "feat: AP-56a — generate_subset_sql (SELECT je Tabelle, zur Wurzel gejoint)",
+          "kind": "feat"
+        },
+        {
+          "sha": "492f10f",
+          "subject": "feat: AP-56a — down-then-up Subset-Closure (core/subset.py)",
+          "kind": "feat"
+        },
+        {
+          "sha": "1f822da",
+          "subject": "docs: AP-56a Implementierungsplan — Subset-Footprint + Export-Skelett",
+          "kind": "docs"
+        },
+        {
+          "sha": "ad0a5ea",
+          "subject": "docs: AP-56a Spec — Subset-Footprint + Export-Skelett (down-then-up Closure)",
+          "kind": "docs"
+        },
+        {
+          "sha": "720084e",
+          "subject": "docs: Session-13-Handoff + Insight (Kennzahlen theme-nativ + Baseline) + KPI-Zeile #13",
+          "kind": "docs"
+        },
+        {
+          "sha": "b6175a5",
+          "subject": "docs: Projekt-Kennzahlen als theme-native Doku-Seite integriert (statt standalone-HTML-Link)",
+          "kind": "docs"
+        },
         {
           "sha": "f5dd883",
           "subject": "docs: Projekt-Kennzahlen-Dashboard in Doku-Site integriert + Headline-Zahlen auf v0.47.0 aktualisiert",
@@ -1650,17 +1695,17 @@
     }
   },
   "stats": {
-    "totalCommits": 318,
+    "totalCommits": 327,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 146
+        "count": 150
       },
       {
         "kind": "feat",
-        "count": 93
+        "count": 97
       },
       {
         "kind": "other",
@@ -1684,10 +1729,10 @@
       },
       {
         "kind": "test",
-        "count": 2
+        "count": 3
       }
     ],
-    "testCount": 338
+    "testCount": 356
   },
   "phases": []
 }

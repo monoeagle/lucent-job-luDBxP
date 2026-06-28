@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.47.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.48.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1085,7 +1085,7 @@
                   
 
 <h1 id="projekt-kennzahlen">Projekt-Kennzahlen<a class="headerlink" href="#projekt-kennzahlen" title="Permanent link">&para;</a></h1>
-<p>Stand <strong>v0.47.0</strong> · 2026-06-28 · Branch <code>master</code> · Python/Flask · read-only Join-Pfad-Builder.</p>
+<p>Stand <strong>v0.48.0</strong> · 2026-06-28 · Branch <code>master</code> · Python/Flask · read-only Join-Pfad-Builder.</p>
 <p>Die <span class="kz-tag kz-tag--m">gemessen</span>-Werte (Version, Tests, Coverage, Docstrings, Commits, Sessions)
 sind am 2026-06-28 neu erhoben (aus <code>git</code>, <code>pytest --cov</code> und AST-Zählung). Die
 <span class="kz-tag kz-tag--s">Baseline</span>-Werte (COCOMO, LOC) stammen vom 2026-06-27 (v0.34.0) und wurden
@@ -1100,14 +1100,14 @@ bewusst nicht neu vermessen.</p>
 
 <div class="kz-card">
   <div class="kz-lbl">Tempo</div>
-  <div class="kz-val">317 <small>Commits</small></div>
+  <div class="kz-val">329 <small>Commits</small></div>
   <div class="kz-note">13 Sessions an 4 Kalendertagen (25.–28.06.)</div>
 </div>
 
 <div class="kz-card">
   <div class="kz-lbl">Testabdeckung</div>
-  <div class="kz-val kz-good">90 <small>%</small></div>
-  <div class="kz-note">338 Tests grün (2 skip Oracle/MSSQL) · 1526 Statements</div>
+  <div class="kz-val kz-good">91 <small>%</small></div>
+  <div class="kz-note">356 Tests grün (2 skip Oracle/MSSQL) · 1671 Statements</div>
 </div>
 
 <div class="kz-card">
@@ -1175,25 +1175,25 @@ AP&#8209;19 <em>Meta</em>). Autoritative, gepflegte Liste: <a href="../roadmap/"
 </tr>
 <tr>
 <td>Commits</td>
-<td>317</td>
+<td>329</td>
 <td>2026-06-25 → 06-28 · 4 Kalendertage · 13 Sessions · FF-Merges je AP (SDD-Branches)</td>
 <td>gemessen</td>
 </tr>
 <tr>
 <td>Aktuelle Version</td>
-<td>v0.47.0</td>
+<td>v0.48.0</td>
 <td>SemVer je AP (<code>sync_version.py</code>) · von 0.1.0 in 13 Sessions</td>
 <td>gemessen</td>
 </tr>
 <tr>
 <td>Testabdeckung</td>
-<td>90 %</td>
-<td>1526 Statements, 151 ungedeckt · <code>pytest --cov</code> (core/web/launcher/config/app)</td>
+<td>91 %</td>
+<td>1671 Statements, 157 ungedeckt · <code>pytest --cov</code> (core/web/launcher/config/app)</td>
 <td>gemessen</td>
 </tr>
 <tr>
 <td>Tests</td>
-<td>338</td>
+<td>356</td>
 <td>alle grün · 2 skipped (optionale Oracle/MSSQL-Live-Tests) · ~9 s Laufzeit</td>
 <td>gemessen</td>
 </tr>
@@ -1247,7 +1247,7 @@ AP&#8209;19 <em>Meta</em>). Autoritative, gepflegte Liste: <a href="../roadmap/"
   <div class="kz-barrow"><span class="kz-k">web/ (Flask-Routes)</span><div class="kz-bar"><span style="width:87%"></span></div><span class="kz-p">87 %</span></div>
   <div class="kz-barrow"><span class="kz-k">launcher/core.py</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p">89 %</span></div>
   <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI (Tray)</span><div class="kz-bar"><span style="width:0%"></span></div><span class="kz-p kz-muted">0 % *</span></div>
-  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:90%"></span></div><span class="kz-p kz-good">90 %</span></div>
+  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:91%"></span></div><span class="kz-p kz-good">91 %</span></div>
 </div>
 
 <p>* <code>tray.py</code>/<code>__main__.py</code> sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.48.0] — 2026-06-28
+
+### Added
+- Database subsetting — schema footprint + export skeleton (AP-56a): from a start
+  table and a root filter, the tool computes the referential closure (dependent
+  children downward, lookup parents upward, Jailer-style "down-then-up" without
+  re-descent; cycle-safe, depth-limited) and generates one read-only SELECT per
+  included table that joins back to the root. New mode "Entität exportieren" and
+  read-only endpoint `/api/subset`. Executes nothing; the live data-driven walk
+  with real row counts is the deferred AP-56b.
+
 ## [0.47.0] — 2026-06-28
 
 ### Added
