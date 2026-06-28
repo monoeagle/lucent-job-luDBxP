@@ -856,3 +856,49 @@ def test_oracle_connection_persists_service_name(client, tmp_path, monkeypatch):
     assert ora["db_type"] == "oracle"
     assert ora["service_name"] == "XEPDB1"
     assert "password" not in ora
+
+
+# ===== Tier-3: aggregate / GROUP BY via route layer =====
+
+def test_joinpath_aggregate_emits_group_by(client, inventory_url):
+    """An agg on the target column produces FUNC(col) + GROUP BY on the rest."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID", "agg": "COUNT"},
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    sql = resp.get_json()["paths"][0]["sql"]
+    assert 'COUNT("VMwareCluster"."ClusterID")' in sql
+    assert 'GROUP BY "Networks"."VLAN"' in sql
+
+
+def test_joinpath_unknown_aggregate_returns_400(client, inventory_url):
+    """An unsupported aggregate is rejected with 400 (ValueError from generator)."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID", "agg": "MEDIAN"},
+        "filters": [],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+def test_joinpath_run_executes_grouped_aggregate(client, demo_url):
+    """Read-only run path executes a grouped COUNT and returns grouped rows.
+
+    Host 1-N VirtualMachine (VM.HostID -> Host): count VMs per host.
+    """
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Host", "column": "Hostname"},
+        "target": {"table": "VirtualMachine", "column": "VMID", "agg": "COUNT"},
+        "filters": [],
+        "path_index": 0,
+    })
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert "GROUP BY" in data["sql"]
+    assert isinstance(data["rows"], list) and len(data["rows"]) >= 1

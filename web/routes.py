@@ -256,7 +256,7 @@ def _parse_joinpath_params(data: dict, schema):
 
     # --- Extra SELECT columns ---
     extra_selections = tuple(
-        Selection(es["table"], es["column"])
+        Selection(es["table"], es["column"], es.get("agg", ""))
         for es in data.get("extra_selects", [])
     )
 
@@ -325,12 +325,12 @@ def _make_path_gen(p, start: dict, target: dict,
     All extra selects and order_by entries are included; AP-30 guarantees
     their tables are woven into *p*.
     """
-    seen: set[tuple[str, str]] = set()
+    seen: set[tuple[str, str, str]] = set()
     selects_for_path: list[Selection] = []
-    for sel in (Selection(start["table"], start["column"]),
-                Selection(target["table"], target["column"]),
+    for sel in (Selection(start["table"], start["column"], start.get("agg", "")),
+                Selection(target["table"], target["column"], target.get("agg", "")),
                 *extra_selections):
-        key = (sel.table, sel.column)
+        key = (sel.table, sel.column, sel.agg)
         if key not in seen:
             seen.add(key)
             selects_for_path.append(sel)
