@@ -902,3 +902,75 @@ def test_joinpath_run_executes_grouped_aggregate(client, demo_url):
     data = resp.get_json()
     assert "GROUP BY" in data["sql"]
     assert isinstance(data["rows"], list) and len(data["rows"]) >= 1
+
+
+# ===== Tier-3: order_by agg + having via route layer =====
+
+def test_joinpath_order_by_aggregate_in_sql(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID", "agg": "COUNT"},
+        "order_by": [{"table": "VMwareCluster", "column": "ClusterID", "dir": "DESC", "agg": "COUNT"}],
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    assert 'ORDER BY COUNT("VMwareCluster"."ClusterID") DESC' in resp.get_json()["paths"][0]["sql"]
+
+
+def test_joinpath_having_emits_clause(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID", "agg": "COUNT"},
+        "having": [{"table": "VMwareCluster", "column": "ClusterID", "agg": "COUNT", "op": ">", "value": 1}],
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    sql = resp.get_json()["paths"][0]["sql"]
+    assert 'HAVING COUNT("VMwareCluster"."ClusterID") > :h0' in sql
+
+
+def test_joinpath_having_unknown_op_returns_400(client, inventory_url):
+    resp = client.post("/api/joinpath", json={
+        "connection_url": inventory_url,
+        "start": {"table": "Networks", "column": "VLAN"},
+        "target": {"table": "VMwareCluster", "column": "ClusterID", "agg": "COUNT"},
+        "having": [{"table": "VMwareCluster", "column": "ClusterID", "agg": "COUNT", "op": "LIKE", "value": "x"}],
+        "filters": [],
+    })
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+def test_joinpath_having_table_woven_into_path(client, demo_url):
+    """A HAVING on a table off the start/target path is woven in (required_tables)."""
+    resp = client.post("/api/joinpath", json={
+        "connection_url": demo_url,
+        "start": {"table": "Host", "column": "Hostname"},
+        "target": {"table": "Host", "column": "HostID"},
+        "having": [{"table": "VirtualMachine", "column": "VMID", "agg": "COUNT", "op": ">=", "value": 1}],
+        "filters": [],
+    })
+    assert resp.status_code == 200
+    paths = resp.get_json()["paths"]
+    assert paths
+    for p in paths:
+        assert "VirtualMachine" in p["tables"]
+        assert 'HAVING COUNT("VirtualMachine"."VMID") >=' in p["sql"]
+
+
+def test_joinpath_run_executes_having(client, demo_url):
+    """Read-only run executes a grouped query with HAVING and returns grouped rows."""
+    resp = client.post("/api/joinpath/run", json={
+        "connection_url": demo_url,
+        "start": {"table": "Host", "column": "Hostname"},
+        "target": {"table": "VirtualMachine", "column": "VMID", "agg": "COUNT"},
+        "having": [{"table": "VirtualMachine", "column": "VMID", "agg": "COUNT", "op": ">=", "value": 1}],
+        "filters": [],
+        "path_index": 0,
+    })
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert "HAVING" in data["sql"]
+    assert isinstance(data["rows"], list) and len(data["rows"]) >= 1

@@ -10,7 +10,7 @@ import config
 from core.loaders.sqlalchemy_loader import SqlAlchemyLoader, list_schemas
 from core.graph import build_graph
 from core.pathfinder import find_paths, NoPathError
-from core.sqlgen import generate_sql, Selection, Filter, dialect_for, SQLITE
+from core.sqlgen import generate_sql, Selection, Filter, Having, dialect_for, SQLITE
 from core.settings import Settings
 from core.ddl import table_ddl
 from core.datapreview import fetch_rows, execute_select
@@ -217,9 +217,9 @@ _JP_NULL_OPS = frozenset({"IS NULL", "IS NOT NULL"})
 def _parse_joinpath_params(data: dict, schema):
     """Parse and validate all join-path parameters from request JSON.
 
-    Returns a 8-tuple:
+    Returns a 9-tuple:
     ``(start, target, filters, extra_selections, distinct, limit,
-       order_by_validated, required_tables)``
+       order_by_validated, having, required_tables)``
 
     Raises:
         KeyError: If a required field is absent.
@@ -274,16 +274,29 @@ def _parse_joinpath_params(data: dict, schema):
 
     # --- AP-3: ORDER BY — validate columns, keep direction allowlist ---
     raw_order_by = data.get("order_by", [])
-    order_by_validated: list[tuple[str, str, str]] = []
+    order_by_validated: list[tuple] = []
     for ob in raw_order_by:
         tbl = ob.get("table", "")
         col = ob.get("column", "")
         direction = (ob.get("dir") or "ASC").upper()
+        agg = ob.get("agg", "")
         if direction not in ("ASC", "DESC"):
             raise ValueError(f"invalid ORDER BY direction: {direction!r}")
         if not schema.has_column(tbl, col):
             raise ValueError(f"unknown column: {tbl}.{col}")
-        order_by_validated.append((tbl, col, direction))
+        order_by_validated.append((tbl, col, direction, agg))
+
+    # --- HAVING: filter groups by an aggregate (scalar comparison, parametrised) ---
+    raw_having = data.get("having", [])
+    having_validated: list[Having] = []
+    for h in raw_having:
+        tbl = h.get("table", "")
+        col = h.get("column", "")
+        if not schema.has_column(tbl, col):
+            raise ValueError(f"unknown column: {tbl}.{col}")
+        having_validated.append(
+            Having(tbl, col, h.get("agg", ""), h.get("op", ""), h.get("value")))
+    having = tuple(having_validated)
 
     # --- Validate that every referenced column exists in the reflected schema ---
     for tbl, col in ([(start["table"], start["column"]),
@@ -293,16 +306,17 @@ def _parse_joinpath_params(data: dict, schema):
         if not schema.has_column(tbl, col):
             raise ValueError(f"unknown column: {tbl}.{col}")
 
-    # AP-30: every table whose column is referenced (filter, extra select or
-    # ORDER BY) must be woven into the join tree. Order-preserving dedup keeps
-    # path-finding deterministic (no set iteration).
+    # AP-30: every table whose column is referenced (filter, extra select,
+    # ORDER BY or HAVING) must be woven into the join tree. Order-preserving
+    # dedup keeps path-finding deterministic (no set iteration).
     required_tables = tuple(dict.fromkeys(
         [f.table for f in filters]
         + [s.table for s in extra_selections]
-        + [tbl for tbl, _col, _dir in order_by_validated]
+        + [e[0] for e in order_by_validated]
+        + [h.table for h in having_validated]
     ))
     return (start, target, filters, extra_selections,
-            distinct, limit, order_by_validated, required_tables)
+            distinct, limit, order_by_validated, having, required_tables)
 
 
 def _dialect_from_url(url: str):
@@ -319,7 +333,8 @@ def _make_path_gen(p, start: dict, target: dict,
                    order_by_validated: list,
                    dialect=SQLITE,
                    join_types: tuple = (),
-                   schema: str = ""):
+                   schema: str = "",
+                   having: tuple = ()):
     """Build a GeneratedSQL for a single join path.
 
     All extra selects and order_by entries are included; AP-30 guarantees
@@ -348,6 +363,7 @@ def _make_path_gen(p, start: dict, target: dict,
     return generate_sql(p, tuple(selects_for_path), filters,
                         distinct=distinct,
                         order_by=order_by_for_path,
+                        having=having,
                         limit=limit,
                         join_types=tuple(join_types),
                         dialect=dialect,
@@ -385,7 +401,7 @@ def api_joinpath():
 
     try:
         (start, target, filters, extra_selections,
-         distinct, limit, order_by_validated,
+         distinct, limit, order_by_validated, having,
          required_tables) = _parse_joinpath_params(data, schema)
         paths = find_paths(graph, start["table"], target["table"], required_tables)
     except KeyError as exc:
@@ -408,7 +424,8 @@ def api_joinpath():
         for p in paths:
             gen = _make_path_gen(p, start, target, extra_selections, filters,
                                  distinct, limit, order_by_validated, dialect,
-                                 join_types=join_types, schema=schema_name)
+                                 join_types=join_types, schema=schema_name,
+                                 having=having)
             out.append({
                 "tables": list(p.tables),
                 "edges": [[s.left_table, s.right_table] for s in p.steps],
@@ -463,7 +480,7 @@ def api_joinpath_run():
 
     try:
         (start, target, filters, extra_selections,
-         distinct, limit, order_by_validated,
+         distinct, limit, order_by_validated, having,
          required_tables) = _parse_joinpath_params(data, schema)
         paths = find_paths(graph, start["table"], target["table"], required_tables)
     except KeyError as exc:
@@ -488,7 +505,8 @@ def api_joinpath_run():
     try:
         gen = _make_path_gen(paths[path_index], start, target, extra_selections,
                              filters, distinct, limit, order_by_validated,
-                             run_dialect, join_types=join_types, schema=schema_name)
+                             run_dialect, join_types=join_types, schema=schema_name,
+                             having=having)
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
 
@@ -576,7 +594,7 @@ def api_orphan_check():
         schema = SqlAlchemyLoader(url).load(schema_name or None)
         graph = build_graph(schema, bool(data.get("include_implied", False)))
         (start, target, filters, extra_selections, distinct, limit,
-         order_by_validated, required_tables) = _parse_joinpath_params(data, schema)
+         order_by_validated, having, required_tables) = _parse_joinpath_params(data, schema)
         paths = find_paths(graph, start["table"], target["table"], required_tables)
     except (ConnectionError, KeyError, NoPathError, ValueError):
         return jsonify(steps=[])
@@ -597,7 +615,7 @@ def api_orphan_check():
         try:
             gen = _make_path_gen(p, start, target, extra_selections, filters,
                                  distinct, None, [], dialect, join_types=tuple(types),
-                                 schema=schema_name)
+                                 schema=schema_name, having=having)
             wrapped = f"SELECT COUNT(*) AS c FROM (\n{gen.sql}\n) sub"
             res = execute_select(url, wrapped, gen.params, max_rows=1)
             return res["rows"][0][0] if res["rows"] else None
