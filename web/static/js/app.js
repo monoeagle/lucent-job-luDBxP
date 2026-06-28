@@ -84,6 +84,9 @@ function aggOptions() {
     AGG_FUNCS.map((f) => `<option value="${f}">${f}</option>`).join("");
 }
 
+// Aggregat-Ops: scalar comparison operators allowed in a HAVING row.
+const HAVING_OPS = ["=", "!=", "<", ">", "<=", ">="];
+
 // ===== Tabs =====
 function activateTab(id) {
   document.querySelectorAll(".tab").forEach((t) =>
@@ -308,10 +311,12 @@ function openJoinBuilder() {
     `<div class="filters" id="filters"></div>` +
     `<div class="filters" id="order_bys"></div>` +
     `<div class="filters" id="extra_cols"></div>` +
+    `<div class="filters" id="havings"></div>` +
     `<div class="row jb-controls">` +
     `<button id="btn_add_filter" title="Filterbedingung (mit UND verknüpft)">Filter +</button>` +
     `<button id="btn_add_orderby" title="Sortierungsspalte hinzufügen">Sortierung +</button>` +
     `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Spalten +</button>` +
+    `<button id="btn_add_having" title="Gruppen nach Aggregat filtern (HAVING)">HAVING +</button>` +
     `<label class="jb-check"><input type="checkbox" id="jb_distinct"> DISTINCT</label>` +
     `<label class="jb-limit">LIMIT <input id="jb_limit" type="number" min="1" placeholder="–"></label>` +
     `<label class="jb-dialect" title="SQL-Dialekt der generierten Abfrage">Dialekt ` +
@@ -346,6 +351,7 @@ function openJoinBuilder() {
   $("btn_add_filter").addEventListener("click", addFilterRow);
   $("btn_add_orderby").addEventListener("click", addOrderByRow);
   $("btn_add_col").addEventListener("click", addColRow);
+  $("btn_add_having").addEventListener("click", addHavingRow);
   $("btn_build").addEventListener("click", () => runBuild());
   // AP-6: refresh re-reads the form (new sort/columns) and keeps the chosen path;
   // changing the row count only re-fetches the current path (path is unaffected).
@@ -625,6 +631,7 @@ function addOrderByRow() {
   row.innerHTML =
     `<select class="ob-table">${optionList(names)}</select>` +
     `<select class="ob-col"></select>` +
+    `<select class="ob-agg jb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<select class="ob-dir"><option>ASC</option><option>DESC</option></select>` +
     `<button type="button" class="ob-del">✕</button>`;
   const fillOcol = () => {
@@ -644,7 +651,8 @@ function collectOrderBy() {
     const table = row.querySelector(".ob-table").value;
     const column = row.querySelector(".ob-col").value;
     const dir = row.querySelector(".ob-dir").value;
-    if (table && column && dir) out.push({ table, column, dir });
+    const agg = row.querySelector(".ob-agg").value;
+    if (table && column) out.push({ table, column, dir, agg });
   });
   return out;
 }
@@ -677,6 +685,48 @@ function collectExtraSelects() {
     const column = row.querySelector(".c-col").value;
     const agg = row.querySelector(".c-agg").value;
     if (table && column) out.push({ table, column, agg });
+  });
+  return out;
+}
+
+function addHavingRow() {
+  if (!SCHEMA.tables.length) return;
+  const row = document.createElement("div");
+  row.className = "having-row";
+  const names = SCHEMA.tables.map((t) => t.name);
+  row.innerHTML =
+    `<select class="h-agg jb-agg" title="Aggregatfunktion">` +
+    AGG_FUNCS.map((f) => `<option value="${f}">${f}</option>`).join("") + `</select>` +
+    `<select class="h-table">${optionList(names)}</select>` +
+    `<select class="h-col"></select>` +
+    `<select class="h-op">${HAVING_OPS.map((o) => `<option>${o}</option>`).join("")}</select>` +
+    `<input class="h-val" type="text" placeholder="Wert">` +
+    `<button type="button" class="h-del">✕</button>`;
+  const fillHcol = () => {
+    const t = tableByName(row.querySelector(".h-table").value);
+    row.querySelector(".h-col").innerHTML =
+      optionList(t ? t.columns.map((c) => c.name) : []);
+  };
+  fillHcol();
+  row.querySelector(".h-table").addEventListener("change", fillHcol);
+  row.querySelector(".h-val").addEventListener("change", _rebuildIfBuilt);
+  row.querySelector(".h-agg").addEventListener("change", _rebuildIfBuilt);
+  row.querySelector(".h-op").addEventListener("change", _rebuildIfBuilt);
+  row.querySelector(".h-del").addEventListener("click", () => { row.remove(); _rebuildIfBuilt(); });
+  $("havings").appendChild(row);
+}
+
+function collectHaving() {
+  const out = [];
+  document.querySelectorAll("#havings .having-row").forEach((row) => {
+    const table = row.querySelector(".h-table").value;
+    const column = row.querySelector(".h-col").value;
+    const agg = row.querySelector(".h-agg").value;
+    const op = row.querySelector(".h-op").value;
+    const value = row.querySelector(".h-val").value;
+    if (table && column && agg && op && value !== "") {
+      out.push({ table, column, agg, op, value });
+    }
   });
   return out;
 }
@@ -718,6 +768,7 @@ function collectJoinBody() {
     include_implied: includeImplied(),
     distinct: $("jb_distinct") ? $("jb_distinct").checked : false,
     order_by: collectOrderBy(),
+    having: collectHaving(),
     limit: limitRaw !== "" ? parseInt(limitRaw, 10) : null,
     dialect: $("jb_dialect") ? $("jb_dialect").value : "sqlite",
     join_types: JB_JOIN_TYPES,   // AP-41: per-step join types (INNER default)
