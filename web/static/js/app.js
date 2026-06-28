@@ -1777,30 +1777,35 @@ function openConnections() {
     DB_TYPES.map((t) => `<option value="${t.v}">${t.label}</option>`).join("") +
     `</select></div>` +
     `<div id="conn_fields"></div>` +
-    `<div class="row"><button id="conn_connect" type="button">Verbinden</button>` +
-    `<input id="conn_name" type="text" placeholder="Name zum Speichern">` +
+    `<div class="row"><label>Name</label>` +
+    `<input id="conn_name" type="text" placeholder="Name zum Speichern"></div>` +
+    `<div class="conn-actions">` +
+    `<button id="conn_test" type="button">Testen</button>` +
     `<button id="conn_save" type="button">Speichern</button></div>` +
     `<p class="hint" id="conn_msg"></p></div>`;
 
   $("conn_type").addEventListener("change", () => renderConnFields());
   renderConnFields();
-  $("conn_connect").addEventListener("click", async () => {
-    $("conn_msg").textContent = "verbinde…";
+  $("conn_test").addEventListener("click", async () => {
+    const msg = $("conn_msg");
+    msg.className = "hint"; msg.textContent = "teste…";
     try {
-      const r = await postJSON("/api/connect", formParams());
-      setCurrentUrl(r.connection_url);
-      await doConnect();
-    } catch (e) { $("conn_msg").textContent = "Fehler: " + e.message; }
+      await postJSON("/api/connect", formParams());
+      msg.className = "hint ok"; msg.textContent = "✓ Verbindung erfolgreich";
+    } catch (e) {
+      msg.className = "hint err"; msg.textContent = "Fehler: " + e.message;
+    }
   });
   $("conn_save").addEventListener("click", async () => {
+    const msg = $("conn_msg");
     const name = $("conn_name").value.trim();
-    if (!name) { $("conn_msg").textContent = "Name zum Speichern angeben."; return; }
+    if (!name) { msg.className = "hint err"; msg.textContent = "Name zum Speichern angeben."; return; }
     try {
       await postJSON("/api/connections", Object.assign({ name }, formParams()));
       await refreshSavedConnections();
       $("conn_saved").value = name;
-      $("conn_msg").textContent = `„${name}" gespeichert (ohne Passwort).`;
-    } catch (e) { $("conn_msg").textContent = "Fehler: " + e.message; }
+      msg.className = "hint ok"; msg.textContent = `„${name}" gespeichert (ohne Passwort).`;
+    } catch (e) { msg.className = "hint err"; msg.textContent = "Fehler: " + e.message; }
   });
   $("conn_load_saved").addEventListener("click", () => {
     const c = SAVED_CONNS.find((x) => x.name === $("conn_saved").value);
