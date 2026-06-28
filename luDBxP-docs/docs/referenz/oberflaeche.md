@@ -62,8 +62,8 @@ Nach „Generieren" listet der SQL-Builder alle k-kürzesten Pfade (bis zu 5)
 als anklickbare Hyperlinks — jeder Schritt trägt einen **Richtungs-Chip** (grün N-1
 aufsteigend / amber 1-N absteigend, kann Zeilen vervielfachen). Der gewählte Pfad ist
 mit **`[*]`** markiert; hier ist bewusst eine **komplexe Mehrhop-Variante** ausgewählt.
-Pro Join-Schritt lässt sich der **Join-Typ** (INNER/LEFT/RIGHT/FULL) umschalten; ein
-Waisen-Hinweis zeigt, welcher Typ das Ergebnis tatsächlich ändert. Das generierte,
+Der **Join-Typ** (INNER/LEFT/RIGHT/FULL) ist pro Schritt inline in der aktiven
+Pfadzeile wählbar; ein Waisen-Hinweis zeigt, welcher Typ das Ergebnis tatsächlich ändert. Das generierte,
 parametrisierte SQL (mehrzeilig, Composite-Keys ausgerichtet) erscheint darunter,
 gefolgt von der Ergebnistabelle. Im Schema-Graph werden die beteiligten Tabellen und
 Kanten farblich hervorgehoben.
@@ -135,7 +135,7 @@ Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 
 ---
 
-## SQL-Builder — aktuelle Funktionen (Stand v0.43.3)
+## SQL-Builder — aktuelle Funktionen (Stand v0.43.4)
 
 Über die obigen Screenshots hinaus bietet der SQL-Builder inzwischen:
 
@@ -150,11 +150,10 @@ Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
   baut sofort neu) — die warnungsfreie Richtung ist oft die umgekehrte.
 - **Pfad-Auswahl-Indikator:** Die Kandidatenpfade tragen `[*]` (aktiv) / `[ ]` statt
   Bullets; jeder Join-Schritt hat einen **Richtungs-Chip** grün `N-1` / gelb `1-N`.
-  Eine kompakte Kachel oben rechts erklärt `1-N` (Fan-out → siehe
-  [Fan-out-Warnung](fanout-warnung.md)).
-- **Join-Typ pro Schritt** (INNER/LEFT/RIGHT/FULL) über der SQL-Ausgabe; ein
-  **Waisen-Chip** zeigt datengetrieben, welcher Typ hier *tatsächlich* zusätzliche
-  Zeilen bringt (siehe [Outer Joins & Waisen](outer-joins.md)).
+- **Join-Typ pro Schritt** (INNER/LEFT/RIGHT/FULL): Die Dropdowns sitzen direkt inline
+  in der aktiven Kandidatenpfad-Zeile, neben den Richtungs-Chips. Es gibt keine
+  separate Join-Typ-Zeile mehr. Ein **Waisen-Chip** zeigt datengetrieben, welcher Typ
+  hier *tatsächlich* zusätzliche Zeilen bringt (siehe [Outer Joins & Waisen](outer-joins.md)).
 - **Lesbares, mehrzeiliges SQL** (eine Spalte/JOIN/ON-Bedingung pro Zeile,
   ausgerichtete `=`); das angezeigte/kopierte SELECT ist **direkt lauffähig**
   (Filterwerte eingesetzt, endet mit `;`) — intern wird parametrisiert read-only
@@ -169,8 +168,11 @@ Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 
 Oben links erklärt eine kleine Legende die Hervorhebungen: **blau** = Analyzer
 (gelesen/Joins), **rot** = Analyzer (geschrieben), **orange** = Join-Pfad,
-**N-1/1-N** = Join-Richtung, **grün/amber** = Start/Ziel. Join-Pfad- und
-Analyzer-Markierungen sind wechselseitig exklusiv.
+**N-1/1-N** = Join-Richtung (N-1 sicher / 1-N kann Zeilen vervielfachen),
+**grün/amber** = Start/Ziel. Join-Pfad- und Analyzer-Markierungen sind
+wechselseitig exklusiv. Die Fan-out-Bedeutung (1-N vervielfacht Zeilen / N-1
+sicher) wird in der Legende erklärt; der SQL-Builder zeigt keine separate
+Fan-out-Kachel mehr.
 
 ## SQL-Analyzer
 

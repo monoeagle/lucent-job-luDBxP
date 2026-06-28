@@ -672,10 +672,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sql-builder-aktuelle-funktionen-stand-v0433" class="md-nav__link">
+  <a href="#sql-builder-aktuelle-funktionen-stand-v0434" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        SQL-Builder — aktuelle Funktionen (Stand v0.43.3)
+        SQL-Builder — aktuelle Funktionen (Stand v0.43.4)
       </span>
     </span>
   </a>
@@ -1144,10 +1144,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sql-builder-aktuelle-funktionen-stand-v0433" class="md-nav__link">
+  <a href="#sql-builder-aktuelle-funktionen-stand-v0434" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        SQL-Builder — aktuelle Funktionen (Stand v0.43.3)
+        SQL-Builder — aktuelle Funktionen (Stand v0.43.4)
       </span>
     </span>
   </a>
@@ -1236,8 +1236,8 @@ Foreign Keys. Weitere Sub-Tabs: <strong>Daten</strong> (erste 100 Zeilen als Tab
 als anklickbare Hyperlinks — jeder Schritt trägt einen <strong>Richtungs-Chip</strong> (grün N-1
 aufsteigend / amber 1-N absteigend, kann Zeilen vervielfachen). Der gewählte Pfad ist
 mit <strong><code>[*]</code></strong> markiert; hier ist bewusst eine <strong>komplexe Mehrhop-Variante</strong> ausgewählt.
-Pro Join-Schritt lässt sich der <strong>Join-Typ</strong> (INNER/LEFT/RIGHT/FULL) umschalten; ein
-Waisen-Hinweis zeigt, welcher Typ das Ergebnis tatsächlich ändert. Das generierte,
+Der <strong>Join-Typ</strong> (INNER/LEFT/RIGHT/FULL) ist pro Schritt inline in der aktiven
+Pfadzeile wählbar; ein Waisen-Hinweis zeigt, welcher Typ das Ergebnis tatsächlich ändert. Das generierte,
 parametrisierte SQL (mehrzeilig, Composite-Keys ausgerichtet) erscheint darunter,
 gefolgt von der Ergebnistabelle. Im Schema-Graph werden die beteiligten Tabellen und
 Kanten farblich hervorgehoben.</p>
@@ -1308,7 +1308,7 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:</p>
 (<code>Quelle: VirtualMachine.HostID → Ziel: Host.HostID</code>) und bietet einen
 „Auswahl zurücksetzen"-Button.</p>
 <hr />
-<h2 id="sql-builder-aktuelle-funktionen-stand-v0433">SQL-Builder — aktuelle Funktionen (Stand v0.43.3)<a class="headerlink" href="#sql-builder-aktuelle-funktionen-stand-v0433" title="Permanent link">&para;</a></h2>
+<h2 id="sql-builder-aktuelle-funktionen-stand-v0434">SQL-Builder — aktuelle Funktionen (Stand v0.43.4)<a class="headerlink" href="#sql-builder-aktuelle-funktionen-stand-v0434" title="Permanent link">&para;</a></h2>
 <p>Über die obigen Screenshots hinaus bietet der SQL-Builder inzwischen:</p>
 <ul>
 <li><strong>Layout — vier Klausel-Sektionen + Aktionsleiste:</strong> Die Klausel-Builder
@@ -1321,12 +1321,11 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:</p>
 <li><strong>Start ⇄ Ziel tauschen</strong> per ⇄-Knopf neben den Ziel-Dropdowns (Tabelle + Spalte;
   baut sofort neu) — die warnungsfreie Richtung ist oft die umgekehrte.</li>
 <li><strong>Pfad-Auswahl-Indikator:</strong> Die Kandidatenpfade tragen <code>[*]</code> (aktiv) / <code>[ ]</code> statt
-  Bullets; jeder Join-Schritt hat einen <strong>Richtungs-Chip</strong> grün <code>N-1</code> / gelb <code>1-N</code>.
-  Eine kompakte Kachel oben rechts erklärt <code>1-N</code> (Fan-out → siehe
-  <a href="../fanout-warnung/">Fan-out-Warnung</a>).</li>
-<li><strong>Join-Typ pro Schritt</strong> (INNER/LEFT/RIGHT/FULL) über der SQL-Ausgabe; ein
-  <strong>Waisen-Chip</strong> zeigt datengetrieben, welcher Typ hier <em>tatsächlich</em> zusätzliche
-  Zeilen bringt (siehe <a href="../outer-joins/">Outer Joins &amp; Waisen</a>).</li>
+  Bullets; jeder Join-Schritt hat einen <strong>Richtungs-Chip</strong> grün <code>N-1</code> / gelb <code>1-N</code>.</li>
+<li><strong>Join-Typ pro Schritt</strong> (INNER/LEFT/RIGHT/FULL): Die Dropdowns sitzen direkt inline
+  in der aktiven Kandidatenpfad-Zeile, neben den Richtungs-Chips. Es gibt keine
+  separate Join-Typ-Zeile mehr. Ein <strong>Waisen-Chip</strong> zeigt datengetrieben, welcher Typ
+  hier <em>tatsächlich</em> zusätzliche Zeilen bringt (siehe <a href="../outer-joins/">Outer Joins &amp; Waisen</a>).</li>
 <li><strong>Lesbares, mehrzeiliges SQL</strong> (eine Spalte/JOIN/ON-Bedingung pro Zeile,
   ausgerichtete <code>=</code>); das angezeigte/kopierte SELECT ist <strong>direkt lauffähig</strong>
   (Filterwerte eingesetzt, endet mit <code>;</code>) — intern wird parametrisiert read-only
@@ -1340,8 +1339,11 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:</p>
 <h2 id="schema-graph-legende">Schema-Graph — Legende<a class="headerlink" href="#schema-graph-legende" title="Permanent link">&para;</a></h2>
 <p>Oben links erklärt eine kleine Legende die Hervorhebungen: <strong>blau</strong> = Analyzer
 (gelesen/Joins), <strong>rot</strong> = Analyzer (geschrieben), <strong>orange</strong> = Join-Pfad,
-<strong>N-1/1-N</strong> = Join-Richtung, <strong>grün/amber</strong> = Start/Ziel. Join-Pfad- und
-Analyzer-Markierungen sind wechselseitig exklusiv.</p>
+<strong>N-1/1-N</strong> = Join-Richtung (N-1 sicher / 1-N kann Zeilen vervielfachen),
+<strong>grün/amber</strong> = Start/Ziel. Join-Pfad- und Analyzer-Markierungen sind
+wechselseitig exklusiv. Die Fan-out-Bedeutung (1-N vervielfacht Zeilen / N-1
+sicher) wird in der Legende erklärt; der SQL-Builder zeigt keine separate
+Fan-out-Kachel mehr.</p>
 <h2 id="sql-analyzer">SQL-Analyzer<a class="headerlink" href="#sql-analyzer" title="Permanent link">&para;</a></h2>
 <p>Der <strong>SQL-Analyzer</strong>-Tab parst ein eingefügtes Statement <strong>read-only</strong> (nie
 ausgeführt) via sqlglot und zeigt: Typ, <strong>Komplexitäts-Score</strong> (A–E),

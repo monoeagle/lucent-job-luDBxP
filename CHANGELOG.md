@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.43.4] — 2026-06-28
+
+### Changed
+- SQL-Builder: the per-step join-type dropdowns now sit inline in the active
+  candidate-path row (next to the 1-N/N-1 direction chips), so the separate
+  join-type row is gone. The fan-out explanation moved from the builder hint
+  tile into the schema-graph legend (1-N vervielfacht Zeilen / N-1 sicher).
+  Markup/CSS only — no behavior change.
+
 ## [0.43.3] — 2026-06-28
 
 ### Changed

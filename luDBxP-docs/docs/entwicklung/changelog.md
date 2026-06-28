@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.43.4] — 2026-06-28
+
+### Geändert
+- SQL-Builder: die Join-Typ-Dropdowns sitzen jetzt inline in der aktiven
+  Kandidatenpfad-Zeile (neben den 1-N/N-1-Richtungs-Chips), die separate
+  Join-Typ-Zeile entfällt. Die Fan-out-Erklärung wanderte aus der Builder-
+  Hinweiskachel in die Schema-Graph-Legende (1-N vervielfacht Zeilen / N-1
+  sicher). Nur Markup/CSS — keine Verhaltensänderung.
+
 ## [0.43.3] — 2026-06-28
 
 ### Geändert
