@@ -1,17 +1,27 @@
 {
-  "generatedAt": "2026-06-29T01:05:09",
+  "generatedAt": "2026-06-29T01:17:27",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 10,
+      "commits": 12,
       "kinds": {
-        "docs": 8,
+        "docs": 10,
         "fix": 2
       },
       "list": [
+        {
+          "sha": "2b4185d",
+          "subject": "docs: Session-14-Handoff + Insight (Doku-Arbeit als Bug-Detektor) + KPI-Zeile #14",
+          "kind": "docs"
+        },
+        {
+          "sha": "55bb189",
+          "subject": "docs: zwei neue Backlog-APs dokumentiert — AP-65 (Analyzer Zeilen/Fehlerstelle) + AP-66 (Views mit Prozeduren/Funktionen)",
+          "kind": "docs"
+        },
         {
           "sha": "cfc4e54",
           "subject": "docs: Site-Artefakte nach v0.48.3-Build",
@@ -1799,13 +1809,13 @@
     }
   },
   "stats": {
-    "totalCommits": 346,
+    "totalCommits": 348,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 164
+        "count": 166
       },
       {
         "kind": "feat",

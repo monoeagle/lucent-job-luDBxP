@@ -81,13 +81,14 @@ flowchart TB
         J30["AP-F\nAnalyzer-Vorschläge"]
         J31["AP-58\nFix HAVING-Layout"]
         J32["AP-59\n2-Spalten-Raster"]
+        J33["AP-65\nAnalyzer Zeilen/Fehlerstelle"]
         %% In 5 parallele Spalten gepackt (statt einer 25-Boxen-Säule) → kompaktes Gitter
         J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5
         J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10
         J11 ~~~ J12 ~~~ J13 ~~~ J14 ~~~ J15
         J16 ~~~ J17 ~~~ J18 ~~~ J19 ~~~ J20
         J21 ~~~ J22 ~~~ J23 ~~~ J24 ~~~ J25
-        J26 ~~~ J27 ~~~ J28 ~~~ J29 ~~~ J30 ~~~ J31 ~~~ J32
+        J26 ~~~ J27 ~~~ J28 ~~~ J29 ~~~ J30 ~~~ J31 ~~~ J32 ~~~ J33
     end
 
     %% ── C4 · Graph-Visualisierung ────────────────────────────────────────
@@ -164,7 +165,8 @@ flowchart TB
         O1["AP-63·S1\nIndizes + Check"]
         O2["AP-63·S2\nSequences/Mat-Views/Trigger"]
         O3["AP-63·S3\nProcedures/Functions"]
-        O1 ~~~ O2 ~~~ O3
+        O4["AP-66\nViews mit Routinen"]
+        O1 ~~~ O2 ~~~ O3 ~~~ O4
     end
 
     %% ── C10 · Verbindungs-UX & Demo-Daten (geplant) ──────────────────────
@@ -173,7 +175,8 @@ flowchart TB
         P1["AP-60\nConnection-Form-Ausrichtung"]
         P2["AP-61\nDemo-CMDB → volle CMDB"]
         P3["AP-62\nPasswort-Keyring (bedingt)"]
-        P1 ~~~ P2 ~~~ P3
+        P4["AP-64\nVerbindungsform-Umbau"]
+        P1 ~~~ P2 ~~~ P3 ~~~ P4
     end
 
     %% ── Cluster-übergreifende Abhängigkeiten ─────────────────────────────
@@ -204,6 +207,7 @@ flowchart TB
     class M3b,M4 plan
     class M2 done
     class M1 done
-    class O1,O2,O3 plan
+    class O1,O2,O3,O4 plan
     class P2,P3 plan
-    class P1 done
+    class P1,P4 done
+    class J33 plan
