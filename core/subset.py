@@ -1,0 +1,124 @@
+"""Schema-level database subsetting (AP-56a): the referential footprint of an
+entity. Pure schema logic — executes nothing. The live data-driven walk is AP-56b.
+
+Closure rule (Jailer-style "down-then-up"): from the start table, collect
+dependents downward via reverse foreign keys (children), then collect the
+lookups those rows need upward via foreign keys (parents) WITHOUT descending
+again — this keeps the subset referentially complete without exploding.
+"""
+import heapq
+from collections import deque
+from dataclasses import dataclass
+
+from core.model import Schema
+
+
+@dataclass(frozen=True)
+class SubsetEdge:
+    via_table: str                          # predecessor in the derivation tree
+    pairs: tuple[tuple[str, str], ...]      # (child_local_col, parent_ref_col)
+    child_table: str                        # which endpoint holds the FK (child side)
+    kind: str                               # "child" | "parent" | "root"
+
+
+@dataclass(frozen=True)
+class SubsetTable:
+    name: str
+    edge: "SubsetEdge | None"               # None only for the root table
+    depth: int
+
+
+@dataclass(frozen=True)
+class SubsetResult:
+    start: str
+    tables: tuple[SubsetTable, ...]         # topologically sorted (parents first)
+    truncated: bool
+
+
+def _adjacency(schema: Schema, include_implied: bool):
+    """Directed FK adjacency. Returns (parents_of, children_of), each
+    table -> list of (other_table, pairs) where pairs are (child_local, parent_ref)."""
+    parents_of: dict[str, list] = {t.name: [] for t in schema.tables}
+    children_of: dict[str, list] = {t.name: [] for t in schema.tables}
+
+    def add(child: str, parent: str, pairs):
+        parents_of.setdefault(child, []).append((parent, pairs))
+        children_of.setdefault(parent, []).append((child, pairs))
+
+    for t in schema.tables:
+        for fk in t.foreign_keys:
+            add(t.name, fk.ref_table, fk.column_pairs)
+    if include_implied:
+        from core.implied import find_implied_fks
+        for ifk in find_implied_fks(schema):
+            add(ifk.table, ifk.ref_table, ((ifk.column, ifk.ref_column),))
+    return parents_of, children_of
+
+
+def _toposort(names: set, parents_of) -> list:
+    """Parents before children, stable by name; cycle leftovers appended by name."""
+    indeg = {n: 0 for n in names}
+    adj: dict[str, set] = {n: set() for n in names}
+    for child in names:
+        for parent, _ in parents_of.get(child, []):
+            if parent in names and parent != child and child not in adj[parent]:
+                adj[parent].add(child)
+                indeg[child] += 1
+    heap = [n for n in names if indeg[n] == 0]
+    heapq.heapify(heap)
+    order: list = []
+    while heap:
+        n = heapq.heappop(heap)
+        order.append(n)
+        for c in sorted(adj[n]):
+            indeg[c] -= 1
+            if indeg[c] == 0:
+                heapq.heappush(heap, c)
+    order.extend(sorted(n for n in names if n not in order))
+    return order
+
+
+def compute_subset(schema: Schema, start_table: str, *,
+                   include_implied: bool = False, max_depth: int = 5) -> SubsetResult:
+    """Compute the referential footprint of ``start_table`` (down-then-up)."""
+    known = {t.name for t in schema.tables}
+    if start_table not in known:
+        raise ValueError(f"unknown table: {start_table}")
+    parents_of, children_of = _adjacency(schema, include_implied)
+
+    # table -> (edge | None, depth). Root first.
+    deriv: dict[str, tuple] = {start_table: (None, 0)}
+    truncated = False
+
+    # Phase 1: downward (dependents) — depth-limited.
+    dq = deque([(start_table, 0)])
+    downward = [start_table]
+    while dq:
+        cur, d = dq.popleft()
+        if d >= max_depth:
+            if children_of.get(cur):
+                truncated = True
+            continue
+        for child, pairs in children_of.get(cur, []):
+            if child not in known or child in deriv:
+                continue
+            deriv[child] = (SubsetEdge(cur, pairs, child, "child"), d + 1)
+            downward.append(child)
+            dq.append((child, d + 1))
+
+    # Phase 2: upward (lookups) from root ∪ downward — no re-descent, unbounded
+    # (referential completeness; the visited guard keeps it finite).
+    dq = deque((t, deriv[t][1]) for t in downward)
+    while dq:
+        cur, d = dq.popleft()
+        for parent, pairs in parents_of.get(cur, []):
+            if parent not in known or parent in deriv:
+                continue
+            deriv[parent] = (SubsetEdge(cur, pairs, cur, "parent"), d + 1)
+            dq.append((parent, d + 1))
+
+    order = _toposort(set(deriv), parents_of)
+    tables = tuple(
+        SubsetTable(name, deriv[name][0], deriv[name][1]) for name in order
+    )
+    return SubsetResult(start_table, tables, truncated)
