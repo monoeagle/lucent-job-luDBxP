@@ -90,7 +90,7 @@ class SqlAlchemyLoader(SchemaLoader):
                 except SQLAlchemyError:
                     uidx = ()
                 try:
-                    tcomment = (insp.get_table_comment(tname, schema=schema)
+                    tcomment = ((insp.get_table_comment(tname, schema=schema) or {})
                                 .get("text") or "")
                 except (NotImplementedError, SQLAlchemyError):
                     tcomment = ""

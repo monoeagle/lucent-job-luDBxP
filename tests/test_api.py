@@ -840,6 +840,7 @@ def test_schema_endpoint_comment_key_present_for_sqlite(client, inventory_url):
     data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
     t = data["tables"][0]
     assert t["comment"] == ""
+    assert t["columns"]  # nicht-leer: all() darf nicht vacuous bestehen
     assert all(c["comment"] == "" for c in t["columns"])
 
 

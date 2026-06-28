@@ -733,7 +733,7 @@ function renderJoinTypeControls(i) {
     const cur = (JB_JOIN_TYPES[k] || "INNER").toUpperCase();
     const opts = JB_JOIN_OPTS.map((o) =>
       `<option${o === cur ? " selected" : ""}>${o}</option>`).join("");
-    return `<label class="jt-step" title="${esc(s.left)} → ${esc(s.right)}">` +
+    return `<label class="jt-step" title="${escAttr(s.left)} → ${escAttr(s.right)}">` +
       `${esc(s.left)}→${esc(s.right)} <select data-step="${k}">${opts}</select>` +
       `<span class="jt-orphan" data-step="${k}"></span></label>`;
   }).join("");

@@ -134,6 +134,19 @@ def test_load_table_comment_not_implemented_falls_back_empty(monkeypatch):
     assert schema.table("t").comment == ""
 
 
+def test_load_table_comment_sqlalchemy_error_falls_back_empty(monkeypatch):
+    from sqlalchemy.exc import SQLAlchemyError
+    _patch_loader(monkeypatch, _FakeInspector(SQLAlchemyError))
+    schema = SqlAlchemyLoader("fake://").load()
+    assert schema.table("t").comment == ""
+
+
+def test_load_table_comment_text_none_falls_back_empty(monkeypatch):
+    _patch_loader(monkeypatch, _FakeInspector({"text": None}))
+    schema = SqlAlchemyLoader("fake://").load()
+    assert schema.table("t").comment == ""
+
+
 def test_load_sqlite_has_empty_comments(inventory_url):
     # SQLite kennt keine Kommentare: kein comment-Key, get_table_comment wirft
     # NotImplementedError → alles fällt sauber auf "" zurück, kein Crash.
