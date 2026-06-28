@@ -355,9 +355,7 @@ function openSqlBuilder() {
     `<option value="mssql">MSSQL</option>` +
     `<option value="oracle">Oracle</option></select></label>` +
     `<button id="btn_build">Generieren</button></div>` +
-    `<div class="sb-fanout-hint" id="sb_fanout_hint"></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
-    `<div class="row sb-join-types" id="sb_join_types"></div>` +
     `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
     `title="SELECT in die Zwischenablage kopieren" aria-label="SELECT kopieren">` +
     `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" ` +
@@ -823,29 +821,8 @@ function sbSelectedMaxRows() {
   return sel.value === "0" ? null : parseInt(sel.value, 10);
 }
 
-// AP-41: render one join-type dropdown per step of the active path. Changing a
-// type updates SB_JOIN_TYPES (per step) and rebuilds the SQL (and result).
+// AP-41: join-type options (used by renderPathSeq for the active path's inline selects).
 const SB_JOIN_OPTS = ["INNER", "LEFT", "RIGHT", "FULL"];
-function renderJoinTypeControls(i) {
-  const box = $("sb_join_types");
-  if (!box) return;
-  const steps = (SB_LAST && SB_LAST.paths[i] && SB_LAST.paths[i].steps) || [];
-  if (!steps.length) { box.innerHTML = ""; return; }
-  box.innerHTML = `<span class="jt-lbl">Join-Typ:</span>` + steps.map((s, k) => {
-    const cur = (SB_JOIN_TYPES[k] || "INNER").toUpperCase();
-    const opts = SB_JOIN_OPTS.map((o) =>
-      `<option${o === cur ? " selected" : ""}>${o}</option>`).join("");
-    return `<label class="jt-step" title="${escAttr(s.left)} → ${escAttr(s.right)}">` +
-      `${esc(s.left)}→${esc(s.right)} <select data-step="${k}">${opts}</select>` +
-      `<span class="jt-orphan" data-step="${k}"></span></label>`;
-  }).join("");
-  box.querySelectorAll("select").forEach((sel) =>
-    sel.addEventListener("change", () => {
-      SB_JOIN_TYPES[+sel.dataset.step] = sel.value;
-      runBuild(true);   // regenerate SQL + result with the new join types
-    }));
-  _loadOrphans(i).then(() => _applyOrphanHints(i));   // AP-47: flag orphan-revealing types
-}
 
 // AP-47: which join types at each step would actually change the result (count-
 // based, path-context aware). Result depends on the other steps' current types,
@@ -864,7 +841,8 @@ async function _loadOrphans(i) {
 
 function _applyOrphanHints(i) {
   const flags = SB_ORPHANS_CACHE[_orphanKey(i)];
-  const box = $("sb_join_types");
+  const list = $("path_list");
+  const box = list ? list.querySelector(".path-seq") : null;
   if (!flags || !box) return;
   box.querySelectorAll("select").forEach((sel) => {
     const f = flags[+sel.dataset.step];
@@ -991,15 +969,47 @@ function _showColMenu(th, meta) {
   setTimeout(() => document.addEventListener("click", _closeColMenu, true), 0);
 }
 
+// Render the candidate-path list. The active path is interactive (inline
+// join-type selects); the others are clickable links that switch the active
+// path. Re-rendered whenever the active index changes (so selects follow it).
+function _renderPathList() {
+  const list = $("path_list");
+  if (!list || !SB_LAST) return;
+  list.innerHTML = SB_LAST.paths.map((p, i) => {
+    const active = i === SB_PATH_IDX;
+    const seq = renderPathSeq(p, active);
+    const inner = active
+      ? `<span class="path-seq">${seq}</span>`
+      : `<a href="#" data-i="${i}">${seq}</a>`;
+    return `<li data-i="${i}"><span class="path-mark"></span>${inner}</li>`;
+  }).join("");
+  list.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
+  _markActivePath();
+  _wireActiveJoinTypes();
+}
+
+// Wire the active path's inline join-type selects to SB_JOIN_TYPES + rebuild,
+// and load/apply the AP-47 orphan hints onto them.
+function _wireActiveJoinTypes() {
+  const list = $("path_list");
+  if (!list) return;
+  list.querySelectorAll(".path-seq .sb-jt").forEach((sel) =>
+    sel.addEventListener("change", () => {
+      SB_JOIN_TYPES[+sel.dataset.step] = sel.value;
+      runBuild(true);
+    }));
+  _loadOrphans(SB_PATH_IDX).then(() => _applyOrphanHints(SB_PATH_IDX));
+}
+
 // Execute the SELECT for path `i` and render its rows into #join_result.
 async function renderJoinResult(i) {
   if (!SB_LAST || !SB_LAST.paths[i]) return;
   SB_PATH_IDX = i;
-  _markActivePath();
+  _renderPathList();
   // Show the runnable, value-inlined SQL (copy uses this text too); the server
   // still executes the parameterised form server-side from the form body.
   $("sql_out").textContent = SB_LAST.paths[i].sql_inline || SB_LAST.paths[i].sql;
-  renderJoinTypeControls(i);
   highlightPath(SB_LAST.paths[i].steps || SB_LAST.paths[i].edges || []);
   const resultEl = $("join_result");
   if (!resultEl) return;
@@ -1062,17 +1072,26 @@ async function renderJoinResult(i) {
 // green "N-1" (ascending, safe) or amber "1-N" (descending, can fan out). Makes
 // it obvious that a path is a *mix*, not "all descending". Falls back to a plain
 // arrow sequence if the API didn't send per-step directions.
-function renderPathSeq(p) {
+function renderPathSeq(p, isActive) {
   if (!p.steps || !p.steps.length) return p.tables.map(esc).join(" → ");
   let html = esc(p.steps[0].left);
-  for (const s of p.steps) {
+  p.steps.forEach((s, k) => {
     const cls = s.to_many ? "step-dir many" : "step-dir one";
     const lbl = s.to_many ? "1-N" : "N-1";
     const tip = s.to_many
       ? "1-N (absteigend) — kann Zeilen vervielfachen"
       : "N-1 (aufsteigend) — sicher";
-    html += ` <span class="${cls}" title="${tip}">${lbl}</span> ${esc(s.right)}`;
-  }
+    html += ` <span class="${cls}" title="${tip}">${lbl}</span>`;
+    if (isActive) {
+      const cur = (SB_JOIN_TYPES[k] || "INNER").toUpperCase();
+      const opts = SB_JOIN_OPTS.map((o) =>
+        `<option${o === cur ? " selected" : ""}>${o}</option>`).join("");
+      html += ` <select class="sb-jt" data-step="${k}" ` +
+              `title="${escAttr(s.left)} → ${escAttr(s.right)}">${opts}</select>` +
+              `<span class="jt-orphan" data-step="${k}"></span>`;
+    }
+    html += ` ${esc(s.right)}`;
+  });
   return html;
 }
 
@@ -1106,24 +1125,7 @@ async function runBuild(preserveIndex = false) {
     }
     const prev = SB_PATH_IDX;
     SB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
-    const list = $("path_list");
-    // The verbose per-branch fan-out text is dropped — the inline 1-N / N-1 chips
-    // already mark direction. A single compact hint tile (below) explains 1-N.
-    list.innerHTML = data.paths.map((p, i) =>
-      `<li data-i="${i}"><span class="path-mark"></span>` +
-      `<a href="#" data-i="${i}">${renderPathSeq(p)}</a></li>`).join("");
-    list.querySelectorAll("a").forEach((a) =>
-      a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
-    _markActivePath();
-    // Show the fan-out hint once if any candidate path has a descending (1-N) step.
-    const hint = $("sb_fanout_hint");
-    if (hint) {
-      const hasFanout = data.paths.some((p) =>
-        (p.steps || []).some((s) => s.to_many));
-      hint.innerHTML = hasFanout
-        ? `<span class="step-dir many">1-N</span> kann Zeilen vervielfachen (Fan-out)`
-        : "";
-    }
+    _renderPathList();
     const bar = $("sb_result_bar");
     if (data.paths.length) {
       if (bar) bar.style.display = "";
@@ -1132,8 +1134,6 @@ async function runBuild(preserveIndex = false) {
       if (bar) bar.style.display = "none";
       $("sql_out").textContent = "";
       $("join_result").innerHTML = "";
-      if ($("sb_join_types")) $("sb_join_types").innerHTML = "";
-      if ($("sb_fanout_hint")) $("sb_fanout_hint").innerHTML = "";
     }
   } catch (e) { alert(e.message); }
 }

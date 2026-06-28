@@ -294,13 +294,6 @@ body {
   border-radius: 3px; }
 .viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
-/* Compact fan-out hint tile — pinned top-right of the SQL-Builder (AP-44),
-   so it no longer consumes a full row above the path list. */
-.sb-fanout-hint:empty { display: none; }
-.sb-fanout-hint { position: absolute; top: 2px; right: 2px; z-index: 4;
-  display: inline-flex; align-items: center; gap: 5px;
-  background: #fff8ec; border: 1px solid #f0d9a8; color: #8a5300;
-  font-size: 0.74rem; padding: 1px 7px; border-radius: 4px; }
 /* Outer-join NULL cells stand out so orphan rows are obvious. */
 .null-cell { background: #fdf6e3; }
 .null-cell i { color: #b08900; font-style: italic; }
@@ -310,15 +303,15 @@ body {
   vertical-align: 1px; white-space: nowrap; }
 .step-dir.one  { background: #e3f4e8; color: #1e7e34; }
 .step-dir.many { background: #fbeccf; color: #9a6700; }
+/* AP-C: inline join-type select in the active path row — no larger than text. */
+.sb-jt {
+  font-size: .72rem; height: auto; padding: 0 1px; margin: 0 1px;
+  vertical-align: baseline; line-height: 1.2;
+  width: auto; min-width: 0;
+}
 /* Start ⇄ Ziel swap button */
 .sb-swap { margin-left: .4rem; padding: 0 .45rem; line-height: 1.6; font-size: 1rem;
   cursor: pointer; }
-/* AP-41: per-step join-type selectors for the active path */
-.sb-join-types { flex-wrap: wrap; gap: 6px; align-items: center; margin: 2px 0 4px; }
-.sb-join-types:empty { display: none; }
-.jt-lbl { font-size: .78rem; color: #555; font-weight: 600; }
-.jt-step { font-size: .72rem; color: #444; display: inline-flex; align-items: center; gap: 3px; }
-.jt-step select { font-size: .72rem; padding: 0 2px; }
 /* AP-47: orphan-revealing join types (data-driven) */
 .jt-orphan-chip { font-size: .64rem; font-weight: 700; color: #9a6700;
   background: #fbeccf; border-radius: 3px; padding: 0 .25rem; margin-left: 3px;
