@@ -17,6 +17,7 @@ from core.datapreview import fetch_rows, execute_select
 from core.connection import build_url
 from core.sqlanalyze import analyze as analyze_sql
 from core.implied import find_implied_fks
+from core.subset import compute_subset, generate_subset_sql
 
 # Connection fields that may be persisted (never the password).
 _CONN_FIELDS = ("db_type", "host", "port", "database", "user", "filepath",
@@ -454,6 +455,49 @@ def api_joinpath():
     except ValueError as exc:
         return jsonify(error=str(exc)), 400
     return jsonify(paths=out)
+
+
+@bp.post("/api/subset")
+def api_subset():
+    """AP-56a: schema-level referential footprint + per-table SELECT skeleton.
+    Read-only — generates SQL strings, executes nothing."""
+    data = request.get_json(silent=True) or {}
+    url = data.get("connection_url", "")
+    if not url.strip():
+        return jsonify(error=_NO_URL_MSG), 400
+    schema_name = (data.get("schema") or "").strip()
+    try:
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+
+    start = (data.get("start_table") or "").strip()
+    rf = data.get("root_filter") or {}
+    include_implied = bool(data.get("include_implied", False))
+    max_depth = int(data.get("max_depth") or 5)
+    if not schema.has_column(start, rf.get("column", "")):
+        return jsonify(error="unknown start table or column"), 400
+
+    dialect = (dialect_for(data["dialect"]) if data.get("dialect")
+               else _dialect_from_url(url))
+    try:
+        result = compute_subset(schema, start, include_implied=include_implied,
+                                max_depth=max_depth)
+        scripts = generate_subset_sql(schema, result, rf,
+                                      dialect=dialect, schema_name=schema_name)
+    except ValueError as exc:
+        return jsonify(error=str(exc)), 400
+
+    return jsonify(
+        start=result.start,
+        truncated=result.truncated,
+        tables=[{"name": t.name, "depth": t.depth,
+                 "kind": t.edge.kind if t.edge else "root",
+                 "via_table": t.edge.via_table if t.edge else None}
+                for t in result.tables],
+        scripts=[{"table": s.table, "sql": s.sql, "params": s.params}
+                 for s in scripts],
+    )
 
 
 @bp.post("/api/joinpath/run")

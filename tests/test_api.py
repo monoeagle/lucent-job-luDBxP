@@ -1034,3 +1034,23 @@ def test_schema_endpoint_returns_implied_fks(client, inventory_nofk_url):
     assert entry["to_column"] == "OSID"
     assert entry["confidence"] == "hoch"
     assert entry["reason"]
+
+
+# ===== AP-56a: /api/subset =====
+
+def test_subset_endpoint_returns_tables_and_scripts(client, inventory_url):
+    resp = client.post("/api/subset", json={
+        "connection_url": inventory_url, "start_table": "OperatingSystems",
+        "root_filter": {"column": "OSID", "op": "=", "value": 1}})
+    data = resp.get_json()
+    assert resp.status_code == 200
+    names = {t["name"] for t in data["tables"]}
+    assert "OperatingSystems" in names and "VirtualMachines" in names   # child via OSID
+    assert any(s["table"] == "VirtualMachines" and ":root" in s["sql"] for s in data["scripts"])
+
+
+def test_subset_unknown_table_returns_400(client, inventory_url):
+    resp = client.post("/api/subset", json={
+        "connection_url": inventory_url, "start_table": "Nope",
+        "root_filter": {"column": "x", "op": "=", "value": 1}})
+    assert resp.status_code == 400
