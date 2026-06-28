@@ -251,3 +251,61 @@ def test_parse_error_is_ansi_free():
     r = analyze("SELECT a FROM t JOIN u ON x JOIN LEFTI w x y z")
     assert r.parse_error is not None
     assert "\x1b" not in r.parse_error and "[4m" not in r.parse_error
+
+
+# --- AP-F: Optimierungs-Vorschläge ---------------------------------------
+
+def _sugg_codes(sql):
+    return {s.code for s in analyze(sql).suggestions}
+
+
+def test_suggest_distinct_with_group_by():
+    assert "DISTINCT_WITH_GROUP_BY" in _sugg_codes(
+        "SELECT DISTINCT a FROM t GROUP BY a")
+
+
+def test_no_distinct_suggestion_without_group_by():
+    assert "DISTINCT_WITH_GROUP_BY" not in _sugg_codes("SELECT DISTINCT a FROM t")
+
+
+def test_no_distinct_suggestion_without_distinct():
+    assert "DISTINCT_WITH_GROUP_BY" not in _sugg_codes("SELECT a FROM t GROUP BY a")
+
+
+def test_suggest_order_by_without_limit():
+    assert "ORDER_BY_NO_LIMIT" in _sugg_codes("SELECT a FROM t ORDER BY a")
+
+
+def test_no_order_by_suggestion_with_limit():
+    assert "ORDER_BY_NO_LIMIT" not in _sugg_codes(
+        "SELECT a FROM t ORDER BY a LIMIT 10")
+
+
+def test_suggest_or_in_where():
+    assert "OR_IN_WHERE" in _sugg_codes("SELECT a FROM t WHERE a = 1 OR b = 2")
+
+
+def test_no_or_suggestion_for_and_only():
+    assert "OR_IN_WHERE" not in _sugg_codes("SELECT a FROM t WHERE a = 1 AND b = 2")
+
+
+def test_suggest_subquery_in_where():
+    assert "SUBQUERY_IN_WHERE" in _sugg_codes(
+        "SELECT a FROM t WHERE a IN (SELECT x FROM u)")
+
+
+def test_no_subquery_suggestion_for_exists():
+    assert "SUBQUERY_IN_WHERE" not in _sugg_codes(
+        "SELECT a FROM t WHERE EXISTS (SELECT 1 FROM u WHERE u.t_id = t.id)")
+
+
+def test_no_subquery_suggestion_without_subquery():
+    assert "SUBQUERY_IN_WHERE" not in _sugg_codes("SELECT a FROM t WHERE a = 1")
+
+
+def test_plain_select_has_no_suggestions():
+    assert analyze("SELECT a FROM t").suggestions == ()
+
+
+def test_non_select_has_no_suggestions():
+    assert analyze("UPDATE t SET a = 1 WHERE id = 2").suggestions == ()

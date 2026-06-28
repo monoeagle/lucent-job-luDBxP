@@ -45,6 +45,12 @@ class AnalysisWarning:
 
 
 @dataclass(frozen=True)
+class AnalysisSuggestion:
+    code: str     # stabile Maschinen-Code, z. B. "DISTINCT_WITH_GROUP_BY"
+    message: str  # deutscher, anzeigbarer Vorschlagstext
+
+
+@dataclass(frozen=True)
 class AnalysisResult:
     statement_type: str
     tables_read: tuple[str, ...]
@@ -65,6 +71,7 @@ class AnalysisResult:
     structure: dict = field(default_factory=dict)      # counts (tables, joins, …)
     complexity_score: int = 0
     complexity_grade: str = "A"
+    suggestions: tuple[AnalysisSuggestion, ...] = ()  # AP-F: Optimierungs-Vorschläge
 
 
 def _statement_type(node) -> str:
@@ -235,6 +242,36 @@ def _static_lints(node) -> list:
     return out
 
 
+def _optimization_suggestions(node) -> list:
+    """Schema-freie Optimierungs-Hinweise für ein Top-Level-SELECT — neutrale
+    Ratschläge, getrennt vom Warnungs-Kanal. Max. ein Vorschlag je Heuristik."""
+    out: list[AnalysisSuggestion] = []
+    if node.args.get("distinct") is not None and node.args.get("group") is not None:
+        out.append(AnalysisSuggestion(
+            "DISTINCT_WITH_GROUP_BY",
+            "DISTINCT ist überflüssig — GROUP BY macht die Zeilen bereits eindeutig."))
+    if node.args.get("order") is not None and node.args.get("limit") is None:
+        out.append(AnalysisSuggestion(
+            "ORDER_BY_NO_LIMIT",
+            "ORDER BY ohne LIMIT sortiert das gesamte Ergebnis — LIMIT ergänzen, "
+            "wenn nur ein Ausschnitt gebraucht wird."))
+    where = node.args.get("where")
+    if where is not None and where.find(exp.Or) is not None:
+        out.append(AnalysisSuggestion(
+            "OR_IN_WHERE",
+            "OR in WHERE kann die Nutzung von Indizes verhindern — "
+            "IN(…) (gleiche Spalte) oder UNION erwägen."))
+    if where is not None:
+        for sub in where.find_all(exp.Select):
+            if sub.find_ancestor(exp.Exists) is None:   # EXISTS ist bereits empfohlen
+                out.append(AnalysisSuggestion(
+                    "SUBQUERY_IN_WHERE",
+                    "Unterabfrage in WHERE — oft als JOIN oder EXISTS "
+                    "effizienter formulierbar."))
+                break
+    return out
+
+
 def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResult:
     """Analyze one SQL statement read-only. Never executes it.
 
@@ -369,6 +406,8 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
 
     structure, score, grade = _structure_and_complexity(node)
     warnings.extend(_static_lints(node))
+    suggestions = (_optimization_suggestions(node)
+                   if isinstance(node, exp.Select) else [])
 
     return AnalysisResult(
         statement_type=stmt_type,
@@ -388,4 +427,5 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
         structure=structure,
         complexity_score=score,
         complexity_grade=grade,
+        suggestions=tuple(suggestions),
     )
