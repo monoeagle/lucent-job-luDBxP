@@ -860,6 +860,15 @@
   height: auto;
 }
 
+/* Screenshots der Oberfläche: volle Content-Breite, keine Höhenkappung
+   (die generische 85%/65vh-Regel oben würde sie schmal halten). */
+.md-typeset > p > a > img[src*="/screenshots/"],
+.md-typeset > p > img[src*="/screenshots/"] {
+  max-width: 100%;
+  width: 100%;
+  max-height: none;
+}
+
 /* Atmender vertikaler Abstand um Block-Bilder */
 .md-typeset > p:has(> img),
 .md-typeset > p:has(> svg),
