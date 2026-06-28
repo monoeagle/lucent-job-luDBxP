@@ -1134,6 +1134,10 @@ Doku/AppImage/Projektposter.</p>
 <ul>
 <li><strong>Aggregat-Operationen — HAVING + ORDER BY auf Aggregaten</strong>: ORDER BY kann nun nach einem Aggregat sortieren (z. B. <code>ORDER BY COUNT(...) DESC</code>); eine neue HAVING-Klausel filtert Gruppen nach einem Aggregat (skalarer Vergleich <code>= != &lt; &gt; &lt;= &gt;=</code>, parametrisierter Wert). Klauselreihenfolge: WHERE → GROUP BY → HAVING → ORDER BY → LIMIT. Die read-only-Ausführung wertet HAVING aus. Kein neues Core-Modul, kein neuer Endpoint; Änderungen in <code>core/sqlgen.py</code>, <code>web/routes.py</code>, <code>web/static/js/app.js</code>. Noch offen: COUNT(*)/COUNT(DISTINCT), Cross-Schema-Joins — v0.42.0</li>
 </ul>
+<p><strong>v0.43.0</strong> (2026-06-28):</p>
+<ul>
+<li><strong>COUNT(*) + COUNT(DISTINCT)</strong>: zwei neue Aggregat-Optionen. COUNT(*) zählt Zeilen pro Gruppe (Spalte wird ignoriert; die zugehörige Tabelle wird dennoch in den Join eingebunden). COUNT(DISTINCT Spalte) zählt eindeutige Werte. Beide Optionen funktionieren in SELECT, HAVING und ORDER BY. Kein neues Core-Modul, kein neuer Endpoint; Änderungen in <code>core/sqlgen.py</code> und <code>web/static/js/app.js</code>. Noch offen: Cross-Schema-Joins — v0.43.0</li>
+</ul>
 <blockquote>
 <p><strong>AP-17</strong> (Delivery-Verzeichnis) wurde <strong>gestrichen</strong> — Auslieferung läuft über GitHub-Releases.</p>
 </blockquote>

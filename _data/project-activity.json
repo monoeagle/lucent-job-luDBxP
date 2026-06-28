@@ -1,20 +1,45 @@
 {
-  "generatedAt": "2026-06-28T13:35:49",
+  "generatedAt": "2026-06-28T14:28:41",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 41,
+      "commits": 46,
       "kinds": {
-        "feat": 19,
-        "docs": 17,
+        "feat": 21,
+        "docs": 20,
         "fix": 3,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "4c28a66",
+          "subject": "feat: COUNT(*) + COUNT(DISTINCT) im Join-Builder (Dropdown + Spalten-Disable bei COUNT(*))",
+          "kind": "feat"
+        },
+        {
+          "sha": "a9153ed",
+          "subject": "feat: COUNT(*) + COUNT(DISTINCT) im Generator (Render-Helfer, Route unverändert)",
+          "kind": "feat"
+        },
+        {
+          "sha": "95de5aa",
+          "subject": "docs: Implementierungsplan COUNT(*) + COUNT(DISTINCT) (3 Tasks, TDD, Route unverändert)",
+          "kind": "docs"
+        },
+        {
+          "sha": "7340f18",
+          "subject": "docs: Spec COUNT(*) + COUNT(DISTINCT) — unified Aggregat-Wert, Render-Helfer, Route unverändert",
+          "kind": "docs"
+        },
+        {
+          "sha": "7c44075",
+          "subject": "docs: Release v0.42.0 — Aggregat-Operationen (HAVING + ORDER BY auf Aggregaten)",
+          "kind": "docs"
+        },
         {
           "sha": "4894ca8",
           "subject": "feat: Aggregat-Ops UI — ORDER-BY-Aggregat + HAVING-Block im Join-Builder",
@@ -1334,17 +1359,17 @@
     }
   },
   "stats": {
-    "totalCommits": 255,
+    "totalCommits": 260,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 107
+        "count": 110
       },
       {
         "kind": "feat",
-        "count": 80
+        "count": 82
       },
       {
         "kind": "other",
@@ -1371,7 +1396,7 @@
         "count": 2
       }
     ],
-    "testCount": 296
+    "testCount": 304
   },
   "phases": []
 }
