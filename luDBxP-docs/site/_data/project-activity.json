@@ -1,21 +1,31 @@
 {
-  "generatedAt": "2026-06-28T21:36:42",
+  "generatedAt": "2026-06-28T21:53:31",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 101,
+      "commits": 103,
       "kinds": {
+        "docs": 55,
         "feat": 32,
-        "docs": 53,
         "fix": 11,
         "refactor": 3,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "2557bde",
+          "subject": "docs: CLAUDE.md — AP-55 Implied-FK-Schärfung in Einschränkungen",
+          "kind": "docs"
+        },
+        {
+          "sha": "b3562ae",
+          "subject": "docs: Release v0.47.0 — Implied-FK-Schärfung (AP-55)",
+          "kind": "docs"
+        },
         {
           "sha": "4d3b118",
           "subject": "feat: AP-55 — Info-Panel zeigt implizite FKs (Count + Liste + Confidence-Badge)",
@@ -1635,13 +1645,13 @@
     }
   },
   "stats": {
-    "totalCommits": 315,
+    "totalCommits": 317,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 143
+        "count": 145
       },
       {
         "kind": "feat",
