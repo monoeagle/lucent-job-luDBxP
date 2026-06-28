@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.3] — 2026-06-29
+
+### Behoben
+- Die SQL-Ausgabebox im SQL-Builder behält jetzt auch vor dem ersten „Generieren" eine
+  volle Höhe (vorher ein schmaler Streifen, der das Copy-Icon halb abschnitt) und zeigt
+  im Leerzustand einen Platzhalter-Hinweis.
+
 ## [0.48.2] — 2026-06-28
 
 ### Behoben

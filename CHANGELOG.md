@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.3] — 2026-06-29
+
+### Fixed
+- The generated-SQL box in the SQL-Builder now keeps a full height before the first
+  "Generieren" (it previously collapsed to a thin strip that clipped the copy icon)
+  and shows a placeholder hint while empty.
+
 ## [0.48.2] — 2026-06-28
 
 ### Fixed
