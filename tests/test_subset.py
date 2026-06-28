@@ -134,7 +134,9 @@ def test_child_select_joins_back_to_root_no_distinct():
     s = _scripts()["Order"]
     assert "JOIN" in s.sql and "Customer" in s.sql
     assert "DISTINCT" not in s.sql            # pure downward path
-    assert s.sql.rstrip().endswith(":root;") or ":root" in s.sql
+    lines = [ln for ln in s.sql.rstrip().rstrip(";").splitlines() if ln.strip()]
+    assert lines[-1].startswith("WHERE")
+    assert ":root" in lines[-1]
 
 
 def test_parent_lookup_select_is_distinct():
