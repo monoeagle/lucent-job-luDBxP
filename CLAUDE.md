@@ -90,6 +90,12 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 > Es werden keine FKs angelegt; Cross-Schema-Implied-Matching bleibt zurückgestellt
 > (braucht Multi-Schema-Reflection, Gate wie AP-57).
 
+> **Database-Subsetting (AP-56a, v0.48.0):** Aus Start-Tabelle + Wurzel-Filter wird die
+> referenzielle FK-Hülle schema-basiert berechnet (down-then-up, zyklus-sicher,
+> tiefenbegrenzt) und je Tabelle ein read-only SELECT erzeugt, das zur Wurzel zurück-joint
+> (`/api/subset`, Modus „Entität exportieren"). Führt nichts aus. Der Live-datengetriebene
+> Walk mit echten Zeilenzahlen/Daten-Dump ist das zurückgestellte AP-56b.
+
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:
 ```bash
