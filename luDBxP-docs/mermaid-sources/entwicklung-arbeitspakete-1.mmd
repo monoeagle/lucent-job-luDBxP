@@ -145,8 +145,20 @@ flowchart TB
         K1 ~~~ K2 ~~~ K3 ~~~ K5 ~~~ K4
     end
 
+    %% ── C8 · Legacy-DB-Migration / Export (geplant) ──────────────────────
+    subgraph C8["🧬  Legacy-DB-Migration / Export"]
+        direction TB
+        M1["AP-54\nCross-Schema-FK-Diagnose"]
+        M2["AP-55\nImplied-FK-Schärfung"]
+        M3["AP-56\nSubset-Export (FK-Closure)"]
+        M4["AP-57\nCross-Schema-Joins (bedingt)"]
+        M1 ~~~ M2 ~~~ M3 ~~~ M4
+    end
+
     %% ── Cluster-übergreifende Abhängigkeiten ─────────────────────────────
     V1 --> E2
+    M1 --> M4
+    E2 --> M1
     E5 --> J1
     E5 --> J9
     E5 --> J11
@@ -165,3 +177,4 @@ flowchart TB
     class B5 plan
     class K1,K2,K3,K5 done
     class K4 plan
+    class M1,M2,M3,M4 plan

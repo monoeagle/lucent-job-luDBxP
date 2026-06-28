@@ -16,6 +16,15 @@
 - **AP-35** — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund
   aus AP-15; Fix wie in `run.sh`, signiertes Skript → eigene Windows-Session)
 
+### Legacy-DB-Migration / Reverse-Engineering (Konzept: [Legacy-DB-Migration-Tooling](../../../docs/concepts/2026-06-28-legacy-db-migration-tooling.md))
+
+Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering der Alt-DBs → sauberer, referenziell konsistenter Export → Überführung in ein neues Modell). Kernerkenntnis: produkt-übergreifende Links der Alt-Suite sind **fachliche IDs, keine FKs** — daher ist nicht „Cross-Schema-Join" der Hebel, sondern implied-FK-Erkennung + referenziell konsistentes Subsetting.
+
+- **AP-54** — Cross-Schema-FK-Diagnose (read-only): `referred_schema` mitreflektieren (heute verworfen) und anzeigen, ob FKs über Schema-Grenzen zeigen. Entscheidungs-Gate für AP-57. **Aufwand S.**
+- **AP-55** — Implied-FK-Schärfung: logische Links (gemeinsame IDs ohne FK-Constraint) über konfigurierbare Namensmuster + Confidence-Score auffindbar machen — der Hebel für Cross-Produkt-Beziehungen. **Aufwand M.**
+- **AP-56** — Entitäts-Hülle / Subset-Export: transitive FK-Closure (Eltern + Kinder, rekursiv, Zyklus-/Tiefenschutz) als read-only Export-SELECT-Sequenz (SQL/CSV/JSON). Größter Migrationsnutzen. **Aufwand L.**
+- **AP-57** — Cross-Schema-Joins (volle Stufe), **zurückgestellt/bedingt**: Multi-Schema-Reflection + per-Tabelle-Schema-Qualifizierung in einem Join-SELECT. **Nur bauen, wenn AP-54 echte Cross-Schema-FKs nachweist.** Datenmodell-Umbau quer durch Model/Loader/Graph/Pathfinder/sqlgen/UI. **Aufwand XL.**
+
 ---
 
 ## Erledigte Arbeitspakete
