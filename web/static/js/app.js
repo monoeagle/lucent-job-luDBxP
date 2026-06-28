@@ -925,6 +925,8 @@ function _sortByColumn(table, column, dir) {
     if (row.querySelector(".ob-table").value === table &&
         row.querySelector(".ob-col").value === column) row.remove();
   });
+  // AP-E: kein eigenes refreshMoveBtns nötig — das folgende addOrderByRow()
+  // ruft am Ende refreshMoveBtns($("order_bys")) und korrigiert den Rand-Zustand.
   addOrderByRow();
   const row = $("order_bys").lastElementChild;
   const tEl = row.querySelector(".ob-table");
