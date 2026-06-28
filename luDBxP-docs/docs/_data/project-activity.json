@@ -1,17 +1,22 @@
 {
-  "generatedAt": "2026-06-29T00:58:16",
+  "generatedAt": "2026-06-29T01:00:05",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 8,
+      "commits": 9,
       "kinds": {
-        "docs": 6,
+        "docs": 7,
         "fix": 2
       },
       "list": [
+        {
+          "sha": "69fec11",
+          "subject": "docs: Release v0.48.3 — SQL-Ausgabebox-Fix",
+          "kind": "docs"
+        },
         {
           "sha": "43b08f7",
           "subject": "docs: Screenshot_02 neu (SQL-Box-Fix sichtbar — volle Box + Platzhalter)",
@@ -1789,13 +1794,13 @@
     }
   },
   "stats": {
-    "totalCommits": 344,
+    "totalCommits": 345,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 162
+        "count": 163
       },
       {
         "kind": "feat",
