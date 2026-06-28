@@ -303,8 +303,10 @@ body {
   vertical-align: 1px; white-space: nowrap; }
 .step-dir.one  { background: #e3f4e8; color: #1e7e34; }
 .step-dir.many { background: #fbeccf; color: #9a6700; }
-/* AP-C: inline join-type select in the active path row — no larger than text. */
-.sb-jt {
+/* AP-C: inline join-type select in the active path row — no larger than text.
+   Selector is `.sqlbuilder select.sb-jt` so it outweighs `.sqlbuilder select`
+   (which forces the standard control width var(--sb-ctrl-w)). */
+.sqlbuilder select.sb-jt {
   font-size: .72rem; height: auto; padding: 0 1px; margin: 0 1px;
   vertical-align: baseline; line-height: 1.2;
   width: auto; min-width: 0;
