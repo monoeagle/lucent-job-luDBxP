@@ -195,3 +195,12 @@ Abschnitt mit vier schema-freien AST-Heuristiken — überflüssiges `DISTINCT` 
 `GROUP BY`, `ORDER BY` ohne `LIMIT`, `OR` im Top-Level-`WHERE` (kann Indexnutzung
 verhindern) und eine Nicht-`EXISTS`-Unterabfrage in `WHERE` (oft besser als
 JOIN/EXISTS). Read-only, nur Hinweise — der Analyzer schreibt nichts um.
+
+## Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
+
+Das **Info**-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
+eine Zeile **„Cross-Schema-FKs"**: die Anzahl der Foreign Keys, die auf ein **anderes
+Schema** als das reflektierte zeigen, und — falls vorhanden — darunter die Kantenliste
+`Tabelle.Spalte → Schema.Tabelle.Spalte`. Damit ist read-only ablesbar, ob die verbundene
+Datenbank Cross-Schema-FKs nutzt (Entscheidungsgrundlage für eine spätere volle
+Cross-Schema-Join-Unterstützung). SQLite hat keine Schemas → dort immer 0.

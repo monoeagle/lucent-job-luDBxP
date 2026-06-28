@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.45.3">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.46.0">
       
       
         <meta name="author" content="LucentTools">
@@ -704,6 +704,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1176,6 +1187,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1363,6 +1385,13 @@ Abschnitt mit vier schema-freien AST-Heuristiken — überflüssiges <code>DISTI
 <code>GROUP BY</code>, <code>ORDER BY</code> ohne <code>LIMIT</code>, <code>OR</code> im Top-Level-<code>WHERE</code> (kann Indexnutzung
 verhindern) und eine Nicht-<code>EXISTS</code>-Unterabfrage in <code>WHERE</code> (oft besser als
 JOIN/EXISTS). Read-only, nur Hinweise — der Analyzer schreibt nichts um.</p>
+<h2 id="info-ubersicht-cross-schema-fk-diagnose-ap-54">Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)<a class="headerlink" href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" title="Permanent link">&para;</a></h2>
+<p>Das <strong>Info</strong>-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
+eine Zeile <strong>„Cross-Schema-FKs"</strong>: die Anzahl der Foreign Keys, die auf ein <strong>anderes
+Schema</strong> als das reflektierte zeigen, und — falls vorhanden — darunter die Kantenliste
+<code>Tabelle.Spalte → Schema.Tabelle.Spalte</code>. Damit ist read-only ablesbar, ob die verbundene
+Datenbank Cross-Schema-FKs nutzt (Entscheidungsgrundlage für eine spätere volle
+Cross-Schema-Join-Unterstützung). SQLite hat keine Schemas → dort immer 0.</p>
 
 
 

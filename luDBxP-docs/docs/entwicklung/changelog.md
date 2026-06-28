@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.46.0] — 2026-06-28
+
+### Hinzugefügt
+- Cross-Schema-FK-Diagnose (read-only): FKs, die auf ein anderes Schema zeigen,
+  werden jetzt reflektiert (`referred_schema`) und im Info/Übersicht-Panel als
+  „Cross-Schema-FKs"-Count plus Kantenliste (`Tabelle.Spalte → Schema.Tabelle.Spalte`)
+  angezeigt. Beantwortet empirisch, ob eine DB Cross-Schema-FKs nutzt — das
+  Entscheidungs-Gate für die volle Cross-Schema-Join-Stufe. Keine SQL-Änderung. (AP-54)
+  Bekannte Einschränkung: zählt Kanten anhand des reflektierten `referred_schema`;
+  ohne explizit gewähltes Schema können Dialekte, die Same-Schema-FKs mit dem
+  Default-Schemanamen qualifizieren, über-melden.
+
 ## [0.45.3] — 2026-06-28
 
 ### Behoben

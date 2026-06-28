@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.46.0] — 2026-06-28
+
+### Added
+- Cross-schema FK diagnostic (read-only): foreign keys that point to a different
+  schema are now reflected (`referred_schema`) and surfaced in the Info/Übersicht
+  panel as a „Cross-Schema-FKs" count plus the list of crossing edges
+  (`table.col → schema.table.col`). Answers empirically whether a connected
+  database uses cross-schema FKs — the decision gate for full cross-schema joins.
+  No join/SQL change. (AP-54)
+  Known limitation: counts edges by reflected `referred_schema`; when no schema
+  is explicitly selected, dialects that qualify same-schema FKs with the default
+  schema name may over-report.
+
 ## [0.45.3] — 2026-06-28
 
 ### Fixed

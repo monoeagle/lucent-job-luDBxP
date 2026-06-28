@@ -22,7 +22,6 @@
 
 Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering der Alt-DBs → sauberer, referenziell konsistenter Export → Überführung in ein neues Modell). Kernerkenntnis: produkt-übergreifende Links der Alt-Suite sind **fachliche IDs, keine FKs** — daher ist nicht „Cross-Schema-Join" der Hebel, sondern implied-FK-Erkennung + referenziell konsistentes Subsetting.
 
-- **AP-54** — Cross-Schema-FK-Diagnose (read-only): `referred_schema` mitreflektieren (heute verworfen) und anzeigen, ob FKs über Schema-Grenzen zeigen. Entscheidungs-Gate für AP-57. **Aufwand S.**
 - **AP-55** — Implied-FK-Schärfung: logische Links (gemeinsame IDs ohne FK-Constraint) über konfigurierbare Namensmuster + Confidence-Score auffindbar machen — der Hebel für Cross-Produkt-Beziehungen. **Aufwand M.**
 - **AP-56** — Entitäts-Hülle / Subset-Export: transitive FK-Closure (Eltern + Kinder, rekursiv, Zyklus-/Tiefenschutz) als read-only Export-SELECT-Sequenz (SQL/CSV/JSON). Größter Migrationsnutzen. **Aufwand L.**
 - **AP-57** — Cross-Schema-Joins (volle Stufe), **zurückgestellt/bedingt**: Multi-Schema-Reflection + per-Tabelle-Schema-Qualifizierung in einem Join-SELECT. **Nur bauen, wenn AP-54 echte Cross-Schema-FKs nachweist.** Datenmodell-Umbau quer durch Model/Loader/Graph/Pathfinder/sqlgen/UI. **Aufwand XL.**
@@ -167,6 +166,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.46.0** (2026-06-28):
+
+- **AP-54** — Cross-Schema-FK-Diagnose (read-only): `referred_schema` ins Model getragen, `Schema.cross_schema_fks()` leitet die Cross-Schema-Kanten ab, `/api/schema` liefert sie, das Info/Übersicht-Panel zeigt Count + Kantenliste. Entscheidungs-Gate für AP-57; keine SQL-Änderung — v0.46.0
 
 > **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
