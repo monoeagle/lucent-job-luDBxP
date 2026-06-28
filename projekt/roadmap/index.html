@@ -932,6 +932,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: Sidebar-Objekt-Kategorien)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verbindungs-ux-demo-daten" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Verbindungs-UX &amp; Demo-Daten
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1038,6 +1060,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: Sidebar-Objekt-Kategorien)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verbindungs-ux-demo-daten" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Verbindungs-UX &amp; Demo-Daten
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1092,6 +1136,19 @@
 <li><strong>AP-55</strong> — Implied-FK-Schärfung: logische Links (gemeinsame IDs ohne FK-Constraint) über konfigurierbare Namensmuster + Confidence-Score auffindbar machen — der Hebel für Cross-Produkt-Beziehungen. <strong>Aufwand M.</strong></li>
 <li><strong>AP-56</strong> — Entitäts-Hülle / Subset-Export: transitive FK-Closure (Eltern + Kinder, rekursiv, Zyklus-/Tiefenschutz) als read-only Export-SELECT-Sequenz (SQL/CSV/JSON). Größter Migrationsnutzen. <strong>Aufwand L.</strong></li>
 <li><strong>AP-57</strong> — Cross-Schema-Joins (volle Stufe), <strong>zurückgestellt/bedingt</strong>: Multi-Schema-Reflection + per-Tabelle-Schema-Qualifizierung in einem Join-SELECT. <strong>Nur bauen, wenn AP-54 echte Cross-Schema-FKs nachweist.</strong> Datenmodell-Umbau quer durch Model/Loader/Graph/Pathfinder/sqlgen/UI. <strong>Aufwand XL.</strong></li>
+</ul>
+<h3 id="weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien">Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: <a href="../../../../docs/concepts/2026-06-28-sidebar-object-categories/">Sidebar-Objekt-Kategorien</a>)<a class="headerlink" href="#weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien" title="Permanent link">&para;</a></h3>
+<p>Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen <strong>nicht</strong> an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:</p>
+<ul>
+<li><strong>AP-63 · Stufe 1</strong> — Tabellen-Detail anreichern: vollständige <strong>Indizes + Check-Constraints</strong> (genestet, keine Sidebar-Kategorie). SQLAlchemy-nativ, <strong>SQLite-CI-testbar</strong>. <strong>Aufwand S.</strong></li>
+<li><strong>AP-63 · Stufe 2</strong> — neue Sidebar-Kategorien <strong>Sequences, Materialized Views, Triggers</strong> (etabliert das Kategorie-Muster; Triggers SQLite-testbar, Sequences/Mat-Views nur gegen PostgreSQL). <strong>Aufwand M.</strong></li>
+<li><strong>AP-63 · Stufe 3</strong> — <strong>Stored Procedures + Functions</strong> (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). <strong>Aufwand L.</strong></li>
+</ul>
+<h3 id="verbindungs-ux-demo-daten">Verbindungs-UX &amp; Demo-Daten<a class="headerlink" href="#verbindungs-ux-demo-daten" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>AP-60</strong> — Connection-Form sauber ausrichten: die Verbindungs-Formularzeilen sind leicht versetzt — <code>.conn-form label { min-width:6rem }</code> ist nur weich, das längste Label „Service-Name" (~7rem) überläuft und schiebt sein Eingabefeld; die Inputs haben uneinheitliche Breiten (<code>cf_filepath</code> <code>flex:1</code>, andere Browser-Default). Fix: feste Label-Spaltenbreite + einheitliche Input-Breite. Nur CSS. <strong>Aufwand S.</strong></li>
+<li><strong>AP-61</strong> — Demo-CMDB zur vollen CMDB erweitern: die Demo ist aktuell ein vSphere-Virtualisierungs-Inventar (Datacenter/Cluster/Host/VM/Datastore/Network/…); es fehlt die CMDB-/Business-Schicht. Ergänzen (mit FKs zur Infra): Application, Service, Owner/Person, Vendor, Contract, Location (Rack/Raum), Software/License, Asset-Status — in <code>sample_data/build_demo_db.py</code> + Beispiel-Daten. <strong>Umfang offen:</strong> CMDB-Schicht (empfohlen) / + ITSM (Incident/Change) / minimal (Application+Service+Owner). <strong>Aufwand M–L.</strong></li>
+<li><strong>AP-62</strong> — Sichere Passwort-Persistenz (OS-Keyring), <strong>bedingt</strong>: das Passwort wird heute bewusst nie gespeichert (Whitelist <code>routes.py:_CONN_FIELDS</code> ohne <code>password</code>; Verbindungen liegen als Klartext-JSON). Optionales „Passwort merken" via OS-Keyring (verschlüsselt, neue <code>keyring</code>-Dependency, plattformübergreifend) statt Klartext. <strong>Nur bauen, wenn Persistenz gewünscht</strong> — Status quo (jede Sitzung neu eingeben) ist eine valide Sicherheitswahl. <strong>Aufwand M.</strong></li>
 </ul>
 <hr />
 <h2 id="erledigte-arbeitspakete">Erledigte Arbeitspakete<a class="headerlink" href="#erledigte-arbeitspakete" title="Permanent link">&para;</a></h2>
