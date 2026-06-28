@@ -77,7 +77,9 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **Table and column comments (Tier-2, v0.40.0):** Table and column comments are read during schema reflection and surfaced in the UI (detail column list + UML cards) as hover tooltips (`title`). The generated SQL is unchanged.
 
-> **GROUP BY / Aggregates (Tier-3, v0.41.0):** Each SELECT column may carry an aggregate (COUNT/SUM/AVG/MIN/MAX); GROUP BY is auto-derived from the non-aggregated columns. The generated SQL gains GROUP BY and the read-only run path executes grouped queries. Still open: HAVING, COUNT(*)/COUNT(DISTINCT), Cross-Schema-Joins.
+> **GROUP BY / Aggregates (Tier-3, v0.41.0):** Each SELECT column may carry an aggregate (COUNT/SUM/AVG/MIN/MAX); GROUP BY is auto-derived from the non-aggregated columns. The generated SQL gains GROUP BY and the read-only run path executes grouped queries.
+
+> **Aggregat-Operationen — HAVING + ORDER BY auf Aggregaten (v0.42.0):** ORDER BY may sort by an aggregate (`ORDER BY COUNT(...) DESC`) and a new HAVING clause filters groups by an aggregate (scalar comparison, parametrised). Clause order: WHERE → GROUP BY → HAVING → ORDER BY → LIMIT. Still open: COUNT(*)/COUNT(DISTINCT), Cross-Schema-Joins.
 
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:

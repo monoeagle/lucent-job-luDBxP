@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.42.0] — 2026-06-28
+
+### Added
+- Aggregat-Operationen — HAVING + ORDER BY auf Aggregaten: ORDER BY may now
+  sort by an aggregate (e.g. `ORDER BY COUNT(...) DESC`) and a new HAVING
+  clause filters groups by an aggregate (scalar comparison `= != < > <= >=`,
+  parametrised value). Clause order: WHERE → GROUP BY → HAVING → ORDER BY →
+  LIMIT. The read-only run path executes HAVING. Aggregate is mandatory on a
+  HAVING row. No new core module or endpoint (changes in `core/sqlgen.py`,
+  `web/routes.py`, `web/static/js/app.js`). Still open: COUNT(*)/COUNT(DISTINCT),
+  Cross-Schema joins.
+
 ## [0.41.0] — 2026-06-28
 
 ### Added

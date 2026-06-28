@@ -1,20 +1,50 @@
 {
-  "generatedAt": "2026-06-28T12:43:41",
+  "generatedAt": "2026-06-28T13:35:49",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 35,
+      "commits": 41,
       "kinds": {
-        "feat": 16,
-        "docs": 14,
+        "feat": 19,
+        "docs": 17,
         "fix": 3,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "4894ca8",
+          "subject": "feat: Aggregat-Ops UI — ORDER-BY-Aggregat + HAVING-Block im Join-Builder",
+          "kind": "feat"
+        },
+        {
+          "sha": "ff110c5",
+          "subject": "feat: Aggregat-Ops Route — order_by agg + having parsen, HAVING-Tabellen ins Weaving",
+          "kind": "feat"
+        },
+        {
+          "sha": "bf255be",
+          "subject": "feat: Aggregat-Ops Generator — ORDER BY auf Aggregaten + HAVING (parametrisiert)",
+          "kind": "feat"
+        },
+        {
+          "sha": "ce8c7cc",
+          "subject": "docs: Implementierungsplan Aggregat-Operationen (HAVING + ORDER BY auf Aggregaten, 4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "1a37c64",
+          "subject": "docs: Spec Aggregat-Operationen — HAVING + ORDER BY auf Aggregaten (Skalar-Ops, agg verpflichtend)",
+          "kind": "docs"
+        },
+        {
+          "sha": "b655902",
+          "subject": "docs: Release v0.41.0 — Tier-3 GROUP BY/Aggregate (Changelog/CLAUDE/Roadmap/Site)",
+          "kind": "docs"
+        },
         {
           "sha": "8bd9b5d",
           "subject": "feat: Tier-3 UI — Aggregat-Dropdown an Start/Ziel/Extra-Spalten (Auto-GROUP-BY)",
@@ -1304,17 +1334,17 @@
     }
   },
   "stats": {
-    "totalCommits": 249,
+    "totalCommits": 255,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 104
+        "count": 107
       },
       {
         "kind": "feat",
-        "count": 77
+        "count": 80
       },
       {
         "kind": "other",
@@ -1341,7 +1371,7 @@
         "count": 2
       }
     ],
-    "testCount": 282
+    "testCount": 296
   },
   "phases": []
 }
