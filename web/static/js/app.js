@@ -447,6 +447,11 @@ function renderAnalyzeResult(panel, res) {
     ? res.warnings.map((w) =>
         `<div class="an-warn an-l-${esc(w.level)}">${esc(w.message)}</div>`).join("")
     : `<p class="hint">keine Warnungen</p>`;
+  const suggs = (res.suggestions && res.suggestions.length)
+    ? `<h4>Optimierungs-Vorschläge</h4>` +
+      res.suggestions.map((s) =>
+        `<div class="an-sugg">💡 ${esc(s.message)}</div>`).join("")
+    : "";
   out.innerHTML =
     `<div class="an-type">Typ: <strong>${esc(res.statement_type)}</strong>` +
     (cx.grade ? ` <span class="an-grade an-g-${esc(cx.grade)}" ` +
@@ -463,6 +468,7 @@ function renderAnalyzeResult(panel, res) {
     section("HAVING", res.having) +
     section("Sortierung (ORDER BY)", res.order_by) +
     (res.limit ? `<h4>LIMIT</h4><p>${esc(res.limit)}</p>` : "") +
+    suggs +
     `<h4>Warnungen</h4>${warns}`;
   applyAnalyzeMarkers(res.tables_read, res.tables_written, res.edges);
 }

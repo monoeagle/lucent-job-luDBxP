@@ -664,6 +664,15 @@ def test_analyze_bad_connection_returns_400(client):
     assert resp.status_code == 400
 
 
+def test_analyze_returns_optimization_suggestions(client):
+    resp = client.post("/api/analyze",
+                       json={"sql": "SELECT DISTINCT a FROM t GROUP BY a"})
+    assert resp.status_code == 200
+    data = resp.get_json()
+    codes = {s["code"] for s in data["suggestions"]}
+    assert "DISTINCT_WITH_GROUP_BY" in codes
+
+
 # ===== AP-45: /api/joinpath/run columns_meta =====
 
 def test_joinpath_run_returns_columns_meta(client, demo_url):

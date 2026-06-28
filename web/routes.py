@@ -665,6 +665,8 @@ def api_analyze():
         tables_written=list(result.tables_written),
         warnings=[{"level": w.level, "code": w.code, "message": w.message}
                   for w in result.warnings],
+        suggestions=[{"code": s.code, "message": s.message}
+                     for s in result.suggestions],
         parse_error=result.parse_error,
         # AP-39 — structure & clause analysis + graph edges
         columns=list(result.columns),
