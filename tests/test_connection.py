@@ -58,8 +58,9 @@ def test_password_is_url_encoded():
 
 
 def test_unknown_db_type_raises():
+    # Use a genuinely unsupported db_type (oracle is supported since AP-53).
     with pytest.raises(ValueError):
-        build_url({"db_type": "oracle", "host": "h", "database": "d"})
+        build_url({"db_type": "mongodb", "host": "h", "database": "d"})
 
 
 def test_sqlite_without_path_raises():
