@@ -32,6 +32,11 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 - **AP-63 · Stufe 1** — Tabellen-Detail anreichern: vollständige **Indizes + Check-Constraints** (genestet, keine Sidebar-Kategorie). SQLAlchemy-nativ, **SQLite-CI-testbar**. **Aufwand S.**
 - **AP-63 · Stufe 2** — neue Sidebar-Kategorien **Sequences, Materialized Views, Triggers** (etabliert das Kategorie-Muster; Triggers SQLite-testbar, Sequences/Mat-Views nur gegen PostgreSQL). **Aufwand M.**
 - **AP-63 · Stufe 3** — **Stored Procedures + Functions** (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). **Aufwand L.**
+- **AP-66** — Views, die **Prozeduren/Funktionen** verwenden, auflösen (Konzept: [Views mit Routinen](../../../docs/concepts/2026-06-29-views-with-routines-resolution.md)). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. **Stufe 1 (S–M):** referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). **Stufe 2 (M):** Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). **Stufe 3 (XL, zurückgestellt):** echte Daten-Lineage durch den PL/SQL-Body.
+
+### SQL-Analyzer-Tiefe
+
+- **AP-65** — SQL-Analyzer: **Zeilennummern + Fehler-Lokalisierung** (Konzept: [Analyzer-Zeilen & Fehlerstelle](../../../docs/concepts/2026-06-29-analyzer-line-numbers-error-location.md)). Heute meldet der Analyzer Parse-Fehler nur als gestrippten String ohne Position; Lints benennen keine Quellzeile. **Stufe A (S):** sqlglots strukturierte `ParseError.errors` (line/col/Kontext, heute verworfen) ins Ergebnis übernehmen → „Parse-Fehler in Zeile N, Spalte M" + markierte Stelle. **Stufe B (S–M):** Zeilennummern-Gutter im Eingabefeld + Fehlerzeile farbig. **Stufe C (M):** Lints/Warnungen mit Zeilenbezug (Token-Position) → „Zeile N: …" + Klick markiert die Zeile.
 
 ### Verbindungs-UX & Demo-Daten
 

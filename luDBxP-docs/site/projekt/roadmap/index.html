@@ -946,6 +946,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#sql-analyzer-tiefe" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        SQL-Analyzer-Tiefe
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#verbindungs-ux-demo-daten" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1101,6 +1112,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#sql-analyzer-tiefe" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        SQL-Analyzer-Tiefe
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#verbindungs-ux-demo-daten" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1170,6 +1192,11 @@
 <li><strong>AP-63 · Stufe 1</strong> — Tabellen-Detail anreichern: vollständige <strong>Indizes + Check-Constraints</strong> (genestet, keine Sidebar-Kategorie). SQLAlchemy-nativ, <strong>SQLite-CI-testbar</strong>. <strong>Aufwand S.</strong></li>
 <li><strong>AP-63 · Stufe 2</strong> — neue Sidebar-Kategorien <strong>Sequences, Materialized Views, Triggers</strong> (etabliert das Kategorie-Muster; Triggers SQLite-testbar, Sequences/Mat-Views nur gegen PostgreSQL). <strong>Aufwand M.</strong></li>
 <li><strong>AP-63 · Stufe 3</strong> — <strong>Stored Procedures + Functions</strong> (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). <strong>Aufwand L.</strong></li>
+<li><strong>AP-66</strong> — Views, die <strong>Prozeduren/Funktionen</strong> verwenden, auflösen (Konzept: <a href="../../../../docs/concepts/2026-06-29-views-with-routines-resolution/">Views mit Routinen</a>). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. <strong>Stufe 1 (S–M):</strong> referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). <strong>Stufe 2 (M):</strong> Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). <strong>Stufe 3 (XL, zurückgestellt):</strong> echte Daten-Lineage durch den PL/SQL-Body.</li>
+</ul>
+<h3 id="sql-analyzer-tiefe">SQL-Analyzer-Tiefe<a class="headerlink" href="#sql-analyzer-tiefe" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>AP-65</strong> — SQL-Analyzer: <strong>Zeilennummern + Fehler-Lokalisierung</strong> (Konzept: <a href="../../../../docs/concepts/2026-06-29-analyzer-line-numbers-error-location/">Analyzer-Zeilen &amp; Fehlerstelle</a>). Heute meldet der Analyzer Parse-Fehler nur als gestrippten String ohne Position; Lints benennen keine Quellzeile. <strong>Stufe A (S):</strong> sqlglots strukturierte <code>ParseError.errors</code> (line/col/Kontext, heute verworfen) ins Ergebnis übernehmen → „Parse-Fehler in Zeile N, Spalte M" + markierte Stelle. <strong>Stufe B (S–M):</strong> Zeilennummern-Gutter im Eingabefeld + Fehlerzeile farbig. <strong>Stufe C (M):</strong> Lints/Warnungen mit Zeilenbezug (Token-Position) → „Zeile N: …" + Klick markiert die Zeile.</li>
 </ul>
 <h3 id="verbindungs-ux-demo-daten">Verbindungs-UX &amp; Demo-Daten<a class="headerlink" href="#verbindungs-ux-demo-daten" title="Permanent link">&para;</a></h3>
 <ul>
