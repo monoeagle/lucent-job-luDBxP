@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.43.1] — 2026-06-28
+
+### Fixed
+- GROUP BY is now derived from aggregates in HAVING and ORDER BY too, not only
+  the SELECT list. Previously a non-aggregated SELECT column combined with an
+  aggregate that lived solely in HAVING or ORDER BY produced GROUP-BY-less SQL
+  that strict engines (e.g. PostgreSQL) reject. Backward-compatible: no
+  aggregate anywhere still emits no GROUP BY; all-aggregated selects still emit
+  none. Change in `core/sqlgen.py`.
+
 ## [0.43.0] — 2026-06-28
 
 ### Added

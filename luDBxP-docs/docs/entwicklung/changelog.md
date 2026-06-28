@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.43.1] — 2026-06-28
+
+### Behoben
+- GROUP BY wird jetzt auch aus Aggregaten in HAVING und ORDER BY abgeleitet,
+  nicht nur aus der SELECT-Liste. Bisher erzeugte eine nicht-aggregierte
+  SELECT-Spalte zusammen mit einem Aggregat, das allein in HAVING oder ORDER BY
+  stand, GROUP-BY-loses SQL, das strikte DBs (z. B. PostgreSQL) ablehnen.
+  Rückwärtskompatibel: kein Aggregat → weiterhin kein GROUP BY; alle
+  SELECT-Spalten aggregiert → weiterhin keins. Änderung in `core/sqlgen.py`.
+
 ## [0.43.0] — 2026-06-28
 
 ### Hinzugefügt
