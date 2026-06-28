@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.38.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.39.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1117,6 +1117,10 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-50</strong> — Unique-Constraints → korrekte Fan-out-Klassifikation: absteigende FK mit eindeutiger Kind-Spalte (UNIQUE/PK) gilt als 1-1 statt 1-N (keine falsche Fan-out-Warnung) — v0.36.0</li>
 <li><strong>AP-51</strong> — Unique-Index als zusätzliche Uniqueness-Quelle (voll-spaltig, nicht-partiell); partielle/Expression-Indizes bewusst ausgeschlossen — v0.37.0</li>
 <li><strong>AP-52</strong> — Multi-Schema-Reflection: ein wählbares Schema (<code>/api/schemas</code>, schema-qualifizierte SQL <code>schema.table</code>); Model/Graph/Pathfinder unverändert — v0.38.0</li>
+</ul>
+<p><strong>v0.39.0</strong> (2026-06-28):</p>
+<ul>
+<li><strong>AP-53</strong> — Oracle-Verbindung: Verbinden/Reflektieren via python-oracledb (Thin-Mode, kein Instant Client), Adressierung per Service-Name; System-Schemas im Schema-Wähler gefiltert; skip-guarded Live-Integrationstest (<code>LUCENT_ORACLE_TEST_URL</code>) — v0.39.0</li>
 </ul>
 <blockquote>
 <p><strong>AP-17</strong> (Delivery-Verzeichnis) wurde <strong>gestrichen</strong> — Auslieferung läuft über GitHub-Releases.</p>
