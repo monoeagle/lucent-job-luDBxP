@@ -111,9 +111,20 @@ class SqlAlchemyLoader(SchemaLoader):
 
 # Schemas that are infrastructure, not user data — hidden from the picker.
 _SYSTEM_SCHEMAS = frozenset({
+    # Postgres / MySQL / MSSQL
     "information_schema", "pg_catalog", "pg_toast",
     "sys", "INFORMATION_SCHEMA", "performance_schema", "mysql",
+    # Oracle (uppercase, as Oracle reports them)
+    "SYS", "SYSTEM", "XDB", "OUTLN", "DBSNMP", "APPQOSSYS", "CTXSYS",
+    "MDSYS", "ORDSYS", "ORDDATA", "OLAPSYS", "WMSYS", "LBACSYS", "DVSYS",
+    "AUDSYS", "GSMADMIN_INTERNAL", "DBSFWUSER", "REMOTE_SCHEDULER_AGENT",
+    "SYS$UMF", "GGSYS", "ANONYMOUS", "XS$NULL", "OJVMSYS", "DGPDB_INT",
 })
+
+
+def _user_schemas(names) -> tuple:
+    """Drop infrastructure schemas, keeping only user-facing ones."""
+    return tuple(n for n in names if n not in _SYSTEM_SCHEMAS)
 
 
 def list_schemas(connection_url: str) -> tuple:
@@ -132,4 +143,4 @@ def list_schemas(connection_url: str) -> tuple:
         raise ConnectionError(f"Could not list schemas: {exc}") from exc
     finally:
         engine.dispose()
-    return tuple(n for n in names if n not in _SYSTEM_SCHEMAS)
+    return _user_schemas(names)

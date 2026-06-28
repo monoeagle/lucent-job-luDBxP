@@ -65,3 +65,9 @@ def test_list_schemas_includes_main_and_filters_system(inventory_url):
     schemas = list_schemas(inventory_url)
     assert "main" in schemas
     assert not ({"information_schema", "pg_catalog", "sys"} & set(schemas))
+
+
+def test_user_schemas_filters_oracle_system_schemas():
+    from core.loaders.sqlalchemy_loader import _user_schemas
+    names = ["SYS", "SYSTEM", "XDB", "CTXSYS", "HR", "APP_DATA"]
+    assert _user_schemas(names) == ("HR", "APP_DATA")
