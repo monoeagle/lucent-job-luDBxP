@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.44.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.45.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1157,6 +1157,10 @@ Doku/AppImage/Projektposter.</p>
 <p><strong>v0.44.0</strong> (2026-06-28):</p>
 <ul>
 <li><strong>AP-E</strong> — SQL-Builder Zeilen-Move ↑/↓: ORDER-BY- und Spalten-Zeilen tragen kleine ↑/↓-Buttons (kein Drag &amp; Drop) zum Verschieben innerhalb ihrer Sektion. Da das Formular in DOM-Reihenfolge gelesen wird, ändert das Verschieben die SQL: ORDER BY = Sortier-Priorität, Spalten = SELECT-/GROUP-BY-Reihenfolge; ↑ der ersten / ↓ der letzten Zeile deaktiviert; gestaged (kein Auto-Rebuild). WHERE/HAVING bewusst ohne Move. Zusätzlich Legenden-Fix (1-N linksbündig wie N-1). Nur <code>web/</code> (JS/CSS) — v0.44.0</li>
+</ul>
+<p><strong>v0.45.0</strong> (2026-06-28):</p>
+<ul>
+<li><strong>AP-F</strong> — SQL-Analyzer Optimierungs-Vorschläge: neue, von den Warnungen getrennte Kategorie mit vier schema-freien AST-Heuristiken (DISTINCT+GROUP BY redundant, ORDER BY ohne LIMIT, OR im Top-Level-WHERE, Nicht-EXISTS-Unterabfrage in WHERE). Read-only, nur Hinweise — kein Umschreiben; Änderungen in <code>core/sqlanalyze.py</code>, <code>web/routes.py</code>, <code>web/static/js/app.js</code> + CSS — v0.45.0</li>
 </ul>
 <blockquote>
 <p><strong>AP-17</strong> (Delivery-Verzeichnis) wurde <strong>gestrichen</strong> — Auslieferung läuft über GitHub-Releases.</p>

@@ -1,21 +1,51 @@
 {
-  "generatedAt": "2026-06-28T17:21:42",
+  "generatedAt": "2026-06-28T17:59:07",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 70,
+      "commits": 76,
       "kinds": {
-        "docs": 35,
-        "feat": 24,
-        "fix": 6,
+        "fix": 7,
+        "feat": 26,
+        "docs": 38,
         "refactor": 3,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "9dd9de2",
+          "subject": "fix: AP-F — OR_IN_WHERE nur Top-Level-WHERE; .an-sugg blauer Akzent (Review-Findings)",
+          "kind": "fix"
+        },
+        {
+          "sha": "2c144e8",
+          "subject": "feat: SQL-Analyzer — Vorschläge in Route + Panel (.an-sugg) (AP-F web)",
+          "kind": "feat"
+        },
+        {
+          "sha": "db2f359",
+          "subject": "feat: SQL-Analyzer — Optimierungs-Vorschläge (4 AST-Heuristiken, AP-F core)",
+          "kind": "feat"
+        },
+        {
+          "sha": "ed06763",
+          "subject": "docs: Plan AP-F — Optimierungs-Vorschläge (3 Tasks: core / web / release)",
+          "kind": "docs"
+        },
+        {
+          "sha": "1a43e33",
+          "subject": "docs: Design AP-F — Optimierungs-Vorschläge im SQL-Analyzer (4 AST-Heuristiken)",
+          "kind": "docs"
+        },
+        {
+          "sha": "1239a8b",
+          "subject": "docs: Release v0.44.0 — Zeilen Move ↑/↓ (AP-E) + Legenden-Fix; Übersichten-Drift v0.43.2–v0.43.4 nachgezogen",
+          "kind": "docs"
+        },
         {
           "sha": "b415bed",
           "subject": "docs: AP-E — Kommentar in _sortByColumn (Rand-Zustand via addOrderByRow-Refresh)",
@@ -1480,17 +1510,17 @@
     }
   },
   "stats": {
-    "totalCommits": 284,
+    "totalCommits": 290,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 125
+        "count": 128
       },
       {
         "kind": "feat",
-        "count": 85
+        "count": 87
       },
       {
         "kind": "other",
@@ -1498,7 +1528,7 @@
       },
       {
         "kind": "fix",
-        "count": 24
+        "count": 25
       },
       {
         "kind": "build",
@@ -1517,7 +1547,7 @@
         "count": 2
       }
     ],
-    "testCount": 308
+    "testCount": 324
   },
   "phases": []
 }

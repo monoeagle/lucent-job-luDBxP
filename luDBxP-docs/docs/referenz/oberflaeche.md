@@ -189,3 +189,9 @@ gelesene/geschriebene Tabellen sowie Warnungen/Lints (u. a. `SELECT *`, `LIKE '%
 Funktion-auf-Spalte, sowie `SUSPICIOUS_ALIAS` für vertippte Join-Schlüsselwörter).
 Die JOIN-Kanten des Statements werden im Graph gezeichnet. Mit aktiver Verbindung
 zusätzlich `UNKNOWN_TABLE`/`UNKNOWN_COLUMN`.
+
+**Optimierungs-Vorschläge (AP-F):** ein eigener, von den Warnungen getrennter
+Abschnitt mit vier schema-freien AST-Heuristiken — überflüssiges `DISTINCT` neben
+`GROUP BY`, `ORDER BY` ohne `LIMIT`, `OR` im Top-Level-`WHERE` (kann Indexnutzung
+verhindern) und eine Nicht-`EXISTS`-Unterabfrage in `WHERE` (oft besser als
+JOIN/EXISTS). Read-only, nur Hinweise — der Analyzer schreibt nichts um.

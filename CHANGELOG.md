@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.45.0] — 2026-06-28
+
+### Added
+- SQL-Analyzer: a new „Optimierungs-Vorschläge" (optimization suggestions)
+  section, separate from warnings, with four schema-free AST heuristics:
+  redundant DISTINCT alongside GROUP BY, ORDER BY without LIMIT, OR in the
+  top-level WHERE (can defeat index use), and a non-EXISTS subquery in WHERE
+  (often better as a JOIN/EXISTS). Read-only, suggestions only — no query
+  rewriting. (AP-F)
+
 ## [0.44.0] — 2026-06-28
 
 ### Added
