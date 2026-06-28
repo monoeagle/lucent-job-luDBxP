@@ -66,6 +66,22 @@ def _inline_literal(value: object, *, force_string: bool = False) -> str:
     return "'" + s.replace("'", "''") + "'"
 
 
+def _coerce_numeric(value: object) -> object:
+    """Bind a numeric-looking string as a real number. A HAVING clause compares
+    against an aggregate expression, which has no column affinity — so a
+    TEXT-bound ``'5'`` never compares equal to the integer ``COUNT`` in SQLite
+    (integers sort before text) and the group filter would silently drop every
+    row. Mirrors the ``_looks_numeric`` rule used by ``_inline_literal`` so the
+    displayed and executed forms agree. Non-numeric values pass through."""
+    if isinstance(value, str) and _looks_numeric(value):
+        s = value.strip()
+        try:
+            return int(s)
+        except ValueError:
+            return float(s)
+    return value
+
+
 def _render_agg(agg: str, expr: str) -> str:
     """Render an aggregate over a qualified column expression.
 
@@ -344,7 +360,7 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
         key = f"h{i}"
         having_clauses.append(f"{expr} {h.op} :{key}")
         having_inline.append(f"{expr} {h.op} {_inline_literal(h.value)}")
-        params[key] = h.value
+        params[key] = _coerce_numeric(h.value)
 
     def _having_block(cls):
         return [(f"HAVING {c}" if k == 0 else f"  AND {c}")

@@ -384,6 +384,27 @@ def test_having_renders_parametrised():
     assert "> 5" in g.sql_inline          # but inlined in the copy/display variant
 
 
+def test_having_numeric_string_value_coerced_to_number():
+    # The web layer passes form values as strings. An aggregate has no column
+    # affinity, so a TEXT-bound '5' never compares equal to the integer COUNT
+    # (SQLite sorts integers before text) → the HAVING would silently drop every
+    # row. A numeric-looking string must bind as a real number.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")),
+                     having=(Having("VMwareCluster", "ClusterID", "COUNT", ">", "5"),))
+    assert g.params["h0"] == 5
+    assert isinstance(g.params["h0"], int)
+
+
+def test_having_non_numeric_string_value_kept():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "Name", agg="MAX")),
+                     having=(Having("VMwareCluster", "Name", "MAX", ">", "abc"),))
+    assert g.params["h0"] == "abc"
+
+
 def test_having_clause_order():
     g = generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN"),
