@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.41.0] — 2026-06-28
+
+### Added
+- Tier-3 GROUP BY / aggregate functions: each SELECT column may now carry an
+  aggregate (COUNT/SUM/AVG/MIN/MAX); GROUP BY is auto-derived from the
+  non-aggregated columns. The generated SQL gains a GROUP BY clause and the
+  read-only run path executes grouped queries. Changes confined to
+  `core/sqlgen.py`, `web/routes.py`, and `web/static/js/app.js`; no new
+  core module or endpoint. Still open: HAVING, COUNT(*)/COUNT(DISTINCT),
+  Cross-Schema joins.
+
 ## [0.40.0] — 2026-06-28
 
 ### Added

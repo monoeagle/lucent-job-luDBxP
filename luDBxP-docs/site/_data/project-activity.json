@@ -1,20 +1,55 @@
 {
-  "generatedAt": "2026-06-28T03:40:23",
+  "generatedAt": "2026-06-28T12:43:41",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 28,
+      "commits": 35,
       "kinds": {
+        "feat": 16,
+        "docs": 14,
         "fix": 3,
-        "docs": 10,
-        "feat": 13,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "8bd9b5d",
+          "subject": "feat: Tier-3 UI — Aggregat-Dropdown an Start/Ziel/Extra-Spalten (Auto-GROUP-BY)",
+          "kind": "feat"
+        },
+        {
+          "sha": "50a0517",
+          "subject": "feat: Tier-3 Route — agg auf start/target/extra_selects, GROUP-BY im Run-Pfad",
+          "kind": "feat"
+        },
+        {
+          "sha": "d6ef1f8",
+          "subject": "feat: Tier-3 Generator — Aggregate (COUNT/SUM/AVG/MIN/MAX) + Auto-GROUP-BY",
+          "kind": "feat"
+        },
+        {
+          "sha": "e83722d",
+          "subject": "docs: Implementierungsplan Tier-3 — GROUP BY + Aggregate (4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "815bb05",
+          "subject": "docs: Spec Tier-3 — GROUP BY + Aggregate (Auto-GROUP-BY, Standard-5, HAVING out)",
+          "kind": "docs"
+        },
+        {
+          "sha": "45f45c0",
+          "subject": "docs: Session-10-Handoff + Insight (esc != Attribut-Escaper -> escAttr) + KPI-Zeile #10",
+          "kind": "docs"
+        },
+        {
+          "sha": "10ebb5b",
+          "subject": "docs: TEST_COUNT 270->272 (Tier-2 Follow-up-Tests) + Site-Rebuild",
+          "kind": "docs"
+        },
         {
           "sha": "ed40be5",
           "subject": "fix: Tier-2 Follow-up — escAttr auf jt-step-title (Injection), Loader-None-Hardening + Fallback-Tests, Route vacuous-pass-Guard",
@@ -1269,17 +1304,17 @@
     }
   },
   "stats": {
-    "totalCommits": 242,
+    "totalCommits": 249,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 100
+        "count": 104
       },
       {
         "kind": "feat",
-        "count": 74
+        "count": 77
       },
       {
         "kind": "other",
@@ -1306,7 +1341,7 @@
         "count": 2
       }
     ],
-    "testCount": 272
+    "testCount": 282
   },
   "phases": []
 }

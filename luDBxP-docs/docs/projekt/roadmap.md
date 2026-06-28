@@ -96,6 +96,10 @@ Doku/AppImage/Projektposter.
 
 - **Tier-2 — Tabellen-/Spaltenkommentare**: Kommentare werden bei der Schema-Reflection gelesen (via SQLAlchemy) und im UI als Hover-Tooltip angezeigt — in der Detail-Spaltenliste und auf UML-Karten. Generiertes SQL unverändert; kein neues Core-Modul, kein neuer Endpoint — v0.40.0
 
+**v0.41.0** (2026-06-28):
+
+- **Tier-3 — GROUP BY / Aggregatfunktionen**: Jede SELECT-Spalte kann eine Aggregatfunktion (COUNT/SUM/AVG/MIN/MAX) tragen; GROUP BY wird automatisch aus den nicht-aggregierten Spalten abgeleitet. Generiertes SQL erhält eine GROUP BY-Klausel; die read-only-Ausführung führt gruppierte Abfragen aus. Änderungen in `core/sqlgen.py`, `web/routes.py`, `web/static/js/app.js`; kein neues Core-Modul, kein neuer Endpoint. Noch offen: HAVING, COUNT(*)/COUNT(DISTINCT), Cross-Schema-Joins — v0.41.0
+
 > **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:

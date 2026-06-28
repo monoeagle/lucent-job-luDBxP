@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.41.0] — 2026-06-28
+
+### Hinzugefügt
+- Tier-3 GROUP BY / Aggregatfunktionen: jede SELECT-Spalte kann eine
+  Aggregatfunktion (COUNT/SUM/AVG/MIN/MAX) tragen; GROUP BY wird automatisch
+  aus den nicht-aggregierten Spalten abgeleitet. Generiertes SQL erhält eine
+  GROUP BY-Klausel; die read-only-Ausführung führt gruppierte Abfragen aus.
+  Änderungen in `core/sqlgen.py`, `web/routes.py` und `web/static/js/app.js`;
+  kein neues Core-Modul, kein neuer Endpoint.
+  Noch offen: HAVING, COUNT(*)/COUNT(DISTINCT), Cross-Schema-Joins.
+
 ## [0.40.0] — 2026-06-28
 
 ### Hinzugefügt
