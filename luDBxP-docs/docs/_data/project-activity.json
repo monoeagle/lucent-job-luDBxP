@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-28T18:38:35",
+  "generatedAt": "2026-06-28T18:44:51",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 77,
+      "commits": 78,
       "kinds": {
-        "docs": 39,
+        "docs": 40,
         "fix": 7,
         "feat": 26,
         "refactor": 3,
@@ -16,6 +16,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "d0ea320",
+          "subject": "docs: Backlog AP-54..57 — Legacy-DB-Migration/Reverse-Engineering-Block + Konzept-Dok",
+          "kind": "docs"
+        },
         {
           "sha": "3b01dfd",
           "subject": "docs: Release v0.45.0 — SQL-Analyzer Optimierungs-Vorschläge (AP-F)",
@@ -1515,13 +1520,13 @@
     }
   },
   "stats": {
-    "totalCommits": 291,
+    "totalCommits": 292,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 129
+        "count": 130
       },
       {
         "kind": "feat",

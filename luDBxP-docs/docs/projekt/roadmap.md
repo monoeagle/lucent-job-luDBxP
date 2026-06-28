@@ -13,6 +13,8 @@
 - **AP-31** — Terminal-Server-Tauglichkeit (Multi-User). **Kern erledigt v0.33.0**
   (dynamischer Port + Pro-Nutzer-`config.json`/`Logs/`), **waitress-WSGI-Server erledigt v0.35.0**;
   **offen:** Idle-Shutdown/sauberer Stop, Deployment-Packaging
+- **AP-34** — Tray-Icon-Launcher. **Kern erledigt v0.34.0** (Ein-Klick-Start, Tray-Menü,
+  Auto-Browser, sauberes Beenden); **offen:** Log-Fenster + Verknüpfungs-Ausrollen
 - **AP-35** — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund
   aus AP-15; Fix wie in `run.sh`, signiertes Skript → eigene Windows-Session)
 
