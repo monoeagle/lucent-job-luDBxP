@@ -83,6 +83,13 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **COUNT(*) + COUNT(DISTINCT) (v0.43.0):** COUNT(*) counts rows per group (column-ignored; the entry's table is still joined) and COUNT(DISTINCT col) counts distinct values. Both work across SELECT, HAVING, and ORDER BY. Still open: Cross-Schema-Joins.
 
+> **Implied-FK-Schärfung (AP-55, v0.47.0):** Implied-FKs werden neben dem exakten
+> PK-Namen-Match auch über Suffix→Tabellenname (Groß/Klein-, Trenner-, Plural-
+> normalisiert, Ziel-PK = generische ID-Form) erkannt; jeder Treffer trägt eine
+> Confidence-Stufe (hoch/mittel/niedrig) und erscheint read-only im Info-Panel.
+> Es werden keine FKs angelegt; Cross-Schema-Implied-Matching bleibt zurückgestellt
+> (braucht Multi-Schema-Reflection, Gate wie AP-57).
+
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:
 ```bash
