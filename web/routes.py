@@ -474,13 +474,13 @@ def api_subset():
     start = (data.get("start_table") or "").strip()
     rf = data.get("root_filter") or {}
     include_implied = bool(data.get("include_implied", False))
-    max_depth = int(data.get("max_depth") or 5)
     if not schema.has_column(start, rf.get("column", "")):
         return jsonify(error="unknown start table or column"), 400
 
     dialect = (dialect_for(data["dialect"]) if data.get("dialect")
                else _dialect_from_url(url))
     try:
+        max_depth = int(data.get("max_depth") or 5)
         result = compute_subset(schema, start, include_implied=include_implied,
                                 max_depth=max_depth)
         scripts = generate_subset_sql(schema, result, rf,
