@@ -143,6 +143,10 @@ Doku/AppImage/Projektposter.
 
 - **AP-F** — SQL-Analyzer Optimierungs-Vorschläge: neue, von den Warnungen getrennte Kategorie mit vier schema-freien AST-Heuristiken (DISTINCT+GROUP BY redundant, ORDER BY ohne LIMIT, OR im Top-Level-WHERE, Nicht-EXISTS-Unterabfrage in WHERE). Read-only, nur Hinweise — kein Umschreiben; Änderungen in `core/sqlanalyze.py`, `web/routes.py`, `web/static/js/app.js` + CSS — v0.45.0
 
+**v0.45.1** (2026-06-28):
+
+- **AP-58** — Fix HAVING-Layout: die HAVING-Zeilen fluchten jetzt wie Filter/Sortierung/Spalten (gleiches Flex-Layout, gleiche Einrückung, kleiner quadratischer Löschbutton statt 140px-Kasten). HAVING (v0.42.0) entstand vor dem AP-B-Layout und hatte kein eigenes CSS. Nur CSS — v0.45.1
+
 > **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:

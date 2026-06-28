@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-28T18:44:51",
+  "generatedAt": "2026-06-28T18:59:17",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 78,
+      "commits": 79,
       "kinds": {
-        "docs": 40,
+        "docs": 41,
         "fix": 7,
         "feat": 26,
         "refactor": 3,
@@ -16,6 +16,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "4c8f1ed",
+          "subject": "docs: AP-34 in Offene-Arbeitspakete-Liste ergänzt (Gantt/Roadmap-Drift geglättet)",
+          "kind": "docs"
+        },
         {
           "sha": "d0ea320",
           "subject": "docs: Backlog AP-54..57 — Legacy-DB-Migration/Reverse-Engineering-Block + Konzept-Dok",
@@ -1520,13 +1525,13 @@
     }
   },
   "stats": {
-    "totalCommits": 292,
+    "totalCommits": 293,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 130
+        "count": 131
       },
       {
         "kind": "feat",

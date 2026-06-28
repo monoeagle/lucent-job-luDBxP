@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.45.1] — 2026-06-28
+
+### Fixed
+- SQL-Builder: the HAVING clause rows now render like the other clause sections
+  (Filter/Sortierung/Spalten) — same flex layout, same left indent, and a small
+  square delete button instead of a ballooned 140px one. HAVING (v0.42.0)
+  predated the AP-B section layout and had no matching CSS. CSS only — no
+  behavior change. (AP-58)
+
 ## [0.45.0] — 2026-06-28
 
 ### Added

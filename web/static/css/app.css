@@ -166,14 +166,15 @@ body {
 }
 .sqlbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .25rem 0; }
 .sqlbuilder label { min-width: 3rem; }
-.filter-row, .orderby-row, .col-row {
+.filter-row, .orderby-row, .col-row, .having-row {
   display: flex; gap: .4rem; align-items: center; margin: .3rem 0;
   padding-left: calc(3rem + .4rem);   /* unter Start/Ziel einrücken */
 }
 
 /* Jeder Dropdown gleich breit; Text-Eingaben fluchten mit. */
 .sqlbuilder select,
-.sqlbuilder .f-val {
+.sqlbuilder .f-val,
+.sqlbuilder .h-val {
   width: var(--sb-ctrl-w); height: var(--sb-ctrl-h);
   padding: 0 .4rem; border: 1px solid #bcbcc6; border-radius: 4px;
   background: #fff; font-size: .85rem;
@@ -190,22 +191,22 @@ body {
 }
 
 /* Aktions-Buttons: alle gleich groß. */
-.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sb-move):not(.sql-copy):not(.sb-add) {
+.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.h-del):not(.sb-move):not(.sql-copy):not(.sb-add) {
   min-width: 140px; height: var(--sb-ctrl-h); padding: 0 .8rem;
   border: 1px solid #bcbcc6; border-radius: 4px; background: #f3f3f6;
   cursor: pointer; font-size: .85rem; white-space: nowrap;
 }
-.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sb-move):not(.sql-copy):not(.sb-add):hover {
+.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.h-del):not(.sb-move):not(.sql-copy):not(.sb-add):hover {
   background: #e8e8ef;
 }
 
 /* Zeilen-Löschbuttons: einheitliche kleine Quadrate. */
-.f-del, .ob-del, .c-del {
+.f-del, .ob-del, .c-del, .h-del {
   width: var(--sb-ctrl-h); height: var(--sb-ctrl-h); padding: 0; flex: 0 0 auto;
   border: 1px solid #bcbcc6; border-radius: 4px; background: #fff;
   color: #a00; cursor: pointer; line-height: 1;
 }
-.f-del:hover, .ob-del:hover, .c-del:hover { background: #fde8e8; }
+.f-del:hover, .ob-del:hover, .c-del:hover, .h-del:hover { background: #fde8e8; }
 
 /* AP-E: Zeilen-Move-Buttons (↑/↓) — kleine neutrale Quadrate wie die Löschbuttons. */
 .sb-move {

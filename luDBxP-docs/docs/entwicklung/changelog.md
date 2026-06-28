@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.45.1] — 2026-06-28
+
+### Behoben
+- SQL-Builder: die HAVING-Zeilen rendern jetzt wie die übrigen Klausel-Sektionen
+  (Filter/Sortierung/Spalten) — gleiches Flex-Layout, gleiche Einrückung und ein
+  kleiner quadratischer Löschbutton statt eines aufgeblähten 140px-Kastens.
+  HAVING (v0.42.0) entstand vor dem AP-B-Layout und hatte kein passendes CSS.
+  Nur CSS — keine Verhaltensänderung. (AP-58)
+
 ## [0.45.0] — 2026-06-28
 
 ### Hinzugefügt
