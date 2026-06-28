@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.48.2] — 2026-06-28
+
+### Behoben
+- HAVING-Vergleichswerte werden jetzt typgerecht gebunden: ein numerisch aussehender
+  Wert (z. B. `HAVING COUNT(...) > 1`) wird als Zahl statt als String gebunden. Vorher
+  lieferte die read-only Vorschau in SQLite still 0 Zeilen (ein Aggregat-Ausdruck hat
+  keine Spalten-Affinität, ein TEXT-gebundenes `'1'` ist nie gleich dem Integer-COUNT).
+  Das generierte SQL war schon korrekt; nun stimmt auch die Vorschau.
+
+### Doku
+- Alle sieben Oberflächen-Screenshots auf die aktuelle UI erneuert (1920×1080) und auf
+  volle Content-Breite gestellt; zwei neue Screenshots zeigen die SQL-Builder-Klausel-
+  Sektionen (Filter / Sortierung / Spalten sowie Aggregat mit GROUP BY + HAVING).
+
 ## [0.48.1] — 2026-06-28
 
 ### Geändert

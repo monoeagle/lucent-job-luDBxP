@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.48.2] — 2026-06-28
+
+### Fixed
+- HAVING comparison values are now bound type-correctly: a numeric-looking value
+  (e.g. `HAVING COUNT(...) > 1`) is bound as a number instead of a string. Before,
+  the read-only result preview silently returned zero rows in SQLite (an aggregate
+  expression has no column affinity, so a TEXT-bound `'1'` never equals the integer
+  COUNT). The generated SQL was already correct; now the preview matches.
+
+### Docs
+- All seven surface screenshots refreshed to the current UI (1920×1080) and shown at
+  full content width; two new screenshots demonstrate the SQL-Builder clause sections
+  (filter / sort / extra columns, and aggregate with GROUP BY + HAVING).
+
 ## [0.48.1] — 2026-06-28
 
 ### Changed

@@ -166,6 +166,10 @@ Doku/AppImage/Projektposter.
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
 
+**v0.48.2** (2026-06-28):
+
+- **Fix HAVING-Typbindung** + **Doku-Screenshots erneuert/verbreitert** (aktuelle UI, 1920px, volle Breite) + 2 neue SQL-Builder-Klausel-Beispiele (Filter/Sortierung/Spalten, Aggregat/GROUP BY/HAVING). **Aufwand S** — v0.48.2
+
 **v0.48.1** (2026-06-28):
 
 - **AP-64** — Verbindungsform-Umbau: Name-Feld fluchtet mit den Feldern, „Verbinden" entfällt, neuer „Testen"-Button (read-only via `/api/connect`) + „Speichern" unter den Feldern, Infofeld darunter. Backend-Fix: Verbindungsfehler als HTTP 400 statt 500 (echte Treiber-Meldung). Nur Frontend/CSS + Backend-Fix. **Aufwand S** — v0.48.1

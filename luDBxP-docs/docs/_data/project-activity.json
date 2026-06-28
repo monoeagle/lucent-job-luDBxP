@@ -1,16 +1,32 @@
 {
-  "generatedAt": "2026-06-29T00:21:06",
+  "generatedAt": "2026-06-29T00:47:01",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 1,
+      "commits": 4,
       "kinds": {
-        "docs": 1
+        "docs": 3,
+        "fix": 1
       },
       "list": [
+        {
+          "sha": "e43f597",
+          "subject": "docs: 2 SQL-Builder-Klausel-Beispiele (Filter/Sortierung/Spalten + Aggregat/GROUP BY/HAVING)",
+          "kind": "docs"
+        },
+        {
+          "sha": "8c88bf5",
+          "subject": "fix: numerische HAVING-Werte als Zahl binden (Vorschau lieferte sonst 0 Zeilen)",
+          "kind": "fix"
+        },
+        {
+          "sha": "93e206a",
+          "subject": "docs: Screenshots auf aktuelle UI (v0.48.1) erneuert + 1920px-Aufnahme; in der Doku auf volle Content-Breite gestellt",
+          "kind": "docs"
+        },
         {
           "sha": "6c4f264",
           "subject": "docs: Site-Artefakte nach v0.48.1-Build (project-activity.json)",
@@ -1753,13 +1769,13 @@
     }
   },
   "stats": {
-    "totalCommits": 337,
+    "totalCommits": 340,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 157
+        "count": 159
       },
       {
         "kind": "feat",
@@ -1767,7 +1783,7 @@
       },
       {
         "kind": "fix",
-        "count": 31
+        "count": 32
       },
       {
         "kind": "other",
@@ -1790,7 +1806,7 @@
         "count": 3
       }
     ],
-    "testCount": 357
+    "testCount": 359
   },
   "phases": []
 }
