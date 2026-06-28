@@ -77,11 +77,31 @@ function includeImplied() { return $("include_implied").checked; }
 function tableByName(name) { return SCHEMA.tables.find((t) => t.name === name); }
 function optionList(names) { return names.map((n) => `<option>${n}</option>`).join(""); }
 
-// Tier-3: aggregate <option>s for a SELECT column. Empty value = no aggregate.
-const AGG_FUNCS = ["COUNT", "SUM", "AVG", "MIN", "MAX"];
-function aggOptions() {
-  return `<option value="">—</option>` +
-    AGG_FUNCS.map((f) => `<option value="${f}">${f}</option>`).join("");
+// Aggregate options. value = token sent in the request; label = shown to the user.
+// COUNT* renders COUNT(*) (column ignored); "COUNT DISTINCT" renders COUNT(DISTINCT col).
+const AGG_OPTIONS = [
+  { v: "COUNT", l: "COUNT" },
+  { v: "COUNT*", l: "COUNT(*)" },
+  { v: "COUNT DISTINCT", l: "COUNT(DISTINCT)" },
+  { v: "SUM", l: "SUM" },
+  { v: "AVG", l: "AVG" },
+  { v: "MIN", l: "MIN" },
+  { v: "MAX", l: "MAX" },
+];
+function aggOptionTags() {
+  return AGG_OPTIONS.map((o) => `<option value="${o.v}">${o.l}</option>`).join("");
+}
+function aggOptions() {              // SELECT/ORDER BY: optional aggregate ("—" first)
+  return `<option value="">—</option>` + aggOptionTags();
+}
+
+// COUNT(*) ignores the column — disable the paired column <select> when chosen
+// (its value is still submitted and ignored server-side). Other aggregates keep it.
+function wireAggColDisable(aggSel, colSel) {
+  if (!aggSel || !colSel) return;
+  const sync = () => { colSel.disabled = (aggSel.value === "COUNT*"); };
+  aggSel.addEventListener("change", sync);
+  sync();
 }
 
 // Aggregat-Ops: scalar comparison operators allowed in a HAVING row.
@@ -347,6 +367,8 @@ function openJoinBuilder() {
     `<div id="join_result"></div></div>`;
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
+  wireAggColDisable($("start_agg"), $("start_col"));
+  wireAggColDisable($("target_agg"), $("target_col"));
   $("btn_swap").addEventListener("click", swapStartTarget);
   $("btn_add_filter").addEventListener("click", addFilterRow);
   $("btn_add_orderby").addEventListener("click", addOrderByRow);
@@ -642,6 +664,7 @@ function addOrderByRow() {
   fillOcol();
   row.querySelector(".ob-table").addEventListener("change", fillOcol);
   row.querySelector(".ob-del").addEventListener("click", () => row.remove());
+  wireAggColDisable(row.querySelector(".ob-agg"), row.querySelector(".ob-col"));
   $("order_bys").appendChild(row);
 }
 
@@ -675,6 +698,7 @@ function addColRow() {
   fillCcol();
   row.querySelector(".c-table").addEventListener("change", fillCcol);
   row.querySelector(".c-del").addEventListener("click", () => row.remove());
+  wireAggColDisable(row.querySelector(".c-agg"), row.querySelector(".c-col"));
   $("extra_cols").appendChild(row);
 }
 
@@ -696,7 +720,7 @@ function addHavingRow() {
   const names = SCHEMA.tables.map((t) => t.name);
   row.innerHTML =
     `<select class="h-agg jb-agg" title="Aggregatfunktion">` +
-    AGG_FUNCS.map((f) => `<option value="${f}">${f}</option>`).join("") + `</select>` +
+    aggOptionTags() + `</select>` +
     `<select class="h-table">${optionList(names)}</select>` +
     `<select class="h-col"></select>` +
     `<select class="h-op">${HAVING_OPS.map((o) => `<option>${o}</option>`).join("")}</select>` +
@@ -713,6 +737,7 @@ function addHavingRow() {
   row.querySelector(".h-agg").addEventListener("change", _rebuildIfBuilt);
   row.querySelector(".h-op").addEventListener("change", _rebuildIfBuilt);
   row.querySelector(".h-del").addEventListener("click", () => { row.remove(); _rebuildIfBuilt(); });
+  wireAggColDisable(row.querySelector(".h-agg"), row.querySelector(".h-col"));
   $("havings").appendChild(row);
 }
 
