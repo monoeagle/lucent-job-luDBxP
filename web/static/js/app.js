@@ -224,8 +224,8 @@ async function openInfo() {
   const xfkBlock = xfk.length
     ? `<h3>Cross-Schema-FKs</h3><ul class="objlist">` +
       xfk.map((e) =>
-        `<li>${esc(e.from_table)}.${esc(e.columns.join(","))} → ` +
-        `${esc(e.to_schema)}.${esc(e.to_table)}.${esc(e.to_columns.join(","))}</li>`).join("") +
+        `<li>${esc(e.from_table)}.${esc((e.columns || []).join(","))} → ` +
+        `${esc(e.to_schema)}.${esc(e.to_table)}.${esc((e.to_columns || []).join(","))}</li>`).join("") +
       `</ul>`
     : "";
 
