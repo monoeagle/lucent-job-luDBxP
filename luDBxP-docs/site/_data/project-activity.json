@@ -1,17 +1,22 @@
 {
-  "generatedAt": "2026-06-29T00:47:01",
+  "generatedAt": "2026-06-29T00:49:11",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 4,
+      "commits": 5,
       "kinds": {
-        "docs": 3,
+        "docs": 4,
         "fix": 1
       },
       "list": [
+        {
+          "sha": "99c59c6",
+          "subject": "docs: Release v0.48.2 — HAVING-Typbindung-Fix + Doku-Screenshots",
+          "kind": "docs"
+        },
         {
           "sha": "e43f597",
           "subject": "docs: 2 SQL-Builder-Klausel-Beispiele (Filter/Sortierung/Spalten + Aggregat/GROUP BY/HAVING)",
@@ -1769,13 +1774,13 @@
     }
   },
   "stats": {
-    "totalCommits": 340,
+    "totalCommits": 341,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 159
+        "count": 160
       },
       {
         "kind": "feat",
