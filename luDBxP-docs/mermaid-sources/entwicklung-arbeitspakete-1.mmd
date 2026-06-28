@@ -15,6 +15,7 @@ flowchart TB
         E8["Implizite-FK"]
         E9["AP-50\nUnique → 1-1"]
         E10["AP-51\nUnique-Index"]
+        E11["Tier-2\nSpaltenkommentare"]
         E1 --> E2 --> E3 --> E4 --> E5
         E7 --> E5
         E8 --> E3
@@ -22,6 +23,7 @@ flowchart TB
         E10 --> E4
         E5 ~~~ E6
         E9 ~~~ E10
+        E10 ~~~ E11
     end
 
     %% ── C2 · Verbindungen & Backends ─────────────────────────────────────
@@ -142,7 +144,7 @@ flowchart TB
     V4 --> B7
     G5 --> K2
 
-    class E1,E2,E3,E4,E5,E6,E7,E8,E9,E10 done
+    class E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11 done
     class V1,V2,V3,V4,V5,V6,V7 done
     class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14,J15,J16,J17,J18,J19,J20,J21,J22,J23,J24,J25 done
     class G1,G2,G3,G4,G5,G6,G7,G8,G9 done

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.40.0] — 2026-06-28
+
+### Added
+- Table and column comments (Tier-2): comments are now read during schema
+  reflection and surfaced in the UI as hover tooltips (`title`) — in the
+  detail-tab column list and on UML cards. The generated SQL is unchanged.
+  No new core module and no new API endpoint; changes confined to
+  `core/model.py`, `core/loaders/sqlalchemy_loader.py`, `web/routes.py`
+  (`/api/schema`), and `web/static/js/app.js`.
+
 ## [0.39.0] — 2026-06-28
 
 ### Added

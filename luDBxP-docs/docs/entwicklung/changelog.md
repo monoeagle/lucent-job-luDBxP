@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.0] — 2026-06-28
+
+### Hinzugefügt
+- Tier-2 Tabellen-/Spaltenkommentare: Kommentare werden bei der Reflection
+  gelesen und im UI (Detailliste + UML-Karten) als Hover-Tooltip angezeigt;
+  generiertes SQL unverändert.
+
 ## [0.39.0] — 2026-06-28
 
 ### Hinzugefügt

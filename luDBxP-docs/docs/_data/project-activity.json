@@ -1,20 +1,65 @@
 {
-  "generatedAt": "2026-06-28T02:25:30",
+  "generatedAt": "2026-06-28T03:26:35",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 17,
+      "commits": 26,
       "kinds": {
-        "feat": 9,
+        "fix": 2,
+        "feat": 13,
+        "docs": 9,
         "test": 1,
-        "docs": 5,
-        "style": 1,
-        "fix": 1
+        "style": 1
       },
       "list": [
+        {
+          "sha": "33a7f94",
+          "subject": "fix: Tier-2 UI — escAttr() escaped \" in title-Tooltips (Attribut-Injection)",
+          "kind": "fix"
+        },
+        {
+          "sha": "bce4785",
+          "subject": "feat: Tier-2 UI — Tabellen-/Spaltenkommentare als Hover-Tooltip (Liste + UML)",
+          "kind": "feat"
+        },
+        {
+          "sha": "e012e56",
+          "subject": "feat: Tier-2 route — Tabellen-/Spaltenkommentare in /api/schema serialisieren",
+          "kind": "feat"
+        },
+        {
+          "sha": "0f0086f",
+          "subject": "feat: Tier-2 loader — Spalten-/Tabellenkommentare reflektieren (robust ggü. SQLite)",
+          "kind": "feat"
+        },
+        {
+          "sha": "6ea3c04",
+          "subject": "feat: Tier-2 model — comment-Felder auf Column und Table",
+          "kind": "feat"
+        },
+        {
+          "sha": "8da5e06",
+          "subject": "docs: Tier-2 Implementierungsplan (Tabellen-/Spaltenkommentare)",
+          "kind": "docs"
+        },
+        {
+          "sha": "38e84d3",
+          "subject": "docs: Tier-2 (Tabellen-/Spaltenkommentare) Design-Spec",
+          "kind": "docs"
+        },
+        {
+          "sha": "c96a63e",
+          "subject": "docs: Session-9-Handoff + Insight (Release-Task muss Übersichten/Architektur enumerieren) + KPI-Zeile #9",
+          "kind": "docs"
+        },
+        {
+          "sha": "ce0fed0",
+          "subject": "docs: Release v0.39.0 — AP-53 Oracle-Verbindung (Doku/Badges/Changelog/Roadmap/Site)",
+          "kind": "docs"
+        },
         {
           "sha": "8c4ef99",
           "subject": "feat: AP-53 Oracle in connection form (service-name) + persist field",
@@ -1214,17 +1259,17 @@
     }
   },
   "stats": {
-    "totalCommits": 231,
+    "totalCommits": 240,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 95
+        "count": 99
       },
       {
         "kind": "feat",
-        "count": 70
+        "count": 74
       },
       {
         "kind": "other",
@@ -1232,7 +1277,7 @@
       },
       {
         "kind": "fix",
-        "count": 19
+        "count": 20
       },
       {
         "kind": "build",
@@ -1251,7 +1296,7 @@
         "count": 2
       }
     ],
-    "testCount": 262
+    "testCount": 270
   },
   "phases": []
 }

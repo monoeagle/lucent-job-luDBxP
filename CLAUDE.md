@@ -75,6 +75,8 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **One-to-one detection (AP-50/51):** a descending FK whose child columns are themselves UNIQUE (constraint or PK) is treated as 1-1, not 1-N — no false fan-out warning. Uniqueness backed by a UNIQUE index (full-column, non-partial) is detected too (AP-51); only partial and expression unique indexes are deliberately ignored.
 
+> **Table and column comments (Tier-2, v0.40.0):** Table and column comments are read during schema reflection and surfaced in the UI (detail column list + UML cards) as hover tooltips (`title`). The generated SQL is unchanged. Still open: Tier-3 (GROUP BY/Aggregate) and Cross-Schema-Joins.
+
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:
 ```bash
