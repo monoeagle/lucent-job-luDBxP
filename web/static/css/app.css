@@ -159,56 +159,56 @@ body {
 .panel.active { display: block; }
 
 /* --- join builder (AP-23: einheitliche Steuerelement-Größen) --- */
-.joinbuilder {
-  --jb-ctrl-w: 150px;   /* gemeinsame Breite aller Dropdowns/Eingaben */
-  --jb-ctrl-h: 30px;    /* gemeinsame Höhe aller Steuerelemente/Buttons */
+.sqlbuilder {
+  --sb-ctrl-w: 150px;   /* gemeinsame Breite aller Dropdowns/Eingaben */
+  --sb-ctrl-h: 30px;    /* gemeinsame Höhe aller Steuerelemente/Buttons */
   position: relative;   /* AP-44: anchor for the top-right fan-out tile */
 }
-.joinbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .25rem 0; }
-.joinbuilder label { min-width: 3rem; }
+.sqlbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .25rem 0; }
+.sqlbuilder label { min-width: 3rem; }
 .filter-row, .orderby-row, .col-row {
   display: flex; gap: .4rem; align-items: center; margin: .3rem 0;
   padding-left: calc(3rem + .4rem);   /* unter Start/Ziel einrücken */
 }
 
 /* Jeder Dropdown gleich breit; Text-Eingaben fluchten mit. */
-.joinbuilder select,
-.joinbuilder .f-val {
-  width: var(--jb-ctrl-w); height: var(--jb-ctrl-h);
+.sqlbuilder select,
+.sqlbuilder .f-val {
+  width: var(--sb-ctrl-w); height: var(--sb-ctrl-h);
   padding: 0 .4rem; border: 1px solid #bcbcc6; border-radius: 4px;
   background: #fff; font-size: .85rem;
 }
 .f-val-wrap { display: inline-flex; gap: .25rem; }
-.joinbuilder .f-val-lo, .joinbuilder .f-val-hi {
-  width: calc((var(--jb-ctrl-w) - .25rem) / 2); height: var(--jb-ctrl-h);
+.sqlbuilder .f-val-lo, .sqlbuilder .f-val-hi {
+  width: calc((var(--sb-ctrl-w) - .25rem) / 2); height: var(--sb-ctrl-h);
   padding: 0 .4rem; border: 1px solid #bcbcc6; border-radius: 4px;
   background: #fff; font-size: .85rem;
 }
-#jb_limit {
-  width: 72px; height: var(--jb-ctrl-h); padding: 0 .4rem;
+#sb_limit {
+  width: 72px; height: var(--sb-ctrl-h); padding: 0 .4rem;
   border: 1px solid #bcbcc6; border-radius: 4px; background: #fff; font-size: .85rem;
 }
 
 /* Aktions-Buttons: alle gleich groß. */
-.joinbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy) {
-  min-width: 140px; height: var(--jb-ctrl-h); padding: 0 .8rem;
+.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy) {
+  min-width: 140px; height: var(--sb-ctrl-h); padding: 0 .8rem;
   border: 1px solid #bcbcc6; border-radius: 4px; background: #f3f3f6;
   cursor: pointer; font-size: .85rem; white-space: nowrap;
 }
-.joinbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy):hover {
+.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy):hover {
   background: #e8e8ef;
 }
 
 /* Zeilen-Löschbuttons: einheitliche kleine Quadrate. */
 .f-del, .ob-del, .c-del {
-  width: var(--jb-ctrl-h); height: var(--jb-ctrl-h); padding: 0; flex: 0 0 auto;
+  width: var(--sb-ctrl-h); height: var(--sb-ctrl-h); padding: 0; flex: 0 0 auto;
   border: 1px solid #bcbcc6; border-radius: 4px; background: #fff;
   color: #a00; cursor: pointer; line-height: 1;
 }
 .f-del:hover, .ob-del:hover, .c-del:hover { background: #fde8e8; }
 
 /* Optionszeile: DISTINCT/LIMIT kompakt. */
-.jb-check, .jb-limit { display: inline-flex; align-items: center; gap: .3rem; }
+.sb-check, .sb-limit { display: inline-flex; align-items: center; gap: .3rem; }
 /* AP-47: [ ] / [*] selection markers instead of bullets */
 .path_list { list-style: none; padding-left: .2rem; margin: .3rem 0; }
 .path_list li { display: flex; align-items: baseline; gap: .35rem; padding: 1px 0; }
@@ -233,17 +233,17 @@ body {
 .sql-copy.copied { color: #2ecc71; border-color: #2ecc71; }
 
 /* --- join result toolbar (AP-6: row count + refresh) --- */
-.jb-result-bar { margin-top: .6rem; }
-.jb-result-bar #jb_rows_info { margin-left: .4rem; }
+.sb-result-bar { margin-top: .6rem; }
+.sb-result-bar #sb_rows_info { margin-left: .4rem; }
 
 /* --- join result table (AP-9 / AP-28: fill remaining vertical space) --- */
 /* Scoped to the join-builder panel so detail tabs keep normal block flow.
    AP-28: the panel is fixed to the viewport height and never scrolls itself —
    the form/SELECT stay put and ONLY #join_result scrolls. */
-.panel[data-tab="joinbuilder"].active {
+.panel[data-tab="sqlbuilder"].active {
   display: flex; flex-direction: column; height: 100%; overflow: hidden;
 }
-.panel[data-tab="joinbuilder"] .joinbuilder {
+.panel[data-tab="sqlbuilder"] .sqlbuilder {
   display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto;
 }
 #join_result {
@@ -283,8 +283,8 @@ body {
   white-space: pre; border-radius: 4px; }
 /* Compact fan-out hint tile — pinned top-right of the join-builder (AP-44),
    so it no longer consumes a full row above the path list. */
-.jb-fanout-hint:empty { display: none; }
-.jb-fanout-hint { position: absolute; top: 2px; right: 2px; z-index: 4;
+.sb-fanout-hint:empty { display: none; }
+.sb-fanout-hint { position: absolute; top: 2px; right: 2px; z-index: 4;
   display: inline-flex; align-items: center; gap: 5px;
   background: #fff8ec; border: 1px solid #f0d9a8; color: #8a5300;
   font-size: 0.74rem; padding: 1px 7px; border-radius: 4px; }
@@ -298,11 +298,11 @@ body {
 .step-dir.one  { background: #e3f4e8; color: #1e7e34; }
 .step-dir.many { background: #fbeccf; color: #9a6700; }
 /* Start ⇄ Ziel swap button */
-.jb-swap { margin-left: .4rem; padding: 0 .45rem; line-height: 1.6; font-size: 1rem;
+.sb-swap { margin-left: .4rem; padding: 0 .45rem; line-height: 1.6; font-size: 1rem;
   cursor: pointer; }
 /* AP-41: per-step join-type selectors for the active path */
-.jb-join-types { flex-wrap: wrap; gap: 6px; align-items: center; margin: 2px 0 4px; }
-.jb-join-types:empty { display: none; }
+.sb-join-types { flex-wrap: wrap; gap: 6px; align-items: center; margin: 2px 0 4px; }
+.sb-join-types:empty { display: none; }
 .jt-lbl { font-size: .78rem; color: #555; font-weight: 600; }
 .jt-step { font-size: .72rem; color: #444; display: inline-flex; align-items: center; gap: 3px; }
 .jt-step select { font-size: .72rem; padding: 0 2px; }

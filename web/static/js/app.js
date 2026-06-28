@@ -23,9 +23,9 @@ let GRAPH_SEL = { source: null, target: null };
 const GRAPH_FIT_PAD = 16;
 
 // ===== Join-builder state (AP-6: result refresh + row-count selection) =====
-let JB_LAST = null;     // { body, paths } from the last successful build
-let JB_PATH_IDX = 0;    // currently selected path index
-let JB_JOIN_TYPES = []; // AP-41: per-step join type for the active path (INNER default)
+let SB_LAST = null;     // { body, paths } from the last successful build
+let SB_PATH_IDX = 0;    // currently selected path index
+let SB_JOIN_TYPES = []; // AP-41: per-step join type for the active path (INNER default)
 
 const $ = (id) => document.getElementById(id);
 
@@ -159,7 +159,7 @@ function renderSidebar() {
   $("objects").innerHTML =
     `<h3>Tools</h3><ul class="objlist">` +
     `<li data-action="connections">Verbindungen</li>` +
-    `<li data-action="joinbuilder">Join-Builder</li>` +
+    `<li data-action="sqlbuilder">SQL-Builder</li>` +
     `<li data-action="analyzer">SQL-Analyzer</li></ul>` +
     `<h3>Tabellen (${SCHEMA.tables.length})</h3>` +
     `<ul class="objlist">${objList(SCHEMA.tables, "table")}</ul>` +
@@ -169,7 +169,7 @@ function renderSidebar() {
     `<ul class="objlist"><li data-action="info">Übersicht</li></ul></div>`;
   $("objects").querySelectorAll("li").forEach((li) => {
     li.addEventListener("click", () => {
-      if (li.dataset.action === "joinbuilder") openJoinBuilder();
+      if (li.dataset.action === "sqlbuilder") openSqlBuilder();
       else if (li.dataset.action === "analyzer") openAnalyzer();
       else if (li.dataset.action === "connections") openConnections();
       else if (li.dataset.action === "info") openInfo();
@@ -314,56 +314,56 @@ function openDetail(kind, name) {
 }
 
 // ===== Join builder tab =====
-function openJoinBuilder() {
-  const panel = ensureTab("joinbuilder", "Join-Builder", true);
+function openSqlBuilder() {
+  const panel = ensureTab("sqlbuilder", "SQL-Builder", true);
   if (panel.dataset.built) return;
   panel.dataset.built = "1";
   panel.innerHTML =
-    `<div class="joinbuilder">` +
+    `<div class="sqlbuilder">` +
     `<div class="row"><label>Start</label>` +
     `<select id="start_table"></select> . <select id="start_col"></select>` +
-    `<select id="start_agg" class="jb-agg" title="Aggregatfunktion">${aggOptions()}</select></div>` +
+    `<select id="start_agg" class="sb-agg" title="Aggregatfunktion">${aggOptions()}</select></div>` +
     `<div class="row"><label>Ziel</label>` +
     `<select id="target_table"></select> . <select id="target_col"></select>` +
-    `<select id="target_agg" class="jb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
-    `<button id="btn_swap" class="jb-swap" type="button" title="Start und Ziel vertauschen" ` +
+    `<select id="target_agg" class="sb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
+    `<button id="btn_swap" class="sb-swap" type="button" title="Start und Ziel vertauschen" ` +
     `aria-label="Start und Ziel vertauschen">⇅</button></div>` +
     `<div class="filters" id="filters"></div>` +
     `<div class="filters" id="order_bys"></div>` +
     `<div class="filters" id="extra_cols"></div>` +
     `<div class="filters" id="havings"></div>` +
-    `<div class="row jb-controls">` +
+    `<div class="row sb-controls">` +
     `<button id="btn_add_filter" title="Filterbedingung (mit UND verknüpft)">Filter +</button>` +
     `<button id="btn_add_orderby" title="Sortierungsspalte hinzufügen">Sortierung +</button>` +
     `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Spalten +</button>` +
     `<button id="btn_add_having" title="Gruppen nach Aggregat filtern (HAVING)">HAVING +</button>` +
-    `<label class="jb-check"><input type="checkbox" id="jb_distinct"> DISTINCT</label>` +
-    `<label class="jb-limit">LIMIT <input id="jb_limit" type="number" min="1" placeholder="–"></label>` +
-    `<label class="jb-dialect" title="SQL-Dialekt der generierten Abfrage">Dialekt ` +
-    `<select id="jb_dialect">` +
+    `<label class="sb-check"><input type="checkbox" id="sb_distinct"> DISTINCT</label>` +
+    `<label class="sb-limit">LIMIT <input id="sb_limit" type="number" min="1" placeholder="–"></label>` +
+    `<label class="sb-dialect" title="SQL-Dialekt der generierten Abfrage">Dialekt ` +
+    `<select id="sb_dialect">` +
     `<option value="sqlite">SQLite</option>` +
     `<option value="postgresql">PostgreSQL</option>` +
     `<option value="mysql">MySQL</option>` +
     `<option value="mssql">MSSQL</option>` +
     `<option value="oracle">Oracle</option></select></label>` +
-    `<button id="btn_build">Join-Pfad bauen</button></div>` +
-    `<div class="jb-fanout-hint" id="jb_fanout_hint"></div>` +
+    `<button id="btn_build">Generieren</button></div>` +
+    `<div class="sb-fanout-hint" id="sb_fanout_hint"></div>` +
     `<ul class="path_list" id="path_list"></ul>` +
-    `<div class="row jb-join-types" id="jb_join_types"></div>` +
+    `<div class="row sb-join-types" id="sb_join_types"></div>` +
     `<div class="sql-wrap"><button id="sql_copy" class="sql-copy" type="button" ` +
     `title="SELECT in die Zwischenablage kopieren" aria-label="SELECT kopieren">` +
     `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" ` +
     `stroke-width="1.4"><rect x="4" y="3" width="9" height="11" rx="1.5"/>` +
     `<path d="M6 3V2.2A1.2 1.2 0 0 1 7.2 1h2.6A1.2 1.2 0 0 1 11 2.2V3"/></svg></button>` +
     `<pre class="sql_out" id="sql_out"></pre></div>` +
-    `<div class="row jb-result-bar" id="jb_result_bar" style="display:none">` +
+    `<div class="row sb-result-bar" id="sb_result_bar" style="display:none">` +
     `<label>Zeilen</label>` +
-    `<select id="jb_rows">` +
+    `<select id="sb_rows">` +
     `<option value="200">200</option>` +
     `<option value="400">400</option>` +
     `<option value="0">Alle</option></select>` +
-    `<button id="jb_refresh" title="Ausgabe mit aktuellen Sortierungen/Spalten neu berechnen">Aktualisieren</button>` +
-    `<span id="jb_rows_info" class="hint"></span></div>` +
+    `<button id="sb_refresh" title="Ausgabe mit aktuellen Sortierungen/Spalten neu berechnen">Aktualisieren</button>` +
+    `<span id="sb_rows_info" class="hint"></span></div>` +
     `<div id="join_result"></div></div>`;
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
@@ -377,16 +377,16 @@ function openJoinBuilder() {
   $("btn_build").addEventListener("click", () => runBuild());
   // AP-6: refresh re-reads the form (new sort/columns) and keeps the chosen path;
   // changing the row count only re-fetches the current path (path is unaffected).
-  $("jb_refresh").addEventListener("click", () => runBuild(true));
-  $("jb_rows").addEventListener("change", () => renderJoinResult(JB_PATH_IDX));
+  $("sb_refresh").addEventListener("click", () => runBuild(true));
+  $("sb_rows").addEventListener("change", () => renderJoinResult(SB_PATH_IDX));
   // AP-29: default the dialect to the connected backend; re-render SQL on change.
-  $("jb_dialect").value = dialectFromUrl(connUrl());
-  $("jb_dialect").addEventListener("change", () => runBuild(true));
-  if (SCHEMA.tables.length) refillJoinBuilder();
+  $("sb_dialect").value = dialectFromUrl(connUrl());
+  $("sb_dialect").addEventListener("change", () => runBuild(true));
+  if (SCHEMA.tables.length) refillSqlBuilder();
 }
 
 // ===== SQL-Analyzer (AP-25 / AP-39) =====
-// Join-Builder path highlight and Analyzer markers are mutually exclusive views
+// SQL-Builder path highlight and Analyzer markers are mutually exclusive views
 // of the graph — clearing all of them keeps only one active at a time (AP-40:
 // the blue analyzer trace must vanish once a join path is built, and vice versa).
 function clearGraphHighlights() {
@@ -492,7 +492,7 @@ function fillCols(tableSel, colSel) {
   $(colSel).innerHTML = optionList(t ? t.columns.map((c) => c.name) : []);
 }
 
-function refillJoinBuilder() {
+function refillSqlBuilder() {
   if (!$("start_table")) return;
   const names = SCHEMA.tables.map((t) => t.name);
   $("start_table").innerHTML = optionList(names);
@@ -505,27 +505,27 @@ function refillJoinBuilder() {
   $("path_list").innerHTML = "";
   $("sql_out").textContent = "";
   if ($("join_result")) $("join_result").innerHTML = "";
-  if ($("jb_distinct")) $("jb_distinct").checked = false;
-  if ($("jb_limit")) $("jb_limit").value = "";
-  if ($("jb_result_bar")) $("jb_result_bar").style.display = "none";
-  if ($("jb_rows_info")) $("jb_rows_info").textContent = "";
-  JB_LAST = null;
-  JB_PATH_IDX = 0;
+  if ($("sb_distinct")) $("sb_distinct").checked = false;
+  if ($("sb_limit")) $("sb_limit").value = "";
+  if ($("sb_result_bar")) $("sb_result_bar").style.display = "none";
+  if ($("sb_rows_info")) $("sb_rows_info").textContent = "";
+  SB_LAST = null;
+  SB_PATH_IDX = 0;
 }
 
 // AP-45: distinct-value cache per (table, column) — feeds the filter-value
 // dropdowns. Best-effort (empty on any error); never blocks the form.
-let JB_DISTINCT_CACHE = {};
+let SB_DISTINCT_CACHE = {};
 let _dlSeq = 0;   // unique id source for <datalist> elements
 async function _fetchDistinct(table, column) {
   const key = table + "\u0000" + column;
-  if (key in JB_DISTINCT_CACHE) return JB_DISTINCT_CACHE[key];
+  if (key in SB_DISTINCT_CACHE) return SB_DISTINCT_CACHE[key];
   try {
     const res = await postJSON("/api/distinct",
       { connection_url: connUrl(), table, column });
-    JB_DISTINCT_CACHE[key] = res.values || [];
-  } catch (e) { JB_DISTINCT_CACHE[key] = []; }
-  return JB_DISTINCT_CACHE[key];
+    SB_DISTINCT_CACHE[key] = res.values || [];
+  } catch (e) { SB_DISTINCT_CACHE[key] = []; }
+  return SB_DISTINCT_CACHE[key];
 }
 
 // Fill any <datalist> in a filter row with the DISTINCT values of its column,
@@ -610,7 +610,7 @@ function addFilterRow() {
 
 // AP-45.1: rebuild SQL + result keeping the active path, but only once a path has
 // been built (no-op on a fresh form). Used by the filter rows for live feedback.
-function _rebuildIfBuilt() { if (JB_LAST) runBuild(true); }
+function _rebuildIfBuilt() { if (SB_LAST) runBuild(true); }
 
 function collectFilters() {
   const out = [];
@@ -653,7 +653,7 @@ function addOrderByRow() {
   row.innerHTML =
     `<select class="ob-table">${optionList(names)}</select>` +
     `<select class="ob-col"></select>` +
-    `<select class="ob-agg jb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
+    `<select class="ob-agg sb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<select class="ob-dir"><option>ASC</option><option>DESC</option></select>` +
     `<button type="button" class="ob-del">✕</button>`;
   const fillOcol = () => {
@@ -688,7 +688,7 @@ function addColRow() {
   row.innerHTML =
     `<select class="c-table">${optionList(names)}</select>` +
     `<select class="c-col"></select>` +
-    `<select class="c-agg jb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
+    `<select class="c-agg sb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<button type="button" class="c-del">✕</button>`;
   const fillCcol = () => {
     const t = tableByName(row.querySelector(".c-table").value);
@@ -719,7 +719,7 @@ function addHavingRow() {
   row.className = "having-row";
   const names = SCHEMA.tables.map((t) => t.name);
   row.innerHTML =
-    `<select class="h-agg jb-agg" title="Aggregatfunktion">` +
+    `<select class="h-agg sb-agg" title="Aggregatfunktion">` +
     aggOptionTags() + `</select>` +
     `<select class="h-table">${optionList(names)}</select>` +
     `<select class="h-col"></select>` +
@@ -777,11 +777,11 @@ function swapStartTarget() {
   GRAPH_SEL.target = s;
   _updateUmlMarks();
   _updateGraphNodeMarkers();
-  if (JB_LAST) runBuild();
+  if (SB_LAST) runBuild();
 }
 
 function collectJoinBody() {
-  const limitRaw = $("jb_limit") ? $("jb_limit").value.trim() : "";
+  const limitRaw = $("sb_limit") ? $("sb_limit").value.trim() : "";
   return {
     connection_url: connUrl(),
     start: { table: $("start_table").value, column: $("start_col").value,
@@ -791,12 +791,12 @@ function collectJoinBody() {
     filters: collectFilters(),
     extra_selects: collectExtraSelects(),
     include_implied: includeImplied(),
-    distinct: $("jb_distinct") ? $("jb_distinct").checked : false,
+    distinct: $("sb_distinct") ? $("sb_distinct").checked : false,
     order_by: collectOrderBy(),
     having: collectHaving(),
     limit: limitRaw !== "" ? parseInt(limitRaw, 10) : null,
-    dialect: $("jb_dialect") ? $("jb_dialect").value : "sqlite",
-    join_types: JB_JOIN_TYPES,   // AP-41: per-step join types (INNER default)
+    dialect: $("sb_dialect") ? $("sb_dialect").value : "sqlite",
+    join_types: SB_JOIN_TYPES,   // AP-41: per-step join types (INNER default)
   };
 }
 
@@ -810,22 +810,22 @@ function dialectFromUrl(url) {
 
 // Selected output row count: 200/400, or null ("Alle" → server's hard cap).
 function jbSelectedMaxRows() {
-  const sel = $("jb_rows");
+  const sel = $("sb_rows");
   if (!sel) return 200;
   return sel.value === "0" ? null : parseInt(sel.value, 10);
 }
 
 // AP-41: render one join-type dropdown per step of the active path. Changing a
-// type updates JB_JOIN_TYPES (per step) and rebuilds the SQL (and result).
-const JB_JOIN_OPTS = ["INNER", "LEFT", "RIGHT", "FULL"];
+// type updates SB_JOIN_TYPES (per step) and rebuilds the SQL (and result).
+const SB_JOIN_OPTS = ["INNER", "LEFT", "RIGHT", "FULL"];
 function renderJoinTypeControls(i) {
-  const box = $("jb_join_types");
+  const box = $("sb_join_types");
   if (!box) return;
-  const steps = (JB_LAST && JB_LAST.paths[i] && JB_LAST.paths[i].steps) || [];
+  const steps = (SB_LAST && SB_LAST.paths[i] && SB_LAST.paths[i].steps) || [];
   if (!steps.length) { box.innerHTML = ""; return; }
   box.innerHTML = `<span class="jt-lbl">Join-Typ:</span>` + steps.map((s, k) => {
-    const cur = (JB_JOIN_TYPES[k] || "INNER").toUpperCase();
-    const opts = JB_JOIN_OPTS.map((o) =>
+    const cur = (SB_JOIN_TYPES[k] || "INNER").toUpperCase();
+    const opts = SB_JOIN_OPTS.map((o) =>
       `<option${o === cur ? " selected" : ""}>${o}</option>`).join("");
     return `<label class="jt-step" title="${escAttr(s.left)} → ${escAttr(s.right)}">` +
       `${esc(s.left)}→${esc(s.right)} <select data-step="${k}">${opts}</select>` +
@@ -833,7 +833,7 @@ function renderJoinTypeControls(i) {
   }).join("");
   box.querySelectorAll("select").forEach((sel) =>
     sel.addEventListener("change", () => {
-      JB_JOIN_TYPES[+sel.dataset.step] = sel.value;
+      SB_JOIN_TYPES[+sel.dataset.step] = sel.value;
       runBuild(true);   // regenerate SQL + result with the new join types
     }));
   _loadOrphans(i).then(() => _applyOrphanHints(i));   // AP-47: flag orphan-revealing types
@@ -842,21 +842,21 @@ function renderJoinTypeControls(i) {
 // AP-47: which join types at each step would actually change the result (count-
 // based, path-context aware). Result depends on the other steps' current types,
 // so the cache key includes the join-type signature. Best-effort, never blocks.
-let JB_ORPHANS_CACHE = {};
-function _orphanKey(i) { return i + ":" + JB_JOIN_TYPES.join(","); }
+let SB_ORPHANS_CACHE = {};
+function _orphanKey(i) { return i + ":" + SB_JOIN_TYPES.join(","); }
 async function _loadOrphans(i) {
   const key = _orphanKey(i);
-  if (JB_ORPHANS_CACHE[key] || !JB_LAST) return;
+  if (SB_ORPHANS_CACHE[key] || !SB_LAST) return;
   try {
     const res = await postJSON("/api/orphan_check",
-      Object.assign({}, JB_LAST.body, { path_index: i }));
-    JB_ORPHANS_CACHE[key] = res.steps || [];
-  } catch (e) { JB_ORPHANS_CACHE[key] = []; }
+      Object.assign({}, SB_LAST.body, { path_index: i }));
+    SB_ORPHANS_CACHE[key] = res.steps || [];
+  } catch (e) { SB_ORPHANS_CACHE[key] = []; }
 }
 
 function _applyOrphanHints(i) {
-  const flags = JB_ORPHANS_CACHE[_orphanKey(i)];
-  const box = $("jb_join_types");
+  const flags = SB_ORPHANS_CACHE[_orphanKey(i)];
+  const box = $("sb_join_types");
   if (!flags || !box) return;
   box.querySelectorAll("select").forEach((sel) => {
     const f = flags[+sel.dataset.step];
@@ -887,7 +887,7 @@ function _markActivePath() {
   const list = $("path_list");
   if (!list) return;
   list.querySelectorAll("li").forEach((li) => {
-    const active = +li.dataset.i === JB_PATH_IDX;
+    const active = +li.dataset.i === SB_PATH_IDX;
     li.classList.toggle("active", active);
     const m = li.querySelector(".path-mark");
     if (m) m.textContent = active ? "[*]" : "[ ]";
@@ -916,7 +916,7 @@ function _sortByColumn(table, column, dir) {
   tEl.dispatchEvent(new Event("change"));   // repopulate the column dropdown
   row.querySelector(".ob-col").value = column;
   row.querySelector(".ob-dir").value = dir;
-  if (JB_LAST) runBuild(true);
+  if (SB_LAST) runBuild(true);
 }
 
 // Add a filter row pre-set to (table, column) with op "=", focus its value field
@@ -943,7 +943,7 @@ function _removeColumn(table, column) {
     if (row.querySelector(".c-table").value === table &&
         row.querySelector(".c-col").value === column) { row.remove(); removed = true; }
   });
-  if (removed && JB_LAST) runBuild(true);
+  if (removed && SB_LAST) runBuild(true);
 }
 
 let _colMenuEl = null;
@@ -985,21 +985,21 @@ function _showColMenu(th, meta) {
 
 // Execute the SELECT for path `i` and render its rows into #join_result.
 async function renderJoinResult(i) {
-  if (!JB_LAST || !JB_LAST.paths[i]) return;
-  JB_PATH_IDX = i;
+  if (!SB_LAST || !SB_LAST.paths[i]) return;
+  SB_PATH_IDX = i;
   _markActivePath();
   // Show the runnable, value-inlined SQL (copy uses this text too); the server
   // still executes the parameterised form server-side from the form body.
-  $("sql_out").textContent = JB_LAST.paths[i].sql_inline || JB_LAST.paths[i].sql;
+  $("sql_out").textContent = SB_LAST.paths[i].sql_inline || SB_LAST.paths[i].sql;
   renderJoinTypeControls(i);
-  highlightPath(JB_LAST.paths[i].steps || JB_LAST.paths[i].edges || []);
+  highlightPath(SB_LAST.paths[i].steps || SB_LAST.paths[i].edges || []);
   const resultEl = $("join_result");
   if (!resultEl) return;
   resultEl.innerHTML = "<p class='hint'>lädt…</p>";
-  const info = $("jb_rows_info");
+  const info = $("sb_rows_info");
   if (info) info.textContent = "";
   try {
-    const runBody = Object.assign({}, JB_LAST.body,
+    const runBody = Object.assign({}, SB_LAST.body,
       { path_index: i, max_rows: jbSelectedMaxRows() });
     const res = await postJSON("/api/joinpath/run", runBody);
     if (!res.rows.length) {
@@ -1031,8 +1031,8 @@ async function renderJoinResult(i) {
     if (info) {
       // AP-44: richer status line — rows · join-type · fan-out flag.
       const cap = res.row_cap || res.rows.length;
-      const steps = JB_LAST.paths[i].steps || [];
-      const types = steps.map((s, k) => (JB_JOIN_TYPES[k] || "INNER").toUpperCase());
+      const steps = SB_LAST.paths[i].steps || [];
+      const types = steps.map((s, k) => (SB_JOIN_TYPES[k] || "INNER").toUpperCase());
       const uniq = [...new Set(types)];
       const typeLabel = uniq.length === 0 ? "" : uniq.length === 1 ? uniq[0] : "gemischt";
       const fanout = steps.some((s) => s.to_many);
@@ -1070,15 +1070,15 @@ function renderPathSeq(p) {
 
 // Build join paths from the current form. `preserveIndex` keeps the selected
 // path (used by "Aktualisieren" after a sort/column change); a fresh build
-// from "Join-Pfad bauen" resets to the first path.
+// from "Generieren" resets to the first path.
 async function runBuild(preserveIndex = false) {
   // A fresh build (not a refresh) resets per-step join types to INNER (AP-41)
   // and the cached orphan-flags (AP-47).
-  if (!preserveIndex) { JB_JOIN_TYPES = []; JB_ORPHANS_CACHE = {}; }
+  if (!preserveIndex) { SB_JOIN_TYPES = []; SB_ORPHANS_CACHE = {}; }
   const body = collectJoinBody();
   try {
     const data = await postJSON("/api/joinpath", body);
-    JB_LAST = { body, paths: data.paths };
+    SB_LAST = { body, paths: data.paths };
     // Mirror the form's start/target into the graph markers so the built path
     // shows green Start / red Ziel rings — matching the legend even when the
     // selection was made via the dropdowns rather than by clicking nodes.
@@ -1096,8 +1096,8 @@ async function runBuild(preserveIndex = false) {
         _updateUmlMarks();                // mark the chosen start/target columns
       }
     }
-    const prev = JB_PATH_IDX;
-    JB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
+    const prev = SB_PATH_IDX;
+    SB_PATH_IDX = preserveIndex && prev < data.paths.length ? prev : 0;
     const list = $("path_list");
     // The verbose per-branch fan-out text is dropped — the inline 1-N / N-1 chips
     // already mark direction. A single compact hint tile (below) explains 1-N.
@@ -1108,7 +1108,7 @@ async function runBuild(preserveIndex = false) {
       a.addEventListener("click", (ev) => { ev.preventDefault(); renderJoinResult(+a.dataset.i); }));
     _markActivePath();
     // Show the fan-out hint once if any candidate path has a descending (1-N) step.
-    const hint = $("jb_fanout_hint");
+    const hint = $("sb_fanout_hint");
     if (hint) {
       const hasFanout = data.paths.some((p) =>
         (p.steps || []).some((s) => s.to_many));
@@ -1116,16 +1116,16 @@ async function runBuild(preserveIndex = false) {
         ? `<span class="step-dir many">1-N</span> kann Zeilen vervielfachen (Fan-out)`
         : "";
     }
-    const bar = $("jb_result_bar");
+    const bar = $("sb_result_bar");
     if (data.paths.length) {
       if (bar) bar.style.display = "";
-      renderJoinResult(JB_PATH_IDX);
+      renderJoinResult(SB_PATH_IDX);
     } else {
       if (bar) bar.style.display = "none";
       $("sql_out").textContent = "";
       $("join_result").innerHTML = "";
-      if ($("jb_join_types")) $("jb_join_types").innerHTML = "";
-      if ($("jb_fanout_hint")) $("jb_fanout_hint").innerHTML = "";
+      if ($("sb_join_types")) $("sb_join_types").innerHTML = "";
+      if ($("sb_fanout_hint")) $("sb_fanout_hint").innerHTML = "";
     }
   } catch (e) { alert(e.message); }
 }
@@ -1244,14 +1244,14 @@ async function applyGraphSelection() {
   if (!GRAPH_SEL.source || !GRAPH_SEL.target) return;
   const src = GRAPH_SEL.source;
   const tgt = GRAPH_SEL.target;
-  openJoinBuilder();
+  openSqlBuilder();
   $("start_table").value = src.table;
   fillCols("start_table", "start_col");
   $("start_col").value = src.column;
   $("target_table").value = tgt.table;
   fillCols("target_table", "target_col");
   $("target_col").value = tgt.column;
-  activateTab("joinbuilder");
+  activateTab("sqlbuilder");
   await runBuild();
 }
 
@@ -1512,9 +1512,9 @@ async function doConnect() {
     SCHEMA = await postJSON("/api/schema", { connection_url: connUrl() });
     document.querySelectorAll(".tab").forEach((t) => closeTab(t.dataset.tab));
     renderSidebar();
-    openJoinBuilder();
-    refillJoinBuilder();
-    activateTab("joinbuilder");
+    openSqlBuilder();
+    refillSqlBuilder();
+    activateTab("sqlbuilder");
     await drawGraph();
     $("status").textContent =
       `verbunden — ${SCHEMA.tables.length} Tabellen, ${SCHEMA.views.length} Views`;
