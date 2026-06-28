@@ -160,7 +160,8 @@ function renderSidebar() {
     `<h3>Tools</h3><ul class="objlist">` +
     `<li data-action="connections">Verbindungen</li>` +
     `<li data-action="sqlbuilder">SQL-Builder</li>` +
-    `<li data-action="analyzer">SQL-Analyzer</li></ul>` +
+    `<li data-action="analyzer">SQL-Analyzer</li>` +
+    `<li data-action="subset">Entität exportieren</li></ul>` +
     `<h3>Tabellen (${SCHEMA.tables.length})</h3>` +
     `<ul class="objlist">${objList(SCHEMA.tables, "table")}</ul>` +
     `<h3>Views (${SCHEMA.views.length})</h3>` +
@@ -171,6 +172,7 @@ function renderSidebar() {
     li.addEventListener("click", () => {
       if (li.dataset.action === "sqlbuilder") openSqlBuilder();
       else if (li.dataset.action === "analyzer") openAnalyzer();
+      else if (li.dataset.action === "subset") openSubset();
       else if (li.dataset.action === "connections") openConnections();
       else if (li.dataset.action === "info") openInfo();
       else openDetail(li.dataset.kind, li.dataset.name);
@@ -516,6 +518,62 @@ function openAnalyzer() {
     `<span class="an-readonly" title="Der Analyzer parst nur — er führt nichts auf der Datenbank aus">read-only — wird nie ausgeführt</span></div>` +
     `<div id="an_result"></div></div>`;
   panel.querySelector("#an_run").addEventListener("click", () => runAnalyze(panel));
+}
+
+async function runSubset() {
+  const out = $("sub_result");
+  const start = $("sub_table").value;
+  const col = $("sub_col").value;
+  const payload = {
+    connection_url: connUrl(), start_table: start,
+    root_filter: { column: col, op: $("sub_op").value, value: $("sub_val").value },
+    include_implied: $("sub_implied").checked,
+  };
+  out.innerHTML = "<p class='hint'>berechne…</p>";
+  let res;
+  try { res = await postJSON("/api/subset", payload); }
+  catch (e) { out.innerHTML = `<p class='hint'>Fehler: ${esc(String(e))}</p>`; return; }
+  const rows = res.tables.map((t) =>
+    `<tr><td>${esc(t.name)}</td><td><span class="badge">${esc(t.kind)}</span></td>` +
+    `<td>${esc(t.via_table || "")}</td><td>${t.depth}</td></tr>`).join("");
+  const scripts = res.scripts.map((s) =>
+    `<h4>${esc(s.table)}</h4><pre class="sql">${esc(s.sql)}</pre>`).join("");
+  const trunc = res.truncated
+    ? `<p class='hint'>Tiefenlimit erreicht — Hülle evtl. unvollständig.</p>` : "";
+  out.innerHTML =
+    `<table class="subtbl cols"><thead><tr><th>Tabelle</th><th>Rolle</th>` +
+    `<th>via</th><th>Tiefe</th></tr></thead><tbody>${rows}</tbody></table>` +
+    trunc + `<h3>Export-Skelett (read-only SELECTs)</h3>${scripts}`;
+}
+
+function fillSubsetColumns() {
+  const t = (SCHEMA.tables || []).find((x) => x.name === $("sub_table").value);
+  $("sub_col").innerHTML = (t ? t.columns : [])
+    .map((c) => `<option>${esc(c.name)}</option>`).join("");
+}
+
+function openSubset() {
+  const panel = ensureTab("subset", "Entität exportieren", true);
+  if (panel.dataset.built) { activateTab("subset"); return; }
+  panel.dataset.built = "1";
+  const opts = (SCHEMA.tables || []).map((t) => `<option>${esc(t.name)}</option>`).join("");
+  const ops = ["=", "!=", "<", ">", "<=", ">=", "IN"]
+    .map((o) => `<option>${o}</option>`).join("");
+  panel.innerHTML =
+    `<div class="subset"><h2>Entität exportieren (Subset-Footprint)</h2>` +
+    `<p class="hint">Referenzielle FK-Hülle einer Start-Zeile (Kinder abwärts + ` +
+    `Lookups aufwärts) als read-only SELECT-Skelett. Führt nichts aus.</p>` +
+    `<div class="subform">` +
+    `<label>Start-Tabelle <select id="sub_table">${opts}</select></label> ` +
+    `<label>Filter <select id="sub_col"></select> <select id="sub_op">${ops}</select> ` +
+    `<input id="sub_val" type="text" value="1"></label> ` +
+    `<label><input type="checkbox" id="sub_implied"> implizite FKs</label> ` +
+    `<button id="sub_run">Footprint bauen</button></div>` +
+    `<div id="sub_result"></div></div>`;
+  fillSubsetColumns();
+  $("sub_table").addEventListener("change", fillSubsetColumns);
+  $("sub_run").addEventListener("click", runSubset);
+  activateTab("subset");
 }
 
 function fillCols(tableSel, colSel) {
