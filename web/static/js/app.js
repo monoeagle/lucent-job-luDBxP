@@ -216,8 +216,18 @@ async function openInfo() {
       `<tr><td>Tabellen</td><td>${SCHEMA.tables.length}</td></tr>` +
       `<tr><td>Views</td><td>${SCHEMA.views.length}</td></tr>` +
       `<tr><td>Deklarierte Foreign Keys</td><td>${fkCount}</td></tr>` +
+      `<tr><td>Cross-Schema-FKs</td><td>${(SCHEMA.cross_schema_fks || []).length}</td></tr>` +
       `</tbody></table>`
     : "<p class='hint'>Noch nicht mit einer Datenbank verbunden.</p>";
+
+  const xfk = SCHEMA.cross_schema_fks || [];
+  const xfkBlock = xfk.length
+    ? `<h3>Cross-Schema-FKs</h3><ul class="objlist">` +
+      xfk.map((e) =>
+        `<li>${esc(e.from_table)}.${esc(e.columns.join(","))} → ` +
+        `${esc(e.to_schema)}.${esc(e.to_table)}.${esc(e.to_columns.join(","))}</li>`).join("") +
+      `</ul>`
+    : "";
 
   panel.innerHTML =
     `<div class="detail">` +
@@ -230,6 +240,7 @@ async function openInfo() {
     `<table class="cols"><thead><tr><th>Komponente</th><th>Version</th></tr></thead>` +
     `<tbody>${stackRows}</tbody></table>` +
     dbBlock +
+    xfkBlock +
     `<p class="hint">Implizite (geratene) Foreign Keys lassen sich über die ` +
     `Checkbox oben einschalten.</p></div>`;
 }
