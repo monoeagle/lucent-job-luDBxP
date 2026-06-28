@@ -6,6 +6,7 @@ from dataclasses import dataclass
 class Column:
     name: str
     type: str
+    comment: str = ""
 
 
 @dataclass(frozen=True)
@@ -54,6 +55,8 @@ class Table:
     # Column names of UNIQUE indexes (full-column, non-partial). Kept separate
     # from `unique_constraints`: a unique index is not a declared constraint.
     unique_indexes: tuple[tuple[str, ...], ...] = ()
+    # Tabellenkommentar (COMMENT ON TABLE). Leerer String = kein Kommentar.
+    comment: str = ""
 
 
 @dataclass(frozen=True)

@@ -25,3 +25,22 @@ def test_has_column():
     assert s.has_column("Networks", "VLAN") is True
     assert s.has_column("Networks", "Ghost") is False
     assert s.has_column("Ghost", "VLAN") is False
+
+
+def test_column_carries_comment_default_empty():
+    assert Column("a", "INT").comment == ""
+    assert Column("a", "INT", comment="fachliche Beschreibung").comment == "fachliche Beschreibung"
+
+
+def test_table_carries_comment_default_empty():
+    cols = (Column("a", "INT"),)
+    assert Table("t", cols, ()).comment == ""
+    assert Table("t", cols, (), comment="Auftragskopf").comment == "Auftragskopf"
+
+
+def test_table_positional_constructor_still_works():
+    # comment ist letztes Feld mit Default → bestehende positionsbasierte
+    # Konstruktoren (name, cols, fks, pk, uniques, uidx) brechen nicht.
+    cols = (Column("a", "INT"),)
+    t = Table("t", cols, (), ("a",), (("a",),), (("a",),))
+    assert t.primary_key == ("a",) and t.comment == ""
