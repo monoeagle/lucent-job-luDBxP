@@ -88,6 +88,10 @@ Doku/AppImage/Projektposter.
 - **AP-51** — Unique-Index als zusätzliche Uniqueness-Quelle (voll-spaltig, nicht-partiell); partielle/Expression-Indizes bewusst ausgeschlossen — v0.37.0
 - **AP-52** — Multi-Schema-Reflection: ein wählbares Schema (`/api/schemas`, schema-qualifizierte SQL `schema.table`); Model/Graph/Pathfinder unverändert — v0.38.0
 
+**v0.39.0** (2026-06-28):
+
+- **AP-53** — Oracle-Verbindung: Verbinden/Reflektieren via python-oracledb (Thin-Mode, kein Instant Client), Adressierung per Service-Name; System-Schemas im Schema-Wähler gefiltert; skip-guarded Live-Integrationstest (`LUCENT_ORACLE_TEST_URL`) — v0.39.0
+
 > **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
 Vollständige Liste in `todo-erledigt.md`; detaillierter Stand:

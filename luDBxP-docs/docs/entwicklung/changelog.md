@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.39.0] — 2026-06-28
+
+### Hinzugefügt
+- Oracle-Verbindungen: Verbinden/Reflektieren via python-oracledb (Thin-Mode,
+  kein Instant Client), Adressierung per Service-Name; System-Schemas im
+  Schema-Wähler gefiltert.
+
 ## [0.38.0] — 2026-06-28
 
 ### Hinzugefügt

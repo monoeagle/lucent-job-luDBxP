@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.39.0] — 2026-06-28
+
+### Added
+- Oracle database connections: connect to and reflect an Oracle database via
+  python-oracledb (thin mode, no Instant Client), addressed by service name.
+  System schemas are filtered from the schema picker. Optional skip-guarded
+  live integration test (`LUCENT_ORACLE_TEST_URL`).
+
 ## [0.38.0] — 2026-06-28
 
 ### Added

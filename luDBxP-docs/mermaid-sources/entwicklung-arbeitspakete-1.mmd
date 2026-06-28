@@ -33,8 +33,9 @@ flowchart TB
         V4["AP-12\nMSSQL testbar"]
         V5["AP-22\nImplizite FKs"]
         V6["AP-52\nMulti-Schema"]
+        V7["AP-53\nOracle"]
         V3 --> V1
-        V1 ~~~ V2 ~~~ V5 ~~~ V4 ~~~ V6
+        V1 ~~~ V2 ~~~ V5 ~~~ V4 ~~~ V6 ~~~ V7
     end
 
     %% ── C3 · Join-Builder & SQL-Ausgabe ──────────────────────────────────
@@ -142,7 +143,7 @@ flowchart TB
     G5 --> K2
 
     class E1,E2,E3,E4,E5,E6,E7,E8,E9,E10 done
-    class V1,V2,V3,V4,V5,V6 done
+    class V1,V2,V3,V4,V5,V6,V7 done
     class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14,J15,J16,J17,J18,J19,J20,J21,J22,J23,J24,J25 done
     class G1,G2,G3,G4,G5,G6,G7,G8,G9 done
     class D1,D2,D3,D4 done
