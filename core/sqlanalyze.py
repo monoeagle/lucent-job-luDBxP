@@ -256,7 +256,8 @@ def _optimization_suggestions(node) -> list:
             "ORDER BY ohne LIMIT sortiert das gesamte Ergebnis — LIMIT ergänzen, "
             "wenn nur ein Ausschnitt gebraucht wird."))
     where = node.args.get("where")
-    if where is not None and where.find(exp.Or) is not None:
+    if where is not None and any(
+            o.find_ancestor(exp.Select) is node for o in where.find_all(exp.Or)):
         out.append(AnalysisSuggestion(
             "OR_IN_WHERE",
             "OR in WHERE kann die Nutzung von Indizes verhindern — "

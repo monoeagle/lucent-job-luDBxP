@@ -309,3 +309,18 @@ def test_plain_select_has_no_suggestions():
 
 def test_non_select_has_no_suggestions():
     assert analyze("UPDATE t SET a = 1 WHERE id = 2").suggestions == ()
+
+
+def test_no_or_suggestion_for_or_only_in_subquery():
+    assert "OR_IN_WHERE" not in _sugg_codes(
+        "SELECT a FROM t WHERE a IN (SELECT x FROM u WHERE x = 1 OR y = 2)")
+
+
+def test_no_or_suggestion_for_or_only_in_exists_subquery():
+    assert "OR_IN_WHERE" not in _sugg_codes(
+        "SELECT a FROM t WHERE EXISTS (SELECT 1 FROM u WHERE u.x = 1 OR u.y = 2)")
+
+
+def test_or_suggestion_for_top_level_or_with_subquery():
+    assert "OR_IN_WHERE" in _sugg_codes(
+        "SELECT a FROM t WHERE (a = 1 OR b = 2) AND c IN (SELECT x FROM u)")

@@ -334,9 +334,9 @@ body {
 .an-l-danger { background: #fdecea; color: #b71c1c; }
 .an-l-warn   { background: #fff4e5; color: #8a5300; }
 .an-l-info   { background: #e8f0fe; color: #1a4480; }
-/* AP-F: Optimierungs-Vorschläge — neutral/hilfreich, abgesetzt von den Warn-Levels. */
+/* AP-F: Optimierungs-Vorschläge — blauer Akzent, abgesetzt von Warn-Levels und .an-readonly. */
 .an-sugg { padding: 4px 8px; margin: 3px 0; border-radius: 3px; font-size: 0.9em;
-           background: #eafaf1; color: #1e6b3a; border-left: 3px solid #1e7e34; }
+           background: #f4f7fb; color: #21456b; border-left: 3px solid #1a73e8; }
 /* AP-48: analyzer input — full width, monospace, only vertically resizable. */
 #an_sql { width: 100%; box-sizing: border-box; font-family: monospace;
   font-size: .82rem; min-height: 17rem; resize: vertical; }
