@@ -1,21 +1,56 @@
 {
-  "generatedAt": "2026-06-28T20:33:46",
+  "generatedAt": "2026-06-28T21:36:42",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 94,
+      "commits": 101,
       "kinds": {
+        "feat": 32,
+        "docs": 53,
         "fix": 11,
-        "feat": 29,
-        "docs": 49,
         "refactor": 3,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "4d3b118",
+          "subject": "feat: AP-55 — Info-Panel zeigt implizite FKs (Count + Liste + Confidence-Badge)",
+          "kind": "feat"
+        },
+        {
+          "sha": "490f070",
+          "subject": "feat: AP-55 — /api/schema liefert implied_fks (Route)",
+          "kind": "feat"
+        },
+        {
+          "sha": "585009d",
+          "subject": "feat: AP-55 — implied-FK Suffix→Tabelle-Heuristik + Confidence-Score (core)",
+          "kind": "feat"
+        },
+        {
+          "sha": "0ef48dc",
+          "subject": "docs: AP-55 Implementierungsplan — Implied-FK-Schärfung",
+          "kind": "docs"
+        },
+        {
+          "sha": "3b6bb1c",
+          "subject": "docs: AP-55 Spec — Implied-FK-Schärfung (Suffix→Tabelle + Confidence)",
+          "kind": "docs"
+        },
+        {
+          "sha": "6c01c78",
+          "subject": "docs: Session-12-Handoff + Insight (billiges Diagnose-AP gated teures) + KPI-Zeile #12",
+          "kind": "docs"
+        },
+        {
+          "sha": "c1d7df5",
+          "subject": "docs: Release v0.46.0 — Cross-Schema-FK-Diagnose (AP-54)",
+          "kind": "docs"
+        },
         {
           "sha": "fb0d2fb",
           "subject": "fix: AP-54 — Array-Guard in Cross-Schema-Kantenliste (Review-Nit)",
@@ -1600,17 +1635,17 @@
     }
   },
   "stats": {
-    "totalCommits": 308,
+    "totalCommits": 315,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 139
+        "count": 143
       },
       {
         "kind": "feat",
-        "count": 90
+        "count": 93
       },
       {
         "kind": "other",
@@ -1637,7 +1672,7 @@
         "count": 2
       }
     ],
-    "testCount": 329
+    "testCount": 338
   },
   "phases": []
 }

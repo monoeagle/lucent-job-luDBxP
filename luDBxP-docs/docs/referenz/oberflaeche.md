@@ -204,3 +204,11 @@ Schema** als das reflektierte zeigen, und — falls vorhanden — darunter die K
 `Tabelle.Spalte → Schema.Tabelle.Spalte`. Damit ist read-only ablesbar, ob die verbundene
 Datenbank Cross-Schema-FKs nutzt (Entscheidungsgrundlage für eine spätere volle
 Cross-Schema-Join-Unterstützung). SQLite hat keine Schemas → dort immer 0.
+
+## Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)
+
+Das **Info**-Panel listet zusätzlich die **implizit erkannten (geratenen) Foreign Keys**
+mit ihrer Confidence-Stufe (hoch/mittel/niedrig). Jeder Eintrag ist klar als Schätzung
+markiert — es wird kein FK angelegt und das generierte SQL ändert sich nicht. Die
+Confidence-Erkennung basiert auf Suffix→Tabellenname-Matching (Groß/Klein-, Trenner-
+und Plural-normalisiert) gegen Tabellen mit konventionellem Einzel-Spalten-PK.

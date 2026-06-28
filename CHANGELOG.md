@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.47.0] — 2026-06-28
+
+### Added
+- Sharper implied-FK detection (AP-55): besides the exact-PK-name match, a column
+  ending in an id-suffix whose stem names another table (case/separator/plural
+  normalized) is now recognised as an implied FK when that table's single-column
+  PK is a conventional id form (`id`/`uuid`/`guid`/`<stem>id`). Each hit carries a
+  discrete confidence (hoch/mittel/niedrig) and is listed in the Info panel, clearly
+  marked as a guess (no FK created, no SQL change). Cross-schema implied matching
+  stays deferred (needs multi-schema reflection, same gate as AP-57).
+
 ## [0.46.0] — 2026-06-28
 
 ### Added

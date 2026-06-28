@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.47.0] — 2026-06-28
+
+### Hinzugefügt
+- Geschärfte Implied-FK-Erkennung (AP-55): neben dem exakten PK-Namen-Match wird
+  jetzt auch eine Spalte mit ID-Suffix erkannt, deren Stamm (Groß/Klein-, Trenner-
+  und Plural-normalisiert) eine andere Tabelle benennt, sofern deren Single-Column-PK
+  eine konventionelle ID-Form ist (`id`/`uuid`/`guid`/`<Stamm>id`). Jeder Treffer trägt
+  eine Confidence-Stufe (hoch/mittel/niedrig) und erscheint im Info-Panel, klar als
+  geraten markiert (kein FK wird angelegt, keine SQL-Änderung). Cross-Schema-Matching
+  bleibt zurückgestellt (braucht Multi-Schema-Reflection, Gate wie AP-57).
+
 ## [0.46.0] — 2026-06-28
 
 ### Hinzugefügt

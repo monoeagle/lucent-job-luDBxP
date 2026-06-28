@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.46.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.47.0">
       
       
         <meta name="author" content="LucentTools">
@@ -715,6 +715,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1198,6 +1209,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1392,6 +1414,12 @@ Schema</strong> als das reflektierte zeigen, und — falls vorhanden — darunte
 <code>Tabelle.Spalte → Schema.Tabelle.Spalte</code>. Damit ist read-only ablesbar, ob die verbundene
 Datenbank Cross-Schema-FKs nutzt (Entscheidungsgrundlage für eine spätere volle
 Cross-Schema-Join-Unterstützung). SQLite hat keine Schemas → dort immer 0.</p>
+<h2 id="info-ubersicht-implizite-geratene-foreign-keys-ap-55">Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)<a class="headerlink" href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" title="Permanent link">&para;</a></h2>
+<p>Das <strong>Info</strong>-Panel listet zusätzlich die <strong>implizit erkannten (geratenen) Foreign Keys</strong>
+mit ihrer Confidence-Stufe (hoch/mittel/niedrig). Jeder Eintrag ist klar als Schätzung
+markiert — es wird kein FK angelegt und das generierte SQL ändert sich nicht. Die
+Confidence-Erkennung basiert auf Suffix→Tabellenname-Matching (Groß/Klein-, Trenner-
+und Plural-normalisiert) gegen Tabellen mit konventionellem Einzel-Spalten-PK.</p>
 
 
 
