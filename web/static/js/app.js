@@ -22,7 +22,7 @@ let GRAPH_SEL = { source: null, target: null };
 // fills the panel and stays centered after layout/resize.
 const GRAPH_FIT_PAD = 16;
 
-// ===== Join-builder state (AP-6: result refresh + row-count selection) =====
+// ===== SQL-Builder state (AP-6: result refresh + row-count selection) =====
 let SB_LAST = null;     // { body, paths } from the last successful build
 let SB_PATH_IDX = 0;    // currently selected path index
 let SB_JOIN_TYPES = []; // AP-41: per-step join type for the active path (INNER default)
@@ -313,7 +313,7 @@ function openDetail(kind, name) {
   });
 }
 
-// ===== Join builder tab =====
+// ===== SQL-Builder tab =====
 function openSqlBuilder() {
   const panel = ensureTab("sqlbuilder", "SQL-Builder", true);
   if (panel.dataset.built) return;
@@ -756,7 +756,7 @@ function collectHaving() {
   return out;
 }
 
-// Read the full join-builder form into a /api/joinpath request body.
+// Read the full SQL-Builder form into a /api/joinpath request body.
 // Swap Start ⇄ Ziel (table + column). Handy because the warning-free direction
 // is often just the reverse: ascending toward a parent never fans out. Repopulates
 // each column dropdown for its new table before restoring the column value, mirrors
@@ -1133,7 +1133,7 @@ async function runBuild(preserveIndex = false) {
 // ===== UML card area (AP-1) =====
 // AP-46: the detail area below the graph is hidden while nothing is selected
 // (graph stays centered) and appears — pushing the graph up — once a table is
-// selected (via a node double-click OR via the join-builder start/target).
+// selected (via a node double-click OR via the SQL-Builder start/target).
 function _updateUmlAreaVisibility() {
   const area = $("uml_area");
   if (!area) return;

@@ -158,7 +158,7 @@ body {
 .panel { display: none; }
 .panel.active { display: block; }
 
-/* --- join builder (AP-23: einheitliche Steuerelement-Größen) --- */
+/* --- SQL-Builder (AP-23: einheitliche Steuerelement-Größen) --- */
 .sqlbuilder {
   --sb-ctrl-w: 150px;   /* gemeinsame Breite aller Dropdowns/Eingaben */
   --sb-ctrl-h: 30px;    /* gemeinsame Höhe aller Steuerelemente/Buttons */
@@ -237,7 +237,7 @@ body {
 .sb-result-bar #sb_rows_info { margin-left: .4rem; }
 
 /* --- join result table (AP-9 / AP-28: fill remaining vertical space) --- */
-/* Scoped to the join-builder panel so detail tabs keep normal block flow.
+/* Scoped to the SQL-Builder panel so detail tabs keep normal block flow.
    AP-28: the panel is fixed to the viewport height and never scrolls itself —
    the form/SELECT stay put and ONLY #join_result scrolls. */
 .panel[data-tab="sqlbuilder"].active {
@@ -281,7 +281,7 @@ body {
   border-radius: 3px; }
 .viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;
   white-space: pre; border-radius: 4px; }
-/* Compact fan-out hint tile — pinned top-right of the join-builder (AP-44),
+/* Compact fan-out hint tile — pinned top-right of the SQL-Builder (AP-44),
    so it no longer consumes a full row above the path list. */
 .sb-fanout-hint:empty { display: none; }
 .sb-fanout-hint { position: absolute; top: 2px; right: 2px; z-index: 4;
