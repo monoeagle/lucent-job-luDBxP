@@ -27,6 +27,14 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 - **AP-56** — Entitäts-Hülle / Subset-Export: transitive FK-Closure (Eltern + Kinder, rekursiv, Zyklus-/Tiefenschutz) als read-only Export-SELECT-Sequenz (SQL/CSV/JSON). Größter Migrationsnutzen. **Aufwand L.**
 - **AP-57** — Cross-Schema-Joins (volle Stufe), **zurückgestellt/bedingt**: Multi-Schema-Reflection + per-Tabelle-Schema-Qualifizierung in einem Join-SELECT. **Nur bauen, wenn AP-54 echte Cross-Schema-FKs nachweist.** Datenmodell-Umbau quer durch Model/Loader/Graph/Pathfinder/sqlgen/UI. **Aufwand XL.**
 
+### Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: [Sidebar-Objekt-Kategorien](../../../docs/concepts/2026-06-28-sidebar-object-categories.md))
+
+Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen **nicht** an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:
+
+- **AP-63 · Stufe 1** — Tabellen-Detail anreichern: vollständige **Indizes + Check-Constraints** (genestet, keine Sidebar-Kategorie). SQLAlchemy-nativ, **SQLite-CI-testbar**. **Aufwand S.**
+- **AP-63 · Stufe 2** — neue Sidebar-Kategorien **Sequences, Materialized Views, Triggers** (etabliert das Kategorie-Muster; Triggers SQLite-testbar, Sequences/Mat-Views nur gegen PostgreSQL). **Aufwand M.**
+- **AP-63 · Stufe 3** — **Stored Procedures + Functions** (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). **Aufwand L.**
+
 ---
 
 ## Erledigte Arbeitspakete
