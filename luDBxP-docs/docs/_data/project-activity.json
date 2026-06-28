@@ -1,21 +1,36 @@
 {
-  "generatedAt": "2026-06-28T23:12:39",
+  "generatedAt": "2026-06-28T23:21:57",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 113,
+      "commits": 116,
       "kinds": {
+        "fix": 12,
+        "docs": 62,
         "feat": 36,
         "test": 2,
-        "docs": 60,
-        "fix": 11,
         "refactor": 3,
         "style": 1
       },
       "list": [
+        {
+          "sha": "9b48685",
+          "subject": "fix: AP-56a — max_depth-Parsing in try-Block (ungültiger Wert → 400 statt 500)",
+          "kind": "fix"
+        },
+        {
+          "sha": "422ef6e",
+          "subject": "docs: CLAUDE.md — AP-56a Subset-Footprint in Einschränkungen",
+          "kind": "docs"
+        },
+        {
+          "sha": "6431818",
+          "subject": "docs: Release v0.48.0 — Subset-Footprint + Export-Skelett (AP-56a)",
+          "kind": "docs"
+        },
         {
           "sha": "19a217f",
           "subject": "feat: AP-56a — UI-Modus 'Entität exportieren' (Footprint-Vorschau + SELECT-Skelett)",
@@ -1695,13 +1710,13 @@
     }
   },
   "stats": {
-    "totalCommits": 327,
+    "totalCommits": 330,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 150
+        "count": 152
       },
       {
         "kind": "feat",
@@ -1713,7 +1728,7 @@
       },
       {
         "kind": "fix",
-        "count": 29
+        "count": 30
       },
       {
         "kind": "build",
