@@ -217,6 +217,7 @@ async function openInfo() {
       `<tr><td>Views</td><td>${SCHEMA.views.length}</td></tr>` +
       `<tr><td>Deklarierte Foreign Keys</td><td>${fkCount}</td></tr>` +
       `<tr><td>Cross-Schema-FKs</td><td>${(SCHEMA.cross_schema_fks || []).length}</td></tr>` +
+      `<tr><td>Implizite FKs (geraten)</td><td>${(SCHEMA.implied_fks || []).length}</td></tr>` +
       `</tbody></table>`
     : "<p class='hint'>Noch nicht mit einer Datenbank verbunden.</p>";
 
@@ -226,6 +227,16 @@ async function openInfo() {
       xfk.map((e) =>
         `<li>${esc(e.from_table)}.${esc((e.columns || []).join(","))} → ` +
         `${esc(e.to_schema)}.${esc(e.to_table)}.${esc((e.to_columns || []).join(","))}</li>`).join("") +
+      `</ul>`
+    : "";
+
+  const ifk = SCHEMA.implied_fks || [];
+  const ifkBlock = ifk.length
+    ? `<h3>Implizite (geratene) Foreign Keys</h3><ul class="objlist">` +
+      ifk.map((e) =>
+        `<li>${esc(e.from_table)}.${esc(e.column)} → ` +
+        `${esc(e.to_table)}.${esc(e.to_column)} ` +
+        `<span class="badge">${esc(e.confidence)}</span> · ${esc(e.reason)}</li>`).join("") +
       `</ul>`
     : "";
 
@@ -241,6 +252,7 @@ async function openInfo() {
     `<tbody>${stackRows}</tbody></table>` +
     dbBlock +
     xfkBlock +
+    ifkBlock +
     `<p class="hint">Implizite (geratene) Foreign Keys lassen sich über die ` +
     `Checkbox oben einschalten.</p></div>`;
 }
