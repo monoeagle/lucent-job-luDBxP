@@ -3,7 +3,7 @@ import pytest
 
 from core.pathfinder import JoinPath, JoinStep
 from core.sqlgen import (
-    generate_sql, Selection, Filter,
+    generate_sql, Selection, Filter, Having,
     SQLITE, POSTGRES, MYSQL, MSSQL, ORACLE, dialect_for,
 )
 
@@ -131,3 +131,17 @@ def test_group_by_quotes_and_qualifies_per_dialect():
     # MSSQL bracket-quotes and schema-qualifies the GROUP BY column too.
     assert "GROUP BY [dbo].[Host].[Hostname]" in g.sql
     assert "COUNT([dbo].[VirtualMachine].[VMID])" in g.sql
+
+
+def test_having_and_order_by_agg_quoted_per_dialect():
+    from core.sqlgen import MSSQL
+    path = JoinPath(tables=("Host", "VirtualMachine"),
+                    steps=(JoinStep("Host", "VirtualMachine", (("HostID", "HostID"),)),))
+    g = generate_sql(path,
+                     selects=(Selection("Host", "Hostname"),
+                              Selection("VirtualMachine", "VMID", agg="COUNT")),
+                     having=(Having("VirtualMachine", "VMID", "COUNT", ">", 3),),
+                     order_by=(("VirtualMachine", "VMID", "DESC", "COUNT"),),
+                     dialect=MSSQL, schema="dbo")
+    assert "HAVING COUNT([dbo].[VirtualMachine].[VMID]) > :h0" in g.sql
+    assert "ORDER BY COUNT([dbo].[VirtualMachine].[VMID]) DESC" in g.sql

@@ -19,6 +19,9 @@ _ALLOWED_OPS = {"=", "!=", "<", ">", "<=", ">=", "LIKE",
 _NULL_OPS = frozenset({"IS NULL", "IS NOT NULL"})
 _ALLOWED_DIRECTIONS = frozenset({"ASC", "DESC"})
 
+# Aggregate comparison operators allowed inside a HAVING clause (scalar only).
+_ALLOWED_HAVING_OPS = frozenset({"=", "!=", "<", ">", "<=", ">="})
+
 # Tier-3: aggregate functions allowed on a Selection. Empty agg = no aggregate.
 _ALLOWED_AGGS = frozenset({"COUNT", "SUM", "AVG", "MIN", "MAX"})
 
@@ -122,6 +125,15 @@ class Filter:
 
 
 @dataclass(frozen=True)
+class Having:
+    table: str
+    column: str
+    agg: str       # required; one of _ALLOWED_AGGS
+    op: str        # one of _ALLOWED_HAVING_OPS
+    value: object  # scalar; rendered as a named placeholder :h{i}
+
+
+@dataclass(frozen=True)
 class GeneratedSQL:
     sql: str
     params: dict[str, object]
@@ -135,7 +147,8 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
                  filters: tuple[Filter, ...] = (),
                  *,
                  distinct: bool = False,
-                 order_by: tuple[tuple[str, str, str], ...] = (),
+                 order_by: tuple[tuple, ...] = (),
+                 having: tuple[Having, ...] = (),
                  limit: "int | None" = None,
                  join_types: tuple[str, ...] = (),
                  dialect: Dialect = SQLITE,
@@ -268,11 +281,18 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
     tail: list[str] = []
     if order_by:
         ob_parts = []
-        for tbl, col, direction in order_by:
+        for entry in order_by:
+            tbl, col, direction = entry[0], entry[1], entry[2]
+            agg = entry[3] if len(entry) > 3 else ""
             direction_upper = direction.upper()
             if direction_upper not in _ALLOWED_DIRECTIONS:
                 raise ValueError(f"Unsupported ORDER BY direction: {direction!r}")
-            ob_parts.append(f"{dialect.qualify(tbl, col, schema)} {direction_upper}")
+            expr = dialect.qualify(tbl, col, schema)
+            if agg:
+                if agg not in _ALLOWED_AGGS:
+                    raise ValueError(f"Unsupported aggregate: {agg!r}")
+                expr = f"{agg}({expr})"
+            ob_parts.append(f"{expr} {direction_upper}")
         tail.append("ORDER BY " + ", ".join(ob_parts))
 
     if n is not None:
@@ -292,8 +312,31 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
         parts = [dialect.qualify(s.table, s.column, schema) for s in group_cols]
         group_lines.append("GROUP BY " + ", ".join(parts))
 
-    sql = "\n".join(lines + where_param + group_lines + tail)
+    # HAVING: filter groups by an aggregate. Mandatory aggregate, scalar ops,
+    # parametrised value (:h{i}) in its own namespace so it never collides with
+    # WHERE's :p{i}. Clause order: after GROUP BY, before ORDER BY/LIMIT.
+    having_clauses = []
+    having_inline = []
+    for i, h in enumerate(having):
+        if h.op not in _ALLOWED_HAVING_OPS:
+            raise ValueError(f"Unsupported HAVING operator: {h.op}")
+        if h.agg not in _ALLOWED_AGGS:
+            raise ValueError(f"HAVING requires an aggregate, got: {h.agg!r}")
+        expr = f"{h.agg}({dialect.qualify(h.table, h.column, schema)})"
+        key = f"h{i}"
+        having_clauses.append(f"{expr} {h.op} :{key}")
+        having_inline.append(f"{expr} {h.op} {_inline_literal(h.value)}")
+        params[key] = h.value
+
+    def _having_block(cls):
+        return [(f"HAVING {c}" if k == 0 else f"  AND {c}")
+                for k, c in enumerate(cls)]
+
+    having_param = _having_block(having_clauses) if having_clauses else []
+    having_inline_block = _having_block(having_inline) if having_inline else []
+
+    sql = "\n".join(lines + where_param + group_lines + having_param + tail)
     # The copy/display variant ends with a semicolon so it pastes-and-runs cleanly;
     # the executed (parameterised) `sql` stays without one.
-    sql_inline = "\n".join(lines + where_inline + group_lines + tail) + ";"
+    sql_inline = "\n".join(lines + where_inline + group_lines + having_inline_block + tail) + ";"
     return GeneratedSQL(sql=sql, params=params, sql_inline=sql_inline)

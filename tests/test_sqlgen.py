@@ -1,7 +1,7 @@
 import pytest
 
 from core.pathfinder import JoinPath, JoinStep
-from core.sqlgen import generate_sql, Selection, Filter
+from core.sqlgen import generate_sql, Selection, Filter, Having
 
 
 def _path():
@@ -353,3 +353,77 @@ def test_unsupported_aggregate_raises_value_error():
     with pytest.raises(ValueError):
         generate_sql(_path(),
                      selects=(Selection("Networks", "VLAN", agg="MEDIAN"),))
+
+
+# ===== Aggregat-Ops: ORDER BY aggregate + HAVING =====
+
+def test_order_by_aggregate_renders_func():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")),
+                     order_by=(("VMwareCluster", "ClusterID", "DESC", "COUNT"),))
+    assert 'ORDER BY COUNT("VMwareCluster"."ClusterID") DESC' in g.sql
+
+
+def test_order_by_three_tuple_still_works():
+    # Backward compatibility: a 3-tuple order_by renders a raw column, no aggregate.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     order_by=(("Networks", "VLAN", "ASC"),))
+    assert 'ORDER BY "Networks"."VLAN" ASC' in g.sql
+
+
+def test_having_renders_parametrised():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")),
+                     having=(Having("VMwareCluster", "ClusterID", "COUNT", ">", 5),))
+    assert 'HAVING COUNT("VMwareCluster"."ClusterID") > :h0' in g.sql
+    assert g.params["h0"] == 5
+    assert "> 5" not in g.sql            # value never inlined into the executed SQL
+    assert "> 5" in g.sql_inline          # but inlined in the copy/display variant
+
+
+def test_having_clause_order():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")),
+                     filters=(Filter("VirtualMachines", "OSID", "=", 7),),
+                     having=(Having("VMwareCluster", "ClusterID", "COUNT", ">=", 2),),
+                     order_by=(("Networks", "VLAN", "ASC"),),
+                     limit=10)
+    s = g.sql
+    assert s.index("WHERE") < s.index("GROUP BY") < s.index("HAVING") < s.index("ORDER BY") < s.index("LIMIT")
+
+
+def test_multiple_having_anded():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")),
+                     having=(Having("VMwareCluster", "ClusterID", "COUNT", ">", 1),
+                             Having("VMwareCluster", "ClusterID", "COUNT", "<", 9)))
+    assert 'HAVING COUNT("VMwareCluster"."ClusterID") > :h0' in g.sql
+    assert '  AND COUNT("VMwareCluster"."ClusterID") < :h1' in g.sql
+    assert g.params == {"h0": 1, "h1": 9}
+
+
+def test_having_unsupported_op_raises():
+    with pytest.raises(ValueError):
+        generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     having=(Having("Networks", "VLAN", "COUNT", "LIKE", "x"),))
+
+
+def test_having_requires_aggregate_raises():
+    with pytest.raises(ValueError):
+        generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),),
+                     having=(Having("Networks", "VLAN", "", ">", 1),))
+
+
+def test_no_having_no_orderby_agg_unchanged():
+    # Backward compatibility: omit having and order-by aggregates -> no HAVING clause.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")))
+    assert "HAVING" not in g.sql
