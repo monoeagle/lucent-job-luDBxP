@@ -162,7 +162,7 @@ body {
 .sqlbuilder {
   --sb-ctrl-w: 150px;   /* gemeinsame Breite aller Dropdowns/Eingaben */
   --sb-ctrl-h: 30px;    /* gemeinsame Höhe aller Steuerelemente/Buttons */
-  --sb-label-w: 6.5rem; /* Breite der linken Label-/Button-Spalte */
+  --sb-label-w: 6.5rem; /* Breite der linken Label-/Button-Spalte; durch den längsten Button „+ Sortierung" begrenzt — bei breiterer Schrift auf 7rem erhöhen */
   position: relative;   /* AP-44: anchor for the top-right fan-out tile */
 }
 .sqlbuilder .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .25rem 0; }
