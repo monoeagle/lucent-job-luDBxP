@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.48.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.48.1">
       
       
         <meta name="author" content="LucentTools">
@@ -1300,6 +1300,14 @@ Eine Auswahl daraus verbindet sofort mit der gewählten Verbindung. Das Dropdown
 ist mit dem Verbindungs-Tab synchronisiert (gleiche Liste, gespiegelte Auswahl);
 passwortlose Verbindungen (SQLite oder Server ohne Authentifizierung) verbinden
 direkt, sonst öffnet sich der Verbindungs-Tab vorbefüllt zum Ergänzen des Passworts.</p>
+<p>Das <strong>Verbindungsformular</strong> (Verbindungs-Tab, überarbeitet in AP-64): das Feld
+„Name zum Speichern" fluchtet jetzt mit den Feldern darüber. Unter den Feldern
+stehen zwei Buttons — <strong>„Testen"</strong> (links) prüft die Verbindung read-only über
+<code>/api/connect</code> und zeigt das Ergebnis in einem Infofeld darunter; bei
+Verbindungsfehlern (z. B. unerreichbarer Host) erscheint die echte Treiber-
+Fehlermeldung statt einer generischen 500-Antwort. <strong>„Speichern"</strong> (rechts) legt
+die Verbindung in der Verbindungsliste ab. Das Schema laden erfolgt weiterhin
+über die Topbar-Verbindungsauswahl (gespeicherte Verbindung auswählen).</p>
 <hr />
 <h2 id="3-panel-layout-nach-dem-verbinden">3-Panel-Layout nach dem Verbinden<a class="headerlink" href="#3-panel-layout-nach-dem-verbinden" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_02_luDBxP.jpg"

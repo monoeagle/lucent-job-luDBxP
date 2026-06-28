@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.48.1] — 2026-06-28
+
+### Changed
+- Connection form reworked (AP-64): the save-name field now aligns with the
+  fields above it; the old "Verbinden" button is gone; a new "Testen" button
+  (left of "Speichern", below the fields) tests the connection read-only and
+  reports the result in an info box below the buttons. Loading a schema stays a
+  topbar action on a saved connection. Reuses `/api/connect`.
+
+### Fixed
+- Connection failures (e.g. unreachable Oracle host) now return HTTP 400 with
+  the real driver message instead of 500, so the new "Testen" button surfaces
+  the actual cause.
+
 ## [0.48.0] — 2026-06-28
 
 ### Added

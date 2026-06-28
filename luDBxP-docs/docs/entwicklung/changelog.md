@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.48.1] — 2026-06-28
+
+### Geändert
+- Verbindungsformular überarbeitet (AP-64): das Feld „Name zum Speichern" fluchtet
+  jetzt mit den Feldern darüber; der alte „Verbinden"-Button entfällt; ein neuer
+  „Testen"-Button (links von „Speichern", unter den Feldern) prüft die Verbindung
+  read-only und zeigt das Ergebnis in einem Infofeld unter den Buttons. Das Laden
+  eines Schemas bleibt eine Topbar-Aktion auf einer gespeicherten Verbindung.
+  Nutzt `/api/connect`.
+
+### Behoben
+- Verbindungsfehler (z. B. unerreichbarer Oracle-Host) werden jetzt als HTTP 400
+  mit der echten Fehlermeldung gemeldet statt als 500 — der neue „Testen"-Button
+  zeigt damit die wahre Ursache.
+
 ## [0.48.0] — 2026-06-28
 
 ### Hinzugefügt

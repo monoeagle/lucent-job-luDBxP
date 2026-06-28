@@ -166,6 +166,10 @@ Doku/AppImage/Projektposter.
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
 
+**v0.48.1** (2026-06-28):
+
+- **AP-64** — Verbindungsform-Umbau: Name-Feld fluchtet mit den Feldern, „Verbinden" entfällt, neuer „Testen"-Button (read-only via `/api/connect`) + „Speichern" unter den Feldern, Infofeld darunter. Backend-Fix: Verbindungsfehler als HTTP 400 statt 500 (echte Treiber-Meldung). Nur Frontend/CSS + Backend-Fix. **Aufwand S** — v0.48.1
+
 **v0.48.0** (2026-06-28):
 
 - **AP-56a** — Subset-Footprint + Export-Skelett: `core/subset.py` berechnet die referenzielle FK-Hülle (down-then-up, zyklus-sicher, tiefenbegrenzt) und generiert je Tabelle ein read-only SELECT (zur Wurzel gejoint); `/api/subset` + UI-Modus „Entität exportieren". Führt nichts aus. **Aufwand M** — v0.48.0

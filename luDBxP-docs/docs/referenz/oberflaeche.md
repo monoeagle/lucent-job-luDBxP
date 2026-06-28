@@ -21,6 +21,15 @@ ist mit dem Verbindungs-Tab synchronisiert (gleiche Liste, gespiegelte Auswahl);
 passwortlose Verbindungen (SQLite oder Server ohne Authentifizierung) verbinden
 direkt, sonst öffnet sich der Verbindungs-Tab vorbefüllt zum Ergänzen des Passworts.
 
+Das **Verbindungsformular** (Verbindungs-Tab, überarbeitet in AP-64): das Feld
+„Name zum Speichern" fluchtet jetzt mit den Feldern darüber. Unter den Feldern
+stehen zwei Buttons — **„Testen"** (links) prüft die Verbindung read-only über
+`/api/connect` und zeigt das Ergebnis in einem Infofeld darunter; bei
+Verbindungsfehlern (z. B. unerreichbarer Host) erscheint die echte Treiber-
+Fehlermeldung statt einer generischen 500-Antwort. **„Speichern"** (rechts) legt
+die Verbindung in der Verbindungsliste ab. Das Schema laden erfolgt weiterhin
+über die Topbar-Verbindungsauswahl (gespeicherte Verbindung auswählen).
+
 ---
 
 ## 3-Panel-Layout nach dem Verbinden
