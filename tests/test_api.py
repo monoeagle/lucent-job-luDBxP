@@ -1013,3 +1013,13 @@ def test_joinpath_run_executes_count_star(client, demo_url):
     assert "COUNT(*)" in data["sql"]
     assert "HAVING COUNT(*) >=" in data["sql"]
     assert isinstance(data["rows"], list) and len(data["rows"]) >= 1
+
+
+# ===== AP-54: Cross-Schema-FK-Diagnose =====
+
+def test_schema_includes_cross_schema_fks_key(client, inventory_url):
+    resp = client.post("/api/schema", json={"connection_url": inventory_url})
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert "cross_schema_fks" in data
+    assert data["cross_schema_fks"] == []   # SQLite has no cross-schema FKs

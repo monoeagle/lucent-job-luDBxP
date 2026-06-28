@@ -21,6 +21,7 @@ class ForeignKey:
     """
     ref_table: str
     column_pairs: tuple[tuple[str, str], ...]  # ((local, ref), ...)
+    ref_schema: str = ""   # Schema, auf das der FK zeigt, falls abweichend; "" = gleiches/unbekanntes Schema
 
     @classmethod
     def single(cls, column: str, ref_table: str, ref_column: str) -> "ForeignKey":
@@ -83,3 +84,18 @@ class Schema:
         except KeyError:
             return False
         return any(c.name == column for c in t.columns)
+
+    def cross_schema_fks(self, current_schema: str) -> tuple[dict, ...]:
+        """FK-Kanten, deren ref_schema gesetzt und != dem reflektierten Schema ist."""
+        out = []
+        for t in self.tables:
+            for fk in t.foreign_keys:
+                if fk.ref_schema and fk.ref_schema != current_schema:
+                    out.append({
+                        "from_table": t.name,
+                        "columns": list(fk.columns),
+                        "to_schema": fk.ref_schema,
+                        "to_table": fk.ref_table,
+                        "to_columns": list(fk.ref_columns),
+                    })
+        return tuple(out)

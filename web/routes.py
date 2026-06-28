@@ -147,6 +147,7 @@ def api_schema():
             "columns": [{"name": c.name, "type": c.type} for c in v.columns],
             "definition": v.definition,
         } for v in schema.views],
+        cross_schema_fks=list(schema.cross_schema_fks(schema_name)),
     )
 
 

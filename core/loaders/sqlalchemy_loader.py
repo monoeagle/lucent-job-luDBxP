@@ -67,7 +67,7 @@ class SqlAlchemyLoader(SchemaLoader):
                     pairs = tuple(zip(
                         fk["constrained_columns"], fk["referred_columns"]
                     ))
-                    fks.append(ForeignKey(fk["referred_table"], pairs))
+                    fks.append(ForeignKey(fk["referred_table"], pairs, fk.get("referred_schema") or ""))
                 pk = tuple(insp.get_pk_constraint(tname, schema=schema).get("constrained_columns", []))
                 try:
                     uniques = tuple(
