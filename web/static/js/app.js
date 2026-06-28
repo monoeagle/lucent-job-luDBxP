@@ -651,6 +651,26 @@ function collectFilters() {
   return out;
 }
 
+// AP-E: verschiebt eine Builder-Zeile innerhalb ihres Containers; dir = -1 (hoch) / +1 (runter).
+// Die collect*-Funktionen lesen in DOM-Reihenfolge, daher folgt die SQL-Semantik direkt aus der Position.
+function moveRow(row, dir) {
+  const ref = dir < 0 ? row.previousElementSibling : row.nextElementSibling;
+  if (!ref) return;                                  // schon am Rand
+  if (dir < 0) row.parentNode.insertBefore(row, ref);
+  else         row.parentNode.insertBefore(ref, row);
+  refreshMoveBtns(row.parentNode);
+}
+
+// AP-E: graut ↑ in der ersten und ↓ in der letzten Zeile aus.
+function refreshMoveBtns(container) {
+  const rows = [...container.children];
+  rows.forEach((r, i) => {
+    const up = r.querySelector(".sb-up"), down = r.querySelector(".sb-down");
+    if (up)   up.disabled   = (i === 0);
+    if (down) down.disabled = (i === rows.length - 1);
+  });
+}
+
 function addOrderByRow() {
   if (!SCHEMA.tables.length) return;
   const row = document.createElement("div");
@@ -661,6 +681,8 @@ function addOrderByRow() {
     `<select class="ob-col"></select>` +
     `<select class="ob-agg sb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<select class="ob-dir"><option>ASC</option><option>DESC</option></select>` +
+    `<button type="button" class="sb-move sb-up" title="nach oben">↑</button>` +
+    `<button type="button" class="sb-move sb-down" title="nach unten">↓</button>` +
     `<button type="button" class="ob-del">✕</button>`;
   const fillOcol = () => {
     const t = tableByName(row.querySelector(".ob-table").value);
@@ -669,9 +691,12 @@ function addOrderByRow() {
   };
   fillOcol();
   row.querySelector(".ob-table").addEventListener("change", fillOcol);
-  row.querySelector(".ob-del").addEventListener("click", () => row.remove());
+  row.querySelector(".ob-del").addEventListener("click", () => { row.remove(); refreshMoveBtns($("order_bys")); });
+  row.querySelector(".sb-up").addEventListener("click", () => moveRow(row, -1));
+  row.querySelector(".sb-down").addEventListener("click", () => moveRow(row, 1));
   wireAggColDisable(row.querySelector(".ob-agg"), row.querySelector(".ob-col"));
   $("order_bys").appendChild(row);
+  refreshMoveBtns($("order_bys"));
 }
 
 function collectOrderBy() {
@@ -695,6 +720,8 @@ function addColRow() {
     `<select class="c-table">${optionList(names)}</select>` +
     `<select class="c-col"></select>` +
     `<select class="c-agg sb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
+    `<button type="button" class="sb-move sb-up" title="nach oben">↑</button>` +
+    `<button type="button" class="sb-move sb-down" title="nach unten">↓</button>` +
     `<button type="button" class="c-del">✕</button>`;
   const fillCcol = () => {
     const t = tableByName(row.querySelector(".c-table").value);
@@ -703,9 +730,12 @@ function addColRow() {
   };
   fillCcol();
   row.querySelector(".c-table").addEventListener("change", fillCcol);
-  row.querySelector(".c-del").addEventListener("click", () => row.remove());
+  row.querySelector(".c-del").addEventListener("click", () => { row.remove(); refreshMoveBtns($("extra_cols")); });
+  row.querySelector(".sb-up").addEventListener("click", () => moveRow(row, -1));
+  row.querySelector(".sb-down").addEventListener("click", () => moveRow(row, 1));
   wireAggColDisable(row.querySelector(".c-agg"), row.querySelector(".c-col"));
   $("extra_cols").appendChild(row);
+  refreshMoveBtns($("extra_cols"));
 }
 
 function collectExtraSelects() {
@@ -929,6 +959,7 @@ function _removeColumn(table, column) {
     if (row.querySelector(".c-table").value === table &&
         row.querySelector(".c-col").value === column) { row.remove(); removed = true; }
   });
+  if (removed) refreshMoveBtns($("extra_cols"));
   if (removed && SB_LAST) runBuild(true);
 }
 
