@@ -56,7 +56,7 @@ class SqlAlchemyLoader(SchemaLoader):
             tables = []
             for tname in insp.get_table_names(schema=schema):
                 columns = tuple(
-                    Column(col["name"], str(col["type"]))
+                    Column(col["name"], str(col["type"]), col.get("comment") or "")
                     for col in insp.get_columns(tname, schema=schema)
                 )
                 fks = []
@@ -89,7 +89,12 @@ class SqlAlchemyLoader(SchemaLoader):
                     )
                 except SQLAlchemyError:
                     uidx = ()
-                tables.append(Table(tname, columns, tuple(fks), pk, uniques, uidx))
+                try:
+                    tcomment = (insp.get_table_comment(tname, schema=schema)
+                                .get("text") or "")
+                except (NotImplementedError, SQLAlchemyError):
+                    tcomment = ""
+                tables.append(Table(tname, columns, tuple(fks), pk, uniques, uidx, tcomment))
             views = []
             for vname in insp.get_view_names(schema=schema):
                 vcols = tuple(

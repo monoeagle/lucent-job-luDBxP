@@ -71,3 +71,73 @@ def test_user_schemas_filters_oracle_system_schemas():
     from core.loaders.sqlalchemy_loader import _user_schemas
     names = ["SYS", "SYSTEM", "XDB", "CTXSYS", "HR", "APP_DATA"]
     assert _user_schemas(names) == ("HR", "APP_DATA")
+
+
+def _patch_loader(monkeypatch, fake_inspector):
+    """Lässt SqlAlchemyLoader.load() gegen einen Fake-Inspector laufen."""
+    import core.loaders.sqlalchemy_loader as mod
+
+    class _DummyEngine:
+        def dispose(self):
+            pass
+
+    monkeypatch.setattr(mod, "create_engine", lambda url: _DummyEngine())
+    monkeypatch.setattr(mod, "inspect", lambda engine: fake_inspector)
+
+
+class _FakeInspector:
+    """Minimaler Inspector: eine Tabelle 't' mit kommentierter Spalte 'a'."""
+    def __init__(self, table_comment):
+        self._table_comment = table_comment  # dict, Exception-Klasse, oder None
+
+    def get_table_names(self, schema=None):
+        return ["t"]
+
+    def get_columns(self, tname, schema=None):
+        return [{"name": "a", "type": "INT", "comment": "Spalten-Notiz"},
+                {"name": "b", "type": "TEXT", "comment": None}]
+
+    def get_foreign_keys(self, tname, schema=None):
+        return []
+
+    def get_pk_constraint(self, tname, schema=None):
+        return {"constrained_columns": []}
+
+    def get_unique_constraints(self, tname, schema=None):
+        return []
+
+    def get_indexes(self, tname, schema=None):
+        return []
+
+    def get_table_comment(self, tname, schema=None):
+        if isinstance(self._table_comment, type) and issubclass(self._table_comment, Exception):
+            raise self._table_comment()
+        return self._table_comment
+
+    def get_view_names(self, schema=None):
+        return []
+
+
+def test_load_reflects_column_and_table_comments(monkeypatch):
+    _patch_loader(monkeypatch, _FakeInspector({"text": "Tabellen-Notiz"}))
+    schema = SqlAlchemyLoader("fake://").load()
+    t = schema.table("t")
+    assert t.comment == "Tabellen-Notiz"
+    assert next(c for c in t.columns if c.name == "a").comment == "Spalten-Notiz"
+    # comment None → leerer String, nie None
+    assert next(c for c in t.columns if c.name == "b").comment == ""
+
+
+def test_load_table_comment_not_implemented_falls_back_empty(monkeypatch):
+    _patch_loader(monkeypatch, _FakeInspector(NotImplementedError))
+    schema = SqlAlchemyLoader("fake://").load()
+    assert schema.table("t").comment == ""
+
+
+def test_load_sqlite_has_empty_comments(inventory_url):
+    # SQLite kennt keine Kommentare: kein comment-Key, get_table_comment wirft
+    # NotImplementedError → alles fällt sauber auf "" zurück, kein Crash.
+    schema = SqlAlchemyLoader(inventory_url).load()
+    for t in schema.tables:
+        assert t.comment == ""
+        assert all(c.comment == "" for c in t.columns)
