@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-28T19:57:02",
+  "generatedAt": "2026-06-28T20:05:44",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 87,
+      "commits": 88,
       "kinds": {
-        "docs": 46,
+        "docs": 47,
         "fix": 9,
         "feat": 27,
         "refactor": 3,
@@ -16,6 +16,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "69e3159",
+          "subject": "docs: Backlog AP-60/61/62 — Verbindungs-UX & Demo-Daten",
+          "kind": "docs"
+        },
         {
           "sha": "ec279f7",
           "subject": "docs: AP-63 gestuft — weitere DB-Objekt-Kategorien (Konzept + Stufen S1/S2/S3)",
@@ -1565,13 +1570,13 @@
     }
   },
   "stats": {
-    "totalCommits": 301,
+    "totalCommits": 302,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 136
+        "count": 137
       },
       {
         "kind": "feat",
