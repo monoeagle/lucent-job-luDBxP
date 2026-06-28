@@ -35,7 +35,7 @@ Doku/AppImage/Projektposter.
 - **AP-6** — Ausgabe-Steuerung: Zeilen-Auswahl (200/400/Alle) + „Aktualisieren" — v0.3.0
 - **AP-7** — Feiner Graph-Zoom + Zoom-Slider mit %-Anzeige — v0.3.0
 - **AP-8** — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0
-- **AP-9** — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1
+- **AP-9** — Ergebnisliste unter dem SQL-Builder maximiert (voller Platz nach unten) — v0.3.1
 
 **v0.4.0 – v0.16.0** (2026-06-26 … 27):
 
@@ -49,9 +49,9 @@ Doku/AppImage/Projektposter.
 - **AP-21** — Kosmetik: gleiche Höhe Schema-Graph-Balken & Tab-Linie — v0.10.0
 - **AP-16** — Graph entzerren: dagre (Sugiyama), minimale Linienkreuzungen — v0.11.0
 - **AP-18** — Verknüpfen mehrerer Tabellen (Status geprüft: voll implementiert) — v0.11.0
-- **AP-23** — Join-Builder-Maske vereinheitlicht — v0.11.0
+- **AP-23** — SQL-Builder-Maske vereinheitlicht — v0.11.0
 - **AP-26** — Audit-Sessions: Prozess + Checkliste — v0.11.0
-- **AP-28** — Fix: Join-Builder-Contentbereich scrollt nicht mehr — v0.11.1
+- **AP-28** — Fix: SQL-Builder-Contentbereich scrollt nicht mehr — v0.11.1
 - **Server-Deployment-Fixes** (PowerShell 5.1: ASCII+BOM, Start-Abbruch, Debug) — v0.11.1–v0.11.3
 - **AP-32** — Zoom-%-Slider waagerecht in die Graph-Kopfzeile — v0.11.2
 - **AP-27** — Insights: Ort & Einbindung geklärt — v0.11.2
@@ -67,11 +67,11 @@ Doku/AppImage/Projektposter.
 - **AP-38** — Kopierbares, lauffähiges SQL: Anzeige/Copy setzen Filterwerte als Literale ein (dialekt-/typbewusst), `:p0` bleibt intern für die read-only-Ausführung; `/api/joinpath` liefert `sql` + `sql_inline` — v0.21.0
 - **AP-39** — SQL-Analyzer vertieft: Struktur-/Klauselanalyse (Spalten, Joins+ON, WHERE-Filter, GROUP/HAVING, ORDER BY, DISTINCT/LIMIT), Struktur-Zähler + Komplexitäts-Score (A–E), JOIN-Kanten im Graph gezeichnet, statische Lints (SELECT \*, LIKE '%…', Funktion-auf-Spalte) — read-only — v0.22.0
 - **AP-40** — Graph-Legende (Farb-/Marker-Erklärung) + Fix: Join-Pfad- und Analyzer-Markierungen wechselseitig exklusiv (blaue Spur verschwindet beim Join-Bauen) — v0.23.0
-- **AP-41** — Join-Typ pro Schritt (INNER/LEFT/RIGHT/FULL) im Join-Builder; `join_types` in sqlgen/API; Fix Start/Ziel-Einfärbung (grün/rot) passend zur Legende — v0.24.0
-- **AP-42** — Join-Builder-Politur: verbose Fan-out-Warntext raus → kompakte 1-N-Kachel; SQL-Fenster bricht um statt H-Scroll (Copy/Paste bleibt lauffähig); Ziel-Knoten amber statt rot — v0.24.1–v0.25.0
+- **AP-41** — Join-Typ pro Schritt (INNER/LEFT/RIGHT/FULL) im SQL-Builder; `join_types` in sqlgen/API; Fix Start/Ziel-Einfärbung (grün/rot) passend zur Legende — v0.24.0
+- **AP-42** — SQL-Builder-Politur: verbose Fan-out-Warntext raus → kompakte 1-N-Kachel; SQL-Fenster bricht um statt H-Scroll (Copy/Paste bleibt lauffähig); Ziel-Knoten amber statt rot — v0.24.1–v0.25.0
 - **AP-43** — Lesbares SQL-Layout: mehrzeilig (eine Spalte/JOIN/ON-Bedingung pro Zeile, `=` ausgerichtet bei Composite-Keys), Copy endet mit `;` — v0.26.0
-- **AP-44** — Join-Builder kompakter (Button-Zeilen zusammengelegt, 1-N-Kachel oben rechts, mehr Tabellenhöhe) + Ergebnis-Hilfen: NULL-Hervorhebung, Statuszeile Zeilen·Join-Typ·Fan-out — v0.27.0
-- **AP-46** — Detailkarten folgen der Join-Builder-Auswahl: Graph zentriert wenn leer, sonst nach oben + Start/Ziel-Karten darunter (auch bei Dropdown-Auswahl) — v0.28.0–v0.28.1
+- **AP-44** — SQL-Builder kompakter (Button-Zeilen zusammengelegt, 1-N-Kachel oben rechts, mehr Tabellenhöhe) + Ergebnis-Hilfen: NULL-Hervorhebung, Statuszeile Zeilen·Join-Typ·Fan-out — v0.27.0
+- **AP-46** — Detailkarten folgen der SQL-Builder-Auswahl: Graph zentriert wenn leer, sonst nach oben + Start/Ziel-Karten darunter (auch bei Dropdown-Auswahl) — v0.28.0–v0.28.1
 - **AP-47** — Pfad-Auswahl-Indikator `[*]`/`[ ]` statt Bullets + count-basierter Waisen-Chip pro Join-Typ (`/api/orphan_check`, pfad-kontextbewusst) — v0.29.0–v0.29.1
 - **AP-48** — SQL-Analyzer: Eingabe-Textbox größer + nur vertikal verstellbar; Tippfehler-Lint `SUSPICIOUS_ALIAS` (Alias ähnelt Join-Schlüsselwort) — v0.30.0
 - **AP-49** — Analyzer-Feinschliff: größere Default-Textbox + read-only-Badge; Fix: ANSI-Codes aus Parsefehler entfernt, mehrzeiliges Fehler-Layout — v0.31.0

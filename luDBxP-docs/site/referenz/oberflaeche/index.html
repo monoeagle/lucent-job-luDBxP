@@ -628,10 +628,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#join-builder-pfadliste-sql-ergebnis-graph-highlight" class="md-nav__link">
+  <a href="#sql-builder-pfadliste-sql-ergebnis-graph-highlight" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Join-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight
+        SQL-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight
       </span>
     </span>
   </a>
@@ -639,10 +639,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#join-builder-parallele-tab-ansicht" class="md-nav__link">
+  <a href="#sql-builder-parallele-tab-ansicht" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Join-Builder — parallele Tab-Ansicht
+        SQL-Builder — parallele Tab-Ansicht
       </span>
     </span>
   </a>
@@ -672,10 +672,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#join-builder-aktuelle-funktionen-stand-v0310" class="md-nav__link">
+  <a href="#sql-builder-aktuelle-funktionen-stand-v0310" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Join-Builder — aktuelle Funktionen (Stand v0.31.0)
+        SQL-Builder — aktuelle Funktionen (Stand v0.31.0)
       </span>
     </span>
   </a>
@@ -1100,10 +1100,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#join-builder-pfadliste-sql-ergebnis-graph-highlight" class="md-nav__link">
+  <a href="#sql-builder-pfadliste-sql-ergebnis-graph-highlight" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Join-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight
+        SQL-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight
       </span>
     </span>
   </a>
@@ -1111,10 +1111,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#join-builder-parallele-tab-ansicht" class="md-nav__link">
+  <a href="#sql-builder-parallele-tab-ansicht" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Join-Builder — parallele Tab-Ansicht
+        SQL-Builder — parallele Tab-Ansicht
       </span>
     </span>
   </a>
@@ -1144,10 +1144,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#join-builder-aktuelle-funktionen-stand-v0310" class="md-nav__link">
+  <a href="#sql-builder-aktuelle-funktionen-stand-v0310" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Join-Builder — aktuelle Funktionen (Stand v0.31.0)
+        SQL-Builder — aktuelle Funktionen (Stand v0.31.0)
       </span>
     </span>
   </a>
@@ -1210,9 +1210,9 @@ direkt, sonst öffnet sich der Verbindungs-Tab vorbefüllt zum Ergänzen des Pas
 <hr />
 <h2 id="3-panel-layout-nach-dem-verbinden">3-Panel-Layout nach dem Verbinden<a class="headerlink" href="#3-panel-layout-nach-dem-verbinden" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_02_luDBxP.jpg"
-     alt="3-Panel-Layout: Objekt-Browser links mit 13 Tabellen und 2 Views, Join-Builder-Tab in der Mitte, Schema-Graph rechts mit allen FK-Kanten."></p>
+     alt="3-Panel-Layout: Objekt-Browser links mit 13 Tabellen und 2 Views, SQL-Builder-Tab in der Mitte, Schema-Graph rechts mit allen FK-Kanten."></p>
 <p>Nach „Schema laden" füllen sich Objekt-Browser (13 Tabellen, 2 Views) und der
-Schema-Graph gleichzeitig. Der Join-Builder-Tab ist standardmäßig aktiv.
+Schema-Graph gleichzeitig. Der SQL-Builder-Tab ist standardmäßig aktiv.
 Der Graph zeigt alle Tabellen als Knoten und die Foreign-Key-Beziehungen als
 gerichtete Kanten.</p>
 <p>Ein <strong>Suchfeld</strong> über dem Objekt-Browser filtert die Tabellen-/View-Listen live
@@ -1229,10 +1229,10 @@ Knotenabstände automatisch, damit sich Knoten weniger überlappen.</p>
 Foreign Keys. Weitere Sub-Tabs: <strong>Daten</strong> (erste 100 Zeilen als Tabelle),
 <strong>SQL</strong> (DDL-Statement der Tabelle).</p>
 <hr />
-<h2 id="join-builder-pfadliste-sql-ergebnis-graph-highlight">Join-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight<a class="headerlink" href="#join-builder-pfadliste-sql-ergebnis-graph-highlight" title="Permanent link">&para;</a></h2>
+<h2 id="sql-builder-pfadliste-sql-ergebnis-graph-highlight">SQL-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight<a class="headerlink" href="#sql-builder-pfadliste-sql-ergebnis-graph-highlight" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_04_luDBxP.jpg"
-     alt="Join-Builder: Start Cluster.ClusterID, Ziel Replication.ReplicationID. Mehrere alternative Pfade als anklickbare Liste mit N-1/1-N-Richtungs-Chips; ausgewählt (mit [*] markiert) ist die komplexe 6-Hop-Variante Cluster → ResourcePool → VMPlacement → VirtualMachine → VMDisk → Datastore → Replication. Darunter pro Join-Schritt ein Join-Typ-Dropdown (INNER) mit Waisen-Hinweis LEFT/FULL, das mehrzeilige SELECT (inkl. Composite-Key ON … AND …) und die Ergebnistabelle mit sortierbaren Spaltenköpfen. Im Schema-Graph ist der gesamte Pfad rot hervorgehoben (Start Cluster grün, Ziel Replication), rechts UML-Karten für Start- und Ziel-Tabelle."></p>
-<p>Nach „Join-Pfad bauen" listet der Join-Builder alle k-kürzesten Pfade (bis zu 5)
+     alt="SQL-Builder: Start Cluster.ClusterID, Ziel Replication.ReplicationID. Mehrere alternative Pfade als anklickbare Liste mit N-1/1-N-Richtungs-Chips; ausgewählt (mit [*] markiert) ist die komplexe 6-Hop-Variante Cluster → ResourcePool → VMPlacement → VirtualMachine → VMDisk → Datastore → Replication. Darunter pro Join-Schritt ein Join-Typ-Dropdown (INNER) mit Waisen-Hinweis LEFT/FULL, das mehrzeilige SELECT (inkl. Composite-Key ON … AND …) und die Ergebnistabelle mit sortierbaren Spaltenköpfen. Im Schema-Graph ist der gesamte Pfad rot hervorgehoben (Start Cluster grün, Ziel Replication), rechts UML-Karten für Start- und Ziel-Tabelle."></p>
+<p>Nach „Join-Pfad bauen" listet der SQL-Builder alle k-kürzesten Pfade (bis zu 5)
 als anklickbare Hyperlinks — jeder Schritt trägt einen <strong>Richtungs-Chip</strong> (grün N-1
 aufsteigend / amber 1-N absteigend, kann Zeilen vervielfachen). Der gewählte Pfad ist
 mit <strong><code>[*]</code></strong> markiert; hier ist bewusst eine <strong>komplexe Mehrhop-Variante</strong> ausgewählt.
@@ -1276,10 +1276,10 @@ und füllt damit die Vorschlagsliste (<code>&lt;datalist&gt;</code>) des Wertfel
 angezeigte/kopierbare Join-SQL ein — dort steht weiterhin nur deine eigentliche Abfrage
 (Join + deine Filter). Freitext bleibt jederzeit möglich.</p>
 <hr />
-<h2 id="join-builder-parallele-tab-ansicht">Join-Builder — parallele Tab-Ansicht<a class="headerlink" href="#join-builder-parallele-tab-ansicht" title="Permanent link">&para;</a></h2>
+<h2 id="sql-builder-parallele-tab-ansicht">SQL-Builder — parallele Tab-Ansicht<a class="headerlink" href="#sql-builder-parallele-tab-ansicht" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_05_luDBxP.jpg"
-     alt="Gleiche Join-Builder-Ansicht wie zuvor, jedoch mit einem zusätzlichen VirtualMachine-Detail-Tab geöffnet — beide Tabs koexistieren in der Tab-Leiste."></p>
-<p>Tabellen-Detail-Tabs und der Join-Builder-Tab koexistieren in der Tab-Leiste.
+     alt="Gleiche SQL-Builder-Ansicht wie zuvor, jedoch mit einem zusätzlichen VirtualMachine-Detail-Tab geöffnet — beide Tabs koexistieren in der Tab-Leiste."></p>
+<p>Tabellen-Detail-Tabs und der SQL-Builder-Tab koexistieren in der Tab-Leiste.
 Mehrere Tabellen können gleichzeitig geöffnet bleiben; ein Klick auf den Tab
 wechselt die Ansicht ohne den Graph-Zustand zu verlieren.</p>
 <hr />
@@ -1293,7 +1293,7 @@ ohne deklarierte Foreign Keys (z. B. <code>demo_cmdb_nofk.db</code>).</p>
 <hr />
 <h2 id="ap-1-interaktive-pfad-auswahl-direkt-im-graph">AP-1: Interaktive Pfad-Auswahl direkt im Graph<a class="headerlink" href="#ap-1-interaktive-pfad-auswahl-direkt-im-graph" title="Permanent link">&para;</a></h2>
 <p><img src="../../images/screenshots/Screenshot_07_luDBxP.jpg"
-     alt="AP-1-Feature: Doppelklick auf VirtualMachine im Graph öffnet eine UML-Karte im Graph-Panel mit allen Spalten (VMID PK, Name, …). Eine zweite Karte für Host zeigt das Ziel. Join-Builder wurde automatisch mit VirtualMachine.HostID → Host.HostID befüllt. Graph zeigt den Pfad rot hervorgehoben."></p>
+     alt="AP-1-Feature: Doppelklick auf VirtualMachine im Graph öffnet eine UML-Karte im Graph-Panel mit allen Spalten (VMID PK, Name, …). Eine zweite Karte für Host zeigt das Ziel. SQL-Builder wurde automatisch mit VirtualMachine.HostID → Host.HostID befüllt. Graph zeigt den Pfad rot hervorgehoben."></p>
 <p><strong>Neu in AP-1:</strong> Doppelklick auf einen Graph-Knoten öffnet eine <strong>UML-Tabellenkarte</strong>
 direkt im Graph-Panel mit allen Spalten, Typen und PK-Markierungen. Eine Spalte
 anklicken setzt die Quelle; Doppelklick auf eine zweite Tabelle + Spaltenwahl
@@ -1301,15 +1301,15 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:</p>
 <ul>
 <li><code>/api/joinpath</code> wird automatisch aufgerufen</li>
 <li>Der Join-Pfad wird im Graph <strong>rot hervorgehoben</strong></li>
-<li>Der <strong>Join-Builder-Tab füllt sich automatisch</strong> mit den gewählten Tabellen und
-  Spalten (Zweiweg-Sync Graph ↔ Join-Builder)</li>
+<li>Der <strong>SQL-Builder-Tab füllt sich automatisch</strong> mit den gewählten Tabellen und
+  Spalten (Zweiweg-Sync Graph ↔ SQL-Builder)</li>
 </ul>
 <p>Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 (<code>Quelle: VirtualMachine.HostID → Ziel: Host.HostID</code>) und bietet einen
 „Auswahl zurücksetzen"-Button.</p>
 <hr />
-<h2 id="join-builder-aktuelle-funktionen-stand-v0310">Join-Builder — aktuelle Funktionen (Stand v0.31.0)<a class="headerlink" href="#join-builder-aktuelle-funktionen-stand-v0310" title="Permanent link">&para;</a></h2>
-<p>Über die obigen Screenshots hinaus bietet der Join-Builder inzwischen:</p>
+<h2 id="sql-builder-aktuelle-funktionen-stand-v0310">SQL-Builder — aktuelle Funktionen (Stand v0.31.0)<a class="headerlink" href="#sql-builder-aktuelle-funktionen-stand-v0310" title="Permanent link">&para;</a></h2>
+<p>Über die obigen Screenshots hinaus bietet der SQL-Builder inzwischen:</p>
 <ul>
 <li><strong>Start ⇄ Ziel tauschen</strong> per ⇄-Knopf neben den Ziel-Dropdowns (Tabelle + Spalte;
   baut sofort neu) — die warnungsfreie Richtung ist oft die umgekehrte.</li>

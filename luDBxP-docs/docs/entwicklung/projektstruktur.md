@@ -58,7 +58,7 @@ lucent-job-luDBxP/
 │   └── build_demo_db.py      # Generator für beide Demo-DBs
 │
 ├── web/static/
-│   ├── js/app.js             # Frontend-Logik (3-Panel-UI, Graph, Join-Builder)
+│   ├── js/app.js             # Frontend-Logik (3-Panel-UI, Graph, SQL-Builder)
 │   ├── css/style.css         # App-Styles
 │   └── lib/
 │       └── cytoscape.min.js  # Cytoscape.js 3.30.2 (lokal gebundelt)

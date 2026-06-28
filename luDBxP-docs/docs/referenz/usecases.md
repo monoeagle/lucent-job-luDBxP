@@ -8,7 +8,7 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.
 **Ablauf:**
 
 1. Datenbankverbindung eingeben → Schema laden
-2. Im Join-Builder Start-Tabelle + Start-Spalte wählen
+2. Im SQL-Builder Start-Tabelle + Start-Spalte wählen
 3. Ziel-Tabelle + Ziel-Spalte wählen
 4. „Join-Pfad berechnen" klicken
 5. Das generierte SQL in die eigene Query übernehmen
@@ -36,7 +36,7 @@ Pfade (k-kürzeste Pfade) werden angezeigt, falls mehrere Routen existieren.
 > Ziel-Tabelle; mehrere voneinander unabhängige Ziele in einer Abfrage sind nicht vorgesehen.
 
 <img src="../images/screenshots/Screenshot_04_luDBxP.jpg"
-     alt="Join-Builder-Ergebnis: VirtualMachine → Datacenter, 5 Pfade, SQL-Block, Graph-Highlight in Rot.">
+     alt="SQL-Builder-Ergebnis: VirtualMachine → Datacenter, 5 Pfade, SQL-Block, Graph-Highlight in Rot.">
 
 ---
 
@@ -134,7 +134,7 @@ gelesene/geschriebene Tabellen, Filter/Sortierung und mögliche Stolpersteine.
 **Ablauf:**
 
 1. Tools → **SQL-Analyzer** öffnen
-2. Statement einfügen (z. B. einen im Join-Builder gebauten SELECT) → **Analysieren**
+2. Statement einfügen (z. B. einen im SQL-Builder gebauten SELECT) → **Analysieren**
 
 **Ausgabe:** Das Statement wird via **sqlglot** geparst — **nie ausgeführt** — und der
 AST ausgewertet:

@@ -47,7 +47,7 @@ bash run.sh --tests
 ## Playwright-Verifikation
 
 Ergänzend zur pytest-Suite wurde die UI manuell über Playwright-Snapshots
-verifiziert (3-Panel-Layout, Graph-Rendering, Join-Builder-Flow,
+verifiziert (3-Panel-Layout, Graph-Rendering, SQL-Builder-Flow,
 Filter-Hinzufügen, Datenvorschau-Tab).
 
 ## Test-Fixtures (`conftest.py`)

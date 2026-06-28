@@ -1132,7 +1132,7 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.</p>
 <p><strong>Ablauf:</strong></p>
 <ol>
 <li>Datenbankverbindung eingeben → Schema laden</li>
-<li>Im Join-Builder Start-Tabelle + Start-Spalte wählen</li>
+<li>Im SQL-Builder Start-Tabelle + Start-Spalte wählen</li>
 <li>Ziel-Tabelle + Ziel-Spalte wählen</li>
 <li>„Join-Pfad berechnen" klicken</li>
 <li>Das generierte SQL in die eigene Query übernehmen</li>
@@ -1158,7 +1158,7 @@ Pfad eingewebt (siehe UC-2). Eine Abfrage hat dabei genau <strong>eine</strong> 
 Ziel-Tabelle; mehrere voneinander unabhängige Ziele in einer Abfrage sind nicht vorgesehen.</p>
 </blockquote>
 <p><img src="../../images/screenshots/Screenshot_04_luDBxP.jpg"
-     alt="Join-Builder-Ergebnis: VirtualMachine → Datacenter, 5 Pfade, SQL-Block, Graph-Highlight in Rot."></p>
+     alt="SQL-Builder-Ergebnis: VirtualMachine → Datacenter, 5 Pfade, SQL-Block, Graph-Highlight in Rot."></p>
 <hr />
 <h2 id="uc-2-gefilterte-abfrage-erstellen">UC-2: Gefilterte Abfrage erstellen<a class="headerlink" href="#uc-2-gefilterte-abfrage-erstellen" title="Permanent link">&para;</a></h2>
 <p><strong>Ziel:</strong> Ein JOIN mit einer WHERE-Bedingung über eine Zwischentabelle erzeugen.</p>
@@ -1232,7 +1232,7 @@ gelesene/geschriebene Tabellen, Filter/Sortierung und mögliche Stolpersteine.</
 <p><strong>Ablauf:</strong></p>
 <ol>
 <li>Tools → <strong>SQL-Analyzer</strong> öffnen</li>
-<li>Statement einfügen (z. B. einen im Join-Builder gebauten SELECT) → <strong>Analysieren</strong></li>
+<li>Statement einfügen (z. B. einen im SQL-Builder gebauten SELECT) → <strong>Analysieren</strong></li>
 </ol>
 <p><strong>Ausgabe:</strong> Das Statement wird via <strong>sqlglot</strong> geparst — <strong>nie ausgeführt</strong> — und der
 AST ausgewertet:</p>

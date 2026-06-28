@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.43.2] — 2026-06-28
+
+### Geändert
+- Builder von „Join-Builder" in „SQL-Builder" umbenannt — UI (Menü, Tab,
+  Bau-Button heißt jetzt „Generieren") und aktuelle Doku. Interne Bezeichner
+  im Gleichschritt umbenannt (`jb-`→`sb-`, `jb_`→`sb_`, `JB_`→`SB_`,
+  `joinbuilder`→`sqlbuilder`). Keine Verhaltensänderung; der Endpoint
+  `/api/joinpath` bleibt unverändert.
+
 ## [0.43.1] — 2026-06-28
 
 ### Behoben

@@ -37,7 +37,7 @@ als Kanten. Gestrichelte Kanten = implizit erkannte FKs (per Checkbox aktivierba
 
 ### 3. Join-Pfad berechnen
 
-Im **Join-Builder**-Tab:
+Im **SQL-Builder**-Tab:
 
 1. Start-Tabelle und Spalte wählen
 2. Ziel-Tabelle und Spalte wählen
@@ -48,11 +48,11 @@ Das Ergebnis: parametrisiertes SQL + der Pfad wird im Graph farblich hervorgehob
 
 **Tipp — Direkte Graph-Auswahl (AP-1):** Doppelklick auf einen Graphknoten
 öffnet eine UML-Karte direkt im Graph-Panel. Spalte anklicken = Quelle setzen;
-dann zweite Tabelle doppelklicken + Spalte = Ziel. Join-Builder füllt sich
+dann zweite Tabelle doppelklicken + Spalte = Ziel. SQL-Builder füllt sich
 automatisch, der Pfad wird sofort berechnet.
 
 <img src="../images/screenshots/Screenshot_07_luDBxP.jpg"
-     alt="AP-1: Doppelklick im Schema-Graph öffnet UML-Tabellenkarte. Join-Builder wurde automatisch mit VirtualMachine.HostID → Host.HostID befüllt, Pfad ist rot hervorgehoben.">
+     alt="AP-1: Doppelklick im Schema-Graph öffnet UML-Tabellenkarte. SQL-Builder wurde automatisch mit VirtualMachine.HostID → Host.HostID befüllt, Pfad ist rot hervorgehoben.">
 
 ### 4. Eigene Datenbank verbinden
 

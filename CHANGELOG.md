@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.43.2] — 2026-06-28
+
+### Changed
+- Renamed the builder from „Join-Builder" to „SQL-Builder" across the UI
+  (menu, tab, build button now „Generieren") and the current documentation.
+  Internal identifiers were renamed in lockstep (`jb-`→`sb-`, `jb_`→`sb_`,
+  `JB_`→`SB_`, `joinbuilder`→`sqlbuilder`). No behavior change; the
+  `/api/joinpath` endpoint is unchanged.
+
 ## [0.43.1] — 2026-06-28
 
 ### Fixed

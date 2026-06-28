@@ -1,6 +1,6 @@
 # Fan-out-Warnung (1-N)
 
-Unter manchen Join-Pfaden zeigt der Join-Builder eine gelbe Hinweiszeile:
+Unter manchen Join-Pfaden zeigt der SQL-Builder eine gelbe Hinweiszeile:
 
 > ⚠ Ast „Datastore" ist 1-N (absteigend) — kann Zeilen vervielfachen.
 
@@ -177,7 +177,7 @@ fast alle übrigen Tabellen sind Kinder dieser beiden Hubs (`Cluster`, `Host`,
 `Network`, `Datastore` hängen unter `Datacenter`; `Host`, `Datastore` unter
 `Cluster`; `VirtualMachine` unter `Host`). Sobald ein Pfad an einem Hub
 **vorbei nach unten** in einen Spoke führt, enthält er einen absteigenden
-Schritt — und bekommt eine Warnung. Deshalb ist im Join-Builder an praktisch
+Schritt — und bekommt eine Warnung. Deshalb ist im SQL-Builder an praktisch
 jedem Kandidatenpfad eine ⚠-Zeile zu sehen. Das ist **erwartetes Verhalten**,
 kein Defekt: Sterntopologien erzeugen fast zwangsläufig Fan-out, sobald man
 zwei Spokes über ihren gemeinsamen Hub verbindet.
@@ -216,7 +216,7 @@ Warnung deshalb nur auf die andere Tabelle — sie verschwindet nicht.
 > rein N-1 → keine Warnung; `Cluster → Host` (Ziel = Kind) ist 1-N → Warnung.
 > Da kippt es sauber, weil kein gemeinsamer Hub im Spiel ist.
 
-Im Join-Builder ist diese Mischung direkt ablesbar: **jeder Join trägt einen
+Im SQL-Builder ist diese Mischung direkt ablesbar: **jeder Join trägt einen
 Richtungs-Chip** — grün `N-1` (sicher) oder gelb `1-N` (Fan-out) — sowohl in
 der Pfad-Liste als auch als Label an der hervorgehobenen Kante im Schema-Graph.
 

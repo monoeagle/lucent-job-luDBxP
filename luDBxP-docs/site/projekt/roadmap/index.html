@@ -1065,7 +1065,7 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-6</strong> — Ausgabe-Steuerung: Zeilen-Auswahl (200/400/Alle) + „Aktualisieren" — v0.3.0</li>
 <li><strong>AP-7</strong> — Feiner Graph-Zoom + Zoom-Slider mit %-Anzeige — v0.3.0</li>
 <li><strong>AP-8</strong> — Fix „Auswahl zurücksetzen" (Pfad-Highlight + UML-Karten leeren) — v0.3.0</li>
-<li><strong>AP-9</strong> — Ergebnisliste unter dem Join-Builder maximiert (voller Platz nach unten) — v0.3.1</li>
+<li><strong>AP-9</strong> — Ergebnisliste unter dem SQL-Builder maximiert (voller Platz nach unten) — v0.3.1</li>
 </ul>
 <p><strong>v0.4.0 – v0.16.0</strong> (2026-06-26 … 27):</p>
 <ul>
@@ -1079,9 +1079,9 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-21</strong> — Kosmetik: gleiche Höhe Schema-Graph-Balken &amp; Tab-Linie — v0.10.0</li>
 <li><strong>AP-16</strong> — Graph entzerren: dagre (Sugiyama), minimale Linienkreuzungen — v0.11.0</li>
 <li><strong>AP-18</strong> — Verknüpfen mehrerer Tabellen (Status geprüft: voll implementiert) — v0.11.0</li>
-<li><strong>AP-23</strong> — Join-Builder-Maske vereinheitlicht — v0.11.0</li>
+<li><strong>AP-23</strong> — SQL-Builder-Maske vereinheitlicht — v0.11.0</li>
 <li><strong>AP-26</strong> — Audit-Sessions: Prozess + Checkliste — v0.11.0</li>
-<li><strong>AP-28</strong> — Fix: Join-Builder-Contentbereich scrollt nicht mehr — v0.11.1</li>
+<li><strong>AP-28</strong> — Fix: SQL-Builder-Contentbereich scrollt nicht mehr — v0.11.1</li>
 <li><strong>Server-Deployment-Fixes</strong> (PowerShell 5.1: ASCII+BOM, Start-Abbruch, Debug) — v0.11.1–v0.11.3</li>
 <li><strong>AP-32</strong> — Zoom-%-Slider waagerecht in die Graph-Kopfzeile — v0.11.2</li>
 <li><strong>AP-27</strong> — Insights: Ort &amp; Einbindung geklärt — v0.11.2</li>
@@ -1097,11 +1097,11 @@ Doku/AppImage/Projektposter.</p>
 <li><strong>AP-38</strong> — Kopierbares, lauffähiges SQL: Anzeige/Copy setzen Filterwerte als Literale ein (dialekt-/typbewusst), <code>:p0</code> bleibt intern für die read-only-Ausführung; <code>/api/joinpath</code> liefert <code>sql</code> + <code>sql_inline</code> — v0.21.0</li>
 <li><strong>AP-39</strong> — SQL-Analyzer vertieft: Struktur-/Klauselanalyse (Spalten, Joins+ON, WHERE-Filter, GROUP/HAVING, ORDER BY, DISTINCT/LIMIT), Struktur-Zähler + Komplexitäts-Score (A–E), JOIN-Kanten im Graph gezeichnet, statische Lints (SELECT *, LIKE '%…', Funktion-auf-Spalte) — read-only — v0.22.0</li>
 <li><strong>AP-40</strong> — Graph-Legende (Farb-/Marker-Erklärung) + Fix: Join-Pfad- und Analyzer-Markierungen wechselseitig exklusiv (blaue Spur verschwindet beim Join-Bauen) — v0.23.0</li>
-<li><strong>AP-41</strong> — Join-Typ pro Schritt (INNER/LEFT/RIGHT/FULL) im Join-Builder; <code>join_types</code> in sqlgen/API; Fix Start/Ziel-Einfärbung (grün/rot) passend zur Legende — v0.24.0</li>
-<li><strong>AP-42</strong> — Join-Builder-Politur: verbose Fan-out-Warntext raus → kompakte 1-N-Kachel; SQL-Fenster bricht um statt H-Scroll (Copy/Paste bleibt lauffähig); Ziel-Knoten amber statt rot — v0.24.1–v0.25.0</li>
+<li><strong>AP-41</strong> — Join-Typ pro Schritt (INNER/LEFT/RIGHT/FULL) im SQL-Builder; <code>join_types</code> in sqlgen/API; Fix Start/Ziel-Einfärbung (grün/rot) passend zur Legende — v0.24.0</li>
+<li><strong>AP-42</strong> — SQL-Builder-Politur: verbose Fan-out-Warntext raus → kompakte 1-N-Kachel; SQL-Fenster bricht um statt H-Scroll (Copy/Paste bleibt lauffähig); Ziel-Knoten amber statt rot — v0.24.1–v0.25.0</li>
 <li><strong>AP-43</strong> — Lesbares SQL-Layout: mehrzeilig (eine Spalte/JOIN/ON-Bedingung pro Zeile, <code>=</code> ausgerichtet bei Composite-Keys), Copy endet mit <code>;</code> — v0.26.0</li>
-<li><strong>AP-44</strong> — Join-Builder kompakter (Button-Zeilen zusammengelegt, 1-N-Kachel oben rechts, mehr Tabellenhöhe) + Ergebnis-Hilfen: NULL-Hervorhebung, Statuszeile Zeilen·Join-Typ·Fan-out — v0.27.0</li>
-<li><strong>AP-46</strong> — Detailkarten folgen der Join-Builder-Auswahl: Graph zentriert wenn leer, sonst nach oben + Start/Ziel-Karten darunter (auch bei Dropdown-Auswahl) — v0.28.0–v0.28.1</li>
+<li><strong>AP-44</strong> — SQL-Builder kompakter (Button-Zeilen zusammengelegt, 1-N-Kachel oben rechts, mehr Tabellenhöhe) + Ergebnis-Hilfen: NULL-Hervorhebung, Statuszeile Zeilen·Join-Typ·Fan-out — v0.27.0</li>
+<li><strong>AP-46</strong> — Detailkarten folgen der SQL-Builder-Auswahl: Graph zentriert wenn leer, sonst nach oben + Start/Ziel-Karten darunter (auch bei Dropdown-Auswahl) — v0.28.0–v0.28.1</li>
 <li><strong>AP-47</strong> — Pfad-Auswahl-Indikator <code>[*]</code>/<code>[ ]</code> statt Bullets + count-basierter Waisen-Chip pro Join-Typ (<code>/api/orphan_check</code>, pfad-kontextbewusst) — v0.29.0–v0.29.1</li>
 <li><strong>AP-48</strong> — SQL-Analyzer: Eingabe-Textbox größer + nur vertikal verstellbar; Tippfehler-Lint <code>SUSPICIOUS_ALIAS</code> (Alias ähnelt Join-Schlüsselwort) — v0.30.0</li>
 <li><strong>AP-49</strong> — Analyzer-Feinschliff: größere Default-Textbox + read-only-Badge; Fix: ANSI-Codes aus Parsefehler entfernt, mehrzeiliges Fehler-Layout — v0.31.0</li>

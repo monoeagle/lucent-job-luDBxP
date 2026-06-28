@@ -1,6 +1,6 @@
 # Outer Joins & Waisen (LEFT/RIGHT/FULL)
 
-Im Join-Builder lässt sich **pro Join-Station** der Typ wählen — **INNER**
+Im SQL-Builder lässt sich **pro Join-Station** der Typ wählen — **INNER**
 (Standard), **LEFT**, **RIGHT**, **FULL**. Outer Joins behalten Zeilen einer
 Seite **auch ohne Partner** auf der anderen Seite (die fehlenden Spalten werden
 `NULL`). Solche unverknüpften Zeilen heißen hier **Waisen**.

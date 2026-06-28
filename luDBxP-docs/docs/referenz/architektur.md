@@ -65,7 +65,7 @@ Komplexitäts-Score und das Zeichnen der JOIN-Kanten im Graph. Er arbeitet **mit
 ohne Verbindung**: ohne Verbindung rein textuell, mit Verbindung zusätzlich mit
 Schema-Abgleich und Graph-Highlight. `sqlglot` ist lokal als Wheel gebündelt (kein CDN).
 
-Der **Join-Builder** (`/api/joinpath`, Ausführung `/api/joinpath/run`) erlaubt einen
+Der **SQL-Builder** (`/api/joinpath`, Ausführung `/api/joinpath/run`) erlaubt einen
 **Join-Typ pro Schritt** (INNER/LEFT/RIGHT/FULL); das read-only Endpoint
 `/api/orphan_check` zählt je Schritt, welcher Typ das Ergebnis tatsächlich ändert
 (Waisen-Hinweis). Die generierte Abfrage wird parametrisiert und read-only ausgeführt;

@@ -26,10 +26,10 @@ direkt, sonst öffnet sich der Verbindungs-Tab vorbefüllt zum Ergänzen des Pas
 ## 3-Panel-Layout nach dem Verbinden
 
 <img src="../images/screenshots/Screenshot_02_luDBxP.jpg"
-     alt="3-Panel-Layout: Objekt-Browser links mit 13 Tabellen und 2 Views, Join-Builder-Tab in der Mitte, Schema-Graph rechts mit allen FK-Kanten.">
+     alt="3-Panel-Layout: Objekt-Browser links mit 13 Tabellen und 2 Views, SQL-Builder-Tab in der Mitte, Schema-Graph rechts mit allen FK-Kanten.">
 
 Nach „Schema laden" füllen sich Objekt-Browser (13 Tabellen, 2 Views) und der
-Schema-Graph gleichzeitig. Der Join-Builder-Tab ist standardmäßig aktiv.
+Schema-Graph gleichzeitig. Der SQL-Builder-Tab ist standardmäßig aktiv.
 Der Graph zeigt alle Tabellen als Knoten und die Foreign-Key-Beziehungen als
 gerichtete Kanten.
 
@@ -53,12 +53,12 @@ Foreign Keys. Weitere Sub-Tabs: **Daten** (erste 100 Zeilen als Tabelle),
 
 ---
 
-## Join-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight
+## SQL-Builder — Pfadliste + SQL-Ergebnis + Graph-Highlight
 
 <img src="../images/screenshots/Screenshot_04_luDBxP.jpg"
-     alt="Join-Builder: Start Cluster.ClusterID, Ziel Replication.ReplicationID. Mehrere alternative Pfade als anklickbare Liste mit N-1/1-N-Richtungs-Chips; ausgewählt (mit [*] markiert) ist die komplexe 6-Hop-Variante Cluster → ResourcePool → VMPlacement → VirtualMachine → VMDisk → Datastore → Replication. Darunter pro Join-Schritt ein Join-Typ-Dropdown (INNER) mit Waisen-Hinweis LEFT/FULL, das mehrzeilige SELECT (inkl. Composite-Key ON … AND …) und die Ergebnistabelle mit sortierbaren Spaltenköpfen. Im Schema-Graph ist der gesamte Pfad rot hervorgehoben (Start Cluster grün, Ziel Replication), rechts UML-Karten für Start- und Ziel-Tabelle.">
+     alt="SQL-Builder: Start Cluster.ClusterID, Ziel Replication.ReplicationID. Mehrere alternative Pfade als anklickbare Liste mit N-1/1-N-Richtungs-Chips; ausgewählt (mit [*] markiert) ist die komplexe 6-Hop-Variante Cluster → ResourcePool → VMPlacement → VirtualMachine → VMDisk → Datastore → Replication. Darunter pro Join-Schritt ein Join-Typ-Dropdown (INNER) mit Waisen-Hinweis LEFT/FULL, das mehrzeilige SELECT (inkl. Composite-Key ON … AND …) und die Ergebnistabelle mit sortierbaren Spaltenköpfen. Im Schema-Graph ist der gesamte Pfad rot hervorgehoben (Start Cluster grün, Ziel Replication), rechts UML-Karten für Start- und Ziel-Tabelle.">
 
-Nach „Join-Pfad bauen" listet der Join-Builder alle k-kürzesten Pfade (bis zu 5)
+Nach „Join-Pfad bauen" listet der SQL-Builder alle k-kürzesten Pfade (bis zu 5)
 als anklickbare Hyperlinks — jeder Schritt trägt einen **Richtungs-Chip** (grün N-1
 aufsteigend / amber 1-N absteigend, kann Zeilen vervielfachen). Der gewählte Pfad ist
 mit **`[*]`** markiert; hier ist bewusst eine **komplexe Mehrhop-Variante** ausgewählt.
@@ -91,12 +91,12 @@ angezeigte/kopierbare Join-SQL ein — dort steht weiterhin nur deine eigentlich
 
 ---
 
-## Join-Builder — parallele Tab-Ansicht
+## SQL-Builder — parallele Tab-Ansicht
 
 <img src="../images/screenshots/Screenshot_05_luDBxP.jpg"
-     alt="Gleiche Join-Builder-Ansicht wie zuvor, jedoch mit einem zusätzlichen VirtualMachine-Detail-Tab geöffnet — beide Tabs koexistieren in der Tab-Leiste.">
+     alt="Gleiche SQL-Builder-Ansicht wie zuvor, jedoch mit einem zusätzlichen VirtualMachine-Detail-Tab geöffnet — beide Tabs koexistieren in der Tab-Leiste.">
 
-Tabellen-Detail-Tabs und der Join-Builder-Tab koexistieren in der Tab-Leiste.
+Tabellen-Detail-Tabs und der SQL-Builder-Tab koexistieren in der Tab-Leiste.
 Mehrere Tabellen können gleichzeitig geöffnet bleiben; ein Klick auf den Tab
 wechselt die Ansicht ohne den Graph-Zustand zu verlieren.
 
@@ -117,7 +117,7 @@ ohne deklarierte Foreign Keys (z. B. `demo_cmdb_nofk.db`).
 ## AP-1: Interaktive Pfad-Auswahl direkt im Graph
 
 <img src="../images/screenshots/Screenshot_07_luDBxP.jpg"
-     alt="AP-1-Feature: Doppelklick auf VirtualMachine im Graph öffnet eine UML-Karte im Graph-Panel mit allen Spalten (VMID PK, Name, …). Eine zweite Karte für Host zeigt das Ziel. Join-Builder wurde automatisch mit VirtualMachine.HostID → Host.HostID befüllt. Graph zeigt den Pfad rot hervorgehoben.">
+     alt="AP-1-Feature: Doppelklick auf VirtualMachine im Graph öffnet eine UML-Karte im Graph-Panel mit allen Spalten (VMID PK, Name, …). Eine zweite Karte für Host zeigt das Ziel. SQL-Builder wurde automatisch mit VirtualMachine.HostID → Host.HostID befüllt. Graph zeigt den Pfad rot hervorgehoben.">
 
 **Neu in AP-1:** Doppelklick auf einen Graph-Knoten öffnet eine **UML-Tabellenkarte**
 direkt im Graph-Panel mit allen Spalten, Typen und PK-Markierungen. Eine Spalte
@@ -126,8 +126,8 @@ setzt das Ziel. Sobald Quelle und Ziel gesetzt sind:
 
 - `/api/joinpath` wird automatisch aufgerufen
 - Der Join-Pfad wird im Graph **rot hervorgehoben**
-- Der **Join-Builder-Tab füllt sich automatisch** mit den gewählten Tabellen und
-  Spalten (Zweiweg-Sync Graph ↔ Join-Builder)
+- Der **SQL-Builder-Tab füllt sich automatisch** mit den gewählten Tabellen und
+  Spalten (Zweiweg-Sync Graph ↔ SQL-Builder)
 
 Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 (`Quelle: VirtualMachine.HostID → Ziel: Host.HostID`) und bietet einen
@@ -135,9 +135,9 @@ Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 
 ---
 
-## Join-Builder — aktuelle Funktionen (Stand v0.31.0)
+## SQL-Builder — aktuelle Funktionen (Stand v0.31.0)
 
-Über die obigen Screenshots hinaus bietet der Join-Builder inzwischen:
+Über die obigen Screenshots hinaus bietet der SQL-Builder inzwischen:
 
 - **Start ⇄ Ziel tauschen** per ⇄-Knopf neben den Ziel-Dropdowns (Tabelle + Spalte;
   baut sofort neu) — die warnungsfreie Richtung ist oft die umgekehrte.
