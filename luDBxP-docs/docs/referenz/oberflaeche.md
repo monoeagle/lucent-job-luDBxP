@@ -58,7 +58,7 @@ Foreign Keys. Weitere Sub-Tabs: **Daten** (erste 100 Zeilen als Tabelle),
 <img src="../images/screenshots/Screenshot_04_luDBxP.jpg"
      alt="SQL-Builder: Start Cluster.ClusterID, Ziel Replication.ReplicationID. Mehrere alternative Pfade als anklickbare Liste mit N-1/1-N-Richtungs-Chips; ausgewählt (mit [*] markiert) ist die komplexe 6-Hop-Variante Cluster → ResourcePool → VMPlacement → VirtualMachine → VMDisk → Datastore → Replication. Darunter pro Join-Schritt ein Join-Typ-Dropdown (INNER) mit Waisen-Hinweis LEFT/FULL, das mehrzeilige SELECT (inkl. Composite-Key ON … AND …) und die Ergebnistabelle mit sortierbaren Spaltenköpfen. Im Schema-Graph ist der gesamte Pfad rot hervorgehoben (Start Cluster grün, Ziel Replication), rechts UML-Karten für Start- und Ziel-Tabelle.">
 
-Nach „Join-Pfad bauen" listet der SQL-Builder alle k-kürzesten Pfade (bis zu 5)
+Nach „Generieren" listet der SQL-Builder alle k-kürzesten Pfade (bis zu 5)
 als anklickbare Hyperlinks — jeder Schritt trägt einen **Richtungs-Chip** (grün N-1
 aufsteigend / amber 1-N absteigend, kann Zeilen vervielfachen). Der gewählte Pfad ist
 mit **`[*]`** markiert; hier ist bewusst eine **komplexe Mehrhop-Variante** ausgewählt.

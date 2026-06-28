@@ -10,7 +10,7 @@ JOIN-Statement von Tabelle A nach Tabelle B erzeugen.
 1. Datenbankverbindung eingeben → Schema laden
 2. Im SQL-Builder Start-Tabelle + Start-Spalte wählen
 3. Ziel-Tabelle + Ziel-Spalte wählen
-4. „Join-Pfad berechnen" klicken
+4. „Generieren" klicken
 5. Das generierte SQL in die eigene Query übernehmen
 
 **Ausgabe:** Parametrisiertes SQL mit allen nötigen JOINs. Bis zu 5 alternative

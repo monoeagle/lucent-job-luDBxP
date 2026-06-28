@@ -35,14 +35,14 @@ Klick auf **„Schema laden"** — der Objekt-Browser links füllt sich mit Tabe
 Der FK-Graph rechts zeigt alle Tabellen als Knoten und die Foreign-Key-Beziehungen
 als Kanten. Gestrichelte Kanten = implizit erkannte FKs (per Checkbox aktivierbar).
 
-### 3. Join-Pfad berechnen
+### 3. Generieren
 
 Im **SQL-Builder**-Tab:
 
 1. Start-Tabelle und Spalte wählen
 2. Ziel-Tabelle und Spalte wählen
 3. Optional: Filter hinzufügen (Tabelle · Spalte · Operator · Wert)
-4. Klick auf **„Join-Pfad berechnen"**
+4. Klick auf **„Generieren"**
 
 Das Ergebnis: parametrisiertes SQL + der Pfad wird im Graph farblich hervorgehoben.
 
