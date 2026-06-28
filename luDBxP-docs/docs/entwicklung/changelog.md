@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.43.3] — 2026-06-28
+
+### Geändert
+- SQL-Builder-Layout: die Klausel-Builder sind jetzt vier beschriftete
+  Sektionen (Filter, Sortierung, Spalten, HAVING) mit je eigenem kompaktem
+  „+"-Button; die Ausgabe-Optionen (DISTINCT, LIMIT, Dialekt) und der
+  „Generieren"-Button liegen in einer getrennten Aktionsleiste unten. Nur
+  Markup/CSS — keine Verhaltensänderung, alle Element-IDs und das generierte
+  SQL bleiben gleich.
+
 ## [0.43.2] — 2026-06-28
 
 ### Geändert

@@ -135,10 +135,17 @@ Die Statuszeile am unteren Graph-Rand zeigt die aktuelle Auswahl
 
 ---
 
-## SQL-Builder — aktuelle Funktionen (Stand v0.31.0)
+## SQL-Builder — aktuelle Funktionen (Stand v0.43.3)
 
 Über die obigen Screenshots hinaus bietet der SQL-Builder inzwischen:
 
+- **Layout — vier Klausel-Sektionen + Aktionsleiste:** Die Klausel-Builder
+  (Filter, Sortierung, Spalten, HAVING) sind als vier eigenständige, immer
+  sichtbare Abschnitte mit beschrifteter Überschrift und je einem kompakten
+  „+"-Button dargestellt. Die Ausgabe-Optionen (DISTINCT, LIMIT, Dialekt) und
+  der „Generieren"-Button befinden sich in einer getrennten Aktionsleiste am
+  unteren Rand. Nur Markup/CSS — alle Element-IDs und das generierte SQL sind
+  unverändert.
 - **Start ⇄ Ziel tauschen** per ⇄-Knopf neben den Ziel-Dropdowns (Tabelle + Spalte;
   baut sofort neu) — die warnungsfreie Richtung ist oft die umgekehrte.
 - **Pfad-Auswahl-Indikator:** Die Kandidatenpfade tragen `[*]` (aktiv) / `[ ]` statt

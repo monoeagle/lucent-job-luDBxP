@@ -1,21 +1,46 @@
 {
-  "generatedAt": "2026-06-28T15:24:00",
+  "generatedAt": "2026-06-28T15:50:24",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 54,
+      "commits": 59,
       "kinds": {
-        "docs": 25,
-        "refactor": 2,
+        "feat": 22,
+        "docs": 28,
+        "refactor": 3,
         "fix": 4,
-        "feat": 21,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "42c5bf7",
+          "subject": "feat: SQL-Builder-Layout — Klausel-Sektionen mit '+' + getrennte Aktionsleiste",
+          "kind": "feat"
+        },
+        {
+          "sha": "567536b",
+          "subject": "docs: Implementierungsplan AP-B SQL-Builder-Layout (2 Tasks: Markup+CSS / Release)",
+          "kind": "docs"
+        },
+        {
+          "sha": "53a57a5",
+          "subject": "docs: Spec AP-B — SQL-Builder Layout (Klausel-Sektionen + Aktionsleiste, Variante C)",
+          "kind": "docs"
+        },
+        {
+          "sha": "49e63f7",
+          "subject": "refactor: SQL-Builder — letztes jb-Relikt jbSelectedMaxRows -> sbSelectedMaxRows",
+          "kind": "refactor"
+        },
+        {
+          "sha": "72f48c8",
+          "subject": "docs: SQL-Builder — Button-Label in Referenz-Doku 'Join-Pfad bauen/berechnen' -> 'Generieren'",
+          "kind": "docs"
+        },
         {
           "sha": "a305856",
           "subject": "docs: Release v0.43.2 — Join-Builder in SQL-Builder umbenannt (Doku/Changelog/Site)",
@@ -1400,17 +1425,17 @@
     }
   },
   "stats": {
-    "totalCommits": 268,
+    "totalCommits": 273,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 115
+        "count": 118
       },
       {
         "kind": "feat",
-        "count": 82
+        "count": 83
       },
       {
         "kind": "other",
@@ -1430,7 +1455,7 @@
       },
       {
         "kind": "refactor",
-        "count": 3
+        "count": 4
       },
       {
         "kind": "test",

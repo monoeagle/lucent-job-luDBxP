@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.43.3] — 2026-06-28
+
+### Changed
+- SQL-Builder layout: the clause builders are now four labeled sections
+  (Filter, Sortierung, Spalten, HAVING), each with its own compact „+"
+  add-button, and the output options (DISTINCT, LIMIT, Dialekt) plus the
+  „Generieren" button moved into a separate bottom action bar. Markup/CSS
+  only — no behavior change, all element IDs and the generated SQL are
+  unchanged.
+
 ## [0.43.2] — 2026-06-28
 
 ### Changed
