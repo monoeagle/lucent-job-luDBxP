@@ -169,7 +169,7 @@ body {
 .sqlbuilder label { min-width: 3rem; }
 .sqlbuilder label.sb-rl { min-width: var(--sb-label-w); }  /* Spezifität schlägt die 3rem-Regel */
 .filter-row, .orderby-row, .col-row, .having-row {
-  display: flex; gap: .4rem; align-items: center; margin: .3rem 0;
+  display: flex; gap: .4rem; align-items: center;
 }
 
 /* Jeder Dropdown gleich breit; Text-Eingaben fluchten mit. */
@@ -221,7 +221,6 @@ body {
 /* AP-B/AP-59: clause sections as flex rows — button left, rows right. */
 .sb-section { display: flex; align-items: flex-start; gap: .4rem; margin: .25rem 0; }
 .sb-section .filters { display: flex; flex-direction: column; gap: .3rem; flex: 1 1 auto; min-width: 0; }
-.sb-section .filters > :first-child { margin-top: 0; }
 .sb-add {
   min-width: var(--sb-label-w); height: var(--sb-ctrl-h);
   padding: 0 .5rem; flex: 0 0 auto; text-align: left;
