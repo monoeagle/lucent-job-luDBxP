@@ -45,6 +45,8 @@ function esc(s) {
   return d.innerHTML;
 }
 
+function escAttr(s) { return esc(s).replace(/"/g, "&quot;"); }
+
 async function postJSON(url, body) {
   // Auto-inject selected schema into every request that carries a connection_url
   if (SELECTED_SCHEMA && body && body.connection_url !== undefined
@@ -206,7 +208,7 @@ async function openInfo() {
 function colRows(columns, withPk) {
   return columns.map((c) => {
     const pk = withPk && c.pk ? ` <span class="badge">PK</span>` : "";
-    const tip = c.comment ? ` title="${esc(c.comment)}"` : "";
+    const tip = c.comment ? ` title="${escAttr(c.comment)}"` : "";
     return `<tr${tip}><td>${esc(c.name)}${pk}</td><td>${esc(c.type)}</td></tr>`;
   }).join("");
 }
@@ -240,7 +242,7 @@ function openDetail(kind, name) {
       ? "<ul>" + t.foreign_keys.map((f) =>
           `<li>${esc(f.columns.join(", "))} → ${esc(f.ref_table)}.${esc(f.ref_columns.join(", "))}</li>`).join("") + "</ul>"
       : "<p class='hint'>keine Foreign Keys</p>";
-    defHtml = `<h2${t.comment ? ` title="${esc(t.comment)}"` : ""}>Tabelle: ${esc(t.name)}</h2>` +
+    defHtml = `<h2${t.comment ? ` title="${escAttr(t.comment)}"` : ""}>Tabelle: ${esc(t.name)}</h2>` +
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
       `<tbody>${colRows(t.columns, true)}</tbody></table>` +
       `<h3>Foreign Keys</h3>${fks}`;
@@ -1071,11 +1073,11 @@ function showUmlCard(tableName) {
 
   const colsHtml = t.columns.map((c) => {
     const pk = c.pk ? ` <span class="badge">PK</span>` : "";
-    const tip = c.comment ? ` title="${esc(c.comment)}"` : "";
+    const tip = c.comment ? ` title="${escAttr(c.comment)}"` : "";
     return `<div class="uml-col"${tip} data-table="${esc(tableName)}" data-col="${esc(c.name)}">${esc(c.name)}${pk}<span class="uml-col-type">${esc(c.type)}</span></div>`;
   }).join("");
 
-  const headTip = t.comment ? ` title="${esc(t.comment)}"` : "";
+  const headTip = t.comment ? ` title="${escAttr(t.comment)}"` : "";
   card.innerHTML = `<div class="uml-card-head"${headTip}>${esc(tableName)}</div>${colsHtml}`;
   card.querySelectorAll(".uml-col").forEach((row) => {
     row.addEventListener("click", () => selectColumn(row.dataset.table, row.dataset.col));
