@@ -1138,6 +1138,10 @@ Doku/AppImage/Projektposter.</p>
 <ul>
 <li><strong>COUNT(*) + COUNT(DISTINCT)</strong>: zwei neue Aggregat-Optionen. COUNT(*) zählt Zeilen pro Gruppe (Spalte wird ignoriert; die zugehörige Tabelle wird dennoch in den Join eingebunden). COUNT(DISTINCT Spalte) zählt eindeutige Werte. Beide Optionen funktionieren in SELECT, HAVING und ORDER BY. Kein neues Core-Modul, kein neuer Endpoint; Änderungen in <code>core/sqlgen.py</code> und <code>web/static/js/app.js</code>. Noch offen: Cross-Schema-Joins — v0.43.0</li>
 </ul>
+<p><strong>v0.43.1</strong> (2026-06-28):</p>
+<ul>
+<li><strong>Fix GROUP-BY-Ableitung</strong>: GROUP BY wird jetzt auch aus Aggregaten in HAVING/ORDER BY abgeleitet, nicht nur aus der SELECT-Liste — vorher erzeugte ein Aggregat allein in HAVING/ORDER BY (bei nicht-aggregierter SELECT-Spalte) GROUP-BY-loses, in strikten DBs ungültiges SQL. Rückwärtskompatibel. Änderung in <code>core/sqlgen.py</code> — v0.43.1</li>
+</ul>
 <blockquote>
 <p><strong>AP-17</strong> (Delivery-Verzeichnis) wurde <strong>gestrichen</strong> — Auslieferung läuft über GitHub-Releases.</p>
 </blockquote>

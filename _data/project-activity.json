@@ -1,20 +1,30 @@
 {
-  "generatedAt": "2026-06-28T14:28:41",
+  "generatedAt": "2026-06-28T14:48:49",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 46,
+      "commits": 48,
       "kinds": {
+        "fix": 4,
+        "docs": 21,
         "feat": 21,
-        "docs": 20,
-        "fix": 3,
         "test": 1,
         "style": 1
       },
       "list": [
+        {
+          "sha": "42f0e9e",
+          "subject": "fix: GROUP BY auch bei Aggregat nur in HAVING/ORDER BY ableiten",
+          "kind": "fix"
+        },
+        {
+          "sha": "0e3858f",
+          "subject": "docs: Release v0.43.0 — COUNT(*) + COUNT(DISTINCT)",
+          "kind": "docs"
+        },
         {
           "sha": "4c28a66",
           "subject": "feat: COUNT(*) + COUNT(DISTINCT) im Join-Builder (Dropdown + Spalten-Disable bei COUNT(*))",
@@ -1359,13 +1369,13 @@
     }
   },
   "stats": {
-    "totalCommits": 260,
+    "totalCommits": 262,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 110
+        "count": 111
       },
       {
         "kind": "feat",
@@ -1377,7 +1387,7 @@
       },
       {
         "kind": "fix",
-        "count": 21
+        "count": 22
       },
       {
         "kind": "build",
@@ -1396,7 +1406,7 @@
         "count": 2
       }
     ],
-    "testCount": 304
+    "testCount": 308
   },
   "phases": []
 }
