@@ -77,6 +77,13 @@ function includeImplied() { return $("include_implied").checked; }
 function tableByName(name) { return SCHEMA.tables.find((t) => t.name === name); }
 function optionList(names) { return names.map((n) => `<option>${n}</option>`).join(""); }
 
+// Tier-3: aggregate <option>s for a SELECT column. Empty value = no aggregate.
+const AGG_FUNCS = ["COUNT", "SUM", "AVG", "MIN", "MAX"];
+function aggOptions() {
+  return `<option value="">—</option>` +
+    AGG_FUNCS.map((f) => `<option value="${f}">${f}</option>`).join("");
+}
+
 // ===== Tabs =====
 function activateTab(id) {
   document.querySelectorAll(".tab").forEach((t) =>
@@ -291,9 +298,11 @@ function openJoinBuilder() {
   panel.innerHTML =
     `<div class="joinbuilder">` +
     `<div class="row"><label>Start</label>` +
-    `<select id="start_table"></select> . <select id="start_col"></select></div>` +
+    `<select id="start_table"></select> . <select id="start_col"></select>` +
+    `<select id="start_agg" class="jb-agg" title="Aggregatfunktion">${aggOptions()}</select></div>` +
     `<div class="row"><label>Ziel</label>` +
     `<select id="target_table"></select> . <select id="target_col"></select>` +
+    `<select id="target_agg" class="jb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<button id="btn_swap" class="jb-swap" type="button" title="Start und Ziel vertauschen" ` +
     `aria-label="Start und Ziel vertauschen">⇅</button></div>` +
     `<div class="filters" id="filters"></div>` +
@@ -648,6 +657,7 @@ function addColRow() {
   row.innerHTML =
     `<select class="c-table">${optionList(names)}</select>` +
     `<select class="c-col"></select>` +
+    `<select class="c-agg jb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<button type="button" class="c-del">✕</button>`;
   const fillCcol = () => {
     const t = tableByName(row.querySelector(".c-table").value);
@@ -665,7 +675,8 @@ function collectExtraSelects() {
   document.querySelectorAll("#extra_cols .col-row").forEach((row) => {
     const table = row.querySelector(".c-table").value;
     const column = row.querySelector(".c-col").value;
-    if (table && column) out.push({ table, column });
+    const agg = row.querySelector(".c-agg").value;
+    if (table && column) out.push({ table, column, agg });
   });
   return out;
 }
@@ -680,6 +691,11 @@ function swapStartTarget() {
   const ttv = $("target_table").value, tcv = $("target_col").value;
   $("start_table").value = ttv; fillCols("start_table", "start_col"); $("start_col").value = tcv;
   $("target_table").value = stv; fillCols("target_table", "target_col"); $("target_col").value = scv;
+  if ($("start_agg") && $("target_agg")) {
+    const sa = $("start_agg").value;
+    $("start_agg").value = $("target_agg").value;
+    $("target_agg").value = sa;
+  }
   // Keep the graph markers consistent with the selection
   const s = GRAPH_SEL.source;
   GRAPH_SEL.source = GRAPH_SEL.target;
@@ -693,8 +709,10 @@ function collectJoinBody() {
   const limitRaw = $("jb_limit") ? $("jb_limit").value.trim() : "";
   return {
     connection_url: connUrl(),
-    start: { table: $("start_table").value, column: $("start_col").value },
-    target: { table: $("target_table").value, column: $("target_col").value },
+    start: { table: $("start_table").value, column: $("start_col").value,
+             agg: $("start_agg") ? $("start_agg").value : "" },
+    target: { table: $("target_table").value, column: $("target_col").value,
+              agg: $("target_agg") ? $("target_agg").value : "" },
     filters: collectFilters(),
     extra_selects: collectExtraSelects(),
     include_implied: includeImplied(),
