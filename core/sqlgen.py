@@ -19,6 +19,9 @@ _ALLOWED_OPS = {"=", "!=", "<", ">", "<=", ">=", "LIKE",
 _NULL_OPS = frozenset({"IS NULL", "IS NOT NULL"})
 _ALLOWED_DIRECTIONS = frozenset({"ASC", "DESC"})
 
+# Tier-3: aggregate functions allowed on a Selection. Empty agg = no aggregate.
+_ALLOWED_AGGS = frozenset({"COUNT", "SUM", "AVG", "MIN", "MAX"})
+
 
 def _looks_numeric(s: str) -> bool:
     """True if ``s`` is a plain integer/decimal that can safely render as a bare
@@ -107,6 +110,7 @@ def dialect_for(db_type: "str | None") -> Dialect:
 class Selection:
     table: str
     column: str
+    agg: str = ""   # "" = plain column; else one of _ALLOWED_AGGS -> FUNC(col)
 
 
 @dataclass(frozen=True)
@@ -187,7 +191,12 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
     lines = [head]
     for k, s in enumerate(selects):
         comma = "," if k < len(selects) - 1 else ""
-        lines.append(f"    {dialect.qualify(s.table, s.column, schema)}{comma}")
+        expr = dialect.qualify(s.table, s.column, schema)
+        if s.agg:
+            if s.agg not in _ALLOWED_AGGS:
+                raise ValueError(f"Unsupported aggregate: {s.agg!r}")
+            expr = f"{s.agg}({expr})"
+        lines.append(f"    {expr}{comma}")
     lines.append(f"FROM {dialect.table_ref(path.tables[0], schema)}")
 
     for i, step in enumerate(path.steps):
@@ -273,8 +282,18 @@ def generate_sql(path: JoinPath, selects: tuple[Selection, ...],
             tail.append(f"FETCH FIRST {n} ROWS ONLY")
         # "top" was already injected into the SELECT head above.
 
-    sql = "\n".join(lines + where_param + tail)
+    # Tier-3 auto-GROUP-BY: group by every non-aggregated select, but only when
+    # at least one select IS aggregated (else this is a plain row query). All
+    # columns aggregated -> empty group_cols -> single-row aggregate, no GROUP BY.
+    group_lines: list[str] = []
+    has_agg = any(s.agg for s in selects)
+    group_cols = [s for s in selects if not s.agg]
+    if has_agg and group_cols:
+        parts = [dialect.qualify(s.table, s.column, schema) for s in group_cols]
+        group_lines.append("GROUP BY " + ", ".join(parts))
+
+    sql = "\n".join(lines + where_param + group_lines + tail)
     # The copy/display variant ends with a semicolon so it pastes-and-runs cleanly;
     # the executed (parameterised) `sql` stays without one.
-    sql_inline = "\n".join(lines + where_inline + tail) + ";"
+    sql_inline = "\n".join(lines + where_inline + group_lines + tail) + ";"
     return GeneratedSQL(sql=sql, params=params, sql_inline=sql_inline)

@@ -296,3 +296,60 @@ def test_combined_distinct_orderby_limit():
     assert "LIMIT 100" in g.sql
     # ORDER BY must come before LIMIT
     assert g.sql.index("ORDER BY") < g.sql.index("LIMIT")
+
+
+# ===== Tier-3: Aggregate functions + auto-GROUP-BY =====
+
+def test_aggregate_wraps_column_and_groups_by_rest():
+    # COUNT on the target column -> GROUP BY the non-aggregated select column.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")))
+    assert 'COUNT("VMwareCluster"."ClusterID")' in g.sql
+    assert '"Networks"."VLAN"' in g.sql
+    assert 'GROUP BY "Networks"."VLAN"' in g.sql
+    # GROUP BY is identical in the copy/inline variant (no filter values in it).
+    assert 'GROUP BY "Networks"."VLAN"' in g.sql_inline
+
+
+def test_no_aggregate_emits_no_group_by_unchanged():
+    # Backward compatibility: without any aggregate the SQL has no GROUP BY.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID")))
+    assert "GROUP BY" not in g.sql
+
+
+def test_all_columns_aggregated_emits_no_group_by():
+    # Every select aggregated -> single-row aggregate, no GROUP BY.
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN", agg="MIN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")))
+    assert 'MIN("Networks"."VLAN")' in g.sql
+    assert 'COUNT("VMwareCluster"."ClusterID")' in g.sql
+    assert "GROUP BY" not in g.sql
+
+
+def test_group_by_clause_order_before_order_by_and_limit():
+    g = generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")),
+                     order_by=(("Networks", "VLAN", "ASC"),),
+                     limit=10)
+    # WHERE -> GROUP BY -> ORDER BY -> LIMIT
+    assert g.sql.index("GROUP BY") < g.sql.index("ORDER BY") < g.sql.index("LIMIT")
+
+
+def test_same_column_as_key_and_aggregate_coexist():
+    # A column may appear once plain (group key) and once aggregated.
+    g = generate_sql(_path(),
+                     selects=(Selection("VMwareCluster", "ClusterID"),
+                              Selection("VMwareCluster", "ClusterID", agg="COUNT")))
+    assert 'COUNT("VMwareCluster"."ClusterID")' in g.sql
+    assert 'GROUP BY "VMwareCluster"."ClusterID"' in g.sql
+
+
+def test_unsupported_aggregate_raises_value_error():
+    with pytest.raises(ValueError):
+        generate_sql(_path(),
+                     selects=(Selection("Networks", "VLAN", agg="MEDIAN"),))

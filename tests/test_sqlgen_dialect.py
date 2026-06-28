@@ -118,3 +118,16 @@ def test_generate_sql_without_schema_is_unqualified():
     g = generate_sql(_path(), selects=_sel())
     assert 'FROM "VirtualMachine"' in g.sql
     assert '"sales".' not in g.sql
+
+
+def test_group_by_quotes_and_qualifies_per_dialect():
+    from core.sqlgen import MSSQL
+    path = JoinPath(tables=("Host", "VirtualMachine"),
+                    steps=(JoinStep("Host", "VirtualMachine", (("HostID", "HostID"),)),))
+    g = generate_sql(path,
+                     selects=(Selection("Host", "Hostname"),
+                              Selection("VirtualMachine", "VMID", agg="COUNT")),
+                     dialect=MSSQL, schema="dbo")
+    # MSSQL bracket-quotes and schema-qualifies the GROUP BY column too.
+    assert "GROUP BY [dbo].[Host].[Hostname]" in g.sql
+    assert "COUNT([dbo].[VirtualMachine].[VMID])" in g.sql
