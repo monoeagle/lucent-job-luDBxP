@@ -2030,3 +2030,105 @@ body:has(.adb-home-layout) .md-content {
 .adb-home-footer .adb-act-cell { font-size: clamp(6px, 0.95vw, 10px); }
 /* Legende braucht keine Zahlen. */
 .adb-act-legend .adb-act-cell { font-size: 0; text-shadow: none; }
+
+/* ===== Projekt-Kennzahlen (projekt/kennzahlen.md) =====
+   Theme-nativ: nutzt --md-*-Variablen → passt sich Light/Dark an. */
+.md-typeset .kz-good   { color: #2ea043; }
+[data-md-color-scheme="slate"] .md-typeset .kz-good { color: #3fb950; }
+.md-typeset .kz-acc    { color: var(--md-accent-fg-color); }
+.md-typeset .kz-muted  { color: var(--md-default-fg-color--light); }
+.md-typeset .kz-strong { color: var(--md-default-fg-color); font-weight: 600; }
+
+/* Karten-Raster */
+.md-typeset .kz-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin: 1.4em 0;
+}
+.md-typeset .kz-card {
+  background: var(--md-default-bg-color--light);
+  border: 1px solid color-mix(in srgb, var(--md-default-fg-color) 14%, transparent);
+  border-radius: 6px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.md-typeset .kz-lbl {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.md-typeset .kz-val {
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+.md-typeset .kz-val small { font-size: 0.78rem; color: var(--md-default-fg-color--light); font-weight: 500; }
+.md-typeset .kz-note { color: var(--md-default-fg-color--light); font-size: 0.7rem; margin-top: 5px; }
+.md-typeset .kz-note code { font-size: 0.66rem; }
+
+/* Fortschrittsbalken (Umsetzungsstand) */
+.md-typeset .kz-stack {
+  display: flex;
+  height: 26px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--md-default-fg-color) 14%, transparent);
+  margin: 1em 0;
+  font-size: 0.74rem;
+}
+.md-typeset .kz-seg-done {
+  background: #2ea043;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+}
+.md-typeset .kz-seg-plan {
+  background: color-mix(in srgb, var(--md-default-fg-color) 20%, transparent);
+  color: var(--md-default-fg-color);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Modul-Coverage-Balken */
+.md-typeset .kz-bars { margin: 1.1em 0; }
+.md-typeset .kz-barrow {
+  display: grid;
+  grid-template-columns: 220px 1fr 56px;
+  align-items: center;
+  gap: 12px;
+  margin: 7px 0;
+  font-size: 0.82rem;
+}
+.md-typeset .kz-bar {
+  height: 12px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--md-default-fg-color) 12%, transparent);
+  overflow: hidden;
+}
+.md-typeset .kz-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #2ea043, var(--md-accent-fg-color));
+  border-radius: 6px;
+}
+.md-typeset .kz-p { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Inline-Tags (gemessen / Baseline) */
+.md-typeset .kz-tag {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.md-typeset .kz-tag--m { background: color-mix(in srgb, #2ea043 22%, transparent); color: #2ea043; }
+.md-typeset .kz-tag--s { background: var(--md-accent-fg-color--transparent); color: var(--md-accent-fg-color); }
+[data-md-color-scheme="slate"] .md-typeset .kz-tag--m { color: #3fb950; }
+
+@media (max-width: 480px) {
+  .md-typeset .kz-barrow { grid-template-columns: 1fr; gap: 3px; }
+  .md-typeset .kz-p { text-align: left; }
+}

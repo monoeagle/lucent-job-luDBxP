@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-28T21:53:31",
+  "generatedAt": "2026-06-28T22:07:52",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 103,
+      "commits": 104,
       "kinds": {
-        "docs": 55,
+        "docs": 56,
         "feat": 32,
         "fix": 11,
         "refactor": 3,
@@ -16,6 +16,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "f5dd883",
+          "subject": "docs: Projekt-Kennzahlen-Dashboard in Doku-Site integriert + Headline-Zahlen auf v0.47.0 aktualisiert",
+          "kind": "docs"
+        },
         {
           "sha": "2557bde",
           "subject": "docs: CLAUDE.md — AP-55 Implied-FK-Schärfung in Einschränkungen",
@@ -1645,13 +1650,13 @@
     }
   },
   "stats": {
-    "totalCommits": 317,
+    "totalCommits": 318,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 145
+        "count": 146
       },
       {
         "kind": "feat",
