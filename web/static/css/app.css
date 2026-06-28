@@ -33,9 +33,10 @@ body {
 
 /* --- connection form --- */
 .conn-form .row { display: flex; gap: .5rem; align-items: center; margin: .5rem 0; }
-.conn-form label { min-width: 6rem; }
+/* AP-60: feste Label-Spalte (lange Labels umbrechen innerhalb der Box → Felder fluchten) + einheitliche Feldbreite */
+.conn-form label { width: 8.5rem; flex: 0 0 auto; }
 .conn-form input[type=text], .conn-form input[type=password],
-.conn-form input[type=number] { padding: .25rem .4rem; }
+.conn-form input[type=number], .conn-form select { padding: .25rem .4rem; flex: 1; }
 .conn-form #conn_msg { min-height: 1.2em; }
 
 /* --- 3-panel layout --- */

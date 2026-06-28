@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.45.3] — 2026-06-28
+
+### Behoben
+- Verbindungsformular: die Feldzeilen fluchten jetzt sauber. Die Label-Spalte hat
+  eine feste Breite (lange Labels wie „Server-Zertifikat vertrauen" brechen
+  innerhalb der Spalte um, statt ihr Feld nach rechts zu schieben) und alle
+  Inputs/Selects teilen eine Breite — so liegen alle Felder über
+  SQLite/PostgreSQL/MySQL/MSSQL/Oracle an einer Linie. Nur CSS. (AP-60)
+
 ## [0.45.2] — 2026-06-28
 
 ### Geändert

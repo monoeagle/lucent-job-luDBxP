@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.45.3] — 2026-06-28
+
+### Fixed
+- Connection form: the field rows are now cleanly aligned. The label column has
+  a fixed width (long labels like „Server-Zertifikat vertrauen" wrap within the
+  column instead of pushing their field rightward) and all inputs/selects share
+  one width, so every field lines up across SQLite/PostgreSQL/MySQL/MSSQL/Oracle.
+  CSS only. (AP-60)
+
 ## [0.45.2] — 2026-06-28
 
 ### Changed

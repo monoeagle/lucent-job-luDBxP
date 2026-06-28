@@ -37,7 +37,6 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 ### Verbindungs-UX & Demo-Daten
 
-- **AP-60** — Connection-Form sauber ausrichten: die Verbindungs-Formularzeilen sind leicht versetzt — `.conn-form label { min-width:6rem }` ist nur weich, das längste Label „Service-Name" (~7rem) überläuft und schiebt sein Eingabefeld; die Inputs haben uneinheitliche Breiten (`cf_filepath` `flex:1`, andere Browser-Default). Fix: feste Label-Spaltenbreite + einheitliche Input-Breite. Nur CSS. **Aufwand S.**
 - **AP-61** — Demo-CMDB zur vollen CMDB erweitern: die Demo ist aktuell ein vSphere-Virtualisierungs-Inventar (Datacenter/Cluster/Host/VM/Datastore/Network/…); es fehlt die CMDB-/Business-Schicht. Ergänzen (mit FKs zur Infra): Application, Service, Owner/Person, Vendor, Contract, Location (Rack/Raum), Software/License, Asset-Status — in `sample_data/build_demo_db.py` + Beispiel-Daten. **Umfang offen:** CMDB-Schicht (empfohlen) / + ITSM (Incident/Change) / minimal (Application+Service+Owner). **Aufwand M–L.**
 - **AP-62** — Sichere Passwort-Persistenz (OS-Keyring), **bedingt**: das Passwort wird heute bewusst nie gespeichert (Whitelist `routes.py:_CONN_FIELDS` ohne `password`; Verbindungen liegen als Klartext-JSON). Optionales „Passwort merken" via OS-Keyring (verschlüsselt, neue `keyring`-Dependency, plattformübergreifend) statt Klartext. **Nur bauen, wenn Persistenz gewünscht** — Status quo (jede Sitzung neu eingeben) ist eine valide Sicherheitswahl. **Aufwand M.**
 
@@ -164,6 +163,10 @@ Doku/AppImage/Projektposter.
 **v0.45.2** (2026-06-28):
 
 - **AP-59** — SQL-Builder 2-Spalten-Raster: die Klausel-Sektionen werden zu „+ Label"-Buttons in der linken Spalte (erste Zeile auf gleicher Linie); alle Felder fluchten mit Start/Ziel, eine Kopfzeile je Sektion gespart. Nur Markup/CSS — v0.45.2
+
+**v0.45.3** (2026-06-28):
+
+- **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
 
 > **AP-17** (Delivery-Verzeichnis) wurde **gestrichen** — Auslieferung läuft über GitHub-Releases.
 
