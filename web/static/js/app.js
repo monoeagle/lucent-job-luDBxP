@@ -809,7 +809,7 @@ function dialectFromUrl(url) {
 }
 
 // Selected output row count: 200/400, or null ("Alle" → server's hard cap).
-function jbSelectedMaxRows() {
+function sbSelectedMaxRows() {
   const sel = $("sb_rows");
   if (!sel) return 200;
   return sel.value === "0" ? null : parseInt(sel.value, 10);
@@ -1000,7 +1000,7 @@ async function renderJoinResult(i) {
   if (info) info.textContent = "";
   try {
     const runBody = Object.assign({}, SB_LAST.body,
-      { path_index: i, max_rows: jbSelectedMaxRows() });
+      { path_index: i, max_rows: sbSelectedMaxRows() });
     const res = await postJSON("/api/joinpath/run", runBody);
     if (!res.rows.length) {
       resultEl.innerHTML = "<p class='hint'>keine Ergebniszeilen</p>";
