@@ -1294,7 +1294,7 @@ Darüber hinaus Struktur-/Klauselanalyse (Spalten, Joins+ON, Filter, GROUP/ORDER
 Komplexitäts-Score und das Zeichnen der JOIN-Kanten im Graph. Er arbeitet <strong>mit und
 ohne Verbindung</strong>: ohne Verbindung rein textuell, mit Verbindung zusätzlich mit
 Schema-Abgleich und Graph-Highlight. <code>sqlglot</code> ist lokal als Wheel gebündelt (kein CDN).</p>
-<p>Der <strong>Join-Builder</strong> (<code>/api/joinpath</code>, Ausführung <code>/api/joinpath/run</code>) erlaubt einen
+<p>Der <strong>SQL-Builder</strong> (<code>/api/joinpath</code>, Ausführung <code>/api/joinpath/run</code>) erlaubt einen
 <strong>Join-Typ pro Schritt</strong> (INNER/LEFT/RIGHT/FULL); das read-only Endpoint
 <code>/api/orphan_check</code> zählt je Schritt, welcher Typ das Ergebnis tatsächlich ändert
 (Waisen-Hinweis). Die generierte Abfrage wird parametrisiert und read-only ausgeführt;
