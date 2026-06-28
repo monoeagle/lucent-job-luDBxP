@@ -129,8 +129,10 @@ def api_schema():
     return jsonify(
         tables=[{
             "name": t.name,
+            "comment": t.comment,
             "columns": [
-                {"name": c.name, "type": c.type, "pk": c.name in t.primary_key}
+                {"name": c.name, "type": c.type, "pk": c.name in t.primary_key,
+                 "comment": c.comment}
                 for c in t.columns
             ],
             "foreign_keys": [

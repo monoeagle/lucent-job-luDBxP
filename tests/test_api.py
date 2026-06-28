@@ -816,6 +816,33 @@ def test_joinpath_run_with_schema_executes(client, inventory_url):
     assert "columns" in resp.get_json()
 
 
+def test_schema_endpoint_serializes_comments(client, monkeypatch):
+    from core.model import Column, Table, Schema
+    import web.routes as routes
+
+    class _FakeLoader:
+        def __init__(self, url):
+            pass
+
+        def load(self, schema=None):
+            cols = (Column("a", "INT", comment="Spalten-Notiz"),)
+            return Schema((Table("t", cols, (), comment="Tabellen-Notiz"),))
+
+    monkeypatch.setattr(routes, "SqlAlchemyLoader", _FakeLoader)
+    data = client.post("/api/schema", json={"connection_url": "fake://"}).get_json()
+    table = data["tables"][0]
+    assert table["comment"] == "Tabellen-Notiz"
+    assert table["columns"][0]["comment"] == "Spalten-Notiz"
+
+
+def test_schema_endpoint_comment_key_present_for_sqlite(client, inventory_url):
+    # SQLite: keine Kommentare → Schlüssel vorhanden, Wert leer.
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    t = data["tables"][0]
+    assert t["comment"] == ""
+    assert all(c["comment"] == "" for c in t["columns"])
+
+
 def test_oracle_connection_persists_service_name(client, tmp_path, monkeypatch):
     monkeypatch.setenv("LUCENT_CONFIG_DIR", str(tmp_path))
     save = client.post("/api/connections", json={
