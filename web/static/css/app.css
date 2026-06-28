@@ -190,12 +190,12 @@ body {
 }
 
 /* Aktions-Buttons: alle gleich groß. */
-.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy) {
+.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy):not(.sb-add) {
   min-width: 140px; height: var(--sb-ctrl-h); padding: 0 .8rem;
   border: 1px solid #bcbcc6; border-radius: 4px; background: #f3f3f6;
   cursor: pointer; font-size: .85rem; white-space: nowrap;
 }
-.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy):hover {
+.sqlbuilder button:not(.f-del):not(.ob-del):not(.c-del):not(.sql-copy):not(.sb-add):hover {
   background: #e8e8ef;
 }
 
@@ -206,6 +206,19 @@ body {
   color: #a00; cursor: pointer; line-height: 1;
 }
 .f-del:hover, .ob-del:hover, .c-del:hover { background: #fde8e8; }
+
+/* AP-B: clause sections (label + compact "+") and bottom action bar. */
+.sb-section { margin: .3rem 0; }
+.sb-section-head { display: flex; align-items: center; gap: .4rem; }
+.sb-section-label { min-width: 5.5rem; font-size: .8rem; font-weight: 600; color: #555; }
+.sb-add {
+  width: var(--sb-ctrl-h); height: var(--sb-ctrl-h); padding: 0; flex: 0 0 auto;
+  border: 1px solid #bcbcc6; border-radius: 4px; background: #f3f3f6;
+  cursor: pointer; line-height: 1; font-size: 1rem;
+}
+.sb-add:hover { background: #e8e8ef; }
+.sb-actions { margin-top: .5rem; }
+.sb-actions #btn_build { margin-left: auto; }
 
 /* Optionszeile: DISTINCT/LIMIT kompakt. */
 .sb-check, .sb-limit { display: inline-flex; align-items: center; gap: .3rem; }

@@ -328,15 +328,23 @@ function openSqlBuilder() {
     `<select id="target_agg" class="sb-agg" title="Aggregatfunktion">${aggOptions()}</select>` +
     `<button id="btn_swap" class="sb-swap" type="button" title="Start und Ziel vertauschen" ` +
     `aria-label="Start und Ziel vertauschen">⇅</button></div>` +
-    `<div class="filters" id="filters"></div>` +
-    `<div class="filters" id="order_bys"></div>` +
-    `<div class="filters" id="extra_cols"></div>` +
-    `<div class="filters" id="havings"></div>` +
-    `<div class="row sb-controls">` +
-    `<button id="btn_add_filter" title="Filterbedingung (mit UND verknüpft)">Filter +</button>` +
-    `<button id="btn_add_orderby" title="Sortierungsspalte hinzufügen">Sortierung +</button>` +
-    `<button id="btn_add_col" title="Weitere SELECT-Spalte hinzufügen">Spalten +</button>` +
-    `<button id="btn_add_having" title="Gruppen nach Aggregat filtern (HAVING)">HAVING +</button>` +
+    `<div class="sb-section"><div class="sb-section-head">` +
+    `<span class="sb-section-label">Filter</span>` +
+    `<button id="btn_add_filter" class="sb-add" title="Filterbedingung (mit UND verknüpft)">+</button>` +
+    `</div><div class="filters" id="filters"></div></div>` +
+    `<div class="sb-section"><div class="sb-section-head">` +
+    `<span class="sb-section-label">Sortierung</span>` +
+    `<button id="btn_add_orderby" class="sb-add" title="Sortierungsspalte hinzufügen">+</button>` +
+    `</div><div class="filters" id="order_bys"></div></div>` +
+    `<div class="sb-section"><div class="sb-section-head">` +
+    `<span class="sb-section-label">Spalten</span>` +
+    `<button id="btn_add_col" class="sb-add" title="Weitere SELECT-Spalte hinzufügen">+</button>` +
+    `</div><div class="filters" id="extra_cols"></div></div>` +
+    `<div class="sb-section"><div class="sb-section-head">` +
+    `<span class="sb-section-label">HAVING</span>` +
+    `<button id="btn_add_having" class="sb-add" title="Gruppen nach Aggregat filtern (HAVING)">+</button>` +
+    `</div><div class="filters" id="havings"></div></div>` +
+    `<div class="row sb-actions">` +
     `<label class="sb-check"><input type="checkbox" id="sb_distinct"> DISTINCT</label>` +
     `<label class="sb-limit">LIMIT <input id="sb_limit" type="number" min="1" placeholder="–"></label>` +
     `<label class="sb-dialect" title="SQL-Dialekt der generierten Abfrage">Dialekt ` +
