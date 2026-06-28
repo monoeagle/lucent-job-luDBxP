@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-28T19:52:14",
+  "generatedAt": "2026-06-28T19:57:02",
   "range": {
     "from": "2025-06-29",
     "to": "2026-06-28"
   },
   "byDay": {
     "2026-06-28": {
-      "commits": 86,
+      "commits": 87,
       "kinds": {
-        "docs": 45,
+        "docs": 46,
         "fix": 9,
         "feat": 27,
         "refactor": 3,
@@ -16,6 +16,11 @@
         "style": 1
       },
       "list": [
+        {
+          "sha": "ec279f7",
+          "subject": "docs: AP-63 gestuft — weitere DB-Objekt-Kategorien (Konzept + Stufen S1/S2/S3)",
+          "kind": "docs"
+        },
         {
           "sha": "fbde45b",
           "subject": "docs: Release v0.45.2 — SQL-Builder 2-Spalten-Raster (AP-59)",
@@ -1560,13 +1565,13 @@
     }
   },
   "stats": {
-    "totalCommits": 300,
+    "totalCommits": 301,
     "activeDays": 4,
     "longestStreak": 4,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 135
+        "count": 136
       },
       {
         "kind": "feat",

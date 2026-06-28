@@ -166,6 +166,15 @@ flowchart TB
         O1 ~~~ O2 ~~~ O3
     end
 
+    %% ── C10 · Verbindungs-UX & Demo-Daten (geplant) ──────────────────────
+    subgraph C10["🔧  Verbindungs-UX & Demo-Daten"]
+        direction TB
+        P1["AP-60\nConnection-Form-Ausrichtung"]
+        P2["AP-61\nDemo-CMDB → volle CMDB"]
+        P3["AP-62\nPasswort-Keyring (bedingt)"]
+        P1 ~~~ P2 ~~~ P3
+    end
+
     %% ── Cluster-übergreifende Abhängigkeiten ─────────────────────────────
     V1 --> E2
     M1 --> M4
@@ -192,3 +201,4 @@ flowchart TB
     class K4 plan
     class M1,M2,M3,M4 plan
     class O1,O2,O3 plan
+    class P1,P2,P3 plan

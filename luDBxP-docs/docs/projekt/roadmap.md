@@ -35,6 +35,12 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 - **AP-63 · Stufe 2** — neue Sidebar-Kategorien **Sequences, Materialized Views, Triggers** (etabliert das Kategorie-Muster; Triggers SQLite-testbar, Sequences/Mat-Views nur gegen PostgreSQL). **Aufwand M.**
 - **AP-63 · Stufe 3** — **Stored Procedures + Functions** (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). **Aufwand L.**
 
+### Verbindungs-UX & Demo-Daten
+
+- **AP-60** — Connection-Form sauber ausrichten: die Verbindungs-Formularzeilen sind leicht versetzt — `.conn-form label { min-width:6rem }` ist nur weich, das längste Label „Service-Name" (~7rem) überläuft und schiebt sein Eingabefeld; die Inputs haben uneinheitliche Breiten (`cf_filepath` `flex:1`, andere Browser-Default). Fix: feste Label-Spaltenbreite + einheitliche Input-Breite. Nur CSS. **Aufwand S.**
+- **AP-61** — Demo-CMDB zur vollen CMDB erweitern: die Demo ist aktuell ein vSphere-Virtualisierungs-Inventar (Datacenter/Cluster/Host/VM/Datastore/Network/…); es fehlt die CMDB-/Business-Schicht. Ergänzen (mit FKs zur Infra): Application, Service, Owner/Person, Vendor, Contract, Location (Rack/Raum), Software/License, Asset-Status — in `sample_data/build_demo_db.py` + Beispiel-Daten. **Umfang offen:** CMDB-Schicht (empfohlen) / + ITSM (Incident/Change) / minimal (Application+Service+Owner). **Aufwand M–L.**
+- **AP-62** — Sichere Passwort-Persistenz (OS-Keyring), **bedingt**: das Passwort wird heute bewusst nie gespeichert (Whitelist `routes.py:_CONN_FIELDS` ohne `password`; Verbindungen liegen als Klartext-JSON). Optionales „Passwort merken" via OS-Keyring (verschlüsselt, neue `keyring`-Dependency, plattformübergreifend) statt Klartext. **Nur bauen, wenn Persistenz gewünscht** — Status quo (jede Sitzung neu eingeben) ist eine valide Sicherheitswahl. **Aufwand M.**
+
 ---
 
 ## Erledigte Arbeitspakete
