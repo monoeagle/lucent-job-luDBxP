@@ -78,6 +78,9 @@ def api_connect():
         SqlAlchemyLoader(url).load()
     except ConnectionError as exc:
         return jsonify(error=str(exc)), 400
+    except Exception as exc:  # noqa: BLE001 — Verbindungstest soll jeden Fehler als 400 melden
+        _log.exception("connection test failed")
+        return jsonify(error=str(exc)), 400
     return jsonify(connection_url=url)
 
 

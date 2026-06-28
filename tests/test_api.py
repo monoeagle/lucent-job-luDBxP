@@ -1054,3 +1054,16 @@ def test_subset_unknown_table_returns_400(client, inventory_url):
         "connection_url": inventory_url, "start_table": "Nope",
         "root_filter": {"column": "x", "op": "=", "value": 1}})
     assert resp.status_code == 400
+
+
+# ===== AP-64: /api/connect meldet jeden Verbindungsfehler als 400 =====
+
+def test_connect_unhandled_loader_error_returns_400(client, monkeypatch):
+    import web.routes as routes_mod
+    def boom(self, schema=None):
+        raise RuntimeError("DPY-6005: cannot connect to database")
+    monkeypatch.setattr(routes_mod.SqlAlchemyLoader, "load", boom)
+    resp = client.post("/api/connect",
+                       json={"db_type": "sqlite", "filepath": "x.db"})
+    assert resp.status_code == 400
+    assert "DPY-6005" in resp.get_json()["error"]
