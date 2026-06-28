@@ -65,3 +65,22 @@ def test_unknown_db_type_raises():
 def test_sqlite_without_path_raises():
     with pytest.raises(ValueError):
         build_url({"db_type": "sqlite"})
+
+
+def test_oracle_url_with_service_name():
+    url = build_url({
+        "db_type": "oracle", "host": "h", "service_name": "XEPDB1",
+        "user": "u", "password": "p"})
+    assert url == "oracle+oracledb://u:p@h:1521/?service_name=XEPDB1"
+
+
+def test_oracle_custom_port():
+    url = build_url({
+        "db_type": "oracle", "host": "h", "port": 1599,
+        "service_name": "ORCLPDB1", "user": "u", "password": "p"})
+    assert url == "oracle+oracledb://u:p@h:1599/?service_name=ORCLPDB1"
+
+
+def test_oracle_missing_service_name_raises():
+    with pytest.raises(ValueError):
+        build_url({"db_type": "oracle", "host": "h", "user": "u", "password": "p"})

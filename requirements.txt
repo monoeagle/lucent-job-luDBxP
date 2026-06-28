@@ -4,6 +4,7 @@ networkx>=3.0
 psycopg2-binary>=2.9   # PostgreSQL driver
 PyMySQL>=1.1           # MySQL / MariaDB driver
 pyodbc>=5.0            # MS SQL Server driver (needs system unixODBC + msodbcsql)
+oracledb>=2.0          # Oracle driver (python-oracledb, thin mode — no Instant Client)
 sqlglot>=25            # SQL parser/AST for the read-only SQL analyzer (AP-25), pure-Python
 pystray>=0.19         # AP-34: Tray-Icon
 Pillow>=10            # AP-34: Tray-Icon-Bild

@@ -11,9 +11,10 @@ _DRIVERS = {
     "postgresql": "postgresql+psycopg2",
     "mysql": "mysql+pymysql",
     "mssql": "mssql+pyodbc",
+    "oracle": "oracle+oracledb",
 }
 
-_DEFAULT_PORTS = {"postgresql": 5432, "mysql": 3306, "mssql": 1433}
+_DEFAULT_PORTS = {"postgresql": 5432, "mysql": 3306, "mssql": 1433, "oracle": 1521}
 
 # Current Microsoft ODBC driver. Driver 18 encrypts by default; with a
 # self-signed server certificate the caller must add trust_server_certificate.
@@ -50,7 +51,7 @@ def build_url(params: dict) -> str:
     Args:
         params: Keys ``db_type`` plus, for SQLite, ``filepath``; for server
             databases ``host``, ``port`` (optional), ``database``, ``user``,
-            ``password``.
+            ``password``; for Oracle ``service_name`` instead of ``database``.
 
     Returns:
         A SQLAlchemy connection URL string.
@@ -69,16 +70,25 @@ def build_url(params: dict) -> str:
         raise ValueError(f"Unbekannter Datenbank-Typ: {db_type or '(leer)'}")
 
     host = (params.get("host") or "").strip()
-    database = (params.get("database") or "").strip()
     if not host:
         raise ValueError("Host fehlt.")
-    if not database:
-        raise ValueError("Datenbankname fehlt.")
     port = params.get("port") or _DEFAULT_PORTS[db_type]
 
     user = quote_plus(params.get("user") or "")
     password = quote_plus(params.get("password") or "")
     auth = f"{user}:{password}@" if user else ""
+
+    if db_type == "oracle":
+        # Oracle is addressed by service name, not a database path.
+        service = (params.get("service_name") or "").strip()
+        if not service:
+            raise ValueError("Service-Name fehlt.")
+        return (f"{_DRIVERS['oracle']}://{auth}{host}:{port}"
+                f"/?service_name={quote_plus(service)}")
+
+    database = (params.get("database") or "").strip()
+    if not database:
+        raise ValueError("Datenbankname fehlt.")
     url = f"{_DRIVERS[db_type]}://{auth}{host}:{port}/{database}"
     if db_type == "mssql":
         url += "?" + _mssql_query(params)
