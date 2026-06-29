@@ -1,19 +1,49 @@
 {
-  "generatedAt": "2026-06-29T17:27:58",
+  "generatedAt": "2026-06-29T18:09:50",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 46,
+      "commits": 52,
       "kinds": {
-        "feat": 16,
-        "docs": 25,
+        "feat": 19,
+        "docs": 28,
         "chore": 1,
         "fix": 4
       },
       "list": [
+        {
+          "sha": "10250bb",
+          "subject": "feat(subset): Sequences- + Materialized-Views-Sidebar-Kategorien + Detail (AP-63·S2b)",
+          "kind": "feat"
+        },
+        {
+          "sha": "291a63e",
+          "subject": "feat(subset): /api/schema liefert Sequences + Materialized Views (AP-63·S2b)",
+          "kind": "feat"
+        },
+        {
+          "sha": "47d4687",
+          "subject": "feat(model): Sequences + Materialized Views reflektieren + im Schema tragen (AP-63·S2b)",
+          "kind": "feat"
+        },
+        {
+          "sha": "f76a9b0",
+          "subject": "docs: Plan AP-63·S2b — Sequences + Materialized Views (4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "f09a478",
+          "subject": "docs: Spec AP-63·S2b — Sequences + Materialized Views als Sidebar-Kategorien",
+          "kind": "docs"
+        },
+        {
+          "sha": "bf72fad",
+          "subject": "docs: Release v0.53.0 — AP-63·S2 (Trigger-Sidebar-Kategorie)",
+          "kind": "docs"
+        },
         {
           "sha": "e62048e",
           "subject": "feat(subset): Trigger-Sidebar-Kategorie + Trigger-Detail; Demo-CMDB erweitert (AP-63·S2)",
@@ -1981,17 +2011,17 @@
     }
   },
   "stats": {
-    "totalCommits": 382,
+    "totalCommits": 388,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 181
+        "count": 184
       },
       {
         "kind": "feat",
-        "count": 114
+        "count": 117
       },
       {
         "kind": "fix",
@@ -2018,7 +2048,7 @@
         "count": 3
       }
     ],
-    "testCount": 395
+    "testCount": 399
   },
   "phases": []
 }

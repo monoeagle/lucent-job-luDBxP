@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.54.0] — 2026-06-29
+
+### Added
+- **Sequences and materialized views as two new read-only sidebar categories (AP-63·S2b):**
+  reflected via SQLAlchemy (`get_sequence_names` / `get_materialized_view_names`). Sequences
+  show their name; materialized views show columns + definition (display-only, no Data tab).
+  Model gains `Sequence` + `Schema.sequences`/`materialized_views` (materialized views reuse the
+  `View` shape); `/api/schema` serializes both; the sidebar shows each category only when
+  present. Real reflection works on **PostgreSQL/Oracle** (skip-guarded live test
+  `tests/test_pg_integration.py`, set `LUCENT_PG_TEST_URL`); SQLite/MSSQL return none.
+
 ## [0.53.0] — 2026-06-29
 
 ### Added

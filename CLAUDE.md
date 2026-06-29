@@ -53,6 +53,12 @@ LUCENT_MSSQL_TEST_URL='mssql+pyodbc://user:pw@host:1433/db?driver=ODBC+Driver+18
   ./venv/bin/python -m pytest tests/test_mssql_integration.py
 ```
 
+**Optional PostgreSQL integration test** (`tests/test_pg_integration.py`, AP-63·S2b) verifies sequence + materialized-view reflection — runs only with `LUCENT_PG_TEST_URL`, else skips:
+```bash
+LUCENT_PG_TEST_URL='postgresql+psycopg://user:pw@host:5432/db' \
+  ./venv/bin/python -m pytest tests/test_pg_integration.py
+```
+
 ## Logging
 `core/log.py::init_logging` writes to stdout + a rotating `app.log`. Overridable per environment:
 - `LUCENT_LOG_DIR` — log directory (else per-user OS path, see below)
@@ -79,7 +85,9 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **Indizes + Check-Constraints (AP-63·S1, v0.52.0):** Im Tabellen-Detail („Definition") werden alle Indizes (Name/Spalten/unique) + Check-Constraints (Name/Ausdruck) read-only via SQLAlchemy-Reflection angezeigt (`get_indexes`/`get_check_constraints`, alle Engines inkl. SQLite; Model `Index`/`CheckConstraint`). Nur Anzeige — kein DDL/Join-Pfad; Expression-/Funktions-Indizes übersprungen.
 
-> **Trigger-Sidebar-Kategorie (AP-63·S2, v0.53.0):** Trigger werden read-only als eigene Sidebar-Kategorie reflektiert (Name/Tabelle/Quelltext) — **nur SQLite** via `sqlite_master`-Katalog-SQL (`core/loaders/sqlalchemy_loader.py::_reflect_triggers`, Model `Trigger`); andere Dialekte liefern noch `()` (PG/Oracle-Trigger = Fast-Follow). Kategorie nur bei N>0; schlankes Trigger-Detail ohne Daten-Tab; Trigger werden nie ausgeführt, keine Join-Teilnahme. Sequences/Materialized Views = AP-63·S2b (PG-only) offen.
+> **Trigger-Sidebar-Kategorie (AP-63·S2, v0.53.0):** Trigger werden read-only als eigene Sidebar-Kategorie reflektiert (Name/Tabelle/Quelltext) — **nur SQLite** via `sqlite_master`-Katalog-SQL (`core/loaders/sqlalchemy_loader.py::_reflect_triggers`, Model `Trigger`); andere Dialekte liefern noch `()` (PG/Oracle-Trigger = Fast-Follow). Kategorie nur bei N>0; schlankes Trigger-Detail ohne Daten-Tab; Trigger werden nie ausgeführt, keine Join-Teilnahme.
+
+> **Sequences + Materialized-View-Kategorien (AP-63·S2b, v0.54.0):** Sequenzen (nur Name) + Materialized Views (Spalten + Definition, Matviews reusen das `View`-Model) werden read-only als je eigene Sidebar-Kategorie reflektiert (`get_sequence_names`/`get_materialized_view_names`, Model `Sequence`); echte Werte **nur PG/Oracle** (SQLite/MSSQL → leer). Display-only (kein Daten-Tab), Kategorie nur bei N>0, keine Join-Teilnahme. Optionaler Live-Test `tests/test_pg_integration.py` (`LUCENT_PG_TEST_URL`).
 
 > **GROUP BY / Aggregates (Tier-3, v0.41.0):** Each SELECT column may carry an aggregate (COUNT/SUM/AVG/MIN/MAX); GROUP BY is auto-derived from the non-aggregated columns. The generated SQL gains GROUP BY and the read-only run path executes grouped queries.
 

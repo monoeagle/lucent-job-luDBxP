@@ -1,6 +1,6 @@
 [project]
 site_name        = "LucentTools DB Explorer"
-site_description = "Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.53.0"
+site_description = "Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.54.0"
 site_author      = "LucentTools"
 copyright        = "Copyright &copy; 2026 LucentTools"
 
