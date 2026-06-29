@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.59.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.60.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1430,10 +1430,10 @@ mit Browser-Blob-Downloads (kein Server-Filehandling).</p>
 <code>pg_trigger</code>/<code>pg_get_triggerdef</code>; Oracle via <code>all_triggers</code>/<code>dbms_metadata.get_ddl</code>; MSSQL via
 <code>sys.triggers</code>/<code>sys.sql_modules</code>; nur Tabellen-/DML-Trigger, MSSQL live verifiziert, PG/Oracle
 skip-guarded), <strong>Sequences + Materialized
-Views</strong> (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle), sowie <strong>Stored Procedures,
-Functions, Oracle Packages und Oracle Synonyme</strong> als vier eigene Sidebar-Kategorien (AP-63·S3,
+Views</strong> (AP-63·S2b, SQLAlchemy-nativ; Sequences: PG/Oracle/MSSQL, Materialized Views: nur PG/Oracle), sowie <strong>Stored Procedures,
+Functions, Oracle Packages und Synonyme</strong> als vier eigene Sidebar-Kategorien (AP-63·S3,
 Pro-Dialekt-Katalog-SQL: <code>_reflect_routines</code> via <code>pg_proc</code>/<code>all_objects</code>+<code>all_source</code>/<code>sys.objects</code>+
-<code>sys.sql_modules</code>; <code>_reflect_synonyms</code> via <code>all_synonyms</code>, Oracle-only). <code>/api/schema</code> serialisiert
+<code>sys.sql_modules</code>; <code>_reflect_synonyms</code> via <code>all_synonyms</code> Oracle + <code>sys.synonyms</code> MSSQL, AP-67·MSSQL-Grundlage v0.60.0). <code>/api/schema</code> serialisiert
 alle Felder: <code>procedures</code>, <code>functions</code>, <code>packages</code>, <code>synonyms</code> (je <code>{"name","sql"}</code>, Synonyme
 <code>{"name","target"}</code>). Alle Objekt-Kategorien erscheinen nur bei N&gt;0, haben keinen Daten-Tab und
 nehmen nicht an Join-Pfaden teil.</p>
