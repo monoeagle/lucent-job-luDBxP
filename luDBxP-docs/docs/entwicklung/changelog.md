@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.58.0] — 2026-06-29
+
+### Hinzugefügt
+- **SQL-Analyzer zeigt jetzt Parse-Fehler-Position — Zeile, Spalte und markiertes Token (AP-65·A):**
+  Neuer Helfer `_parse_error_location(exc, sql)` in `core/sqlanalyze.py` extrahiert strukturierte
+  Positionsinformationen aus sqlglot-Fehlern. `ParseError` wird über sqlglots `.errors[0]`
+  (Zeile/Spalte/Kontext) aufgelöst; `TokenError` (z. B. nicht geschlossenes String-Literal)
+  leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab.
+  `AnalysisResult` erhält vier abschließende Felder: `parse_error_line: int | None`,
+  `parse_error_col: int | None`, `parse_error_context: str` (Ausschnitt rund um das
+  fehlerhafte Token) und `parse_error_highlight: str` (das fehlerhafte Token zum Markieren).
+  `/api/analyze` serialisiert alle vier Felder. Im UI zeigt der Analyzer **„Parse-Fehler in
+  Zeile N, Spalte M:"** plus den Kontext-Ausschnitt mit dem fehlerhaften Token in einem roten
+  `.an-err-mark`-Span; ist keine Position verfügbar, fällt es auf die bisherige Zeichenketten-
+  Darstellung zurück. Read-only — keine Autokorrektur. Stufe B (Zeilennummern-Gutter) und
+  C (Lints mit Zeilenbezug) bleiben Backlog.
+
 ## [0.57.0] — 2026-06-29
 
 ### Hinzugefügt

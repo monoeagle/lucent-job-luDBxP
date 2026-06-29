@@ -81,14 +81,15 @@ flowchart TB
         J30["AP-F\nAnalyzer-Vorschläge"]
         J31["AP-58\nFix HAVING-Layout"]
         J32["AP-59\n2-Spalten-Raster"]
-        J33["AP-65\nAnalyzer Zeilen/Fehlerstelle"]
+        J33["AP-65·A\nAnalyzer Parse-Fehler-Pos."]
+        J34["AP-65·B/C\nAnalyzer Gutter + Lints (offen)"]
         %% In 5 parallele Spalten gepackt (statt einer 25-Boxen-Säule) → kompaktes Gitter
         J1 ~~~ J2 ~~~ J3 ~~~ J4 ~~~ J5
         J6 ~~~ J7 ~~~ J8 ~~~ J9 ~~~ J10
         J11 ~~~ J12 ~~~ J13 ~~~ J14 ~~~ J15
         J16 ~~~ J17 ~~~ J18 ~~~ J19 ~~~ J20
         J21 ~~~ J22 ~~~ J23 ~~~ J24 ~~~ J25
-        J26 ~~~ J27 ~~~ J28 ~~~ J29 ~~~ J30 ~~~ J31 ~~~ J32 ~~~ J33
+        J26 ~~~ J27 ~~~ J28 ~~~ J29 ~~~ J30 ~~~ J31 ~~~ J32 ~~~ J33 ~~~ J34
     end
 
     %% ── C4 · Graph-Visualisierung ────────────────────────────────────────
@@ -199,7 +200,7 @@ flowchart TB
 
     class E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11,E12,E13,E14 done
     class V1,V2,V3,V4,V5,V6,V7 done
-    class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14,J15,J16,J17,J18,J19,J20,J21,J22,J23,J24,J25,J26,J27,J28,J29,J30,J31,J32 done
+    class J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14,J15,J16,J17,J18,J19,J20,J21,J22,J23,J24,J25,J26,J27,J28,J29,J30,J31,J32,J33 done
     class G1,G2,G3,G4,G5,G6,G7,G8,G9 done
     class D1,D2,D3,D4 done
     class B1,B2,B3,B4,B7,B8,B9 done
@@ -214,4 +215,4 @@ flowchart TB
     class O4b plan
     class P2,P3 plan
     class P1,P4 done
-    class J33 plan
+    class J34 plan

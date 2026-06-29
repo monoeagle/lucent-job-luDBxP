@@ -95,6 +95,20 @@ Materialized Views (AP-63·S2b) werden auf dasselbe `View`-Shape abgebildet (ink
 
 Alle read-only Objekt-Kategorien (Index/Check/Trigger/Sequence/Materialized View/Routine/Synonym) nehmen **nicht** an Join-Pfaden oder SQL-Generierung teil — reine Anzeige.
 
+### AnalysisResult (AP-65·A)
+
+Rückgabeobjekt von `core/sqlanalyze.py::analyze` und `/api/analyze`. Die ersten Felder existierten seit AP-25/39; AP-65·A ergänzt vier abschließende Positionsfelder für Parse-Fehler:
+
+| Attribut | Typ | Beschreibung |
+|---|---|---|
+| `parse_error` | `str \| None` | Parse-Fehlermeldung (gestrippter Text); `None` bei Erfolg |
+| `parse_error_line` | `int \| None` | Zeilennummer des fehlerhaften Tokens (1-basiert); `None` wenn nicht ermittelbar (AP-65·A) |
+| `parse_error_col` | `int \| None` | Spaltennummer des fehlerhaften Tokens (1-basiert); `None` wenn nicht ermittelbar (AP-65·A) |
+| `parse_error_context` | `str` | Kontext-Ausschnitt rund um das fehlerhafte Token; `""` wenn nicht verfügbar (AP-65·A) |
+| `parse_error_highlight` | `str` | Das fehlerhafte Token selbst (für die rot markierte `.an-err-mark`-Darstellung); `""` wenn nicht verfügbar (AP-65·A) |
+
+`ParseError` wird über sqlglots `.errors[0]` aufgelöst (strukturierte Position). `TokenError` (z. B. nicht geschlossenes String-Literal) leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab. `/api/analyze` serialisiert alle vier Felder; die UI zeigt „Parse-Fehler in Zeile N, Spalte M:" + Kontext mit markiertem Token, fällt auf den Zeichenketten-Fallback zurück wenn keine Position verfügbar.
+
 ## FK-Graph
 
 Der FK-Graph (`core/graph.py`) ist ein gerichteter NetworkX-Graph:

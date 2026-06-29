@@ -32,7 +32,7 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 ### SQL-Analyzer-Tiefe
 
-- **AP-65** — SQL-Analyzer: **Zeilennummern + Fehler-Lokalisierung** (Konzept: [Analyzer-Zeilen & Fehlerstelle](../../../docs/concepts/2026-06-29-analyzer-line-numbers-error-location.md)). Heute meldet der Analyzer Parse-Fehler nur als gestrippten String ohne Position; Lints benennen keine Quellzeile. **Stufe A (S):** sqlglots strukturierte `ParseError.errors` (line/col/Kontext, heute verworfen) ins Ergebnis übernehmen → „Parse-Fehler in Zeile N, Spalte M" + markierte Stelle. **Stufe B (S–M):** Zeilennummern-Gutter im Eingabefeld + Fehlerzeile farbig. **Stufe C (M):** Lints/Warnungen mit Zeilenbezug (Token-Position) → „Zeile N: …" + Klick markiert die Zeile.
+- **AP-65** — SQL-Analyzer: **Zeilennummern + Fehler-Lokalisierung** (Konzept: [Analyzer-Zeilen & Fehlerstelle](../../../docs/concepts/2026-06-29-analyzer-line-numbers-error-location.md)). **Stufe A erledigt v0.58.0:** Parse-Fehler zeigen jetzt Zeile/Spalte + markierten Kontext-Ausschnitt (`.an-err-mark`); `AnalysisResult` hat vier neue Felder `parse_error_line/col/context/highlight`; `/api/analyze` serialisiert sie. **Stufe B (S–M, offen):** Zeilennummern-Gutter im Eingabefeld + Fehlerzeile farbig. **Stufe C (M, offen):** Lints/Warnungen mit Zeilenbezug (Token-Position) → „Zeile N: …" + Klick markiert die Zeile.
 
 ### Verbindungs-UX & Demo-Daten
 
@@ -166,6 +166,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.58.0** (2026-06-29):
+
+- **AP-65 · Stufe A** — SQL-Analyzer Parse-Fehler-Position: neuer Helfer `core/sqlanalyze.py::_parse_error_location` löst bei `ParseError` über sqlglots `.errors[0]` Zeile/Spalte/Kontext auf; bei `TokenError` best-effort aus dem Fehlermeldungs-Präfix. `AnalysisResult` erhält vier abschließende Felder `parse_error_line/col/context/highlight`; `/api/analyze` serialisiert sie. UI: „Parse-Fehler in Zeile N, Spalte M:" + Kontext-Ausschnitt mit fehlerhaftem Token in rotem `.an-err-mark`-Span; Fallback auf bisherigen String wenn keine Position verfügbar. Read-only, keine Autokorrektur. **Aufwand S** — v0.58.0
 
 **v0.57.0** (2026-06-29):
 

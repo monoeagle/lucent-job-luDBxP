@@ -254,6 +254,12 @@ Abschnitt mit vier schema-freien AST-Heuristiken — überflüssiges `DISTINCT` 
 verhindern) und eine Nicht-`EXISTS`-Unterabfrage in `WHERE` (oft besser als
 JOIN/EXISTS). Read-only, nur Hinweise — der Analyzer schreibt nichts um.
 
+**Parse-Fehler-Position (AP-65·A):** Kann sqlglot das eingefügte Statement nicht parsen,
+zeigt der Analyzer jetzt **„Parse-Fehler in Zeile N, Spalte M:"** gefolgt von einem
+Kontext-Ausschnitt, in dem das fehlerhafte Token rot hervorgehoben ist (`.an-err-mark`-Span).
+Ist keine Position ermittelbar (z. B. leere Eingabe), erscheint weiterhin der reine
+Fehlertext. Read-only — keine Autokorrektur.
+
 ## Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
 
 Das **Info**-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern

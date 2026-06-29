@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.58.0] — 2026-06-29
+
+### Added
+- **SQL Analyzer now shows parse-error position — line, column, and marked token (AP-65·A):**
+  A new helper `_parse_error_location(exc, sql)` in `core/sqlanalyze.py` extracts structured
+  position information from sqlglot errors. `ParseError` is resolved via sqlglot's
+  `.errors[0]` (line/col/context); `TokenError` (e.g. unterminated string literal) derives the
+  position best-effort from the consumed prefix in its message. `AnalysisResult` gains four
+  trailing fields: `parse_error_line: int | None`, `parse_error_col: int | None`,
+  `parse_error_context: str` (excerpt around the offending token), and
+  `parse_error_highlight: str` (the offending token for marking). `/api/analyze` serializes
+  all four fields. In the UI the analyzer shows **„Parse-Fehler in Zeile N, Spalte M:"** plus
+  the context excerpt with the offending token in a red `.an-err-mark` span; when no position
+  is available it falls back to the plain error string. Read-only — no auto-correction.
+  Stufe B (line gutter) and C (lints with line refs) remain backlog.
+
 ## [0.57.0] — 2026-06-29
 
 ### Added

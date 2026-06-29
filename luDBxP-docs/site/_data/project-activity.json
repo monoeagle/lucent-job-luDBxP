@@ -1,21 +1,51 @@
 {
-  "generatedAt": "2026-06-29T23:25:36",
+  "generatedAt": "2026-06-30T00:00:58",
   "range": {
-    "from": "2025-06-30",
-    "to": "2026-06-29"
+    "from": "2025-07-01",
+    "to": "2026-06-30"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 81,
+      "commits": 87,
       "kinds": {
-        "docs": 42,
-        "feat": 28,
-        "other": 2,
+        "feat": 31,
+        "docs": 44,
+        "other": 3,
         "test": 3,
         "fix": 5,
         "chore": 1
       },
       "list": [
+        {
+          "sha": "527f139",
+          "subject": "feat(ui): Analyzer-Parse-Fehler mit Zeile/Spalte + markiertem Token (AP-65·A)",
+          "kind": "feat"
+        },
+        {
+          "sha": "c2c33af",
+          "subject": "feat(api): Parse-Fehler-Position in /api/analyze (AP-65·A)",
+          "kind": "feat"
+        },
+        {
+          "sha": "3b27bf1",
+          "subject": "feat(sqlanalyze): Parse-Fehler-Position (ParseError exakt, TokenError best-effort) (AP-65·A)",
+          "kind": "feat"
+        },
+        {
+          "sha": "166fb0e",
+          "subject": "docs(plan): AP-65·Stufe A Implementierungsplan — Analyzer Parse-Fehler mit Position",
+          "kind": "docs"
+        },
+        {
+          "sha": "021bc35",
+          "subject": "docs(spec): AP-65·Stufe A Design — Analyzer Parse-Fehler mit Position (ParseError+TokenError)",
+          "kind": "docs"
+        },
+        {
+          "sha": "63a46f9",
+          "subject": "release: v0.57.0 — AP-66·S1 (Views→referenzierte Routinen)",
+          "kind": "other"
+        },
         {
           "sha": "69abf74",
           "subject": "docs(viewdeps): Tradeoff des Qualifier-Scans dokumentiert (Schema-Teil als Kandidat) (AP-66·S1)",
@@ -2158,17 +2188,17 @@
     }
   },
   "stats": {
-    "totalCommits": 417,
+    "totalCommits": 423,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 198
+        "count": 200
       },
       {
         "kind": "feat",
-        "count": 126
+        "count": 129
       },
       {
         "kind": "fix",
@@ -2176,7 +2206,7 @@
       },
       {
         "kind": "other",
-        "count": 33
+        "count": 34
       },
       {
         "kind": "test",
@@ -2195,7 +2225,7 @@
         "count": 4
       }
     ],
-    "testCount": 429
+    "testCount": 435
   },
   "phases": []
 }
