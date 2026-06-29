@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.56.0] — 2026-06-29
+
+### Added
+- **Trigger reflection extended to PostgreSQL, Oracle, and MS SQL Server (AP-63·Trigger-Fast-Follow):**
+  `_reflect_triggers` in `core/loaders/sqlalchemy_loader.py` now takes `(engine, schema)` and uses
+  per-dialect catalog SQL — **PostgreSQL** via `pg_trigger` + `pg_get_triggerdef`
+  (`NOT tgisinternal`); **Oracle** via `all_triggers` (`base_object_type='TABLE'`) +
+  `dbms_metadata.get_ddl`; **MSSQL** via `sys.triggers` + `sys.sql_modules`
+  (`is_ms_shipped=0`). Only table/DML triggers are reflected. The `Trigger` model,
+  `/api/schema` serialisation, and the JS trigger sidebar category are unchanged (AP-63·S2,
+  v0.53.0) — triggers now simply appear for the new dialects too. MSSQL verified live against
+  SQL Server 2022; PG and Oracle are skip-guarded integration tests. SQLite reflection
+  (via `sqlite_master`) is unchanged.
+
 ## [0.55.1] — 2026-06-29
 
 ### Fixed

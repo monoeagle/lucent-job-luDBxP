@@ -108,7 +108,10 @@ mit Browser-Blob-Downloads (kein Server-Filehandling).
 Über Tabellen/Views hinaus werden weitere DB-Objekte **read-only** reflektiert und angezeigt
 (keine Join-/SQL-Teilnahme): **Indizes + Check-Constraints** im Tabellen-Detail (AP-63·S1,
 `get_indexes`/`get_check_constraints`, alle Engines), **Trigger** als eigene Sidebar-Kategorie
-(AP-63·S2, dialekt-Katalog-SQL — SQLite via `sqlite_master`), **Sequences + Materialized
+(AP-63·S2 + Trigger-Fast-Follow, Pro-Dialekt-Katalog-SQL: SQLite via `sqlite_master`; PostgreSQL via
+`pg_trigger`/`pg_get_triggerdef`; Oracle via `all_triggers`/`dbms_metadata.get_ddl`; MSSQL via
+`sys.triggers`/`sys.sql_modules`; nur Tabellen-/DML-Trigger, MSSQL live verifiziert, PG/Oracle
+skip-guarded), **Sequences + Materialized
 Views** (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle), sowie **Stored Procedures,
 Functions, Oracle Packages und Oracle Synonyme** als vier eigene Sidebar-Kategorien (AP-63·S3,
 Pro-Dialekt-Katalog-SQL: `_reflect_routines` via `pg_proc`/`all_objects`+`all_source`/`sys.objects`+

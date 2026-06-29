@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.55.1">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.56.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1188,7 +1188,6 @@
 <h3 id="weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien">Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: <a href="../../../../docs/concepts/2026-06-28-sidebar-object-categories/">Sidebar-Objekt-Kategorien</a>)<a class="headerlink" href="#weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien" title="Permanent link">&para;</a></h3>
 <p>Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen <strong>nicht</strong> an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:</p>
 <ul>
-<li><strong>AP-63 · Trigger-Fast-Follow</strong> — <strong>PG/Oracle-Trigger-Reflektion</strong> (eigene Katalog-Query je Dialekt, nur live testbar); heute reflektiert nur SQLite Trigger (AP-63·S2). <strong>Aufwand S–M.</strong> (Sequences + Materialized Views = AP-63·S2b erledigt v0.54.0; Procedures/Functions/Packages/Synonyms = AP-63·S3 erledigt v0.55.0.)</li>
 <li><strong>AP-66</strong> — Views, die <strong>Prozeduren/Funktionen</strong> verwenden, auflösen (Konzept: <a href="../../../../docs/concepts/2026-06-29-views-with-routines-resolution/">Views mit Routinen</a>). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. <strong>Stufe 1 (S–M):</strong> referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). <strong>Stufe 2 (M):</strong> Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). <strong>Stufe 3 (XL, zurückgestellt):</strong> echte Daten-Lineage durch den PL/SQL-Body.</li>
 </ul>
 <h3 id="sql-analyzer-tiefe">SQL-Analyzer-Tiefe<a class="headerlink" href="#sql-analyzer-tiefe" title="Permanent link">&para;</a></h3>
@@ -1324,6 +1323,10 @@ Doku/AppImage/Projektposter.</p>
 <p><strong>v0.45.3</strong> (2026-06-28):</p>
 <ul>
 <li><strong>AP-60</strong> — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3</li>
+</ul>
+<p><strong>v0.56.0</strong> (2026-06-29):</p>
+<ul>
+<li><strong>AP-63 · Trigger-Fast-Follow</strong> — Trigger-Reflektion auf PostgreSQL, Oracle und MS SQL Server erweitert: <code>_reflect_triggers</code> in <code>core/loaders/sqlalchemy_loader.py</code> nutzt jetzt Pro-Dialekt-Katalog-SQL (PG: <code>pg_trigger</code>/<code>pg_get_triggerdef</code>, <code>NOT tgisinternal</code>; Oracle: <code>all_triggers</code>/<code>dbms_metadata.get_ddl</code>; MSSQL: <code>sys.triggers</code>/<code>sys.sql_modules</code>, <code>is_ms_shipped=0</code>). Nur Tabellen-/DML-Trigger; MSSQL live gegen SQL Server 2022 verifiziert; PG/Oracle skip-guarded. <code>Trigger</code>-Model, <code>/api/schema</code> und JS-Sidebar unverändert (AP-63·S2, v0.53.0). <strong>Aufwand S–M</strong> — v0.56.0</li>
 </ul>
 <p><strong>v0.55.0</strong> (2026-06-29):</p>
 <ul>

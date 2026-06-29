@@ -163,10 +163,11 @@ flowchart TB
     subgraph C9["🗃️  DB-Objekt-Kategorien"]
         direction TB
         O1["AP-63·S1\nIndizes + Check"]
-        O2["AP-63·S2/S2b\nTrigger + Seq + Mat-Views"]
+        O2["AP-63·S2/S2b\nTrigger (SQLite) + Seq + Mat-Views"]
+        O2b["AP-63·Trigger-FF\nPG/Oracle/MSSQL-Trigger"]
         O3["AP-63·S3\nProcedures/Functions"]
         O4["AP-66\nViews mit Routinen"]
-        O1 ~~~ O2 ~~~ O3 ~~~ O4
+        O1 ~~~ O2 ~~~ O2b ~~~ O3 ~~~ O4
     end
 
     %% ── C10 · Verbindungs-UX & Demo-Daten (geplant) ──────────────────────
@@ -184,7 +185,8 @@ flowchart TB
     M1 --> M4
     E2 --> M1
     E2 --> O1
-    O1 --> O2 --> O3
+    O1 --> O2 --> O2b
+    O2 --> O3
     E5 --> J1
     E5 --> J9
     E5 --> J11
@@ -207,7 +209,7 @@ flowchart TB
     class M4 plan
     class M2 done
     class M1 done
-    class O1,O2,O3 done
+    class O1,O2,O2b,O3 done
     class O4 plan
     class P2,P3 plan
     class P1,P4 done

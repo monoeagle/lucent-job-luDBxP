@@ -28,7 +28,6 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen **nicht** an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:
 
-- **AP-63 · Trigger-Fast-Follow** — **PG/Oracle-Trigger-Reflektion** (eigene Katalog-Query je Dialekt, nur live testbar); heute reflektiert nur SQLite Trigger (AP-63·S2). **Aufwand S–M.** (Sequences + Materialized Views = AP-63·S2b erledigt v0.54.0; Procedures/Functions/Packages/Synonyms = AP-63·S3 erledigt v0.55.0.)
 - **AP-66** — Views, die **Prozeduren/Funktionen** verwenden, auflösen (Konzept: [Views mit Routinen](../../../docs/concepts/2026-06-29-views-with-routines-resolution.md)). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. **Stufe 1 (S–M):** referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). **Stufe 2 (M):** Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). **Stufe 3 (XL, zurückgestellt):** echte Daten-Lineage durch den PL/SQL-Body.
 
 ### SQL-Analyzer-Tiefe
@@ -167,6 +166,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.56.0** (2026-06-29):
+
+- **AP-63 · Trigger-Fast-Follow** — Trigger-Reflektion auf PostgreSQL, Oracle und MS SQL Server erweitert: `_reflect_triggers` in `core/loaders/sqlalchemy_loader.py` nutzt jetzt Pro-Dialekt-Katalog-SQL (PG: `pg_trigger`/`pg_get_triggerdef`, `NOT tgisinternal`; Oracle: `all_triggers`/`dbms_metadata.get_ddl`; MSSQL: `sys.triggers`/`sys.sql_modules`, `is_ms_shipped=0`). Nur Tabellen-/DML-Trigger; MSSQL live gegen SQL Server 2022 verifiziert; PG/Oracle skip-guarded. `Trigger`-Model, `/api/schema` und JS-Sidebar unverändert (AP-63·S2, v0.53.0). **Aufwand S–M** — v0.56.0
 
 **v0.55.0** (2026-06-29):
 
