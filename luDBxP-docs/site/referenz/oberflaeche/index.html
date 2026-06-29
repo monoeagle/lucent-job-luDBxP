@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.56.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.57.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1630,6 +1630,10 @@ SQL-Teilnahme):</p>
   (je nur wenn vorhanden) — jede Routine zeigt ihren Namen + Quelltext, Synonyme ihren Namen +
   Zielobjekt (display-only, kein Daten-Tab). Echte Reflektion nur PostgreSQL/Oracle/MSSQL;
   Synonyme nur Oracle. Keine Join-Teilnahme.</li>
+<li><strong>View-Routinen-Referenzen</strong> (AP-66·S1): Wenn eine View oder Materialized View Routinen aus
+  <code>schema.routines</code> aufruft, erscheint im View-Detail ein Abschnitt <strong>„Verwendet Routinen"</strong> mit
+  den Namen der referenzierten Routinen. In der Sidebar trägt die betreffende View ein <strong><code>ƒ</code></strong>-Badge.
+  Migrations-Signal: diese Views sind nicht über reine Join/FK-Lineage migrierbar.</li>
 </ul>
 <h2 id="info-ubersicht-implizite-geratene-foreign-keys-ap-55">Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)<a class="headerlink" href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel listet zusätzlich die <strong>implizit erkannten (geratenen) Foreign Keys</strong>

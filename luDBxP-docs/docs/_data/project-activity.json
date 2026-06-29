@@ -1,21 +1,61 @@
 {
-  "generatedAt": "2026-06-29T22:40:21",
+  "generatedAt": "2026-06-29T23:25:36",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 73,
+      "commits": 81,
       "kinds": {
+        "docs": 42,
+        "feat": 28,
         "other": 2,
         "test": 3,
-        "feat": 24,
-        "docs": 38,
         "fix": 5,
         "chore": 1
       },
       "list": [
+        {
+          "sha": "69abf74",
+          "subject": "docs(viewdeps): Tradeoff des Qualifier-Scans dokumentiert (Schema-Teil als Kandidat) (AP-66·S1)",
+          "kind": "docs"
+        },
+        {
+          "sha": "cac4a40",
+          "subject": "feat(ui): View-Detail 'Verwendet Routinen' + Sidebar-ƒ-Badge (AP-66·S1)",
+          "kind": "feat"
+        },
+        {
+          "sha": "cbc89d0",
+          "subject": "feat(api): View.routines in /api/schema serialisieren (AP-66·S1)",
+          "kind": "feat"
+        },
+        {
+          "sha": "e87f64b",
+          "subject": "feat(loader): View.routines via referenced_routines befüllen (AP-66·S1)",
+          "kind": "feat"
+        },
+        {
+          "sha": "18c3eaf",
+          "subject": "feat(viewdeps): View→Routine-Extraktion via sqlglot, Abgleich gegen reflektierte Routinen (AP-66·S1)",
+          "kind": "feat"
+        },
+        {
+          "sha": "59c9081",
+          "subject": "docs(plan): AP-66·Stufe 1 Implementierungsplan — Views→referenzierte Routinen",
+          "kind": "docs"
+        },
+        {
+          "sha": "1acbadb",
+          "subject": "docs(spec): AP-66·Stufe 1 Design — Views→referenzierte Routinen (Diagnose, read-only)",
+          "kind": "docs"
+        },
+        {
+          "sha": "1584da8",
+          "subject": "docs(kennzahlen): Per-Modul-Coverage-Balken korrigiert — core 95→92 %, GUI-Schale 0→~72 %",
+          "kind": "docs"
+        },
         {
           "sha": "1d8e8a7",
           "subject": "release: v0.56.0 — AP-63 Trigger-Fast-Follow (PG/Oracle/MSSQL-Trigger)",
@@ -2118,17 +2158,17 @@
     }
   },
   "stats": {
-    "totalCommits": 409,
+    "totalCommits": 417,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 194
+        "count": 198
       },
       {
         "kind": "feat",
-        "count": 122
+        "count": 126
       },
       {
         "kind": "fix",
@@ -2155,7 +2195,7 @@
         "count": 4
       }
     ],
-    "testCount": 415
+    "testCount": 429
   },
   "phases": []
 }

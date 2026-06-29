@@ -68,8 +68,9 @@ Join-Wege.
 | `name` | `str` | View-Name |
 | `columns` | `tuple[Column]` | Spalten |
 | `definition` | `str` | SQL-Definition (CREATE VIEW … AS …) |
+| `routines` | `tuple[str, ...]` | Namen reflektierter Routinen, die in der View-Definition aufgerufen werden (AP-66·S1); `()` wenn keine |
 
-Materialized Views (AP-63·S2b) werden auf dasselbe `View`-Shape abgebildet.
+Materialized Views (AP-63·S2b) werden auf dasselbe `View`-Shape abgebildet (inkl. `routines`).
 
 ### Index / CheckConstraint (AP-63·S1)
 
@@ -129,7 +130,8 @@ Er enthält keine Views — nur Tabellen mit FK-Beziehungen.
     }
   ],
   "views": [
-    {"name": "active_orders", "columns": [...], "definition": "SELECT ... FROM orders WHERE ..."}
+    {"name": "active_orders", "columns": [...], "definition": "SELECT ... FROM orders WHERE ...", "routines": []}
+    {"name": "mv_enriched",   "columns": [...], "definition": "SELECT fn_get_status(...) ...",    "routines": ["fn_get_status"]}
   ],
   "triggers": [
     {"name": "trg_orders_audit", "table": "orders", "sql": "CREATE TRIGGER ..."}
@@ -149,4 +151,5 @@ Die Felder `triggers`/`sequences`/`materialized_views` sind je nach Backend leer
 (`[]`): Trigger nur SQLite (AP-63·S2), Sequences/Materialized Views nur
 PostgreSQL/Oracle (AP-63·S2b). Die Felder `procedures`/`functions`/`packages`/`synonyms`
 sind je nach Backend leer (`[]`): Routinen nur PG/Oracle/MSSQL, Synonyme nur Oracle
-(AP-63·S3).
+(AP-63·S3). Das Feld `routines` auf jedem View-/Matview-Eintrag ist `[]`, wenn die View
+keine reflektierten Routinen aufruft, oder keine Routinen vorhanden sind (AP-66·S1).

@@ -166,8 +166,9 @@ flowchart TB
         O2["AP-63·S2/S2b\nTrigger (SQLite) + Seq + Mat-Views"]
         O2b["AP-63·Trigger-FF\nPG/Oracle/MSSQL-Trigger"]
         O3["AP-63·S3\nProcedures/Functions"]
-        O4["AP-66\nViews mit Routinen"]
-        O1 ~~~ O2 ~~~ O2b ~~~ O3 ~~~ O4
+        O4["AP-66·S1\nView→Routinen"]
+        O4b["AP-66·S2/S3\nViews→Routinen (Rest)"]
+        O1 ~~~ O2 ~~~ O2b ~~~ O3 ~~~ O4 ~~~ O4b
     end
 
     %% ── C10 · Verbindungs-UX & Demo-Daten (geplant) ──────────────────────
@@ -209,8 +210,8 @@ flowchart TB
     class M4 plan
     class M2 done
     class M1 done
-    class O1,O2,O2b,O3 done
-    class O4 plan
+    class O1,O2,O2b,O3,O4 done
+    class O4b plan
     class P2,P3 plan
     class P1,P4 done
     class J33 plan

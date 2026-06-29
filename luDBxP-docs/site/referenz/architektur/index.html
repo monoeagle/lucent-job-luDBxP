@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.56.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.57.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1437,6 +1437,15 @@ Pro-Dialekt-Katalog-SQL: <code>_reflect_routines</code> via <code>pg_proc</code>
 alle Felder: <code>procedures</code>, <code>functions</code>, <code>packages</code>, <code>synonyms</code> (je <code>{"name","sql"}</code>, Synonyme
 <code>{"name","target"}</code>). Alle Objekt-Kategorien erscheinen nur bei N&gt;0, haben keinen Daten-Tab und
 nehmen nicht an Join-Pfaden teil.</p>
+<p><strong>View→Routinen-Abhängigkeiten (AP-66·S1):</strong> Das neue reine Modul
+<code>core/viewdeps.py::referenced_routines(definition, known_routine_names, dialect)</code> parst
+View-Definitionstexte via sqlglot, gleicht Funktionsaufruf-Namen (inkl. Oracle-Package-Qualifier)
+gegen den bereits reflektierten <code>schema.routines</code>-Set ab und gibt nur bestätigte Treffer zurück
+(eingebaute SQL-Funktionen ausgeschlossen). Das <code>View</code>-Model erhält ein abschließendes Feld
+<code>routines: tuple[str, ...] = ()</code>; der Loader befüllt es für Views + Materialized Views.
+<code>/api/schema</code> trägt <code>"routines": [...]</code> auf jedem View-/Matview-Eintrag. Migrations-relevantes
+Signal: Views, die Routinen aufrufen, sind nicht über reine Join/FK-Lineage migrierbar.
+Vollständig CI-testbar (sqlglot, keine DB nötig).</p>
 <h3 id="webserver-waitress-ap-31">Webserver (waitress, AP-31)<a class="headerlink" href="#webserver-waitress-ap-31" title="Permanent link">&para;</a></h3>
 <p>Im Normalbetrieb wird die WSGI-/Flask-App vom <strong>waitress</strong>-Server bereitgestellt
 (reiner Python-Prod-WSGI-Server, identisch unter Windows und Linux, als

@@ -19,6 +19,7 @@ graph LR
         CONN["connection.py\nbuild_url()"]
         SETTINGS["settings.py\nSettings.load/save"]
         USERPATHS["userpaths.py\nPro-Nutzer-Pfade · Port\n(stdlib-only, AP-31)"]
+        VIEWDEPS["viewdeps.py\nreferenced_routines()\nView→Routinen-Extraktion (AP-66·S1)"]
     end
     subgraph LAUNCH["launcher/ (AP-34, optional)"]
         LCORE["core.py\nTray-Prozess: Port wählen,\nstartet app.py, Browser"]
@@ -40,6 +41,8 @@ graph LR
     ROUTES --> CONN
     ROUTES --> SETTINGS
     LOADER --> MODEL
+    LOADER --> VIEWDEPS
+    VIEWDEPS --> MODEL
     GRAPH --> MODEL
     GRAPH --> IMPLIED
     PF --> GRAPH

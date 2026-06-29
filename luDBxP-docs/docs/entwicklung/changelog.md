@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.57.0] — 2026-06-29
+
+### Hinzugefügt
+- **Views zeigen jetzt, welche Routinen sie referenzieren (AP-66·Stufe 1):**
+  Neues reines Modul `core/viewdeps.py::referenced_routines(definition, known_routine_names, dialect)`
+  parst den View-SQL-Definitionstext via sqlglot, gleicht Funktionsaufruf-Namen (inkl. Oracle-Package-
+  Qualifier) gegen den bereits reflektierten `schema.routines`-Set ab und gibt nur bestätigte Treffer
+  zurück — eingebaute SQL-Funktionen werden ausgeschlossen. Das `View`-Model erhält ein abschließendes
+  Feld `routines: tuple[str, ...] = ()`; Materialized Views reusen dasselbe Shape. Der Loader befüllt
+  es für Views + Materialized Views (reflektiert Routinen einmalig vor der View-Schleife). `/api/schema`
+  trägt `"routines": [...]` auf jedem View- und Matview-Eintrag. Im UI zeigt das View-/Matview-Detail
+  einen Abschnitt **„Verwendet Routinen"**, wenn Routinen-Referenzen vorhanden sind; in der Sidebar
+  erscheint ein **`ƒ`**-Badge bei Views, die Routinen verwenden. Migrations-relevantes Signal: Views,
+  die Routinen aufrufen, sind nicht über reine Join/FK-Lineage migrierbar. Vollständig CI-testbar
+  (sqlglot, keine DB nötig). Read-only — keine Routinen-Ausführung.
+
 ## [0.56.0] — 2026-06-29
 
 ### Hinzugefügt

@@ -120,6 +120,16 @@ alle Felder: `procedures`, `functions`, `packages`, `synonyms` (je `{"name","sql
 `{"name","target"}`). Alle Objekt-Kategorien erscheinen nur bei N>0, haben keinen Daten-Tab und
 nehmen nicht an Join-Pfaden teil.
 
+**View→Routinen-Abhängigkeiten (AP-66·S1):** Das neue reine Modul
+`core/viewdeps.py::referenced_routines(definition, known_routine_names, dialect)` parst
+View-Definitionstexte via sqlglot, gleicht Funktionsaufruf-Namen (inkl. Oracle-Package-Qualifier)
+gegen den bereits reflektierten `schema.routines`-Set ab und gibt nur bestätigte Treffer zurück
+(eingebaute SQL-Funktionen ausgeschlossen). Das `View`-Model erhält ein abschließendes Feld
+`routines: tuple[str, ...] = ()`; der Loader befüllt es für Views + Materialized Views.
+`/api/schema` trägt `"routines": [...]` auf jedem View-/Matview-Eintrag. Migrations-relevantes
+Signal: Views, die Routinen aufrufen, sind nicht über reine Join/FK-Lineage migrierbar.
+Vollständig CI-testbar (sqlglot, keine DB nötig).
+
 ### Webserver (waitress, AP-31)
 
 Im Normalbetrieb wird die WSGI-/Flask-App vom **waitress**-Server bereitgestellt

@@ -301,6 +301,10 @@ SQL-Teilnahme):
   (je nur wenn vorhanden) — jede Routine zeigt ihren Namen + Quelltext, Synonyme ihren Namen +
   Zielobjekt (display-only, kein Daten-Tab). Echte Reflektion nur PostgreSQL/Oracle/MSSQL;
   Synonyme nur Oracle. Keine Join-Teilnahme.
+- **View-Routinen-Referenzen** (AP-66·S1): Wenn eine View oder Materialized View Routinen aus
+  `schema.routines` aufruft, erscheint im View-Detail ein Abschnitt **„Verwendet Routinen"** mit
+  den Namen der referenzierten Routinen. In der Sidebar trägt die betreffende View ein **`ƒ`**-Badge.
+  Migrations-Signal: diese Views sind nicht über reine Join/FK-Lineage migrierbar.
 
 ## Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)
 

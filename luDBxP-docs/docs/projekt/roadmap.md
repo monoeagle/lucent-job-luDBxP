@@ -28,7 +28,7 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen **nicht** an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:
 
-- **AP-66** — Views, die **Prozeduren/Funktionen** verwenden, auflösen (Konzept: [Views mit Routinen](../../../docs/concepts/2026-06-29-views-with-routines-resolution.md)). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. **Stufe 1 (S–M):** referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). **Stufe 2 (M):** Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). **Stufe 3 (XL, zurückgestellt):** echte Daten-Lineage durch den PL/SQL-Body.
+- **AP-66** — Views, die **Prozeduren/Funktionen** verwenden, auflösen (Konzept: [Views mit Routinen](../../../docs/concepts/2026-06-29-views-with-routines-resolution.md)). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. **Stufe 1 erledigt v0.57.0:** `core/viewdeps.py::referenced_routines` extrahiert via sqlglot referenzierte Routine-Namen aus dem View-Definitionstext, gleicht gegen `schema.routines` ab (nur bestätigte Treffer, kein Built-in), befüllt `View.routines`; View-Detail zeigt „Verwendet Routinen"-Abschnitt, Sidebar-`ƒ`-Badge. **Stufe 2 (M, offen):** Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). **Stufe 3 (XL, zurückgestellt):** echte Daten-Lineage durch den PL/SQL-Body.
 
 ### SQL-Analyzer-Tiefe
 
@@ -166,6 +166,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.57.0** (2026-06-29):
+
+- **AP-66 · Stufe 1** — View→Routinen-Abhängigkeiten: neues Modul `core/viewdeps.py::referenced_routines` parst View-Definitionstext via sqlglot, gleicht Funktionsaufruf-Namen (inkl. Oracle-Package-Qualifier) gegen `schema.routines` ab (kein Built-in → nur bestätigte Treffer). `View.routines: tuple[str, ...] = ()` (abschließendes Feld; Matviews reusen dasselbe Shape); Loader befüllt es für Views + Matviews; `/api/schema` trägt `"routines": [...]`. Im View-Detail erscheint ein „Verwendet Routinen"-Abschnitt; in der Sidebar ein `ƒ`-Badge bei betroffenen Views. Migrations-Signal: diese Views sind nicht über reine Join/FK-Lineage migrierbar. Vollständig CI-testbar (sqlglot, keine DB). Read-only. **Aufwand S–M** — v0.57.0
 
 **v0.56.0** (2026-06-29):
 

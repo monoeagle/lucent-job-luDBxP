@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.57.0] — 2026-06-29
+
+### Added
+- **Views now surface which stored routines they reference (AP-66·Stufe 1):**
+  A new pure module `core/viewdeps.py::referenced_routines(definition, known_routine_names, dialect)`
+  parses the view SQL definition via sqlglot, matches function-call names (including Oracle
+  package qualifiers) against the already-reflected `schema.routines` set, and returns only
+  confirmed matches — built-in SQL functions are excluded. The `View` model gains a trailing
+  `routines: tuple[str, ...] = ()` field; materialized views reuse the same shape. The loader
+  fills it for views and materialized views (reflecting routines once before the view loop).
+  `/api/schema` carries `"routines": [...]` on every view and materialized-view entry. In the UI,
+  a view or matview detail shows a **„Verwendet Routinen"** section when routine references are
+  present, and a **`ƒ`** badge appears in the sidebar on any view that uses routines. Migration-
+  relevant signal: views that call stored routines are not migratable via pure join/FK lineage.
+  Fully CI-testable (sqlglot, no DB required). Read-only — no routine execution.
+
 ## [0.56.0] — 2026-06-29
 
 ### Added
