@@ -49,6 +49,13 @@ def uniqueindex_url(tmp_path) -> str:
 
 
 @pytest.fixture
+def indexes_checks_url(tmp_path) -> str:
+    """SQLite URL with a named non-unique index, a unique index, a named CHECK
+    and an unnamed inline CHECK (for AP-63·S1 reflection tests)."""
+    return _build_sqlite(tmp_path, "indexes_checks.db", "indexes_checks_schema.sql")
+
+
+@pytest.fixture
 def sqlite_engine(inventory_url):
     engine = create_engine(inventory_url)
     yield engine

@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 
-from core.model import Column, ForeignKey, Table, View, Schema
+from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema
 from core.schema_loader import SchemaLoader
 
 
@@ -90,11 +90,28 @@ class SqlAlchemyLoader(SchemaLoader):
                 except SQLAlchemyError:
                     uidx = ()
                 try:
+                    indexes = tuple(
+                        Index(idx.get("name") or "", tuple(idx["column_names"]),
+                              bool(idx.get("unique")))
+                        for idx in insp.get_indexes(tname, schema=schema)
+                        if idx.get("column_names") and None not in idx["column_names"]
+                    )
+                except SQLAlchemyError:
+                    indexes = ()
+                try:
+                    checks = tuple(
+                        CheckConstraint(cc.get("name") or "", cc.get("sqltext") or "")
+                        for cc in insp.get_check_constraints(tname, schema=schema)
+                    )
+                except (SQLAlchemyError, NotImplementedError):
+                    checks = ()
+                try:
                     tcomment = ((insp.get_table_comment(tname, schema=schema) or {})
                                 .get("text") or "")
                 except (NotImplementedError, SQLAlchemyError):
                     tcomment = ""
-                tables.append(Table(tname, columns, tuple(fks), pk, uniques, uidx, tcomment))
+                tables.append(Table(tname, columns, tuple(fks), pk, uniques, uidx,
+                                    tcomment, indexes, checks))
             views = []
             for vname in insp.get_view_names(schema=schema):
                 vcols = tuple(

@@ -109,6 +109,9 @@ class _FakeInspector:
     def get_indexes(self, tname, schema=None):
         return []
 
+    def get_check_constraints(self, tname, schema=None):
+        return []
+
     def get_table_comment(self, tname, schema=None):
         if isinstance(self._table_comment, type) and issubclass(self._table_comment, Exception):
             raise self._table_comment()
@@ -154,3 +157,25 @@ def test_load_sqlite_has_empty_comments(inventory_url):
     for t in schema.tables:
         assert t.comment == ""
         assert all(c.comment == "" for c in t.columns)
+
+
+def test_loader_reflects_all_indexes(indexes_checks_url):
+    schema = SqlAlchemyLoader(indexes_checks_url).load()
+    person = schema.table("Person")
+    by_name = {ix.name: ix for ix in person.indexes}
+    assert "ix_person_region" in by_name
+    assert by_name["ix_person_region"].columns == ("region",)
+    assert by_name["ix_person_region"].unique is False
+    assert "ux_person_email" in by_name
+    assert by_name["ux_person_email"].unique is True
+
+
+def test_loader_reflects_check_constraints(indexes_checks_url):
+    schema = SqlAlchemyLoader(indexes_checks_url).load()
+    person = schema.table("Person")
+    texts = [cc.sqltext for cc in person.check_constraints]
+    names = [cc.name for cc in person.check_constraints]
+    assert any("email" in t for t in texts)      # named ck_email
+    assert any("age" in t for t in texts)        # unnamed inline check
+    assert "ck_email" in names
+    assert "" in names                           # the unnamed check → name ""

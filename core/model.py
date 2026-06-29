@@ -45,6 +45,19 @@ class ForeignKey:
 
 
 @dataclass(frozen=True)
+class Index:
+    name: str
+    columns: tuple[str, ...]
+    unique: bool = False
+
+
+@dataclass(frozen=True)
+class CheckConstraint:
+    name: str        # "" = unbenannt
+    sqltext: str
+
+
+@dataclass(frozen=True)
 class Table:
     name: str
     columns: tuple[Column, ...]
@@ -58,6 +71,10 @@ class Table:
     unique_indexes: tuple[tuple[str, ...], ...] = ()
     # Tabellenkommentar (COMMENT ON TABLE). Leerer String = kein Kommentar.
     comment: str = ""
+    # Alle Indizes (Anzeige, AP-63·S1); unabhängig von unique_indexes (1-1-Sicht).
+    indexes: tuple[Index, ...] = ()
+    # Check-Constraints (Anzeige, AP-63·S1).
+    check_constraints: tuple[CheckConstraint, ...] = ()
 
 
 @dataclass(frozen=True)
