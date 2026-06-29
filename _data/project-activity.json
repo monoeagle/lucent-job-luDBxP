@@ -1,18 +1,48 @@
 {
-  "generatedAt": "2026-06-29T14:32:56",
+  "generatedAt": "2026-06-29T16:14:57",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 27,
+      "commits": 33,
       "kinds": {
-        "feat": 7,
-        "docs": 16,
+        "feat": 10,
+        "docs": 19,
         "fix": 4
       },
       "list": [
+        {
+          "sha": "6a708e3",
+          "subject": "feat(subset): UI „IN-Listen (SQL)\" — .sql-Download der PK-Identität (AP-56c)",
+          "kind": "feat"
+        },
+        {
+          "sha": "420ed50",
+          "subject": "feat(subset): /api/subset/inlists — PK-IN-Listen je Closure-Tabelle (AP-56c)",
+          "kind": "feat"
+        },
+        {
+          "sha": "ef01865",
+          "subject": "feat(subset): subset_keys + subset_in_list_sql — PK-IN-Listen-Renderer (AP-56c)",
+          "kind": "feat"
+        },
+        {
+          "sha": "5b82ebd",
+          "subject": "docs: Plan AP-56c — Subset-IN-Listen (4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "d80a107",
+          "subject": "docs: Spec AP-56c — Subset-IN-Listen (SQL-Export-Identität)",
+          "kind": "docs"
+        },
+        {
+          "sha": "dee5aa5",
+          "subject": "docs: Release v0.50.0 — AP-56b·Stufe 2 (Subset-Daten-Dump JSON)",
+          "kind": "docs"
+        },
         {
           "sha": "cb474d5",
           "subject": "feat(subset): UI „Daten-Dump (JSON)\" — Blob-Download der Closure-Zeilen (AP-56b Stufe 2)",
@@ -1885,17 +1915,17 @@
     }
   },
   "stats": {
-    "totalCommits": 363,
+    "totalCommits": 369,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 172
+        "count": 175
       },
       {
         "kind": "feat",
-        "count": 105
+        "count": 108
       },
       {
         "kind": "fix",
@@ -1922,7 +1952,7 @@
         "count": 3
       }
     ],
-    "testCount": 373
+    "testCount": 386
   },
   "phases": []
 }
