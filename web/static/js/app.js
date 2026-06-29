@@ -173,6 +173,14 @@ function renderSidebar() {
       ? `<h3>Trigger (${SCHEMA.triggers.length})</h3>` +
         `<ul class="objlist">${objList(SCHEMA.triggers, "trigger")}</ul>`
       : "") +
+    ((SCHEMA.sequences && SCHEMA.sequences.length)
+      ? `<h3>Sequences (${SCHEMA.sequences.length})</h3>` +
+        `<ul class="objlist">${objList(SCHEMA.sequences, "sequence")}</ul>`
+      : "") +
+    ((SCHEMA.materialized_views && SCHEMA.materialized_views.length)
+      ? `<h3>Materialized Views (${SCHEMA.materialized_views.length})</h3>` +
+        `<ul class="objlist">${objList(SCHEMA.materialized_views, "matview")}</ul>`
+      : "") +
     `<div class="sidebar-bottom"><h3>Info</h3>` +
     `<ul class="objlist"><li data-action="info">Übersicht</li></ul></div>`;
   $("objects").querySelectorAll("li").forEach((li) => {
@@ -325,6 +333,17 @@ function openDetail(kind, name) {
     defHtml = `<h2>Trigger: ${esc(tr.name)}</h2>` +
       `<p class="hint">auf Tabelle: ${esc(tr.table || "—")}</p>`;
     sqlText = tr.sql;
+  } else if (kind === "sequence") {
+    const s = (SCHEMA.sequences || []).find((x) => x.name === name);
+    defHtml = `<h2>Sequenz: ${esc(s.name)}</h2>` +
+      `<p class="hint">nur Name reflektiert</p>`;
+    sqlText = "";
+  } else if (kind === "matview") {
+    const mv = (SCHEMA.materialized_views || []).find((x) => x.name === name);
+    defHtml = `<h2>Materialized View: ${esc(mv.name)}</h2>` +
+      `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
+      `<tbody>${colRows(mv.columns, false)}</tbody></table>`;
+    sqlText = mv.definition;
   } else {
     const v = SCHEMA.views.find((x) => x.name === name);
     defHtml = `<h2>View: ${esc(v.name)}</h2>` +
