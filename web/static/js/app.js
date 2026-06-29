@@ -549,11 +549,13 @@ async function runSubset() {
     ? `<p class='hint'>Tiefenlimit erreicht — Hülle evtl. unvollständig.</p>` : "";
   out.innerHTML =
     `<p><button id="sub_count">Zeilen zählen (live)</button> ` +
+    `<button id="sub_dump">Daten-Dump (JSON)</button> ` +
     `<span id="sub_total" class="hint"></span></p>` +
     `<table class="subtbl cols"><thead><tr><th>Tabelle</th><th>Rolle</th>` +
     `<th>via</th><th>Tiefe</th><th>Zeilen</th></tr></thead><tbody>${rows}</tbody></table>` +
     trunc + `<h3>Export-Skelett (read-only SELECTs)</h3>${scripts}`;
   $("sub_count").addEventListener("click", runSubsetCount);
+  $("sub_dump").addEventListener("click", runSubsetDump);
 }
 
 async function runSubsetCount() {
@@ -577,6 +579,44 @@ async function runSubsetCount() {
   btn.disabled = false;
 }
 
+function _sanitizeFilePart(s) {
+  return String(s).replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 60);
+}
+
+async function runSubsetDump() {
+  const btn = $("sub_dump");
+  const total = $("sub_total");
+  if (!SUB_LAST_PAYLOAD) { total.textContent = "Erst Footprint bauen."; return; }
+  btn.disabled = true;
+  total.textContent = "Daten-Dump läuft…";
+  const payload = { ...SUB_LAST_PAYLOAD };
+  let res;
+  try { res = await postJSON("/api/subset/dump", payload); }
+  catch (e) { total.textContent = `Fehler: ${esc(String(e))}`; btn.disabled = false; return; }
+
+  // Build a client-side download (browser-native Blob, no CDN, no server file).
+  const blob = new Blob([JSON.stringify(res, null, 2)], { type: "application/json" });
+  const fp = payload.root_filter || {};
+  const fname = `subset_${_sanitizeFilePart(payload.start_table)}_` +
+    `${_sanitizeFilePart(fp.column)}${_sanitizeFilePart(fp.op)}${_sanitizeFilePart(fp.value)}.json`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+
+  const totalRows = res.tables.reduce((n, t) => n + (t.row_count || 0), 0);
+  if (res.incomplete) {
+    const bad = res.tables.filter((t) => t.truncated || t.error).map((t) => t.name);
+    total.textContent = `Export unvollständig — abgeschnitten/Fehler bei: ${esc(bad.join(", "))}`;
+  } else {
+    total.textContent = `Dump: ${res.tables.length} Tabellen, ${totalRows} Zeilen`;
+  }
+  btn.disabled = false;
+}
+
 function fillSubsetColumns() {
   const t = (SCHEMA.tables || []).find((x) => x.name === $("sub_table").value);
   $("sub_col").innerHTML = (t ? t.columns : [])
@@ -594,7 +634,8 @@ function openSubset() {
     `<div class="subset"><h2>Entität exportieren (Subset-Footprint)</h2>` +
     `<p class="hint">Referenzielle FK-Hülle einer Start-Zeile (Kinder abwärts + ` +
     `Lookups aufwärts). „Footprint bauen" führt nichts aus; „Zeilen zählen (live)" ` +
-    `führt read-only COUNT-Queries gegen die DB aus.</p>` +
+    `führt read-only COUNT-Queries aus; „Daten-Dump (JSON)" lädt die Zeilen der Hülle ` +
+    `read-only als JSON herunter.</p>` +
     `<div class="subform">` +
     `<label>Start-Tabelle <select id="sub_table">${opts}</select></label> ` +
     `<label>Filter <select id="sub_col"></select> <select id="sub_op">${ops}</select> ` +
