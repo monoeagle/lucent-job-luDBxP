@@ -534,16 +534,46 @@ async function runSubset() {
   try { res = await postJSON("/api/subset", payload); }
   catch (e) { out.innerHTML = `<p class='hint'>Fehler: ${esc(String(e))}</p>`; return; }
   const rows = res.tables.map((t) =>
-    `<tr><td>${esc(t.name)}</td><td><span class="badge">${esc(t.kind)}</span></td>` +
-    `<td>${esc(t.via_table || "")}</td><td>${t.depth}</td></tr>`).join("");
+    `<tr data-table="${esc(t.name)}"><td>${esc(t.name)}</td>` +
+    `<td><span class="badge">${esc(t.kind)}</span></td>` +
+    `<td>${esc(t.via_table || "")}</td><td>${t.depth}</td>` +
+    `<td class="sub-count">—</td></tr>`).join("");
   const scripts = res.scripts.map((s) =>
     `<h4>${esc(s.table)}</h4><pre class="sql">${esc(s.sql)}</pre>`).join("");
   const trunc = res.truncated
     ? `<p class='hint'>Tiefenlimit erreicht — Hülle evtl. unvollständig.</p>` : "";
   out.innerHTML =
+    `<p><button id="sub_count">Zeilen zählen (live)</button> ` +
+    `<span id="sub_total" class="hint"></span></p>` +
     `<table class="subtbl cols"><thead><tr><th>Tabelle</th><th>Rolle</th>` +
-    `<th>via</th><th>Tiefe</th></tr></thead><tbody>${rows}</tbody></table>` +
+    `<th>via</th><th>Tiefe</th><th>Zeilen</th></tr></thead><tbody>${rows}</tbody></table>` +
     trunc + `<h3>Export-Skelett (read-only SELECTs)</h3>${scripts}`;
+  $("sub_count").addEventListener("click", runSubsetCount);
+}
+
+async function runSubsetCount() {
+  const btn = $("sub_count");
+  const total = $("sub_total");
+  btn.disabled = true;
+  total.textContent = "zähle…";
+  const payload = {
+    connection_url: connUrl(), start_table: $("sub_table").value,
+    root_filter: { column: $("sub_col").value, op: $("sub_op").value,
+                   value: $("sub_val").value },
+    include_implied: $("sub_implied").checked,
+  };
+  let res;
+  try { res = await postJSON("/api/subset/run", payload); }
+  catch (e) { total.textContent = `Fehler: ${esc(String(e))}`; btn.disabled = false; return; }
+  res.tables.forEach((t) => {
+    const cell = document.querySelector(`tr[data-table="${CSS.escape(t.name)}"] .sub-count`);
+    if (!cell) return;
+    if (t.error) { cell.textContent = "Fehler"; cell.title = t.error; }
+    else { cell.textContent = String(t.count); cell.title = ""; }
+  });
+  total.textContent = `Summe: ${res.total}` +
+    (res.incomplete ? " · unvollständig (Tiefenlimit/Fehler)" : "");
+  btn.disabled = false;
 }
 
 function fillSubsetColumns() {
@@ -562,7 +592,8 @@ function openSubset() {
   panel.innerHTML =
     `<div class="subset"><h2>Entität exportieren (Subset-Footprint)</h2>` +
     `<p class="hint">Referenzielle FK-Hülle einer Start-Zeile (Kinder abwärts + ` +
-    `Lookups aufwärts) als read-only SELECT-Skelett. Führt nichts aus.</p>` +
+    `Lookups aufwärts). „Footprint bauen" führt nichts aus; „Zeilen zählen (live)" ` +
+    `führt read-only COUNT-Queries gegen die DB aus.</p>` +
     `<div class="subform">` +
     `<label>Start-Tabelle <select id="sub_table">${opts}</select></label> ` +
     `<label>Filter <select id="sub_col"></select> <select id="sub_op">${ops}</select> ` +
