@@ -37,6 +37,14 @@ _DROP_RTN = (
     f"IF OBJECT_ID('{_FUNC}', 'FN') IS NOT NULL DROP FUNCTION {_FUNC};"
 )
 
+# AP-63 Trigger-FF: trigger test objects
+_TRG_TAB = "_lucent_it_trg_tab"
+_TRG = "_lucent_it_trg"
+_DROP_TRG = (
+    f"IF OBJECT_ID('{_TRG}', 'TR') IS NOT NULL DROP TRIGGER {_TRG}; "
+    f"IF OBJECT_ID('{_TRG_TAB}') IS NOT NULL DROP TABLE {_TRG_TAB};"
+)
+
 
 @pytest.mark.skipif(
     not _MSSQL_URL,
@@ -107,5 +115,35 @@ def test_mssql_reflects_routines():
         assert by_rtn[_FUNC].kind == "function"
     finally:
         conn.execute(text(_DROP_RTN))
+        conn.close()
+        engine.dispose()
+
+
+@pytest.mark.skipif(
+    not _MSSQL_URL,
+    reason="set LUCENT_MSSQL_TEST_URL to a reachable MSSQL URL to run the live "
+           "integration test",
+)
+def test_mssql_reflects_trigger():
+    """Provision a table + AFTER-INSERT trigger on MSSQL and reflect via loader."""
+    pytest.importorskip("pyodbc")
+    try:
+        engine = create_engine(_MSSQL_URL, isolation_level="AUTOCOMMIT")
+        conn = engine.connect()
+    except Exception as exc:
+        pytest.skip(f"MSSQL not reachable or ODBC driver missing: {exc}")
+    try:
+        conn.execute(text(_DROP_TRG))
+        conn.execute(text(f"CREATE TABLE {_TRG_TAB} (id INT PRIMARY KEY)"))
+        conn.execute(text(
+            f"CREATE TRIGGER {_TRG} ON {_TRG_TAB} AFTER INSERT AS SELECT 1"
+        ))
+        schema = SqlAlchemyLoader(_MSSQL_URL).load()
+        by_trg = {t.name: t for t in schema.triggers}
+        assert _TRG in by_trg, f"{_TRG} not in triggers: {list(by_trg)}"
+        assert by_trg[_TRG].table == _TRG_TAB
+        assert "TRIGGER" in by_trg[_TRG].sql.upper()
+    finally:
+        conn.execute(text(_DROP_TRG))
         conn.close()
         engine.dispose()

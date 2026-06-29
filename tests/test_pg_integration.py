@@ -23,6 +23,11 @@ _SEQ = "_lucent_it_seq"
 _MV = "_lucent_it_mv"
 _FN = "_lucent_it_fn"
 
+# AP-63 Trigger-FF: trigger test objects
+_TRG_TAB = "_lucent_it_trg_tab"
+_TRG = "_lucent_it_trg"
+_TRG_FN = "_lucent_it_trg_fn"
+
 
 @pytest.fixture
 def pg_objects():
@@ -34,12 +39,20 @@ def pg_objects():
         f"CREATE SEQUENCE {_SEQ}",
         f"CREATE MATERIALIZED VIEW {_MV} AS SELECT 1 AS n",
         f"CREATE OR REPLACE FUNCTION {_FN}() RETURNS int LANGUAGE sql AS 'SELECT 1'",
+        f"CREATE TABLE IF NOT EXISTS {_TRG_TAB} (id int)",
+        f"CREATE OR REPLACE FUNCTION {_TRG_FN}() RETURNS trigger LANGUAGE plpgsql "
+        f"AS 'BEGIN RETURN NEW; END'",
+        f"CREATE TRIGGER {_TRG} AFTER INSERT ON {_TRG_TAB} "
+        f"FOR EACH ROW EXECUTE FUNCTION {_TRG_FN}()",
     ]
     with engine.begin() as conn:
         for stmt in ddl:
             conn.execute(text(stmt))
     yield
     with engine.begin() as conn:
+        conn.execute(text(f"DROP TRIGGER IF EXISTS {_TRG} ON {_TRG_TAB}"))
+        conn.execute(text(f"DROP TABLE IF EXISTS {_TRG_TAB}"))
+        conn.execute(text(f"DROP FUNCTION IF EXISTS {_TRG_FN}()"))
         conn.execute(text(f"DROP MATERIALIZED VIEW IF EXISTS {_MV}"))
         conn.execute(text(f"DROP SEQUENCE IF EXISTS {_SEQ}"))
         conn.execute(text(f"DROP FUNCTION IF EXISTS {_FN}()"))
@@ -60,3 +73,11 @@ def test_pg_reflects_function(pg_objects):
     assert _FN in by
     assert by[_FN].kind == "function"
     assert "SELECT 1" in by[_FN].sql
+
+
+def test_pg_reflects_trigger(pg_objects):
+    schema = SqlAlchemyLoader(_PG_URL).load()
+    by_trg = {t.name: t for t in schema.triggers}
+    assert _TRG in by_trg
+    assert by_trg[_TRG].table == _TRG_TAB
+    assert "TRIGGER" in by_trg[_TRG].sql.upper()

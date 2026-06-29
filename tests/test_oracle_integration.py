@@ -25,6 +25,10 @@ _FN_ORA = "LUCENT_IT_FN"
 _PKG_ORA = "LUCENT_IT_PKG"
 _SYN_ORA = "LUCENT_IT_SYN"
 
+# AP-63 Trigger-FF: trigger test objects (uppercase — Oracle catalog is case-sensitive)
+_TRG_TAB_ORA = "LUCENT_IT_TRG_TAB"
+_TRG_ORA = "LUCENT_IT_TRG"
+
 
 @pytest.mark.skipif(
     not _ORACLE_URL,
@@ -120,6 +124,51 @@ def test_oracle_reflects_routines_and_synonyms():
         by_syn = {s.name: s for s in schema.synonyms}
         assert _SYN_ORA in by_syn, f"{_SYN_ORA} not in synonyms: {list(by_syn)}"
         assert by_syn[_SYN_ORA].target == _RTN_TAB
+    finally:
+        _drop()
+        conn.commit()
+        conn.close()
+        engine.dispose()
+
+
+@pytest.mark.skipif(
+    not _ORACLE_URL,
+    reason="set LUCENT_ORACLE_TEST_URL to a reachable Oracle URL to run the live "
+           "integration test",
+)
+def test_oracle_reflects_trigger():
+    """Provision a table + BEFORE-INSERT trigger on Oracle and reflect via loader."""
+    pytest.importorskip("oracledb")
+    try:
+        engine = create_engine(_ORACLE_URL)
+        conn = engine.connect()
+    except Exception as exc:
+        pytest.skip(f"Oracle not reachable or driver missing: {exc}")
+
+    def _drop():
+        for obj, typ in [
+            (_TRG_ORA, "TRIGGER"),
+            (_TRG_TAB_ORA, "TABLE"),
+        ]:
+            try:
+                conn.execute(text(f"DROP {typ} {obj}"))
+            except Exception:
+                pass
+
+    try:
+        _drop()
+        conn.execute(text(f"CREATE TABLE {_TRG_TAB_ORA} (id NUMBER PRIMARY KEY)"))
+        conn.execute(text(
+            f"CREATE OR REPLACE TRIGGER {_TRG_ORA} "
+            f"BEFORE INSERT ON {_TRG_TAB_ORA} FOR EACH ROW BEGIN NULL; END;"
+        ))
+        conn.commit()
+
+        schema = SqlAlchemyLoader(_ORACLE_URL).load()
+        by_trg = {t.name: t for t in schema.triggers}
+        assert _TRG_ORA in by_trg, f"{_TRG_ORA} not in triggers: {list(by_trg)}"
+        assert by_trg[_TRG_ORA].table == _TRG_TAB_ORA
+        assert by_trg[_TRG_ORA].sql, "trigger sql should be non-empty"
     finally:
         _drop()
         conn.commit()
