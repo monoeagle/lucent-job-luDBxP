@@ -550,12 +550,14 @@ async function runSubset() {
   out.innerHTML =
     `<p><button id="sub_count">Zeilen zählen (live)</button> ` +
     `<button id="sub_dump">Daten-Dump (JSON)</button> ` +
+    `<button id="sub_inlists">IN-Listen (SQL)</button> ` +
     `<span id="sub_total" class="hint"></span></p>` +
     `<table class="subtbl cols"><thead><tr><th>Tabelle</th><th>Rolle</th>` +
     `<th>via</th><th>Tiefe</th><th>Zeilen</th></tr></thead><tbody>${rows}</tbody></table>` +
     trunc + `<h3>Export-Skelett (read-only SELECTs)</h3>${scripts}`;
   $("sub_count").addEventListener("click", runSubsetCount);
   $("sub_dump").addEventListener("click", runSubsetDump);
+  $("sub_inlists").addEventListener("click", runSubsetInlists);
 }
 
 async function runSubsetCount() {
@@ -617,6 +619,51 @@ async function runSubsetDump() {
   btn.disabled = false;
 }
 
+async function runSubsetInlists() {
+  const btn = $("sub_inlists");
+  const total = $("sub_total");
+  if (!SUB_LAST_PAYLOAD) { total.textContent = "Erst Footprint bauen."; return; }
+  btn.disabled = true;
+  total.textContent = "IN-Listen werden erzeugt…";
+  const payload = { ...SUB_LAST_PAYLOAD };
+  let res;
+  try { res = await postJSON("/api/subset/inlists", payload); }
+  catch (e) { total.textContent = `Fehler: ${esc(String(e))}`; btn.disabled = false; return; }
+
+  // Assemble one .sql text: per table a comment header + the SELECT (if any).
+  const lines = [`-- Subset-IN-Listen (Export-Identität) — Start: ${payload.start_table}`,
+                 `-- Cap je Tabelle: ${res.row_cap}`, ""];
+  res.tables.forEach((t) => {
+    if (!t.has_pk) { lines.push(`-- ${t.name}: kein PK, keine IN-Liste`); }
+    else if (t.error) { lines.push(`-- ${t.name}: Fehler — ${t.error}`); }
+    else { lines.push(`-- ${t.name} (${t.key_count} Schlüssel)`); }
+    if (t.truncated) { lines.push(`-- ${t.name}: abgeschnitten bei ${res.row_cap} — Identität unvollständig`); }
+    if (t.sql) { lines.push(t.sql); }
+    lines.push("");
+  });
+  const blob = new Blob([lines.join("\n")], { type: "application/sql" });
+  const fp = payload.root_filter || {};
+  const fname = `subset_${_sanitizeFilePart(payload.start_table)}_` +
+    `${_sanitizeFilePart(fp.column)}${_sanitizeFilePart(fp.op)}${_sanitizeFilePart(fp.value)}_inlists.sql`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+
+  const withPk = res.tables.filter((t) => t.has_pk);
+  const totalKeys = withPk.reduce((n, t) => n + (t.key_count || 0), 0);
+  if (res.incomplete) {
+    const bad = res.tables.filter((t) => !t.has_pk || t.truncated || t.error).map((t) => t.name);
+    total.textContent = `IN-Listen unvollständig — kein PK/abgeschnitten/Fehler bei: ${esc(bad.join(", "))}`;
+  } else {
+    total.textContent = `IN-Listen: ${withPk.length} Tabellen mit PK, ${totalKeys} Schlüssel`;
+  }
+  btn.disabled = false;
+}
+
 function fillSubsetColumns() {
   const t = (SCHEMA.tables || []).find((x) => x.name === $("sub_table").value);
   $("sub_col").innerHTML = (t ? t.columns : [])
@@ -634,8 +681,8 @@ function openSubset() {
     `<div class="subset"><h2>Entität exportieren (Subset-Footprint)</h2>` +
     `<p class="hint">Referenzielle FK-Hülle einer Start-Zeile (Kinder abwärts + ` +
     `Lookups aufwärts). „Footprint bauen" führt nichts aus; „Zeilen zählen (live)" ` +
-    `führt read-only COUNT-Queries aus; „Daten-Dump (JSON)" lädt die Zeilen der Hülle ` +
-    `read-only als JSON herunter.</p>` +
+    `führt read-only COUNT-Queries aus; „Daten-Dump (JSON)" lädt die Zeilen read-only ` +
+    `herunter; „IN-Listen (SQL)" erzeugt je Tabelle die PK-Identität als WHERE-SELECT.</p>` +
     `<div class="subform">` +
     `<label>Start-Tabelle <select id="sub_table">${opts}</select></label> ` +
     `<label>Filter <select id="sub_col"></select> <select id="sub_op">${ops}</select> ` +
