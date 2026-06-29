@@ -170,6 +170,13 @@ def api_schema():
              "definition": mv.definition}
             for mv in schema.materialized_views
         ],
+        procedures=[{"name": r.name, "sql": r.sql}
+                    for r in schema.routines if r.kind == "procedure"],
+        functions=[{"name": r.name, "sql": r.sql}
+                   for r in schema.routines if r.kind == "function"],
+        packages=[{"name": r.name, "sql": r.sql}
+                  for r in schema.routines if r.kind == "package"],
+        synonyms=[{"name": s.name, "target": s.target} for s in schema.synonyms],
         cross_schema_fks=list(schema.cross_schema_fks(schema_name)),
         implied_fks=[
             {"from_table": i.table, "column": i.column,

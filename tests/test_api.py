@@ -1220,3 +1220,32 @@ def test_schema_sequences_matviews_empty_on_sqlite(client, inventory_url):
     data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
     assert data["sequences"] == []
     assert data["materialized_views"] == []
+
+
+def test_schema_exposes_routines_split_by_kind(client, inventory_url, monkeypatch):
+    import web.routes as routes_mod
+    from core.model import Schema, Routine, Synonym
+
+    fake = Schema(
+        tables=(),
+        routines=(
+            Routine("do_thing", "procedure", "CREATE PROCEDURE do_thing ..."),
+            Routine("calc", "function", "CREATE FUNCTION calc ..."),
+            Routine("pkg_util", "package", "PACKAGE pkg_util ..."),
+        ),
+        synonyms=(Synonym("emp_syn", "HR.EMPLOYEES"),),
+    )
+    monkeypatch.setattr(routes_mod.SqlAlchemyLoader, "load", lambda self, schema=None: fake)
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    assert data["procedures"] == [{"name": "do_thing", "sql": "CREATE PROCEDURE do_thing ..."}]
+    assert data["functions"] == [{"name": "calc", "sql": "CREATE FUNCTION calc ..."}]
+    assert data["packages"] == [{"name": "pkg_util", "sql": "PACKAGE pkg_util ..."}]
+    assert data["synonyms"] == [{"name": "emp_syn", "target": "HR.EMPLOYEES"}]
+
+
+def test_schema_routines_synonyms_empty_on_sqlite(client, inventory_url):
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    assert data["procedures"] == []
+    assert data["functions"] == []
+    assert data["packages"] == []
+    assert data["synonyms"] == []
