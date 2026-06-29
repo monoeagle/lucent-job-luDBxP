@@ -49,7 +49,10 @@ def referenced_routines(definition, known_routine_names, dialect=None):
         candidates = {call.name}
         # Package-qualified call (PKG.FN(...) / SCHEMA.PKG.FN(...)): the qualifier
         # lives on the parent Dot's left side. Collect every identifier there so
-        # the package name can match a reflected package routine.
+        # the package name can match a reflected package routine. This also adds
+        # the schema part (e.g. SCHEMA) as a candidate; it only ever matches when
+        # that name is itself a known routine, so the "confirmed-match" guarantee
+        # holds (a stray schema name equal to a routine name would be a rare FP).
         parent = call.parent
         if isinstance(parent, exp.Dot):
             for ident in parent.left.find_all(exp.Identifier):
