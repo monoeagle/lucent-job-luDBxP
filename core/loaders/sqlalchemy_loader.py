@@ -140,11 +140,22 @@ def _reflect_routines(engine, schema=None) -> tuple:
 
 
 def _reflect_synonyms(engine, schema=None) -> tuple:
-    """Read-only synonym reflection — Oracle-only (all_synonyms); other → ()."""
+    """Read-only synonym reflection — Oracle (all_synonyms) + MSSQL
+    (sys.synonyms); other dialects → ()."""
     name = getattr(getattr(engine, "dialect", None), "name", "")
-    if name != "oracle":
+    if name not in ("oracle", "mssql"):
         return ()
     try:
+        if name == "mssql":
+            with engine.connect() as conn:
+                rows = conn.execute(text(
+                    "SELECT name, base_object_name FROM sys.synonyms "
+                    "WHERE SCHEMA_NAME(schema_id) = :s ORDER BY name"
+                ), {"s": schema or "dbo"}).fetchall()
+            return tuple(
+                Synonym(r[0], (r[1] or "").replace("[", "").replace("]", ""))
+                for r in rows
+            )
         with engine.connect() as conn:
             owner = (schema or "").upper() or conn.execute(text(
                 "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM dual"

@@ -255,3 +255,9 @@ def test_loader_views_have_empty_routines_on_sqlite(inventory_url):
     schema = SqlAlchemyLoader(inventory_url).load()
     # SQLite hat keine Stored Routines → keine View referenziert welche.
     assert all(v.routines == () for v in schema.views)
+
+
+def test_loader_synonyms_empty_on_sqlite_after_mssql_branch(inventory_url):
+    # Der neue MSSQL-Zweig darf SQLite nicht berühren — Synonyms bleiben ().
+    schema = SqlAlchemyLoader(inventory_url).load()
+    assert schema.synonyms == ()
