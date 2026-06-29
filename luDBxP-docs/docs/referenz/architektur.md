@@ -83,6 +83,34 @@ Vorschlagsliste des Wertfelds. (Davon zu unterscheiden ist die **`DISTINCT`-Chec
 die sehr wohl als `SELECT DISTINCT` in die generierte Abfrage einfließt.) Das Setzen eines Filterwerts
 baut sofort neu, sodass die `WHERE`-Bedingung umgehend im SQL und Ergebnis erscheint.
 
+### Database-Subsetting / Migrations-Toolkit (`core/subset.py`, AP-56)
+
+Für die Reverse-Engineering-/Migrations-Aufgabe (referenziell sauberer Export einer
+Entität samt aller abhängigen Zeilen) gibt es einen eigenen, vom Join-Builder getrennten
+Modus **„Entität exportieren"**. `core/subset.py` berechnet aus Start-Tabelle + Wurzel-Filter
+die **referenzielle FK-Hülle** (down-then-up, zyklus-sicher, tiefenbegrenzt) und rendert je
+Closure-Tabelle ein read-only SELECT, das zur Wurzel zurück-joint. Vier gestufte, **read-only**
+Endpoints (nichts wird geschrieben):
+
+| Endpoint | Stufe | Liefert |
+|---|---|---|
+| `/api/subset` | AP-56a | Hüll-Tabellen (topologisch) + SELECT-Skelett je Tabelle (führt nichts aus) |
+| `/api/subset/run` | AP-56b·1 | echte **Zeilenzahl** je Closure-Tabelle + Summe (`count_sql` → COUNT, resilient pro Tabelle) |
+| `/api/subset/dump` | AP-56b·2 | **JSON-Daten-Bundle** der Closure-Zeilen (`dump_subset_rows`, per-Tabelle-Cap `MAX_RESULT_ROWS` + Truncation-Flag) |
+| `/api/subset/inlists` | AP-56c | je Tabelle die **PK-Identität** als `SELECT * … WHERE pk IN (…)` (`subset_in_list_sql`, Composite-PK als portable OR-Form) |
+
+Die read-only Ausführung läuft über `core/datapreview.py::execute_select` (parametrisiert,
+Row-Cap). UI: Buttons „Footprint bauen / Zeilen zählen (live) / Daten-Dump (JSON) / IN-Listen (SQL)"
+mit Browser-Blob-Downloads (kein Server-Filehandling).
+
+### Read-only Objekt-Kategorien (AP-63)
+
+Über Tabellen/Views hinaus werden weitere DB-Objekte **read-only** reflektiert und angezeigt
+(keine Join-/SQL-Teilnahme): **Indizes + Check-Constraints** im Tabellen-Detail (AP-63·S1,
+`get_indexes`/`get_check_constraints`, alle Engines), **Trigger** als eigene Sidebar-Kategorie
+(AP-63·S2, dialekt-Katalog-SQL — SQLite via `sqlite_master`), sowie **Sequences + Materialized
+Views** (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle). Alle erscheinen in `/api/schema`.
+
 ### Webserver (waitress, AP-31)
 
 Im Normalbetrieb wird die WSGI-/Flask-App vom **waitress**-Server bereitgestellt

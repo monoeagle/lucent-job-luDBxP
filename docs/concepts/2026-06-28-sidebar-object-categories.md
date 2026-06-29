@@ -1,7 +1,7 @@
 # Konzept & gestufte Scheibe — AP-63: Weitere DB-Objekt-Kategorien
 
 **Datum:** 2026-06-28
-**Status:** Konzept / Backlog (AP-63, drei Stufen)
+**Status:** Stufe 1 (v0.52.0), Stufe 2 = Trigger (v0.53.0) + Stufe 2b = Sequences/Materialized Views (v0.54.0) **erledigt**; offen: Stufe 3 (Procedures/Functions) + PG/Oracle-Trigger-Fast-Follow. (S2 wurde nach Testbarkeit zugeschnitten: Trigger zuerst, weil SQLite-CI-testbar; Sequences/Matviews als S2b, PG-only.)
 **Auslöser:** Die Sidebar zeigt heute nur **Tabellen** und **Views** (`core.model.Schema` trägt nur diese zwei Sammlungen; `sqlalchemy_loader.py` reflektiert nur `get_table_names`/`get_view_names`). Eine SQL-Datenbank enthält mehr anzeigbare Objekte.
 
 ## Landkarte der anzeigbaren Objekte

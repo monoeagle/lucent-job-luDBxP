@@ -263,22 +263,40 @@ Schema** als das reflektierte zeigen, und — falls vorhanden — darunter die K
 Datenbank Cross-Schema-FKs nutzt (Entscheidungsgrundlage für eine spätere volle
 Cross-Schema-Join-Unterstützung). SQLite hat keine Schemas → dort immer 0.
 
-## Modus „Entität exportieren" — Database-Subsetting (AP-56a)
+## Modus „Entität exportieren" — Database-Subsetting (AP-56)
 
 Der Tab **„Entität exportieren"** berechnet aus einer **Start-Tabelle** und einem optionalen
 **Wurzel-Filter** (Spalte / Operator / Wert) die **referenzielle FK-Hülle** der Start-Entität:
 abhängige Kind-Tabellen werden abwärts verfolgt (Tabellen, die über einen FK auf die
 Start-Tabelle zeigen), Lookup-Eltern aufwärts (Tabellen, auf die die Start-Tabelle zeigt) —
-„down-then-up" ohne Re-Descent, zyklus-sicher und tiefenbegrenzt.
+„down-then-up" ohne Re-Descent, zyklus-sicher und tiefenbegrenzt. Jede einbezogene Tabelle
+erhält eine **Rolle** (`root` / `child` / `parent`) + `via_table`-Einstufung.
 
-Jede einbezogene Tabelle erhält eine **Rolle** (`root` / `child` / `parent`) und eine
-Einstufung per `via_table`-Kante. Der Modus generiert je Tabelle ein **read-only
-SELECT-Skelett**, das zur Wurzel zurückjoined und — falls ein Wurzel-Filter angegeben ist —
-die Zeilen auf den Teilgraphen der gefilterten Wurzel-Entität einschränkt. Der Endpunkt
-`/api/subset` liefert die Tabellenliste (`tables`) und die SQL-Skelette (`scripts`) als JSON.
+Auf der berechneten Hülle bietet der Modus vier **read-only** Aktionen (Buttons):
 
-**Führt nichts aus:** Die Skelette sind Vorschläge — kein Datenbankinhalt wird gelesen,
-verändert oder exportiert. Der Live-Walk gegen echte Zeilenzahlen ist das zurückgestellte AP-56b.
+| Button | Endpoint | Wirkung |
+|---|---|---|
+| **Footprint bauen** | `/api/subset` (AP-56a) | Hüll-Tabellen + SELECT-Skelett je Tabelle (zur Wurzel gejoint). Führt nichts aus. |
+| **Zeilen zählen (live)** | `/api/subset/run` (AP-56b·1) | echte **Zeilenzahl** je Tabelle + Summe (resilient pro Tabelle; markiert „unvollständig" bei Truncation/Fehler) |
+| **Daten-Dump (JSON)** | `/api/subset/dump` (AP-56b·2) | lädt die echten Zeilen der Hülle als **JSON-Bundle** herunter (Browser-Blob; Per-Tabelle-Cap `MAX_RESULT_ROWS` + lautes Truncation-Flag) |
+| **IN-Listen (SQL)** | `/api/subset/inlists` (AP-56c) | lädt je Tabelle die **PK-Identität** als `.sql` herunter (`SELECT * … WHERE pk IN (…)`, Composite-PK als portable `(a=… AND b=…) OR …`) |
+
+**Read-only durchgängig:** nichts wird geschrieben; Zähl-/Dump-/IN-Listen-Aktionen führen nur
+parametrisierte SELECT/COUNT aus. No-PK-Tabellen werden bei den IN-Listen laut markiert.
+
+## Read-only Objekt-Kategorien (AP-63)
+
+Über Tabellen/Views hinaus zeigt die Oberfläche weitere DB-Objekte read-only an (keine Join-/
+SQL-Teilnahme):
+
+- **Indizes + Check-Constraints** (AP-63·S1): im Tabellen-Detail („Definition") als genestete
+  Abschnitte — alle Indizes (Name/Spalten, `unique`-Badge) und Check-Constraints (Name/Ausdruck).
+- **Trigger** (AP-63·S2): eigene Sidebar-Kategorie „Trigger" (nur wenn vorhanden); schlankes
+  Detail mit besitzender Tabelle + `CREATE TRIGGER`-Quelltext, **ohne** Daten-Tab. Reflektion
+  aktuell nur SQLite (Katalog-SQL).
+- **Sequences + Materialized Views** (AP-63·S2b): je eigene Sidebar-Kategorie (nur wenn
+  vorhanden) — Sequenzen zeigen den Namen, Materialized Views Spalten + Definition (display-only).
+  Echte Reflektion nur PostgreSQL/Oracle.
 
 ## Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)
 

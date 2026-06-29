@@ -154,7 +154,7 @@ flowchart TB
         M1["AP-54\nCross-Schema-FK-Diagnose"]
         M2["AP-55\nImplied-FK-Schärfung"]
         M3["AP-56a\nSubset-Footprint"]
-        M3b["AP-56b\nSubset Live-Walk"]
+        M3b["AP-56b·1+2 + AP-56c\nCount / Daten-Dump / IN-Listen"]
         M4["AP-57\nCross-Schema-Joins (bedingt)"]
         M1 ~~~ M2 ~~~ M3 ~~~ M3b ~~~ M4
     end
@@ -163,7 +163,7 @@ flowchart TB
     subgraph C9["🗃️  DB-Objekt-Kategorien"]
         direction TB
         O1["AP-63·S1\nIndizes + Check"]
-        O2["AP-63·S2\nSequences/Mat-Views/Trigger"]
+        O2["AP-63·S2/S2b\nTrigger + Seq + Mat-Views"]
         O3["AP-63·S3\nProcedures/Functions"]
         O4["AP-66\nViews mit Routinen"]
         O1 ~~~ O2 ~~~ O3 ~~~ O4
@@ -203,11 +203,12 @@ flowchart TB
     class B5 plan
     class K1,K2,K3,K5 done
     class K4 plan
-    class M3 done
-    class M3b,M4 plan
+    class M3,M3b done
+    class M4 plan
     class M2 done
     class M1 done
-    class O1,O2,O3,O4 plan
+    class O1,O2 done
+    class O3,O4 plan
     class P2,P3 plan
     class P1,P4 done
     class J33 plan

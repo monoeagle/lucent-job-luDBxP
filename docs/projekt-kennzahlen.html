@@ -81,8 +81,8 @@
     </div>
     <div class="card">
       <div class="lbl">Tempo</div>
-      <div class="val">329 <small>Commits</small></div>
-      <div class="note">13 Sessions an 4 Kalendertagen (25.–28.06.)</div>
+      <div class="val">390 <small>Commits</small></div>
+      <div class="note">15 Sessions an 5 Kalendertagen (25.–29.06.)</div>
     </div>
     <div class="card">
       <div class="lbl">Costs (COCOMO)</div>
@@ -96,8 +96,8 @@
     </div>
     <div class="card">
       <div class="lbl">Testabdeckung</div>
-      <div class="val v-good">91 <small>%</small></div>
-      <div class="note">398 Tests grün (2 skip Oracle/MSSQL) · 1671 Statements</div>
+      <div class="val v-good">90 <small>%</small></div>
+      <div class="note">398 Tests grün (3 skip Oracle/MSSQL/PG) · 1897 Statements</div>
     </div>
     <div class="card">
       <div class="lbl">Doku-Abdeckung</div>
@@ -138,12 +138,12 @@
     </thead>
     <tbody>
       <tr><td class="metric">Umsetzung (Roadmap)</td><td class="num">≈ 89 %</td><td>≈ 57 erledigt · ≈ 7 offener Backlog (AP-56/57, AP-61/62, AP-63, AP-19/35) · AP-1…63, AP-17 gestrichen + AP-19 (Meta) nicht gezählt (Quelle: roadmap.md)</td><td><span class="tag m">gemessen</span></td></tr>
-      <tr><td class="metric">Commits</td><td class="num">329</td><td>2026-06-25 → 06-28 · 4 Kalendertage · 13 Sessions · FF-Merges je AP (SDD-Branches)</td><td><span class="tag m">gemessen</span></td></tr>
-      <tr><td class="metric">Aktuelle Version</td><td class="num">v0.54.0</td><td>SemVer je AP (sync_version.py) · von 0.1.0 in 13 Sessions</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Commits</td><td class="num">390</td><td>2026-06-25 → 06-29 · 5 Kalendertage · 15 Sessions · FF-Merges je AP (SDD-Branches)</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Aktuelle Version</td><td class="num">v0.54.0</td><td>SemVer je AP (sync_version.py) · von 0.1.0 in 15 Sessions</td><td><span class="tag m">gemessen</span></td></tr>
       <tr><td class="metric">Effort (COCOMO)</td><td class="num">~20 PM</td><td>organic · E = 2,4·KSLOC^1,05 · T ≈ 7,8 Monate Kalender</td><td><span class="tag s">Modell</span></td></tr>
       <tr><td class="metric">Costs (COCOMO)</td><td class="num">~242.000 €</td><td>Overhead 2,4 · ~60 k€/J · ohne Overhead ~101.000 €</td><td><span class="tag s">Modell</span></td></tr>
       <tr><td class="metric">Technische Schulden</td><td class="num">≈ 0 %</td><td>pyflakes: 0 Fehler · 2 Info (ungenutzte <code>exc</code> in routes.py)</td><td><span class="tag m">gemessen</span></td></tr>
-      <tr><td class="metric">Testabdeckung</td><td class="num">91 %</td><td>1671 Statements, 157 ungedeckt · <code>pytest --cov</code> (core/web/launcher/config/app)</td><td><span class="tag m">gemessen</span></td></tr>
+      <tr><td class="metric">Testabdeckung</td><td class="num">90 %</td><td>1897 Statements, 185 ungedeckt · <code>pytest --cov</code> (core/web/launcher/config/app)</td><td><span class="tag m">gemessen</span></td></tr>
       <tr><td class="metric">Tests</td><td class="num">398</td><td>alle grün · 2 skipped (optionale Oracle/MSSQL-Live-Tests) · ~10 s Laufzeit</td><td><span class="tag m">gemessen</span></td></tr>
       <tr><td class="metric">Doku-Abdeckung (Module)</td><td class="num">93 %</td><td>26/28 Python-Module mit Modul-Docstring (AST-Zählung)</td><td><span class="tag m">gemessen</span></td></tr>
       <tr><td class="metric">Doku-Abdeckung (öffentl. API)</td><td class="num">62 %</td><td>60/96 öffentliche Funktionen/Klassen mit Docstring · gesamt 93/143 ≈ 65 %</td><td><span class="tag m">gemessen</span></td></tr>
@@ -158,7 +158,7 @@
   <div class="barrow"><span class="k">web/ (Flask-Routes)</span><div class="bar"><span style="width:87%"></span></div><span class="p">87 %</span></div>
   <div class="barrow"><span class="k">launcher/core.py</span><div class="bar"><span style="width:89%"></span></div><span class="p">89 %</span></div>
   <div class="barrow"><span class="k" style="color:var(--muted)">launcher/ GUI (Tray)</span><div class="bar"><span style="width:0%"></span></div><span class="p" style="color:var(--muted)">0 % *</span></div>
-  <div class="barrow"><span class="k" style="color:var(--ink);font-weight:600">GESAMT</span><div class="bar"><span style="width:91%"></span></div><span class="p" style="color:var(--good)">91 %</span></div>
+  <div class="barrow"><span class="k" style="color:var(--ink);font-weight:600">GESAMT</span><div class="bar"><span style="width:90%"></span></div><span class="p" style="color:var(--good)">90 %</span></div>
   <p class="aplist">* <code>tray.py</code>/<code>__main__.py</code> sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten <code>launcher/core.py</code> (per Controller-E2E zusätzlich gegen echtes <code>app.py</code> verifiziert).</p>
 
   <h2>Code-Qualität (pyflakes, Produktcode)</h2>

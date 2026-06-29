@@ -17,14 +17,14 @@ bewusst nicht neu vermessen.
 
 <div class="kz-card">
   <div class="kz-lbl">Tempo</div>
-  <div class="kz-val">329 <small>Commits</small></div>
-  <div class="kz-note">13 Sessions an 4 Kalendertagen (25.–28.06.)</div>
+  <div class="kz-val">390 <small>Commits</small></div>
+  <div class="kz-note">15 Sessions an 5 Kalendertagen (25.–29.06.)</div>
 </div>
 
 <div class="kz-card">
   <div class="kz-lbl">Testabdeckung</div>
-  <div class="kz-val kz-good">91 <small>%</small></div>
-  <div class="kz-note">398 Tests grün (2 skip Oracle/MSSQL) · 1671 Statements</div>
+  <div class="kz-val kz-good">90 <small>%</small></div>
+  <div class="kz-note">398 Tests grün (3 skip Oracle/MSSQL/PG) · 1897 Statements</div>
 </div>
 
 <div class="kz-card">
@@ -82,9 +82,9 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 | Kennzahl | Wert | Detail / Quelle | Art |
 |---|---|---|---|
 | Umsetzung (Roadmap) | ≈ 89 % | ≈ 57 erledigt · ≈ 7 offener Backlog (AP-56/57, AP-61/62, AP-63, AP-19/35) · Quelle: `roadmap.md` | gemessen |
-| Commits | 329 | 2026-06-25 → 06-28 · 4 Kalendertage · 13 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
-| Aktuelle Version | v0.54.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 13 Sessions | gemessen |
-| Testabdeckung | 91 % | 1671 Statements, 157 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
+| Commits | 390 | 2026-06-25 → 06-29 · 5 Kalendertage · 15 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
+| Aktuelle Version | v0.54.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 15 Sessions | gemessen |
+| Testabdeckung | 90 % | 1897 Statements, 185 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
 | Tests | 398 | alle grün · 2 skipped (optionale Oracle/MSSQL-Live-Tests) · ~10 s Laufzeit | gemessen |
 | Doku-Abdeckung (Module) | 93 % | 26/28 Python-Module mit Modul-Docstring (AST-Zählung) | gemessen |
 | Doku-Abdeckung (öffentl. API) | 62 % | 60/96 öffentliche Funktionen/Klassen mit Docstring · gesamt 93/143 ≈ 65 % | gemessen |
@@ -101,7 +101,7 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
   <div class="kz-barrow"><span class="kz-k">web/ (Flask-Routes)</span><div class="kz-bar"><span style="width:87%"></span></div><span class="kz-p">87 %</span></div>
   <div class="kz-barrow"><span class="kz-k">launcher/core.py</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p">89 %</span></div>
   <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI (Tray)</span><div class="kz-bar"><span style="width:0%"></span></div><span class="kz-p kz-muted">0 % *</span></div>
-  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:91%"></span></div><span class="kz-p kz-good">91 %</span></div>
+  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:90%"></span></div><span class="kz-p kz-good">90 %</span></div>
 </div>
 
 \* `tray.py`/`__main__.py` sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten

@@ -12,14 +12,15 @@ lucent-job-luDBxP/
 ├── sync_version.py           # Versions-Bump: config.py + alle Stellen synchron
 │
 ├── core/                     # Reine Business-Logik (kein Flask-Import)
-│   ├── model.py              # Schema, Table, Column, ForeignKey, View
+│   ├── model.py              # Schema, Table, Column, ForeignKey, View, Index, CheckConstraint, Trigger, Sequence
 │   ├── schema_loader.py      # Abstrakte Loader-Schnittstelle
 │   ├── graph.py              # build_graph() → NetworkX DiGraph
 │   ├── pathfinder.py         # find_paths() — k-kürzeste Pfade
 │   ├── sqlgen.py             # generate_sql() — parametrisiertes SELECT+JOIN
 │   ├── implied.py            # guess_implicit_fks() — Heuristik
 │   ├── connection.py         # build_url() — SQLAlchemy-URL-Konstruktor
-│   ├── datapreview.py        # fetch_rows() — erste N Zeilen
+│   ├── datapreview.py        # fetch_rows()/execute_select()/count_subset_rows()/dump_subset_rows() — read-only Ausführung
+│   ├── subset.py             # Database-Subsetting (AP-56): FK-Closure + SELECT-/COUNT-/IN-Listen-Erzeugung
 │   ├── ddl.py                # table_ddl() — rekonstruiertes CREATE TABLE
 │   ├── settings.py           # Settings.load/save (config.json)
 │   ├── log.py                # Logging-Setup
@@ -41,15 +42,16 @@ lucent-job-luDBxP/
 │   ├── about.py              # Info-Dialog (Tkinter, eigener Prozess, primär-Monitor-zentriert)
 │   └── __main__.py           # Einstieg: python -m launcher (Windows fensterlos via pythonw)
 │
-├── tests/                    # pytest-Tests (232 gesamt)
+├── tests/                    # pytest-Tests (398, 3 skip-guarded: MSSQL/Oracle/PG live)
 │   ├── conftest.py           # Fixtures (Test-Schema, Flask-Client)
 │   ├── test_api.py           # HTTP-API-Tests (via Flask-Testclient)
-│   ├── test_smoke.py         # Smoke-Tests
+│   ├── test_subset.py        # Subset-Footprint/Count/Dump/IN-Listen (AP-56)
 │   ├── test_graph.py         # FK-Graph-Aufbau
 │   ├── test_pathfinder.py    # Pfadfindung
 │   ├── test_sqlgen.py        # SQL-Generierung
 │   ├── test_implied.py       # Implizite-FK-Heuristik
 │   ├── test_demo_db_cases.py # Integrationstests gegen Demo-CMDB
+│   ├── test_mssql_integration.py / test_oracle_integration.py / test_pg_integration.py  # optionale Live-Tests (skip-guarded)
 │   └── ...                   # weitere Unit-Tests
 │
 ├── sample_data/

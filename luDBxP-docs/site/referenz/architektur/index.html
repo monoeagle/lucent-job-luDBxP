@@ -560,6 +560,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#database-subsetting-migrations-toolkit-coresubsetpy-ap-56" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Database-Subsetting / Migrations-Toolkit (<code>core/subset.py</code>, AP-56)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read-only-objekt-kategorien-ap-63" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Read-only Objekt-Kategorien (AP-63)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#webserver-waitress-ap-31" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1222,6 +1244,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#database-subsetting-migrations-toolkit-coresubsetpy-ap-56" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Database-Subsetting / Migrations-Toolkit (<code>core/subset.py</code>, AP-56)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read-only-objekt-kategorien-ap-63" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Read-only Objekt-Kategorien (AP-63)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#webserver-waitress-ap-31" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1337,6 +1381,53 @@ Lookup</strong> auf eine einzelne Spalte und <strong>nicht</strong> Teil des gen
 Vorschlagsliste des Wertfelds. (Davon zu unterscheiden ist die <strong><code>DISTINCT</code>-Checkbox</strong> des Builders,
 die sehr wohl als <code>SELECT DISTINCT</code> in die generierte Abfrage einfließt.) Das Setzen eines Filterwerts
 baut sofort neu, sodass die <code>WHERE</code>-Bedingung umgehend im SQL und Ergebnis erscheint.</p>
+<h3 id="database-subsetting-migrations-toolkit-coresubsetpy-ap-56">Database-Subsetting / Migrations-Toolkit (<code>core/subset.py</code>, AP-56)<a class="headerlink" href="#database-subsetting-migrations-toolkit-coresubsetpy-ap-56" title="Permanent link">&para;</a></h3>
+<p>Für die Reverse-Engineering-/Migrations-Aufgabe (referenziell sauberer Export einer
+Entität samt aller abhängigen Zeilen) gibt es einen eigenen, vom Join-Builder getrennten
+Modus <strong>„Entität exportieren"</strong>. <code>core/subset.py</code> berechnet aus Start-Tabelle + Wurzel-Filter
+die <strong>referenzielle FK-Hülle</strong> (down-then-up, zyklus-sicher, tiefenbegrenzt) und rendert je
+Closure-Tabelle ein read-only SELECT, das zur Wurzel zurück-joint. Vier gestufte, <strong>read-only</strong>
+Endpoints (nichts wird geschrieben):</p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Stufe</th>
+<th>Liefert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/api/subset</code></td>
+<td>AP-56a</td>
+<td>Hüll-Tabellen (topologisch) + SELECT-Skelett je Tabelle (führt nichts aus)</td>
+</tr>
+<tr>
+<td><code>/api/subset/run</code></td>
+<td>AP-56b·1</td>
+<td>echte <strong>Zeilenzahl</strong> je Closure-Tabelle + Summe (<code>count_sql</code> → COUNT, resilient pro Tabelle)</td>
+</tr>
+<tr>
+<td><code>/api/subset/dump</code></td>
+<td>AP-56b·2</td>
+<td><strong>JSON-Daten-Bundle</strong> der Closure-Zeilen (<code>dump_subset_rows</code>, per-Tabelle-Cap <code>MAX_RESULT_ROWS</code> + Truncation-Flag)</td>
+</tr>
+<tr>
+<td><code>/api/subset/inlists</code></td>
+<td>AP-56c</td>
+<td>je Tabelle die <strong>PK-Identität</strong> als <code>SELECT * … WHERE pk IN (…)</code> (<code>subset_in_list_sql</code>, Composite-PK als portable OR-Form)</td>
+</tr>
+</tbody>
+</table>
+<p>Die read-only Ausführung läuft über <code>core/datapreview.py::execute_select</code> (parametrisiert,
+Row-Cap). UI: Buttons „Footprint bauen / Zeilen zählen (live) / Daten-Dump (JSON) / IN-Listen (SQL)"
+mit Browser-Blob-Downloads (kein Server-Filehandling).</p>
+<h3 id="read-only-objekt-kategorien-ap-63">Read-only Objekt-Kategorien (AP-63)<a class="headerlink" href="#read-only-objekt-kategorien-ap-63" title="Permanent link">&para;</a></h3>
+<p>Über Tabellen/Views hinaus werden weitere DB-Objekte <strong>read-only</strong> reflektiert und angezeigt
+(keine Join-/SQL-Teilnahme): <strong>Indizes + Check-Constraints</strong> im Tabellen-Detail (AP-63·S1,
+<code>get_indexes</code>/<code>get_check_constraints</code>, alle Engines), <strong>Trigger</strong> als eigene Sidebar-Kategorie
+(AP-63·S2, dialekt-Katalog-SQL — SQLite via <code>sqlite_master</code>), sowie <strong>Sequences + Materialized
+Views</strong> (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle). Alle erscheinen in <code>/api/schema</code>.</p>
 <h3 id="webserver-waitress-ap-31">Webserver (waitress, AP-31)<a class="headerlink" href="#webserver-waitress-ap-31" title="Permanent link">&para;</a></h3>
 <p>Im Normalbetrieb wird die WSGI-/Flask-App vom <strong>waitress</strong>-Server bereitgestellt
 (reiner Python-Prod-WSGI-Server, identisch unter Windows und Linux, als
