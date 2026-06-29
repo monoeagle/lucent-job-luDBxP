@@ -158,8 +158,13 @@ function ensureTab(id, title, closable) {
 
 // ===== Object browser (sidebar) =====
 function renderSidebar() {
-  const objList = (items, kind) => items.map((o) =>
-    `<li data-kind="${kind}" data-name="${escAttr(o.name)}">${esc(o.name)}</li>`).join("");
+  const objList = (items, kind) => items.map((o) => {
+    const usesRtn = o.routines && o.routines.length;
+    const badge = usesRtn
+      ? ` <span class="rtn-badge" title="${escAttr("nutzt Routinen: " + o.routines.join(", "))}">ƒ</span>`
+      : "";
+    return `<li data-kind="${kind}" data-name="${escAttr(o.name)}">${esc(o.name)}${badge}</li>`;
+  }).join("");
   $("objects").innerHTML =
     `<h3>Tools</h3><ul class="objlist">` +
     `<li data-action="connections">Verbindungen</li>` +
@@ -357,9 +362,13 @@ function openDetail(kind, name) {
     sqlText = "";
   } else if (kind === "matview") {
     const mv = (SCHEMA.materialized_views || []).find((x) => x.name === name);
+    const rtnHtml = (mv.routines && mv.routines.length)
+      ? `<h3>Verwendet Routinen</h3><ul>` +
+        mv.routines.map((r) => `<li>${esc(r)}</li>`).join("") + `</ul>`
+      : "";
     defHtml = `<h2>Materialized View: ${esc(mv.name)}</h2>` +
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
-      `<tbody>${colRows(mv.columns, false)}</tbody></table>`;
+      `<tbody>${colRows(mv.columns, false)}</tbody></table>` + rtnHtml;
     sqlText = mv.definition;
   } else if (kind === "procedure" || kind === "function" || kind === "package") {
     const label = kind === "procedure" ? "Prozedur"
@@ -377,9 +386,13 @@ function openDetail(kind, name) {
     sqlText = "";   // konsistent mit Sequenz: SQL-Tab bleibt, zeigt "(keine Definition)"
   } else {
     const v = SCHEMA.views.find((x) => x.name === name);
+    const rtnHtml = (v.routines && v.routines.length)
+      ? `<h3>Verwendet Routinen</h3><ul>` +
+        v.routines.map((r) => `<li>${esc(r)}</li>`).join("") + `</ul>`
+      : "";
     defHtml = `<h2>View: ${esc(v.name)}</h2>` +
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
-      `<tbody>${colRows(v.columns, false)}</tbody></table>`;
+      `<tbody>${colRows(v.columns, false)}</tbody></table>` + rtnHtml;
     sqlText = v.definition;
   }
 
