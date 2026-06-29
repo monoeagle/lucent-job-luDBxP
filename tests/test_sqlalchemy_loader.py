@@ -120,6 +120,12 @@ class _FakeInspector:
     def get_view_names(self, schema=None):
         return []
 
+    def get_sequence_names(self, schema=None):
+        return []
+
+    def get_materialized_view_names(self, schema=None):
+        return []
+
 
 def test_load_reflects_column_and_table_comments(monkeypatch):
     _patch_loader(monkeypatch, _FakeInspector({"text": "Tabellen-Notiz"}))
@@ -192,3 +198,9 @@ def test_loader_reflects_triggers(triggers_url):
 def test_loader_no_triggers_is_empty(inventory_url):
     schema = SqlAlchemyLoader(inventory_url).load()
     assert schema.triggers == ()
+
+
+def test_loader_sequences_and_matviews_empty_on_sqlite(inventory_url):
+    schema = SqlAlchemyLoader(inventory_url).load()
+    assert schema.sequences == ()
+    assert schema.materialized_views == ()

@@ -85,6 +85,11 @@ class View:
 
 
 @dataclass(frozen=True)
+class Sequence:
+    name: str
+
+
+@dataclass(frozen=True)
 class Trigger:
     name: str
     table: str       # besitzende Tabelle (tbl_name); "" falls unbekannt
@@ -96,6 +101,8 @@ class Schema:
     tables: tuple[Table, ...]
     views: tuple[View, ...] = ()
     triggers: tuple[Trigger, ...] = ()
+    sequences: tuple[Sequence, ...] = ()
+    materialized_views: tuple[View, ...] = ()   # Matviews reusen das View-Shape
 
     def table(self, name: str) -> Table:
         for t in self.tables:

@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 
-from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema, Trigger
+from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema, Trigger, Sequence
 from core.schema_loader import SchemaLoader
 
 
@@ -140,7 +140,32 @@ class SqlAlchemyLoader(SchemaLoader):
                 except SQLAlchemyError:
                     definition = ""
                 views.append(View(vname, vcols, definition))
-            return Schema(tuple(tables), tuple(views), _reflect_triggers(engine))
+            try:
+                sequences = tuple(
+                    Sequence(n) for n in insp.get_sequence_names(schema=schema)
+                )
+            except (SQLAlchemyError, NotImplementedError):
+                sequences = ()
+            try:
+                mv_names = insp.get_materialized_view_names(schema=schema)
+            except (SQLAlchemyError, NotImplementedError):
+                mv_names = []
+            matviews = []
+            for mvname in mv_names:
+                try:
+                    mvcols = tuple(
+                        Column(c["name"], str(c["type"]))
+                        for c in insp.get_columns(mvname, schema=schema)
+                    )
+                except SQLAlchemyError:
+                    mvcols = ()
+                try:
+                    mvdef = insp.get_view_definition(mvname, schema=schema) or ""
+                except (SQLAlchemyError, NotImplementedError):
+                    mvdef = ""
+                matviews.append(View(mvname, mvcols, mvdef))
+            return Schema(tuple(tables), tuple(views), _reflect_triggers(engine),
+                          sequences, tuple(matviews))
         except SQLAlchemyError as exc:
             hint = _odbc_driver_hint(exc)
             raise ConnectionError(hint or f"Could not reflect schema: {exc}") from exc
