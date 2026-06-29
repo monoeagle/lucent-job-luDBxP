@@ -1,20 +1,31 @@
 {
-  "generatedAt": "2026-06-29T21:38:35",
+  "generatedAt": "2026-06-29T21:51:11",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 64,
+      "commits": 66,
       "kinds": {
+        "fix": 5,
+        "other": 1,
         "docs": 35,
         "test": 1,
         "feat": 23,
-        "chore": 1,
-        "fix": 4
+        "chore": 1
       },
       "list": [
+        {
+          "sha": "6bd3343",
+          "subject": "fix(loader): MSSQL-Reflektion — NotImplementedError bei get_unique_constraints/get_indexes abfangen (v0.55.1)",
+          "kind": "fix"
+        },
+        {
+          "sha": "65a3819",
+          "subject": "release: v0.55.0 — AP-63·S3 (Procedures/Functions/Packages/Synonyms)",
+          "kind": "other"
+        },
         {
           "sha": "cfbd521",
           "subject": "docs(loader): Kommentar zur PG>=11-prokind-Abhängigkeit (_reflect_routines)",
@@ -2072,7 +2083,7 @@
     }
   },
   "stats": {
-    "totalCommits": 400,
+    "totalCommits": 402,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
@@ -2086,11 +2097,11 @@
       },
       {
         "kind": "fix",
-        "count": 35
+        "count": 36
       },
       {
         "kind": "other",
-        "count": 31
+        "count": 32
       },
       {
         "kind": "chore",
@@ -2109,7 +2120,7 @@
         "count": 4
       }
     ],
-    "testCount": 410
+    "testCount": 411
   },
   "phases": []
 }

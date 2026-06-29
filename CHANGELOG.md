@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.55.1] — 2026-06-29
+
+### Fixed
+- **MS SQL Server reflection no longer crashes.** The MSSQL dialect exposes
+  `get_unique_constraints`/`get_indexes` partly as a bare `NotImplementedError`
+  (not a `SQLAlchemyError`), which escaped the loader's `except SQLAlchemyError`
+  and aborted the whole `load()` — no MSSQL database was reflectable. These calls
+  now catch `(SQLAlchemyError, NotImplementedError)`, consistent with the existing
+  `get_check_constraints` handling, and fall back to empty. Verified against a live
+  SQL Server 2022 (both MSSQL integration tests green, including the AP-63·S3 routine
+  reflection); guarded in CI by a regression test using a `NotImplementedError`-raising
+  fake inspector.
+
 ## [0.55.0] — 2026-06-29
 
 ### Added
