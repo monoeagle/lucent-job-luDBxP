@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.56.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.57.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1188,7 +1188,7 @@
 <h3 id="weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien">Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: <a href="../../../../docs/concepts/2026-06-28-sidebar-object-categories/">Sidebar-Objekt-Kategorien</a>)<a class="headerlink" href="#weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien" title="Permanent link">&para;</a></h3>
 <p>Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen <strong>nicht</strong> an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:</p>
 <ul>
-<li><strong>AP-66</strong> — Views, die <strong>Prozeduren/Funktionen</strong> verwenden, auflösen (Konzept: <a href="../../../../docs/concepts/2026-06-29-views-with-routines-resolution/">Views mit Routinen</a>). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. <strong>Stufe 1 (S–M):</strong> referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). <strong>Stufe 2 (M):</strong> Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). <strong>Stufe 3 (XL, zurückgestellt):</strong> echte Daten-Lineage durch den PL/SQL-Body.</li>
+<li><strong>AP-66</strong> — Views, die <strong>Prozeduren/Funktionen</strong> verwenden, auflösen (Konzept: <a href="../../../../docs/concepts/2026-06-29-views-with-routines-resolution/">Views mit Routinen</a>). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. <strong>Stufe 1 erledigt v0.57.0:</strong> <code>core/viewdeps.py::referenced_routines</code> extrahiert via sqlglot referenzierte Routine-Namen aus dem View-Definitionstext, gleicht gegen <code>schema.routines</code> ab (nur bestätigte Treffer, kein Built-in), befüllt <code>View.routines</code>; View-Detail zeigt „Verwendet Routinen"-Abschnitt, Sidebar-<code>ƒ</code>-Badge. <strong>Stufe 2 (M, offen):</strong> Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). <strong>Stufe 3 (XL, zurückgestellt):</strong> echte Daten-Lineage durch den PL/SQL-Body.</li>
 </ul>
 <h3 id="sql-analyzer-tiefe">SQL-Analyzer-Tiefe<a class="headerlink" href="#sql-analyzer-tiefe" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1323,6 +1323,10 @@ Doku/AppImage/Projektposter.</p>
 <p><strong>v0.45.3</strong> (2026-06-28):</p>
 <ul>
 <li><strong>AP-60</strong> — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3</li>
+</ul>
+<p><strong>v0.57.0</strong> (2026-06-29):</p>
+<ul>
+<li><strong>AP-66 · Stufe 1</strong> — View→Routinen-Abhängigkeiten: neues Modul <code>core/viewdeps.py::referenced_routines</code> parst View-Definitionstext via sqlglot, gleicht Funktionsaufruf-Namen (inkl. Oracle-Package-Qualifier) gegen <code>schema.routines</code> ab (kein Built-in → nur bestätigte Treffer). <code>View.routines: tuple[str, ...] = ()</code> (abschließendes Feld; Matviews reusen dasselbe Shape); Loader befüllt es für Views + Matviews; <code>/api/schema</code> trägt <code>"routines": [...]</code>. Im View-Detail erscheint ein „Verwendet Routinen"-Abschnitt; in der Sidebar ein <code>ƒ</code>-Badge bei betroffenen Views. Migrations-Signal: diese Views sind nicht über reine Join/FK-Lineage migrierbar. Vollständig CI-testbar (sqlglot, keine DB). Read-only. <strong>Aufwand S–M</strong> — v0.57.0</li>
 </ul>
 <p><strong>v0.56.0</strong> (2026-06-29):</p>
 <ul>
