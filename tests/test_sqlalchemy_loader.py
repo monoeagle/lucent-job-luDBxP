@@ -233,3 +233,19 @@ def test_loader_routines_synonyms_empty_on_sqlite(inventory_url):
     schema = SqlAlchemyLoader(inventory_url).load()
     assert schema.routines == ()
     assert schema.synonyms == ()
+
+
+def test_reflect_triggers_accepts_schema_param_on_sqlite(triggers_url):
+    # Signatur-Erweiterung (engine, schema): SQLite ignoriert schema, liefert
+    # weiterhin die Trigger. Regression-Schutz für die Call-Site-Änderung.
+    from core.loaders.sqlalchemy_loader import _reflect_triggers
+    from sqlalchemy import create_engine
+    engine = create_engine(triggers_url)
+    try:
+        trigs = _reflect_triggers(engine, "ignored_schema")
+    finally:
+        engine.dispose()
+    by_name = {t.name: t for t in trigs}
+    assert "trg_account_audit" in by_name
+    assert by_name["trg_account_audit"].table == "Account"
+    assert "CREATE TRIGGER" in by_name["trg_account_audit"].sql

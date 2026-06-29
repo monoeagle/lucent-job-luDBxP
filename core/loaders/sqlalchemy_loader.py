@@ -23,21 +23,63 @@ def _odbc_driver_hint(exc) -> "str | None":
     return None
 
 
-def _reflect_triggers(engine) -> tuple:
-    """Read-only trigger reflection. SQLite via sqlite_master; other dialects
-    return () for now (SQLAlchemy has no native trigger API)."""
-    dialect_name = getattr(getattr(engine, "dialect", None), "name", "")
-    if dialect_name != "sqlite":
+def _reflect_triggers(engine, schema=None) -> tuple:
+    """Read-only trigger reflection via per-dialect catalog SQL.
+    SQLite: sqlite_master; PG: pg_trigger; Oracle: all_triggers + dbms_metadata;
+    MSSQL: sys.triggers. Other dialects → (). Only table/DML triggers."""
+    name = getattr(getattr(engine, "dialect", None), "name", "")
+    if name not in ("sqlite", "postgresql", "oracle", "mssql"):
         return ()
     try:
         with engine.connect() as conn:
-            rows = conn.execute(text(
-                "SELECT name, tbl_name, sql FROM sqlite_master "
-                "WHERE type='trigger' AND sql IS NOT NULL ORDER BY name"
-            )).fetchall()
-        return tuple(Trigger(r[0], r[1] or "", r[2] or "") for r in rows)
+            if name == "sqlite":
+                rows = conn.execute(text(
+                    "SELECT name, tbl_name, sql FROM sqlite_master "
+                    "WHERE type='trigger' AND sql IS NOT NULL ORDER BY name"
+                )).fetchall()
+                return tuple(Trigger(r[0], r[1] or "", r[2] or "") for r in rows)
+            if name == "postgresql":
+                rows = conn.execute(text(
+                    "SELECT t.tgname, c.relname, pg_get_triggerdef(t.oid) "
+                    "FROM pg_trigger t "
+                    "JOIN pg_class c ON c.oid = t.tgrelid "
+                    "JOIN pg_namespace n ON n.oid = c.relnamespace "
+                    "WHERE NOT t.tgisinternal AND n.nspname = :s "
+                    "ORDER BY t.tgname"
+                ), {"s": schema or "public"}).fetchall()
+                return tuple(Trigger(r[0], r[1] or "", r[2] or "") for r in rows)
+            if name == "oracle":
+                owner = (schema or "").upper() or conn.execute(text(
+                    "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM dual"
+                )).scalar()
+                trigs = conn.execute(text(
+                    "SELECT trigger_name, table_name FROM all_triggers "
+                    "WHERE owner = :o AND base_object_type = 'TABLE' "
+                    "ORDER BY trigger_name"
+                ), {"o": owner}).fetchall()
+                out = []
+                for tname, tbl in trigs:
+                    try:
+                        ddl = conn.execute(text(
+                            "SELECT DBMS_METADATA.GET_DDL('TRIGGER', :n, :o) FROM dual"
+                        ), {"n": tname, "o": owner}).scalar()
+                    except SQLAlchemyError:
+                        ddl = ""
+                    out.append(Trigger(tname, tbl or "", str(ddl or "")))
+                return tuple(out)
+            if name == "mssql":
+                rows = conn.execute(text(
+                    "SELECT tr.name, OBJECT_NAME(tr.parent_id), m.definition "
+                    "FROM sys.triggers tr "
+                    "LEFT JOIN sys.sql_modules m ON m.object_id = tr.object_id "
+                    "WHERE tr.is_ms_shipped = 0 "
+                    "AND OBJECT_SCHEMA_NAME(tr.parent_id) = :s "
+                    "ORDER BY tr.name"
+                ), {"s": schema or "dbo"}).fetchall()
+                return tuple(Trigger(r[0], r[1] or "", r[2] or "") for r in rows)
     except SQLAlchemyError:
         return ()
+    return ()
 
 
 def _reflect_routines(engine, schema=None) -> tuple:
@@ -242,7 +284,7 @@ class SqlAlchemyLoader(SchemaLoader):
                 except (SQLAlchemyError, NotImplementedError):
                     mvdef = ""
                 matviews.append(View(mvname, mvcols, mvdef))
-            return Schema(tuple(tables), tuple(views), _reflect_triggers(engine),
+            return Schema(tuple(tables), tuple(views), _reflect_triggers(engine, schema),
                           sequences, tuple(matviews),
                           _reflect_routines(engine, schema),
                           _reflect_synonyms(engine, schema))
