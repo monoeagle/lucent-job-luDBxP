@@ -95,9 +95,9 @@ Materialized Views (AP-63·S2b) werden auf dasselbe `View`-Shape abgebildet (ink
 
 Alle read-only Objekt-Kategorien (Index/Check/Trigger/Sequence/Materialized View/Routine/Synonym) nehmen **nicht** an Join-Pfaden oder SQL-Generierung teil — reine Anzeige.
 
-### AnalysisResult (AP-65·A)
+### AnalysisResult (AP-65·A / AP-65·A-Härtung)
 
-Rückgabeobjekt von `core/sqlanalyze.py::analyze` und `/api/analyze`. Die ersten Felder existierten seit AP-25/39; AP-65·A ergänzt vier abschließende Positionsfelder für Parse-Fehler:
+Rückgabeobjekt von `core/sqlanalyze.py::analyze` und `/api/analyze`. Die ersten Felder existierten seit AP-25/39; AP-65·A ergänzt vier abschließende Positionsfelder für Parse-Fehler; AP-65·A-Härtung ergänzt zwei weitere Felder für präzisere Markierung und ehrliche Hinweise:
 
 | Attribut | Typ | Beschreibung |
 |---|---|---|
@@ -106,8 +106,10 @@ Rückgabeobjekt von `core/sqlanalyze.py::analyze` und `/api/analyze`. Die ersten
 | `parse_error_col` | `int \| None` | Spaltennummer des fehlerhaften Tokens (1-basiert); `None` wenn nicht ermittelbar (AP-65·A) |
 | `parse_error_context` | `str` | Kontext-Ausschnitt rund um das fehlerhafte Token; `""` wenn nicht verfügbar (AP-65·A) |
 | `parse_error_highlight` | `str` | Das fehlerhafte Token selbst (für die rot markierte `.an-err-mark`-Darstellung); `""` wenn nicht verfügbar (AP-65·A) |
+| `parse_error_highlight_pos` | `int` | Kontextrelativer Index des markierten Tokens im Kontext-Ausschnitt (AP-65·A-Härtung); ersetzt die alte `indexOf`-Erstvorkommens-Logik, die bei wiederholten Zeichen falsch markierte; `-1` wenn unbekannt/keine Position |
+| `parse_error_hint` | `str` | Optionaler Hinweis-Text unterhalb des Kontext-Ausschnitts (AP-65·A-Härtung); bei nicht geschlossenem/verschobenem Anführungszeichen weist er darauf hin, dass die eigentliche Ursache früher liegen kann; `""` wenn kein Hinweis nötig |
 
-`ParseError` wird über sqlglots `.errors[0]` aufgelöst (strukturierte Position). `TokenError` (z. B. nicht geschlossenes String-Literal) leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab. `/api/analyze` serialisiert alle vier Felder; die UI zeigt „Parse-Fehler in Zeile N, Spalte M:" + Kontext mit markiertem Token, fällt auf den Zeichenketten-Fallback zurück wenn keine Position verfügbar.
+`ParseError` wird über sqlglots `.errors[0]` aufgelöst (strukturierte Position). `TokenError` (z. B. nicht geschlossenes String-Literal) leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab; für den Unclosed-Quote-Fall lokalisiert `_unclosed_quote_offset(sql)` das offen gebliebene Anführungszeichen. `/api/analyze` serialisiert alle sechs Felder; die UI zeigt „Parse-Fehler in Zeile N, Spalte M:" + Kontext mit markiertem Token + optionalem Hint-Text, fällt auf den Zeichenketten-Fallback zurück wenn keine Position verfügbar.
 
 ## FK-Graph
 

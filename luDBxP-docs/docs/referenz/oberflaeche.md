@@ -260,6 +260,15 @@ Kontext-Ausschnitt, in dem das fehlerhafte Token rot hervorgehoben ist (`.an-err
 Ist keine Position ermittelbar (z. B. leere Eingabe), erscheint weiterhin der reine
 Fehlertext. Read-only — keine Autokorrektur.
 
+**Unclosed-Quote-Härtung (AP-65·A-Härtung):** Ein nicht geschlossenes Anführungszeichen
+in einem mehrzeiligen Statement (TokenError, sqlglot konsumiert bis EOF) erhält jetzt
+ebenfalls eine Positions-Anzeige: der Scanner `_unclosed_quote_offset` lokalisiert das
+offen gebliebene Anführungszeichen, der Analyzer markiert es mit dem exakten kontextrelativen
+Index (`parse_error_highlight_pos`) statt der alten `indexOf`-Erstvorkommens-Logik.
+Darunter erscheint ein ehrlicher Hinweis-Text (`parse_error_hint`): bei verschobenen
+Anführungszeichen kann die eigentliche Ursache früher im Statement liegen, da sqlglot
+die Position nur annähernd ermitteln kann.
+
 ## Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
 
 Das **Info**-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern

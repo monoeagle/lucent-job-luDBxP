@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.59.0] — 2026-06-30
+
+### Behoben
+- **Nicht geschlossenes/verschobenes Anführungszeichen (TokenError) zeigt jetzt eine Position und einen ehrlichen Hinweis (AP-65·A-Härtung):**
+  Bisher verbrauchte ein fehlendes `"` in einem mehrzeiligen Statement sqlglot bis zum EOF; der
+  Analyzer zeigte keine Position. Ein neuer reiner Scanner-Helfer `_unclosed_quote_offset(sql)` in
+  `core/sqlanalyze.py` lokalisiert das am Eingabe-Ende offen gebliebene Anführungszeichen. Der
+  Analyzer zeigt jetzt Zeile/Spalte des nicht geschlossenen Anführungszeichens, markiert es im
+  Kontext-Ausschnitt und fügt einen ehrlichen Hinweis hinzu: Bei verschobenen Anführungszeichen
+  kann die eigentliche Ursache früher im Statement liegen (sqlglot kann sie nicht exakt benennen).
+  `AnalysisResult` erhält zwei neue abschließende Felder: `parse_error_highlight_pos: int`
+  (kontextrelativierter Index des markierten Tokens, ersetzt die alte `indexOf`-Erstvorkommens-Logik)
+  und `parse_error_hint: str` (optionaler Hinweis-Text, der unterhalb des Ausschnitts erscheint,
+  wenn sqlglots Position nur annähernd ist). `/api/analyze` serialisiert beide Felder. Die Analyzer-UI
+  markiert über den Index und zeigt den Hinweis wenn vorhanden. Read-only — keine Autokorrektur.
+  Vollständig CI-testbar (kein DB-Zugang nötig). Kein neues Core-Modul — `sqlanalyze.py` existierte bereits.
+
 ## [0.58.0] — 2026-06-29
 
 ### Hinzugefügt

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.59.0] — 2026-06-30
+
+### Fixed
+- **Unclosed/shifted quote (TokenError) now shows a position and an honest hint (AP-65·A-Härtung):**
+  Before, a missing `"` in a multi-line statement caused sqlglot to consume to EOF; the analyzer showed
+  no position for the error. A new pure-scanner helper `_unclosed_quote_offset(sql)` in
+  `core/sqlanalyze.py` locates the quote left open at end of input. The analyzer now shows the
+  line/column of the unclosed quote, marks it in the context excerpt, and adds an honest hint:
+  at shifted-quote situations the real cause may sit earlier in the statement (sqlglot cannot
+  pinpoint it exactly). `AnalysisResult` gains two new trailing fields: `parse_error_highlight_pos: int`
+  (context-relative index of the marked token, replaces the old `indexOf` first-occurrence logic) and
+  `parse_error_hint: str` (optional hint text shown below the excerpt when sqlglot's position is
+  approximate). `/api/analyze` serializes both fields. The analyzer UI marks via the index and shows
+  the hint when present. Read-only — no auto-correction. Fully CI-testable (no DB required).
+  No new core module — `sqlanalyze.py` already existed.
+
 ## [0.58.0] — 2026-06-29
 
 ### Added

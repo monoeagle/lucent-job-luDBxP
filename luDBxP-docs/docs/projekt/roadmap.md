@@ -32,7 +32,7 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 ### SQL-Analyzer-Tiefe
 
-- **AP-65** — SQL-Analyzer: **Zeilennummern + Fehler-Lokalisierung** (Konzept: [Analyzer-Zeilen & Fehlerstelle](../../../docs/concepts/2026-06-29-analyzer-line-numbers-error-location.md)). **Stufe A erledigt v0.58.0:** Parse-Fehler zeigen jetzt Zeile/Spalte + markierten Kontext-Ausschnitt (`.an-err-mark`); `AnalysisResult` hat vier neue Felder `parse_error_line/col/context/highlight`; `/api/analyze` serialisiert sie. **Stufe B (S–M, offen):** Zeilennummern-Gutter im Eingabefeld + Fehlerzeile farbig. **Stufe C (M, offen):** Lints/Warnungen mit Zeilenbezug (Token-Position) → „Zeile N: …" + Klick markiert die Zeile.
+- **AP-65** — SQL-Analyzer: **Zeilennummern + Fehler-Lokalisierung** (Konzept: [Analyzer-Zeilen & Fehlerstelle](../../../docs/concepts/2026-06-29-analyzer-line-numbers-error-location.md)). **Stufe A erledigt v0.58.0:** Parse-Fehler zeigen jetzt Zeile/Spalte + markierten Kontext-Ausschnitt (`.an-err-mark`); `AnalysisResult` hat vier neue Felder `parse_error_line/col/context/highlight`; `/api/analyze` serialisiert sie. **Stufe A-Härtung erledigt v0.59.0:** Nicht geschlossenes/verschobenes Anführungszeichen (TokenError) erhält jetzt ebenfalls eine Position + ehrlichen Hinweis; zwei neue `AnalysisResult`-Felder `parse_error_highlight_pos` (kontextrelativer Index, ersetzt `indexOf`) und `parse_error_hint` (Hinweis-Text bei annähernder Position). **Stufe B (S–M, offen):** Zeilennummern-Gutter im Eingabefeld + Fehlerzeile farbig. **Stufe C (M, offen):** Lints/Warnungen mit Zeilenbezug (Token-Position) → „Zeile N: …" + Klick markiert die Zeile.
 
 ### Verbindungs-UX & Demo-Daten
 
@@ -166,6 +166,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.59.0** (2026-06-30):
+
+- **AP-65·A-Härtung** — Unclosed-Quote-Position + ehrlicher Hinweis: neuer reiner Scanner-Helfer `_unclosed_quote_offset(sql)` in `core/sqlanalyze.py` lokalisiert ein am Eingabe-Ende offen gebliebenes Anführungszeichen (TokenError). Der Analyzer zeigt jetzt Zeile/Spalte + markierten Kontext-Ausschnitt auch für diesen Fall; ein `parse_error_hint` weist darauf hin, dass die eigentliche Ursache bei verschobenen Anführungszeichen früher liegen kann. `AnalysisResult` erhält zwei neue abschließende Felder: `parse_error_highlight_pos: int` (kontextrelativer Index des markierten Tokens, ersetzt die alte `indexOf`-Erstvorkommens-Logik) und `parse_error_hint: str`; `/api/analyze` serialisiert beide. Vollständig CI-testbar (kein DB-Zugang), kein neues Core-Modul. **Aufwand XS** — v0.59.0
 
 **v0.58.0** (2026-06-29):
 

@@ -1,10 +1,50 @@
 {
-  "generatedAt": "2026-06-30T00:00:58",
+  "generatedAt": "2026-06-30T00:52:53",
   "range": {
     "from": "2025-07-01",
     "to": "2026-06-30"
   },
   "byDay": {
+    "2026-06-30": {
+      "commits": 6,
+      "kinds": {
+        "feat": 3,
+        "docs": 2,
+        "other": 1
+      },
+      "list": [
+        {
+          "sha": "f3660f0",
+          "subject": "feat(ui): Analyzer-Markierung über highlight_pos + Quote-Hinweis (AP-65·A-Härtung)",
+          "kind": "feat"
+        },
+        {
+          "sha": "b1ead51",
+          "subject": "feat(api): parse_error_highlight_pos + parse_error_hint in /api/analyze (AP-65·A-Härtung)",
+          "kind": "feat"
+        },
+        {
+          "sha": "abbbc4c",
+          "subject": "feat(sqlanalyze): unclosed-quote-Lokalisierung + highlight_pos + hint (AP-65·A-Härtung)",
+          "kind": "feat"
+        },
+        {
+          "sha": "c9904c6",
+          "subject": "docs(plan): AP-65·A-Härtung Implementierungsplan — TokenError-Quote-Hinweis + Mark-Fix",
+          "kind": "docs"
+        },
+        {
+          "sha": "5ccdfdf",
+          "subject": "docs(spec): AP-65·A-Härtung Design — TokenError-Quote-Hinweis + Mark-Fix (highlight_pos/hint)",
+          "kind": "docs"
+        },
+        {
+          "sha": "2a1347b",
+          "subject": "release: v0.58.0 — AP-65·A (Analyzer Parse-Fehler mit Position)",
+          "kind": "other"
+        }
+      ]
+    },
     "2026-06-29": {
       "commits": 87,
       "kinds": {
@@ -2188,17 +2228,17 @@
     }
   },
   "stats": {
-    "totalCommits": 423,
-    "activeDays": 5,
-    "longestStreak": 5,
+    "totalCommits": 429,
+    "activeDays": 6,
+    "longestStreak": 6,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 200
+        "count": 202
       },
       {
         "kind": "feat",
-        "count": 129
+        "count": 132
       },
       {
         "kind": "fix",
@@ -2206,7 +2246,7 @@
       },
       {
         "kind": "other",
-        "count": 34
+        "count": 35
       },
       {
         "kind": "test",
@@ -2225,7 +2265,7 @@
         "count": 4
       }
     ],
-    "testCount": 435
+    "testCount": 442
   },
   "phases": []
 }
