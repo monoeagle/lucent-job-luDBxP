@@ -1,4 +1,4 @@
-"""AP-12 — optional live MSSQL integration test.
+"""AP-12/AP-63·S3 — optional live MSSQL integration test.
 
 Runs only when ``LUCENT_MSSQL_TEST_URL`` points at a reachable SQL Server with
 write access; otherwise it skips, so the suite stays green on machines without
@@ -27,6 +27,15 @@ _CHILD = "_lucent_it_child"
 
 _DROP = (f"IF OBJECT_ID('{_CHILD}') IS NOT NULL DROP TABLE {_CHILD}; "
          f"IF OBJECT_ID('{_PARENT}') IS NOT NULL DROP TABLE {_PARENT};")
+
+# AP-63·S3: routine test objects
+_PROC = "_lucent_it_proc"
+_FUNC = "_lucent_it_func"
+
+_DROP_RTN = (
+    f"IF OBJECT_ID('{_PROC}', 'P') IS NOT NULL DROP PROCEDURE {_PROC}; "
+    f"IF OBJECT_ID('{_FUNC}', 'FN') IS NOT NULL DROP FUNCTION {_FUNC};"
+)
 
 
 @pytest.mark.skipif(
@@ -65,5 +74,38 @@ def test_mssql_live_reflection_with_fk():
         assert fk.ref_columns == ("id",)
     finally:
         conn.execute(text(_DROP))
+        conn.close()
+        engine.dispose()
+
+
+@pytest.mark.skipif(
+    not _MSSQL_URL,
+    reason="set LUCENT_MSSQL_TEST_URL to a reachable MSSQL URL to run the live "
+           "integration test",
+)
+def test_mssql_reflects_routines():
+    """Provision a procedure + function on MSSQL and reflect via the loader."""
+    pytest.importorskip("pyodbc")
+    try:
+        engine = create_engine(_MSSQL_URL, isolation_level="AUTOCOMMIT")
+        conn = engine.connect()
+    except Exception as exc:
+        pytest.skip(f"MSSQL not reachable or ODBC driver missing: {exc}")
+
+    try:
+        conn.execute(text(_DROP_RTN))
+        conn.execute(text(f"CREATE PROCEDURE {_PROC} AS SELECT 1"))
+        conn.execute(text(
+            f"CREATE FUNCTION {_FUNC}() RETURNS INT AS BEGIN RETURN 1; END"
+        ))
+
+        schema = SqlAlchemyLoader(_MSSQL_URL).load()
+        by_rtn = {r.name: r for r in schema.routines}
+        assert _PROC in by_rtn, f"{_PROC} not in routines: {list(by_rtn)}"
+        assert by_rtn[_PROC].kind == "procedure"
+        assert _FUNC in by_rtn, f"{_FUNC} not in routines: {list(by_rtn)}"
+        assert by_rtn[_FUNC].kind == "function"
+    finally:
+        conn.execute(text(_DROP_RTN))
         conn.close()
         engine.dispose()
