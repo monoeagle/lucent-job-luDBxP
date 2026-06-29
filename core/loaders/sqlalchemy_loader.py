@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 
-from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema, Trigger, Sequence
+from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema, Trigger, Sequence, Routine, Synonym
 from core.schema_loader import SchemaLoader
 
 
@@ -36,6 +36,82 @@ def _reflect_triggers(engine) -> tuple:
                 "WHERE type='trigger' AND sql IS NOT NULL ORDER BY name"
             )).fetchall()
         return tuple(Trigger(r[0], r[1] or "", r[2] or "") for r in rows)
+    except SQLAlchemyError:
+        return ()
+
+
+def _reflect_routines(engine, schema=None) -> tuple:
+    """Read-only routine reflection (procedures/functions/packages) via
+    per-dialect catalog SQL. PG: pg_proc; Oracle: all_objects+all_source;
+    MSSQL: sys.objects+sys.sql_modules. SQLite/other → ()."""
+    name = getattr(getattr(engine, "dialect", None), "name", "")
+    if name not in ("postgresql", "oracle", "mssql"):
+        return ()
+    try:
+        with engine.connect() as conn:
+            if name == "postgresql":
+                rows = conn.execute(text(
+                    "SELECT p.proname, p.prokind, pg_get_functiondef(p.oid) "
+                    "FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace "
+                    "WHERE n.nspname = :s AND p.prokind IN ('p','f') "
+                    "ORDER BY p.proname"
+                ), {"s": schema or "public"}).fetchall()
+                return tuple(
+                    Routine(r[0], "procedure" if str(r[1]) == "p" else "function", r[2] or "")
+                    for r in rows
+                )
+            if name == "oracle":
+                owner = (schema or "").upper() or conn.execute(text(
+                    "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM dual"
+                )).scalar()
+                objs = conn.execute(text(
+                    "SELECT object_name, object_type FROM all_objects "
+                    "WHERE owner = :o AND object_type IN ('PROCEDURE','FUNCTION','PACKAGE') "
+                    "ORDER BY object_type, object_name"
+                ), {"o": owner}).fetchall()
+                out = []
+                for oname, otype in objs:
+                    src_rows = conn.execute(text(
+                        "SELECT text FROM all_source WHERE owner = :o AND name = :n "
+                        "AND type = :t ORDER BY line"
+                    ), {"o": owner, "n": oname, "t": otype}).fetchall()
+                    out.append(Routine(oname, otype.lower(), "".join(s[0] or "" for s in src_rows)))
+                return tuple(out)
+            if name == "mssql":
+                rows = conn.execute(text(
+                    "SELECT o.name, o.type, m.definition "
+                    "FROM sys.objects o LEFT JOIN sys.sql_modules m "
+                    "ON m.object_id = o.object_id "
+                    "WHERE o.type IN ('P','FN','IF','TF') "
+                    "AND SCHEMA_NAME(o.schema_id) = :s ORDER BY o.name"
+                ), {"s": schema or "dbo"}).fetchall()
+                return tuple(
+                    Routine(r[0].strip(), "procedure" if r[1].strip() == "P" else "function", r[2] or "")
+                    for r in rows
+                )
+    except SQLAlchemyError:
+        return ()
+    return ()
+
+
+def _reflect_synonyms(engine, schema=None) -> tuple:
+    """Read-only synonym reflection — Oracle-only (all_synonyms); other → ()."""
+    name = getattr(getattr(engine, "dialect", None), "name", "")
+    if name != "oracle":
+        return ()
+    try:
+        with engine.connect() as conn:
+            owner = (schema or "").upper() or conn.execute(text(
+                "SELECT SYS_CONTEXT('USERENV','CURRENT_SCHEMA') FROM dual"
+            )).scalar()
+            rows = conn.execute(text(
+                "SELECT synonym_name, table_owner, table_name FROM all_synonyms "
+                "WHERE owner = :o ORDER BY synonym_name"
+            ), {"o": owner}).fetchall()
+        return tuple(
+            Synonym(r[0], f"{r[1]}.{r[2]}" if r[1] and r[1] != owner else r[2])
+            for r in rows
+        )
     except SQLAlchemyError:
         return ()
 
@@ -165,7 +241,9 @@ class SqlAlchemyLoader(SchemaLoader):
                     mvdef = ""
                 matviews.append(View(mvname, mvcols, mvdef))
             return Schema(tuple(tables), tuple(views), _reflect_triggers(engine),
-                          sequences, tuple(matviews))
+                          sequences, tuple(matviews),
+                          _reflect_routines(engine, schema),
+                          _reflect_synonyms(engine, schema))
         except SQLAlchemyError as exc:
             hint = _odbc_driver_hint(exc)
             raise ConnectionError(hint or f"Could not reflect schema: {exc}") from exc

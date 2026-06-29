@@ -204,3 +204,10 @@ def test_loader_sequences_and_matviews_empty_on_sqlite(inventory_url):
     schema = SqlAlchemyLoader(inventory_url).load()
     assert schema.sequences == ()
     assert schema.materialized_views == ()
+
+
+def test_loader_routines_synonyms_empty_on_sqlite(inventory_url):
+    # SQLite hat keine Prozeduren/Funktionen/Packages/Synonyme → sauber ().
+    schema = SqlAlchemyLoader(inventory_url).load()
+    assert schema.routines == ()
+    assert schema.synonyms == ()
