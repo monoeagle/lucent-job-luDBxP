@@ -158,6 +158,7 @@ def api_schema():
             "name": v.name,
             "columns": [{"name": c.name, "type": c.type} for c in v.columns],
             "definition": v.definition,
+            "routines": list(v.routines),
         } for v in schema.views],
         triggers=[
             {"name": tr.name, "table": tr.table, "sql": tr.sql}
@@ -167,7 +168,8 @@ def api_schema():
         materialized_views=[
             {"name": mv.name,
              "columns": [{"name": c.name, "type": c.type} for c in mv.columns],
-             "definition": mv.definition}
+             "definition": mv.definition,
+             "routines": list(mv.routines)}
             for mv in schema.materialized_views
         ],
         procedures=[{"name": r.name, "sql": r.sql}

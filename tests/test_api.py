@@ -1249,3 +1249,22 @@ def test_schema_routines_synonyms_empty_on_sqlite(client, inventory_url):
     assert data["functions"] == []
     assert data["packages"] == []
     assert data["synonyms"] == []
+
+
+def test_schema_view_exposes_referenced_routines(client, inventory_url, monkeypatch):
+    import web.routes as routes_mod
+    from core.model import Schema, View, Column
+
+    fake = Schema(
+        tables=(),
+        views=(View("v_uses_fn", (Column("a", "INT"),), "SELECT fn(a) FROM t", ("FN",)),),
+    )
+    monkeypatch.setattr(routes_mod.SqlAlchemyLoader, "load", lambda self, schema=None: fake)
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    v = next(x for x in data["views"] if x["name"] == "v_uses_fn")
+    assert v["routines"] == ["FN"]
+
+
+def test_schema_view_routines_empty_on_sqlite(client, inventory_url):
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    assert all(v["routines"] == [] for v in data["views"])
