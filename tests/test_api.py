@@ -1083,6 +1083,36 @@ def test_subset_run_missing_url_returns_400(client):
     assert resp.status_code == 400
 
 
+# ===== AP-56b Stufe 2: /api/subset/dump =====
+
+def test_subset_dump_returns_bundle(client, demo_url):
+    resp = client.post("/api/subset/dump", json={
+        "connection_url": demo_url, "start_table": "Datacenter",
+        "root_filter": {"column": "DatacenterID", "op": "=", "value": 3}})
+    data = resp.get_json()
+    assert resp.status_code == 200
+    assert data["row_cap"] == 5000 and data["incomplete"] is False
+    by = {t["name"]: t for t in data["tables"]}
+    assert by["Datacenter"]["row_count"] == 1
+    assert "columns" in by["Datacenter"] and "rows" in by["Datacenter"]
+    assert len(by["Datacenter"]["rows"]) == 1
+    # closure children of the empty datacenter are present but empty
+    assert sum(t["row_count"] for t in data["tables"]) == 1
+
+
+def test_subset_dump_unknown_table_returns_400(client, demo_url):
+    resp = client.post("/api/subset/dump", json={
+        "connection_url": demo_url, "start_table": "Nope",
+        "root_filter": {"column": "x", "op": "=", "value": 1}})
+    assert resp.status_code == 400
+
+
+def test_subset_dump_missing_url_returns_400(client):
+    resp = client.post("/api/subset/dump", json={"start_table": "Datacenter",
+        "root_filter": {"column": "DatacenterID", "op": "=", "value": 1}})
+    assert resp.status_code == 400
+
+
 # ===== AP-64: /api/connect meldet jeden Verbindungsfehler als 400 =====
 
 def test_connect_unhandled_loader_error_returns_400(client, monkeypatch):
