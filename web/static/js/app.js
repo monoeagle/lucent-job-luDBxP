@@ -169,6 +169,10 @@ function renderSidebar() {
     `<ul class="objlist">${objList(SCHEMA.tables, "table")}</ul>` +
     `<h3>Views (${SCHEMA.views.length})</h3>` +
     `<ul class="objlist">${objList(SCHEMA.views, "view")}</ul>` +
+    ((SCHEMA.triggers && SCHEMA.triggers.length)
+      ? `<h3>Trigger (${SCHEMA.triggers.length})</h3>` +
+        `<ul class="objlist">${objList(SCHEMA.triggers, "trigger")}</ul>`
+      : "") +
     `<div class="sidebar-bottom"><h3>Info</h3>` +
     `<ul class="objlist"><li data-action="info">Übersicht</li></ul></div>`;
   $("objects").querySelectorAll("li").forEach((li) => {
@@ -316,6 +320,11 @@ function openDetail(kind, name) {
       `<h3>Indizes</h3>${idxHtml}` +
       `<h3>Check-Constraints</h3>${ckHtml}`;
     sqlText = t.ddl;
+  } else if (kind === "trigger") {
+    const tr = (SCHEMA.triggers || []).find((x) => x.name === name);
+    defHtml = `<h2>Trigger: ${esc(tr.name)}</h2>` +
+      `<p class="hint">auf Tabelle: ${esc(tr.table || "—")}</p>`;
+    sqlText = tr.sql;
   } else {
     const v = SCHEMA.views.find((x) => x.name === name);
     defHtml = `<h2>View: ${esc(v.name)}</h2>` +
@@ -324,14 +333,17 @@ function openDetail(kind, name) {
     sqlText = v.definition;
   }
 
+  const hasData = kind === "table" || kind === "view";
+  const dataBtn = hasData ? `<button class="subtab" data-sub="data">Daten</button>` : "";
+  const dataPane = hasData ? `<div class="subpanel" data-sub="data"></div>` : "";
   panel.innerHTML =
     `<div class="detail">` +
     `<div class="subtabbar">` +
     `<button class="subtab active" data-sub="def">Definition</button>` +
-    `<button class="subtab" data-sub="data">Daten</button>` +
+    dataBtn +
     `<button class="subtab" data-sub="sql">SQL</button></div>` +
     `<div class="subpanel active" data-sub="def">${defHtml}</div>` +
-    `<div class="subpanel" data-sub="data"></div>` +
+    dataPane +
     `<div class="subpanel" data-sub="sql"><pre class="viewdef"></pre></div></div>`;
   panel.querySelector('.subpanel[data-sub="sql"] .viewdef').textContent =
     sqlText || "(keine Definition)";
@@ -344,7 +356,7 @@ function openDetail(kind, name) {
         x.classList.toggle("active", x === st));
       panel.querySelectorAll(".subpanel").forEach((p) =>
         p.classList.toggle("active", p.dataset.sub === st.dataset.sub));
-      if (st.dataset.sub === "data" && !dataLoaded) {
+      if (st.dataset.sub === "data" && !dataLoaded && dataPanel) {
         dataLoaded = true;
         loadData(name, dataPanel);
       }

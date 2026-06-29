@@ -112,6 +112,9 @@ CREATE TABLE LicenseKey (
 
 CREATE INDEX ix_host_cluster ON Host(ClusterID);
 
+CREATE TRIGGER trg_vm_audit AFTER INSERT ON VirtualMachine
+BEGIN SELECT 1; END;
+
 CREATE VIEW WindowsVMs AS
     SELECT vm.VMID, vm.Name AS VMName, os.Family, os.Version
     FROM VirtualMachine vm

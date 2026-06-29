@@ -88,6 +88,13 @@ def test_demo_has_index_and_check(demo_url):
     assert any("SizeGB" in cc.sqltext for cc in vmdisk_checks)
 
 
+def test_demo_has_trigger(demo_url):
+    schema = SqlAlchemyLoader(demo_url).load()
+    by = {tr.name: tr for tr in schema.triggers}
+    assert "trg_vm_audit" in by
+    assert by["trg_vm_audit"].table == "VirtualMachine"
+
+
 def test_filter_weave_on_real_schema_has_no_duplicate_tables(demo_graph):
     path = find_paths(
         demo_graph, "Network", "Cluster", required_tables=("OperatingSystem",)
