@@ -78,6 +78,7 @@ async function postJSON(url, body) {
 function connUrl() { return $("connection_url").value; }
 function includeImplied() { return $("include_implied").checked; }
 function tableByName(name) { return SCHEMA.tables.find((t) => t.name === name); }
+function findByName(arr, name) { return (arr || []).find((x) => x.name === name); }
 function optionList(names) { return names.map((n) => `<option>${n}</option>`).join(""); }
 
 // Aggregate options. value = token sent in the request; label = shown to the user.
@@ -158,7 +159,7 @@ function ensureTab(id, title, closable) {
 // ===== Object browser (sidebar) =====
 function renderSidebar() {
   const objList = (items, kind) => items.map((o) =>
-    `<li data-kind="${kind}" data-name="${esc(o.name)}">${esc(o.name)}</li>`).join("");
+    `<li data-kind="${kind}" data-name="${escAttr(o.name)}">${esc(o.name)}</li>`).join("");
   $("objects").innerHTML =
     `<h3>Tools</h3><ul class="objlist">` +
     `<li data-action="connections">Verbindungen</li>` +
@@ -180,6 +181,22 @@ function renderSidebar() {
     ((SCHEMA.materialized_views && SCHEMA.materialized_views.length)
       ? `<h3>Materialized Views (${SCHEMA.materialized_views.length})</h3>` +
         `<ul class="objlist">${objList(SCHEMA.materialized_views, "matview")}</ul>`
+      : "") +
+    ((SCHEMA.procedures && SCHEMA.procedures.length)
+      ? `<h3>Prozeduren (${SCHEMA.procedures.length})</h3>` +
+        `<ul class="objlist">${objList(SCHEMA.procedures, "procedure")}</ul>`
+      : "") +
+    ((SCHEMA.functions && SCHEMA.functions.length)
+      ? `<h3>Funktionen (${SCHEMA.functions.length})</h3>` +
+        `<ul class="objlist">${objList(SCHEMA.functions, "function")}</ul>`
+      : "") +
+    ((SCHEMA.packages && SCHEMA.packages.length)
+      ? `<h3>Packages (${SCHEMA.packages.length})</h3>` +
+        `<ul class="objlist">${objList(SCHEMA.packages, "package")}</ul>`
+      : "") +
+    ((SCHEMA.synonyms && SCHEMA.synonyms.length)
+      ? `<h3>Synonyme (${SCHEMA.synonyms.length})</h3>` +
+        `<ul class="objlist">${objList(SCHEMA.synonyms, "synonym")}</ul>`
       : "") +
     `<div class="sidebar-bottom"><h3>Info</h3>` +
     `<ul class="objlist"><li data-action="info">Übersicht</li></ul></div>`;
@@ -344,6 +361,20 @@ function openDetail(kind, name) {
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
       `<tbody>${colRows(mv.columns, false)}</tbody></table>`;
     sqlText = mv.definition;
+  } else if (kind === "procedure" || kind === "function" || kind === "package") {
+    const label = kind === "procedure" ? "Prozedur"
+                : kind === "function" ? "Funktion" : "Package";
+    const arr = kind === "procedure" ? SCHEMA.procedures
+              : kind === "function" ? SCHEMA.functions : SCHEMA.packages;
+    const r = findByName(arr, name);
+    defHtml = `<h2>${esc(label)}: ${esc(r.name)}</h2>` +
+      `<p class="hint">Quelltext im SQL-Tab</p>`;
+    sqlText = r.sql;
+  } else if (kind === "synonym") {
+    const s = findByName(SCHEMA.synonyms, name);
+    defHtml = `<h2>Synonym: ${esc(s.name)}</h2>` +
+      `<p class="hint">Ziel: ${esc(s.target || "—")}</p>`;
+    sqlText = "";   // konsistent mit Sequenz: SQL-Tab bleibt, zeigt "(keine Definition)"
   } else {
     const v = SCHEMA.views.find((x) => x.name === name);
     defHtml = `<h2>View: ${esc(v.name)}</h2>` +
