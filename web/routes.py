@@ -159,6 +159,10 @@ def api_schema():
             "columns": [{"name": c.name, "type": c.type} for c in v.columns],
             "definition": v.definition,
         } for v in schema.views],
+        triggers=[
+            {"name": tr.name, "table": tr.table, "sql": tr.sql}
+            for tr in schema.triggers
+        ],
         cross_schema_fks=list(schema.cross_schema_fks(schema_name)),
         implied_fks=[
             {"from_table": i.table, "column": i.column,

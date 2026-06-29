@@ -1184,3 +1184,16 @@ def test_schema_exposes_indexes_and_checks(client, indexes_checks_url):
     assert ix["ux_person_email"]["unique"] is True
     assert any("email" in c["sqltext"] for c in person["check_constraints"])
     assert any(c["name"] == "ck_email" for c in person["check_constraints"])
+
+
+def test_schema_exposes_triggers(client, triggers_url):
+    data = client.post("/api/schema", json={"connection_url": triggers_url}).get_json()
+    by = {tr["name"]: tr for tr in data["triggers"]}
+    assert "trg_account_audit" in by
+    assert by["trg_account_audit"]["table"] == "Account"
+    assert "CREATE TRIGGER" in by["trg_account_audit"]["sql"]
+
+
+def test_schema_no_triggers_is_empty_list(client, inventory_url):
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    assert data["triggers"] == []
