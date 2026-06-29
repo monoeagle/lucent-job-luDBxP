@@ -27,6 +27,9 @@ let SB_LAST = null;     // { body, paths } from the last successful build
 let SB_PATH_IDX = 0;    // currently selected path index
 let SB_JOIN_TYPES = []; // AP-41: per-step join type for the active path (INNER default)
 
+// ===== Subset state (AP-56b) =====
+let SUB_LAST_PAYLOAD = null; // payload used to build the currently displayed footprint
+
 const $ = (id) => document.getElementById(id);
 
 // The real URL (with password) lives in a hidden field; show a masked form.
@@ -530,9 +533,11 @@ async function runSubset() {
     include_implied: $("sub_implied").checked,
   };
   out.innerHTML = "<p class='hint'>berechne…</p>";
+  SUB_LAST_PAYLOAD = null;
   let res;
   try { res = await postJSON("/api/subset", payload); }
   catch (e) { out.innerHTML = `<p class='hint'>Fehler: ${esc(String(e))}</p>`; return; }
+  SUB_LAST_PAYLOAD = payload;
   const rows = res.tables.map((t) =>
     `<tr data-table="${escAttr(t.name)}"><td>${esc(t.name)}</td>` +
     `<td><span class="badge">${esc(t.kind)}</span></td>` +
@@ -554,14 +559,10 @@ async function runSubset() {
 async function runSubsetCount() {
   const btn = $("sub_count");
   const total = $("sub_total");
+  if (!SUB_LAST_PAYLOAD) { total.textContent = "Erst Footprint bauen."; return; }
   btn.disabled = true;
   total.textContent = "zähle…";
-  const payload = {
-    connection_url: connUrl(), start_table: $("sub_table").value,
-    root_filter: { column: $("sub_col").value, op: $("sub_op").value,
-                   value: $("sub_val").value },
-    include_implied: $("sub_implied").checked,
-  };
+  const payload = { ...SUB_LAST_PAYLOAD };
   let res;
   try { res = await postJSON("/api/subset/run", payload); }
   catch (e) { total.textContent = `Fehler: ${esc(String(e))}`; btn.disabled = false; return; }
