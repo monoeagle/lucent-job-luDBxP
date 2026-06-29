@@ -50,6 +50,8 @@ def _reflect_routines(engine, schema=None) -> tuple:
     try:
         with engine.connect() as conn:
             if name == "postgresql":
+                # pg_proc.prokind exists only on PostgreSQL >= 11; on older
+                # servers this query raises and routines fall back to () below.
                 rows = conn.execute(text(
                     "SELECT p.proname, p.prokind, pg_get_functiondef(p.oid) "
                     "FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace "
