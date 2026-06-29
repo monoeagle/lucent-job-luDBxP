@@ -97,12 +97,27 @@ class Trigger:
 
 
 @dataclass(frozen=True)
+class Routine:
+    name: str
+    kind: str        # "procedure" | "function" | "package"
+    sql: str = ""    # Quelltext (CREATE …/Package-Source); "" falls nicht lesbar
+
+
+@dataclass(frozen=True)
+class Synonym:
+    name: str
+    target: str      # (owner.)object — Zielobjekt; kein Quelltext
+
+
+@dataclass(frozen=True)
 class Schema:
     tables: tuple[Table, ...]
     views: tuple[View, ...] = ()
     triggers: tuple[Trigger, ...] = ()
     sequences: tuple[Sequence, ...] = ()
     materialized_views: tuple[View, ...] = ()   # Matviews reusen das View-Shape
+    routines: tuple[Routine, ...] = ()
+    synonyms: tuple[Synonym, ...] = ()
 
     def table(self, name: str) -> Table:
         for t in self.tables:

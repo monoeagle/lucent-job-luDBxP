@@ -81,3 +81,41 @@ def test_cross_schema_fks_empty_current_treats_any_ref_schema_as_cross():
     fk = ForeignKey("Product", (("ProductID", "ProductID"),), "Production")
     sch = Schema((_tbl("SalesOrderDetail", [fk]),))
     assert len(sch.cross_schema_fks("")) == 1
+
+
+# ===== AP-63·S3: Routine + Synonym Dataclasses =====
+
+def test_routine_carries_kind_and_sql():
+    from core.model import Routine
+    r = Routine("calc_total", "function", "CREATE FUNCTION calc_total() ...")
+    assert r.name == "calc_total"
+    assert r.kind == "function"
+    assert "CREATE FUNCTION" in r.sql
+
+
+def test_routine_sql_defaults_empty():
+    from core.model import Routine
+    assert Routine("p", "procedure").sql == ""
+
+
+def test_synonym_carries_target():
+    from core.model import Synonym
+    s = Synonym("emp_syn", "HR.EMPLOYEES")
+    assert s.name == "emp_syn"
+    assert s.target == "HR.EMPLOYEES"
+
+
+def test_schema_routines_synonyms_default_empty():
+    from core.model import Schema
+    sch = Schema(tables=())
+    assert sch.routines == ()
+    assert sch.synonyms == ()
+
+
+def test_schema_positional_constructor_still_works_with_routines():
+    # Bestehende positionale Aufrufe (bis materialized_views) bleiben gültig.
+    from core.model import Schema, View, Sequence
+    sch = Schema((), (), (), (Sequence("s"),), (View("mv", ()),))
+    assert sch.sequences[0].name == "s"
+    assert sch.routines == ()
+    assert sch.synonyms == ()
