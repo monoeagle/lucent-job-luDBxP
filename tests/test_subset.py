@@ -1,5 +1,5 @@
 from core.model import Schema, Table, Column, ForeignKey
-from core.subset import compute_subset
+from core.subset import compute_subset, generate_subset_sql, count_sql
 
 
 def _t(name, cols, fks=(), pk=()):
@@ -166,3 +166,13 @@ def test_bad_operator_raises():
     r = compute_subset(_shop_schema(), "Customer")
     with pytest.raises(ValueError):
         generate_subset_sql(_shop_schema(), r, {"column": "id", "op": "DROP", "value": 1})
+
+
+def test_count_sql_wraps_and_strips_semicolon():
+    inner = "SELECT DISTINCT t0.*\nFROM Country t0\nWHERE t0.code = :root;"
+    out = count_sql(inner)
+    assert out.startswith("SELECT COUNT(*) FROM (")
+    assert out.rstrip().endswith(") subset_cnt")
+    assert ";" not in out                      # trailing ';' stripped before embedding
+    assert "DISTINCT t0.*" in out              # inner SELECT (incl. DISTINCT) preserved
+    assert " AS " not in out                   # alias without AS → Oracle-portable

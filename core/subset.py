@@ -189,3 +189,15 @@ def generate_subset_sql(schema: Schema, result: SubsetResult, root_filter: dict,
         lines.append(f"WHERE {root_alias}.{col} {where_tail}")
         scripts.append(SubsetScript(st.name, "\n".join(lines) + ";", dict(params_template)))
     return tuple(scripts)
+
+
+def count_sql(inner_sql: str) -> str:
+    """Wrap a subset SELECT into a read-only row-count query.
+
+    ``SELECT COUNT(*) FROM (<inner>) subset_cnt`` — the alias carries no ``AS``
+    so it is valid across SQLite/PostgreSQL/MySQL/MSSQL and Oracle (Oracle
+    forbids ``AS`` for a table alias; the others require an alias for the
+    derived table). A trailing ';' is stripped before embedding.
+    """
+    inner = inner_sql.strip().rstrip(";").rstrip()
+    return f"SELECT COUNT(*) FROM ({inner}) subset_cnt"
