@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.53.0] — 2026-06-29
+
+### Added
+- **Triggers as a new read-only sidebar category (AP-63·S2):** triggers are now reflected
+  (name, owning table, source) and shown as their own "Trigger" sidebar category (only when
+  present). Reflection uses dialect catalog SQL — **SQLite** via `sqlite_master`; other
+  dialects return none for now (PG/Oracle trigger reflection is a fast-follow). The trigger
+  detail is slim: definition (owning table) + the `CREATE TRIGGER` source in the SQL tab, no
+  Data tab. Model gains `Trigger` + `Schema.triggers`; `/api/schema` serializes them; the
+  demo CMDB gained a trigger. Sequences and materialized views remain AP-63·S2b. Display only
+  — triggers are never executed and don't take part in join paths.
+
 ## [0.52.0] — 2026-06-29
 
 ### Added

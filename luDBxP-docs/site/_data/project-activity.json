@@ -1,19 +1,49 @@
 {
-  "generatedAt": "2026-06-29T16:51:29",
+  "generatedAt": "2026-06-29T17:27:58",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 40,
+      "commits": 46,
       "kinds": {
-        "feat": 13,
-        "docs": 22,
+        "feat": 16,
+        "docs": 25,
         "chore": 1,
         "fix": 4
       },
       "list": [
+        {
+          "sha": "e62048e",
+          "subject": "feat(subset): Trigger-Sidebar-Kategorie + Trigger-Detail; Demo-CMDB erweitert (AP-63·S2)",
+          "kind": "feat"
+        },
+        {
+          "sha": "50adaed",
+          "subject": "feat(subset): /api/schema liefert Trigger (AP-63·S2)",
+          "kind": "feat"
+        },
+        {
+          "sha": "dce2b00",
+          "subject": "feat(model): Trigger reflektieren (SQLite-Katalog) + im Schema tragen (AP-63·S2)",
+          "kind": "feat"
+        },
+        {
+          "sha": "68655e5",
+          "subject": "docs: Plan AP-63·S2 — Trigger-Sidebar-Kategorie (4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "7d071df",
+          "subject": "docs: Spec AP-63·S2 (erste Scheibe) — Trigger als Sidebar-Kategorie",
+          "kind": "docs"
+        },
+        {
+          "sha": "667252a",
+          "subject": "docs: Release v0.52.0 — AP-63·S1 (Indizes + Check-Constraints im Tabellen-Detail)",
+          "kind": "docs"
+        },
         {
           "sha": "c99bbe8",
           "subject": "feat(subset): Tabellen-Detail zeigt Indizes + Check-Constraints; Demo-CMDB erweitert (AP-63·S1)",
@@ -1951,17 +1981,17 @@
     }
   },
   "stats": {
-    "totalCommits": 376,
+    "totalCommits": 382,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 178
+        "count": 181
       },
       {
         "kind": "feat",
-        "count": 111
+        "count": 114
       },
       {
         "kind": "fix",
@@ -1988,7 +2018,7 @@
         "count": 3
       }
     ],
-    "testCount": 390
+    "testCount": 395
   },
   "phases": []
 }

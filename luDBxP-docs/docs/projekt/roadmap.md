@@ -28,7 +28,7 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen **nicht** an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:
 
-- **AP-63 · Stufe 2** — neue Sidebar-Kategorien **Sequences, Materialized Views, Triggers** (etabliert das Kategorie-Muster; Triggers SQLite-testbar, Sequences/Mat-Views nur gegen PostgreSQL). **Aufwand M.**
+- **AP-63 · Stufe 2b** — neue Sidebar-Kategorien **Sequences + Materialized Views** (SQLAlchemy-nativ `get_sequence_names`/`get_materialized_view_names`, nur gegen PostgreSQL/Oracle, skip-guarded) auf dem in S2 etablierten Kategorie-Muster; zusätzlich **PG/Oracle-Trigger-Reflektion** als Fast-Follow (eigene Katalog-Query). **Aufwand M.** (Trigger/SQLite = AP-63·S2, erledigt v0.53.0.)
 - **AP-63 · Stufe 3** — **Stored Procedures + Functions** (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). **Aufwand L.**
 - **AP-66** — Views, die **Prozeduren/Funktionen** verwenden, auflösen (Konzept: [Views mit Routinen](../../../docs/concepts/2026-06-29-views-with-routines-resolution.md)). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. **Stufe 1 (S–M):** referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). **Stufe 2 (M):** Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). **Stufe 3 (XL, zurückgestellt):** echte Daten-Lineage durch den PL/SQL-Body.
 
@@ -168,6 +168,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.53.0** (2026-06-29):
+
+- **AP-63 · Stufe 2** — Trigger als neue read-only Sidebar-Kategorie: Trigger werden reflektiert (Name/Tabelle/Quelltext, SQLite via `sqlite_master`-Katalog-SQL; andere Dialekte folgen) und als eigene „Trigger"-Kategorie (nur bei N>0) gezeigt; schlankes Trigger-Detail (Tabelle + `CREATE TRIGGER`-Quelltext, kein Daten-Tab). Model `Trigger`/`Schema.triggers`, `/api/schema` serialisiert sie, Demo-CMDB um Trigger erweitert. Etabliert das neue-Objekt-Kategorie-Muster; Sequences/Mat-Views = AP-63·S2b. **Aufwand S–M** — v0.53.0
 
 **v0.52.0** (2026-06-29):
 

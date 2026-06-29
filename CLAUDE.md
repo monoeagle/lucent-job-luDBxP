@@ -77,7 +77,9 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **Table and column comments (Tier-2, v0.40.0):** Table and column comments are read during schema reflection and surfaced in the UI (detail column list + UML cards) as hover tooltips (`title`). The generated SQL is unchanged.
 
-> **Indizes + Check-Constraints (AP-63·S1, v0.52.0):** Im Tabellen-Detail („Definition") werden alle Indizes (Name/Spalten/unique) + Check-Constraints (Name/Ausdruck) read-only via SQLAlchemy-Reflection angezeigt (`get_indexes`/`get_check_constraints`, alle Engines inkl. SQLite; Model `Index`/`CheckConstraint`). Nur Anzeige — kein DDL/Join-Pfad; Expression-/Funktions-Indizes übersprungen. (Stufe-2/3 von AP-63: Sequences/Mat-Views/Triggers bzw. Procedures/Functions — offen.)
+> **Indizes + Check-Constraints (AP-63·S1, v0.52.0):** Im Tabellen-Detail („Definition") werden alle Indizes (Name/Spalten/unique) + Check-Constraints (Name/Ausdruck) read-only via SQLAlchemy-Reflection angezeigt (`get_indexes`/`get_check_constraints`, alle Engines inkl. SQLite; Model `Index`/`CheckConstraint`). Nur Anzeige — kein DDL/Join-Pfad; Expression-/Funktions-Indizes übersprungen.
+
+> **Trigger-Sidebar-Kategorie (AP-63·S2, v0.53.0):** Trigger werden read-only als eigene Sidebar-Kategorie reflektiert (Name/Tabelle/Quelltext) — **nur SQLite** via `sqlite_master`-Katalog-SQL (`core/loaders/sqlalchemy_loader.py::_reflect_triggers`, Model `Trigger`); andere Dialekte liefern noch `()` (PG/Oracle-Trigger = Fast-Follow). Kategorie nur bei N>0; schlankes Trigger-Detail ohne Daten-Tab; Trigger werden nie ausgeführt, keine Join-Teilnahme. Sequences/Materialized Views = AP-63·S2b (PG-only) offen.
 
 > **GROUP BY / Aggregates (Tier-3, v0.41.0):** Each SELECT column may carry an aggregate (COUNT/SUM/AVG/MIN/MAX); GROUP BY is auto-derived from the non-aggregated columns. The generated SQL gains GROUP BY and the read-only run path executes grouped queries.
 
