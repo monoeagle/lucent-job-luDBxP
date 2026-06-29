@@ -553,6 +553,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#index-checkconstraint-ap-63s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Index / CheckConstraint (AP-63·S1)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-sequence-ap-63s2-s2b" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Trigger / Sequence (AP-63·S2 / S2b)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1144,6 +1166,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#index-checkconstraint-ap-63s1" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Index / CheckConstraint (AP-63·S1)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-sequence-ap-63s2-s2b" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Trigger / Sequence (AP-63·S2 / S2b)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1195,9 +1239,13 @@ jedem API-Aufruf frisch aus der Zieldatenbank reflektiert.</p>
 <h3 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h3>
 <p>Das Wurzelobjekt nach einer Reflection-Operation. Enthält:</p>
 <ul>
-<li><code>tables: list[Table]</code> — alle reflektierten Tabellen</li>
-<li><code>views: list[View]</code> — alle reflektierten Views</li>
+<li><code>tables: tuple[Table]</code> — alle reflektierten Tabellen</li>
+<li><code>views: tuple[View]</code> — alle reflektierten Views</li>
+<li><code>triggers: tuple[Trigger]</code> — reflektierte Trigger (AP-63·S2; aktuell nur SQLite via Katalog-SQL)</li>
+<li><code>sequences: tuple[Sequence]</code> — reflektierte Sequenzen (AP-63·S2b; nur PostgreSQL/Oracle)</li>
+<li><code>materialized_views: tuple[View]</code> — reflektierte Materialized Views (AP-63·S2b; nur PG/Oracle), reusen das <code>View</code>-Shape</li>
 <li><code>has_column(table, column)</code> — Validierungsmethode für API-Aufrufe</li>
+<li><code>cross_schema_fks(current_schema)</code> — FK-Kanten über Schema-Grenzen (AP-54-Diagnose)</li>
 </ul>
 <h3 id="table">Table<a class="headerlink" href="#table" title="Permanent link">&para;</a></h3>
 <table>
@@ -1216,18 +1264,43 @@ jedem API-Aufruf frisch aus der Zieldatenbank reflektiert.</p>
 </tr>
 <tr>
 <td><code>columns</code></td>
-<td><code>list[Column]</code></td>
+<td><code>tuple[Column]</code></td>
 <td>Alle Spalten</td>
 </tr>
 <tr>
 <td><code>foreign_keys</code></td>
-<td><code>list[ForeignKey]</code></td>
+<td><code>tuple[ForeignKey]</code></td>
 <td>Deklarierte FKs</td>
 </tr>
 <tr>
 <td><code>primary_key</code></td>
-<td><code>set[str]</code></td>
+<td><code>tuple[str]</code></td>
 <td>Primärschlüssel-Spaltennamen</td>
+</tr>
+<tr>
+<td><code>unique_constraints</code></td>
+<td><code>tuple[tuple[str]]</code></td>
+<td>UNIQUE-Constraints (Spalten je Constraint)</td>
+</tr>
+<tr>
+<td><code>unique_indexes</code></td>
+<td><code>tuple[tuple[str]]</code></td>
+<td>voll-spaltige, nicht-partielle Unique-<strong>Indizes</strong> (1-1-Erkennung)</td>
+</tr>
+<tr>
+<td><code>comment</code></td>
+<td><code>str</code></td>
+<td>Tabellenkommentar (Tier-2)</td>
+</tr>
+<tr>
+<td><code>indexes</code></td>
+<td><code>tuple[Index]</code></td>
+<td><strong>alle</strong> Indizes für die Detail-Anzeige (AP-63·S1)</td>
+</tr>
+<tr>
+<td><code>check_constraints</code></td>
+<td><code>tuple[CheckConstraint]</code></td>
+<td>Check-Constraints (AP-63·S1)</td>
 </tr>
 </tbody>
 </table>
@@ -1313,7 +1386,7 @@ Join-Wege.</p>
 </tr>
 <tr>
 <td><code>columns</code></td>
-<td><code>list[Column]</code></td>
+<td><code>tuple[Column]</code></td>
 <td>Spalten</td>
 </tr>
 <tr>
@@ -1323,6 +1396,52 @@ Join-Wege.</p>
 </tr>
 </tbody>
 </table>
+<p>Materialized Views (AP-63·S2b) werden auf dasselbe <code>View</code>-Shape abgebildet.</p>
+<h3 id="index-checkconstraint-ap-63s1">Index / CheckConstraint (AP-63·S1)<a class="headerlink" href="#index-checkconstraint-ap-63s1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Klasse</th>
+<th>Attribute</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Index</code></td>
+<td><code>name: str</code>, <code>columns: tuple[str]</code>, <code>unique: bool</code></td>
+<td>Ein Index der Tabelle (read-only Anzeige); Expression-Indizes werden übersprungen</td>
+</tr>
+<tr>
+<td><code>CheckConstraint</code></td>
+<td><code>name: str</code> (<code>""</code> = unbenannt), <code>sqltext: str</code></td>
+<td>Ein Check-Constraint der Tabelle</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trigger-sequence-ap-63s2-s2b">Trigger / Sequence (AP-63·S2 / S2b)<a class="headerlink" href="#trigger-sequence-ap-63s2-s2b" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Klasse</th>
+<th>Attribute</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Trigger</code></td>
+<td><code>name: str</code>, <code>table: str</code>, <code>sql: str</code></td>
+<td>Trigger (Name, besitzende Tabelle, <code>CREATE TRIGGER</code>-Quelltext); read-only, keine Ausführung</td>
+</tr>
+<tr>
+<td><code>Sequence</code></td>
+<td><code>name: str</code></td>
+<td>Sequenz (nur Name)</td>
+</tr>
+</tbody>
+</table>
+<p>Alle read-only Objekt-Kategorien (Index/Check/Trigger/Sequence/Materialized View) nehmen <strong>nicht</strong> an Join-Pfaden oder SQL-Generierung teil — reine Anzeige.</p>
 <h2 id="fk-graph">FK-Graph<a class="headerlink" href="#fk-graph" title="Permanent link">&para;</a></h2>
 <p>Der FK-Graph (<code>core/graph.py</code>) ist ein gerichteter NetworkX-Graph:</p>
 <ul>
@@ -1344,18 +1463,30 @@ Er enthält keine Views — nur Tabellen mit FK-Beziehungen.</p>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">&quot;foreign_keys&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="p">{</span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;customer_id&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;ref_table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ref_columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]}</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="p">],</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="nt">&quot;ddl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE TABLE orders (...)&quot;</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="p">],</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="nt">&quot;views&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active_orders&quot;</span><span class="p">,</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">      </span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">      </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SELECT ... FROM orders WHERE ...&quot;</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="p">]</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="p">}</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="nt">&quot;indexes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ix_orders_customer&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;customer_id&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;unique&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">}</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">      </span><span class="p">],</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">      </span><span class="nt">&quot;check_constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">        </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ck_total&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sqltext&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total &gt;= 0&quot;</span><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">      </span><span class="p">],</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">      </span><span class="nt">&quot;ddl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE TABLE orders (...)&quot;</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="nt">&quot;views&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active_orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SELECT ... FROM orders WHERE ...&quot;</span><span class="p">}</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">  </span><span class="nt">&quot;triggers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;trg_orders_audit&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;table&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orders&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sql&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE TRIGGER ...&quot;</span><span class="p">}</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">  </span><span class="nt">&quot;sequences&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orders_id_seq&quot;</span><span class="p">}],</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">  </span><span class="nt">&quot;materialized_views&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mv_sales&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SELECT ...&quot;</span><span class="p">}</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="p">}</span>
 </span></code></pre></div>
+<p>Die Felder <code>triggers</code>/<code>sequences</code>/<code>materialized_views</code> sind je nach Backend leer
+(<code>[]</code>): Trigger nur SQLite (AP-63·S2), Sequences/Materialized Views nur
+PostgreSQL/Oracle (AP-63·S2b).</p>
 
 
 
