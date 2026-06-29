@@ -1268,3 +1268,19 @@ def test_schema_view_exposes_referenced_routines(client, inventory_url, monkeypa
 def test_schema_view_routines_empty_on_sqlite(client, inventory_url):
     data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
     assert all(v["routines"] == [] for v in data["views"])
+
+
+def test_analyze_exposes_parse_error_location(client):
+    data = client.post("/api/analyze", json={"sql": "SELECT a b c FROM t"}).get_json()
+    assert data["parse_error"] is not None
+    assert data["parse_error_line"] == 1
+    assert data["parse_error_col"] == 12
+    assert data["parse_error_highlight"] == "c"
+    assert "c" in data["parse_error_context"]
+
+
+def test_analyze_valid_sql_no_parse_error_location(client):
+    data = client.post("/api/analyze", json={"sql": "SELECT a FROM t"}).get_json()
+    assert data["parse_error"] is None
+    assert data["parse_error_line"] is None
+    assert data["parse_error_highlight"] == ""

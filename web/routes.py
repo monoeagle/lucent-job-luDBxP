@@ -905,6 +905,10 @@ def api_analyze():
         suggestions=[{"code": s.code, "message": s.message}
                      for s in result.suggestions],
         parse_error=result.parse_error,
+        parse_error_line=result.parse_error_line,
+        parse_error_col=result.parse_error_col,
+        parse_error_context=result.parse_error_context,
+        parse_error_highlight=result.parse_error_highlight,
         # AP-39 — structure & clause analysis + graph edges
         columns=list(result.columns),
         joins=list(result.joins),
