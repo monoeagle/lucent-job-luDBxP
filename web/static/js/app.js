@@ -534,7 +534,7 @@ async function runSubset() {
   try { res = await postJSON("/api/subset", payload); }
   catch (e) { out.innerHTML = `<p class='hint'>Fehler: ${esc(String(e))}</p>`; return; }
   const rows = res.tables.map((t) =>
-    `<tr data-table="${esc(t.name)}"><td>${esc(t.name)}</td>` +
+    `<tr data-table="${escAttr(t.name)}"><td>${esc(t.name)}</td>` +
     `<td><span class="badge">${esc(t.kind)}</span></td>` +
     `<td>${esc(t.via_table || "")}</td><td>${t.depth}</td>` +
     `<td class="sub-count">—</td></tr>`).join("");
