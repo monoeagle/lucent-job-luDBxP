@@ -147,3 +147,34 @@ def test_mssql_reflects_trigger():
         conn.execute(text(_DROP_TRG))
         conn.close()
         engine.dispose()
+
+
+@pytest.mark.skipif(
+    not _MSSQL_URL,
+    reason="set LUCENT_MSSQL_TEST_URL to a reachable MSSQL URL to run the live "
+           "integration test",
+)
+def test_mssql_demo_seed_shows_all_categories():
+    """Seed the server demo CMDB and assert every reflectable category appears."""
+    pytest.importorskip("pyodbc")
+    import sys, pathlib
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "sample_data"))
+    try:
+        from seed_server_demo import seed
+        seed(_MSSQL_URL)
+    except Exception as exc:
+        pytest.skip(f"MSSQL not reachable or seed failed: {exc}")
+
+    schema = SqlAlchemyLoader(_MSSQL_URL).load()
+    names = lambda xs: {x.name for x in xs}
+    assert {"VirtualMachine", "Host", "Cluster", "Datacenter", "OperatingSystem"} <= names(schema.tables)
+    assert "vw_vm_labeled" in names(schema.views)
+    assert "trg_vm_audit" in names(schema.triggers)
+    assert "demo_vm_seq" in names(schema.sequences)
+    assert "syn_vm" in names(schema.synonyms)
+    kinds = {r.name: r.kind for r in schema.routines}
+    assert kinds.get("fn_vm_label") == "function"
+    assert kinds.get("usp_vm_count") == "procedure"
+    # AP-66·S1: the view references the function
+    vw = next(v for v in schema.views if v.name == "vw_vm_labeled")
+    assert "fn_vm_label" in vw.routines
