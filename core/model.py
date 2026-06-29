@@ -82,6 +82,7 @@ class View:
     name: str
     columns: tuple[Column, ...]
     definition: str = ""
+    routines: tuple[str, ...] = ()   # referenzierte (reflektierte) Routinennamen
 
 
 @dataclass(frozen=True)

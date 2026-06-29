@@ -119,3 +119,11 @@ def test_schema_positional_constructor_still_works_with_routines():
     assert sch.sequences[0].name == "s"
     assert sch.routines == ()
     assert sch.synonyms == ()
+
+
+def test_view_routines_default_empty_and_positional():
+    from core.model import View, Column
+    v = View("v", (Column("a", "INT"),), "SELECT a FROM t")
+    assert v.routines == ()
+    v2 = View("v2", (), "SELECT fn() FROM t", ("FN",))
+    assert v2.routines == ("FN",)

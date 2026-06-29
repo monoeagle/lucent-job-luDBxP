@@ -249,3 +249,9 @@ def test_reflect_triggers_accepts_schema_param_on_sqlite(triggers_url):
     assert "trg_account_audit" in by_name
     assert by_name["trg_account_audit"].table == "Account"
     assert "CREATE TRIGGER" in by_name["trg_account_audit"].sql
+
+
+def test_loader_views_have_empty_routines_on_sqlite(inventory_url):
+    schema = SqlAlchemyLoader(inventory_url).load()
+    # SQLite hat keine Stored Routines → keine View referenziert welche.
+    assert all(v.routines == () for v in schema.views)

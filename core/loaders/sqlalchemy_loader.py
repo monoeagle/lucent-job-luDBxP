@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema, Trigger, Sequence, Routine, Synonym
 from core.schema_loader import SchemaLoader
+from core.viewdeps import referenced_routines
 
 
 def _odbc_driver_hint(exc) -> "str | None":
@@ -249,6 +250,9 @@ class SqlAlchemyLoader(SchemaLoader):
                     tcomment = ""
                 tables.append(Table(tname, columns, tuple(fks), pk, uniques, uidx,
                                     tcomment, indexes, checks))
+            routines = _reflect_routines(engine, schema)
+            routine_names = frozenset(r.name for r in routines)
+            dname = getattr(getattr(engine, "dialect", None), "name", "")
             views = []
             for vname in insp.get_view_names(schema=schema):
                 vcols = tuple(
@@ -259,7 +263,8 @@ class SqlAlchemyLoader(SchemaLoader):
                     definition = insp.get_view_definition(vname, schema=schema) or ""
                 except SQLAlchemyError:
                     definition = ""
-                views.append(View(vname, vcols, definition))
+                views.append(View(vname, vcols, definition,
+                                  referenced_routines(definition, routine_names, dname)))
             try:
                 sequences = tuple(
                     Sequence(n) for n in insp.get_sequence_names(schema=schema)
@@ -283,10 +288,11 @@ class SqlAlchemyLoader(SchemaLoader):
                     mvdef = insp.get_view_definition(mvname, schema=schema) or ""
                 except (SQLAlchemyError, NotImplementedError):
                     mvdef = ""
-                matviews.append(View(mvname, mvcols, mvdef))
+                matviews.append(View(mvname, mvcols, mvdef,
+                                     referenced_routines(mvdef, routine_names, dname)))
             return Schema(tuple(tables), tuple(views), _reflect_triggers(engine, schema),
                           sequences, tuple(matviews),
-                          _reflect_routines(engine, schema),
+                          routines,
                           _reflect_synonyms(engine, schema))
         except SQLAlchemyError as exc:
             hint = _odbc_driver_hint(exc)
