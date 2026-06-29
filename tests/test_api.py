@@ -1173,3 +1173,14 @@ def test_connect_unhandled_loader_error_returns_400(client, monkeypatch):
                        json={"db_type": "sqlite", "filepath": "x.db"})
     assert resp.status_code == 400
     assert "DPY-6005" in resp.get_json()["error"]
+
+
+def test_schema_exposes_indexes_and_checks(client, indexes_checks_url):
+    data = client.post("/api/schema", json={"connection_url": indexes_checks_url}).get_json()
+    person = {t["name"]: t for t in data["tables"]}["Person"]
+    ix = {i["name"]: i for i in person["indexes"]}
+    assert ix["ix_person_region"]["columns"] == ["region"]
+    assert ix["ix_person_region"]["unique"] is False
+    assert ix["ux_person_email"]["unique"] is True
+    assert any("email" in c["sqltext"] for c in person["check_constraints"])
+    assert any(c["name"] == "ck_email" for c in person["check_constraints"])

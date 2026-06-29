@@ -145,6 +145,13 @@ def api_schema():
                  "ref_columns": list(fk.ref_columns)}
                 for fk in t.foreign_keys
             ],
+            "indexes": [
+                {"name": ix.name, "columns": list(ix.columns), "unique": ix.unique}
+                for ix in t.indexes
+            ],
+            "check_constraints": [
+                {"name": cc.name, "sqltext": cc.sqltext} for cc in t.check_constraints
+            ],
             "ddl": table_ddl(t),
         } for t in schema.tables],
         views=[{
