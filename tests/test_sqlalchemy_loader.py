@@ -127,6 +127,28 @@ class _FakeInspector:
         return []
 
 
+class _NotImplementedReflector(_FakeInspector):
+    """Inspector eines Dialekts (z.B. MSSQL), der get_unique_constraints/
+    get_indexes als NotImplementedError exponiert statt SQLAlchemyError."""
+    def get_unique_constraints(self, tname, schema=None):
+        raise NotImplementedError()
+
+    def get_indexes(self, tname, schema=None):
+        raise NotImplementedError()
+
+
+def test_load_tolerates_not_implemented_unique_and_index_reflection(monkeypatch):
+    # Regression: MSSQL wirft bei get_unique_constraints/get_indexes ein bare
+    # NotImplementedError (kein SQLAlchemyError) → load() darf nicht crashen,
+    # sondern fällt sauber auf () zurück (wie get_check_constraints schon lange).
+    _patch_loader(monkeypatch, _NotImplementedReflector(None))
+    schema = SqlAlchemyLoader("fake://").load()
+    t = schema.table("t")
+    assert t.unique_constraints == ()
+    assert t.unique_indexes == ()
+    assert t.indexes == ()
+
+
 def test_load_reflects_column_and_table_comments(monkeypatch):
     _patch_loader(monkeypatch, _FakeInspector({"text": "Tabellen-Notiz"}))
     schema = SqlAlchemyLoader("fake://").load()

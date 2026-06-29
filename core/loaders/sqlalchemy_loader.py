@@ -170,7 +170,7 @@ class SqlAlchemyLoader(SchemaLoader):
                         for uc in insp.get_unique_constraints(tname, schema=schema)
                         if uc.get("column_names")
                     )
-                except SQLAlchemyError:
+                except (SQLAlchemyError, NotImplementedError):
                     uniques = ()
                 try:
                     uidx = tuple(
@@ -182,7 +182,7 @@ class SqlAlchemyLoader(SchemaLoader):
                         and not any(k.endswith("_where")
                                     for k in (idx.get("dialect_options") or {}))
                     )
-                except SQLAlchemyError:
+                except (SQLAlchemyError, NotImplementedError):
                     uidx = ()
                 try:
                     indexes = tuple(
@@ -191,7 +191,7 @@ class SqlAlchemyLoader(SchemaLoader):
                         for idx in insp.get_indexes(tname, schema=schema)
                         if idx.get("column_names") and None not in idx["column_names"]
                     )
-                except SQLAlchemyError:
+                except (SQLAlchemyError, NotImplementedError):
                     indexes = ()
                 try:
                     checks = tuple(
