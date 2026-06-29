@@ -163,6 +163,13 @@ def api_schema():
             {"name": tr.name, "table": tr.table, "sql": tr.sql}
             for tr in schema.triggers
         ],
+        sequences=[{"name": s.name} for s in schema.sequences],
+        materialized_views=[
+            {"name": mv.name,
+             "columns": [{"name": c.name, "type": c.type} for c in mv.columns],
+             "definition": mv.definition}
+            for mv in schema.materialized_views
+        ],
         cross_schema_fks=list(schema.cross_schema_fks(schema_name)),
         implied_fks=[
             {"from_table": i.table, "column": i.column,

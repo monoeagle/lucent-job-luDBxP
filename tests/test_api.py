@@ -1197,3 +1197,26 @@ def test_schema_exposes_triggers(client, triggers_url):
 def test_schema_no_triggers_is_empty_list(client, inventory_url):
     data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
     assert data["triggers"] == []
+
+
+def test_schema_exposes_sequences_and_matviews(client, inventory_url, monkeypatch):
+    import web.routes as routes_mod
+    from core.model import Schema, View, Sequence, Column
+
+    fake = Schema(
+        tables=(), views=(), triggers=(),
+        sequences=(Sequence("seq_orders"),),
+        materialized_views=(View("mv_sales", (Column("total", "INTEGER"),), "SELECT 1 AS total"),),
+    )
+    monkeypatch.setattr(routes_mod.SqlAlchemyLoader, "load", lambda self, schema=None: fake)
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    assert data["sequences"] == [{"name": "seq_orders"}]
+    mv = {m["name"]: m for m in data["materialized_views"]}
+    assert mv["mv_sales"]["columns"] == [{"name": "total", "type": "INTEGER"}]
+    assert "SELECT 1" in mv["mv_sales"]["definition"]
+
+
+def test_schema_sequences_matviews_empty_on_sqlite(client, inventory_url):
+    data = client.post("/api/schema", json={"connection_url": inventory_url}).get_json()
+    assert data["sequences"] == []
+    assert data["materialized_views"] == []
