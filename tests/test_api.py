@@ -1056,6 +1056,33 @@ def test_subset_unknown_table_returns_400(client, inventory_url):
     assert resp.status_code == 400
 
 
+# ===== AP-56b: /api/subset/run =====
+
+def test_subset_run_returns_counts_and_total(client, demo_url):
+    resp = client.post("/api/subset/run", json={
+        "connection_url": demo_url, "start_table": "Datacenter",
+        "root_filter": {"column": "DatacenterID", "op": "=", "value": 3}})
+    data = resp.get_json()
+    assert resp.status_code == 200
+    by = {t["name"]: t for t in data["tables"]}
+    assert by["Datacenter"]["count"] == 1          # DC-Empty: only the root row
+    assert data["total"] == 1
+    assert data["incomplete"] is False
+
+
+def test_subset_run_unknown_table_returns_400(client, demo_url):
+    resp = client.post("/api/subset/run", json={
+        "connection_url": demo_url, "start_table": "Nope",
+        "root_filter": {"column": "x", "op": "=", "value": 1}})
+    assert resp.status_code == 400
+
+
+def test_subset_run_missing_url_returns_400(client):
+    resp = client.post("/api/subset/run", json={"start_table": "Datacenter",
+        "root_filter": {"column": "DatacenterID", "op": "=", "value": 1}})
+    assert resp.status_code == 400
+
+
 # ===== AP-64: /api/connect meldet jeden Verbindungsfehler als 400 =====
 
 def test_connect_unhandled_loader_error_returns_400(client, monkeypatch):

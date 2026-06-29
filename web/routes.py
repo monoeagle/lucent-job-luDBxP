@@ -13,7 +13,7 @@ from core.pathfinder import find_paths, NoPathError
 from core.sqlgen import generate_sql, Selection, Filter, Having, dialect_for, SQLITE
 from core.settings import Settings
 from core.ddl import table_ddl
-from core.datapreview import fetch_rows, execute_select
+from core.datapreview import fetch_rows, execute_select, count_subset_rows
 from core.connection import build_url
 from core.sqlanalyze import analyze as analyze_sql
 from core.implied import find_implied_fks
@@ -501,6 +501,55 @@ def api_subset():
         scripts=[{"table": s.table, "sql": s.sql, "params": s.params}
                  for s in scripts],
     )
+
+
+@bp.post("/api/subset/run")
+def api_subset_run():
+    """AP-56b·Stufe 1: execute the AP-56a subset SELECTs read-only and return
+    the real row count per closure table plus a total. Counts only — no data
+    dump, no writes."""
+    data = request.get_json(silent=True) or {}
+    url = data.get("connection_url", "")
+    if not url.strip():
+        return jsonify(error=_NO_URL_MSG), 400
+    schema_name = (data.get("schema") or "").strip()
+    try:
+        schema = SqlAlchemyLoader(url).load(schema_name or None)
+    except ConnectionError as exc:
+        return jsonify(error=str(exc)), 400
+
+    start = (data.get("start_table") or "").strip()
+    rf = data.get("root_filter") or {}
+    include_implied = bool(data.get("include_implied", False))
+    if not schema.has_column(start, rf.get("column", "")):
+        return jsonify(error="unknown start table or column"), 400
+
+    # Execution must use the connection's own dialect (not a client display
+    # choice) so the quoted SQL actually runs — same rule as /api/joinpath/run.
+    run_dialect = _dialect_from_url(url)
+    try:
+        max_depth = int(data.get("max_depth") or 5)
+        result = compute_subset(schema, start, include_implied=include_implied,
+                                max_depth=max_depth)
+        scripts = generate_subset_sql(schema, result, rf,
+                                      dialect=run_dialect, schema_name=schema_name)
+    except ValueError as exc:
+        return jsonify(error=str(exc)), 400
+
+    counts = {c["table"]: c for c in count_subset_rows(url, scripts)}
+    tables = []
+    for t in result.tables:
+        c = counts.get(t.name, {"count": None, "error": "not counted"})
+        tables.append({
+            "name": t.name, "depth": t.depth,
+            "kind": t.edge.kind if t.edge else "root",
+            "via_table": t.edge.via_table if t.edge else None,
+            "count": c["count"], "error": c["error"],
+        })
+    total = sum(t["count"] for t in tables if t["count"] is not None)
+    incomplete = result.truncated or any(t["error"] for t in tables)
+    return jsonify(start=result.start, truncated=result.truncated,
+                   incomplete=incomplete, total=total, tables=tables)
 
 
 @bp.post("/api/joinpath/run")
