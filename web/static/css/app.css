@@ -364,6 +364,7 @@ body {
   border-radius: 4px; padding: .5rem .6rem; margin: 2px 0 0;
   font-size: .8rem; white-space: pre-wrap; overflow-wrap: anywhere; }
 .an-err-mark { color: #d93025; text-decoration: underline; font-weight: 600; }
+.an-err-hint { font-size: .78rem; color: #6b3a36; margin: 4px 0 0; opacity: .85; }
 .an-type { margin-bottom: 6px; }
 .an-struct { font-size: .82em; color: #555; margin: 0 0 8px; }
 .an-pill { font-size: .7rem; font-weight: 700; background: #ececf3; color: #444;

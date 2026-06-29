@@ -533,16 +533,20 @@ function renderAnalyzeResult(panel, res) {
     if (res.parse_error_line != null) {
       const ctx = res.parse_error_context || "";
       const hl = res.parse_error_highlight || "";
-      const i = hl ? ctx.indexOf(hl) : -1;
-      const ctxHtml = (i >= 0)
+      const pos = (typeof res.parse_error_highlight_pos === "number")
+        ? res.parse_error_highlight_pos : -1;
+      const i = (pos >= 0) ? pos : (hl ? ctx.indexOf(hl) : -1);
+      const ctxHtml = (i >= 0 && hl)
         ? esc(ctx.slice(0, i)) +
-          `<span class="an-err-mark">${esc(hl)}</span>` +
+          `<span class="an-err-mark">${esc(ctx.slice(i, i + hl.length))}</span>` +
           esc(ctx.slice(i + hl.length))
         : esc(ctx);
+      const hintHtml = res.parse_error_hint
+        ? `<p class="hint an-err-hint">${esc(res.parse_error_hint)}</p>` : "";
       out.innerHTML =
         `<p class="hint">Parse-Fehler in Zeile ${esc(String(res.parse_error_line))}, ` +
         `Spalte ${esc(String(res.parse_error_col))}:</p>` +
-        `<pre class="an-parse-error">${ctxHtml}</pre>`;
+        `<pre class="an-parse-error">${ctxHtml}</pre>` + hintHtml;
     } else {
       // Label, then the (ANSI-stripped) error on its own line — preformatted, since
       // sqlglot includes a multi-line SQL excerpt around the offending token.
