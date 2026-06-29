@@ -324,3 +324,40 @@ def test_no_or_suggestion_for_or_only_in_exists_subquery():
 def test_or_suggestion_for_top_level_or_with_subquery():
     assert "OR_IN_WHERE" in _sugg_codes(
         "SELECT a FROM t WHERE (a = 1 OR b = 2) AND c IN (SELECT x FROM u)")
+
+
+# --- AP-65·A: Parse-Fehler-Position ------------------------------------------
+
+def test_parse_error_location_parseerror():
+    r = analyze("SELECT a b c FROM t")
+    assert r.parse_error is not None
+    assert r.parse_error_line == 1
+    assert r.parse_error_col == 12
+    assert r.parse_error_highlight == "c"
+    assert "c" in r.parse_error_context
+
+
+def test_parse_error_location_tokenerror_missing_quote():
+    # Das AP-Auslöser-Beispiel: fehlendes schließendes Anführungszeichen → TokenError.
+    r = analyze('SELECT * FROM main"."ResourcePool"')
+    assert r.parse_error is not None
+    assert r.parse_error_line == 1
+    assert r.parse_error_col == 34
+    assert r.parse_error_highlight == '"'
+    assert "ResourcePool" in r.parse_error_context
+
+
+def test_parse_error_location_multiline():
+    r = analyze("SELECT a,\n  b c d\nFROM t")
+    assert r.parse_error_line == 2
+    assert r.parse_error_col == 7
+    assert r.parse_error_highlight == "d"
+
+
+def test_valid_sql_has_no_parse_error_location():
+    r = analyze("SELECT a FROM t")
+    assert r.parse_error is None
+    assert r.parse_error_line is None
+    assert r.parse_error_col is None
+    assert r.parse_error_context == ""
+    assert r.parse_error_highlight == ""

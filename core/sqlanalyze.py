@@ -36,6 +36,8 @@ _TYPE_NAMES = {
 # Strips ANSI/CSI escape sequences (e.g. sqlglot's error-token underlining).
 _ANSI_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
+_TOKEN_ERR_RE = re.compile(r"^Error tokenizing '(.*)'$", re.DOTALL)
+
 
 @dataclass(frozen=True)
 class AnalysisWarning:
@@ -72,6 +74,11 @@ class AnalysisResult:
     complexity_score: int = 0
     complexity_grade: str = "A"
     suggestions: tuple[AnalysisSuggestion, ...] = ()  # AP-F: Optimierungs-Vorschläge
+    # AP-65·A — parse-error location (None/"" when the statement parses).
+    parse_error_line: "int | None" = None
+    parse_error_col: "int | None" = None
+    parse_error_context: str = ""       # excerpt around the offending token
+    parse_error_highlight: str = ""     # the offending token (for marking)
 
 
 def _statement_type(node) -> str:
@@ -273,6 +280,33 @@ def _optimization_suggestions(node) -> list:
     return out
 
 
+def _parse_error_location(exc, sql):
+    """Extract (line, col, context, highlight) from a sqlglot parse/token error.
+
+    ParseError carries structured ``.errors`` (line/col/start_context/highlight/
+    end_context). TokenError does not — its message embeds the consumed prefix,
+    which is a true prefix of the input, so the failure sits just past it.
+    Returns ``(None, None, "", "")`` when nothing usable can be extracted.
+    """
+    errors = getattr(exc, "errors", None)
+    if errors:
+        e = errors[0]
+        highlight = e.get("highlight") or ""
+        context = (e.get("start_context") or "") + highlight + (e.get("end_context") or "")
+        return e.get("line"), e.get("col"), context, highlight
+    m = _TOKEN_ERR_RE.match(str(exc))
+    if m:
+        prefix = m.group(1)
+        if sql.startswith(prefix):
+            off = len(prefix)
+            line = prefix.count("\n") + 1
+            col = off - prefix.rfind("\n")          # rfind == -1 → col = off + 1
+            highlight = sql[off] if off < len(sql) else ""
+            context = sql[max(0, off - 20):off + 20]
+            return line, col, context, highlight
+    return None, None, "", ""
+
+
 def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResult:
     """Analyze one SQL statement read-only. Never executes it.
 
@@ -292,7 +326,12 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
     except (SqlglotError, ValueError) as exc:
         # sqlglot underlines the offending token with ANSI escape codes; strip
         # them so the browser shows clean text, not "□[4m…□[0m" garbage.
-        return AnalysisResult("OTHER", (), (), (), _ANSI_RE.sub("", str(exc)))
+        line, col, ctx, hl = _parse_error_location(exc, sql)
+        return AnalysisResult(
+            "OTHER", (), (), (), _ANSI_RE.sub("", str(exc)),
+            parse_error_line=line, parse_error_col=col,
+            parse_error_context=ctx, parse_error_highlight=hl,
+        )
     if node is None:
         return AnalysisResult("OTHER", (), (), (), "empty statement")
 
