@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.52.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.53.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1188,7 +1188,7 @@
 <h3 id="weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien">Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: <a href="../../../../docs/concepts/2026-06-28-sidebar-object-categories/">Sidebar-Objekt-Kategorien</a>)<a class="headerlink" href="#weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien" title="Permanent link">&para;</a></h3>
 <p>Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen <strong>nicht</strong> an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:</p>
 <ul>
-<li><strong>AP-63 · Stufe 2</strong> — neue Sidebar-Kategorien <strong>Sequences, Materialized Views, Triggers</strong> (etabliert das Kategorie-Muster; Triggers SQLite-testbar, Sequences/Mat-Views nur gegen PostgreSQL). <strong>Aufwand M.</strong></li>
+<li><strong>AP-63 · Stufe 2b</strong> — neue Sidebar-Kategorien <strong>Sequences + Materialized Views</strong> (SQLAlchemy-nativ <code>get_sequence_names</code>/<code>get_materialized_view_names</code>, nur gegen PostgreSQL/Oracle, skip-guarded) auf dem in S2 etablierten Kategorie-Muster; zusätzlich <strong>PG/Oracle-Trigger-Reflektion</strong> als Fast-Follow (eigene Katalog-Query). <strong>Aufwand M.</strong> (Trigger/SQLite = AP-63·S2, erledigt v0.53.0.)</li>
 <li><strong>AP-63 · Stufe 3</strong> — <strong>Stored Procedures + Functions</strong> (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). <strong>Aufwand L.</strong></li>
 <li><strong>AP-66</strong> — Views, die <strong>Prozeduren/Funktionen</strong> verwenden, auflösen (Konzept: <a href="../../../../docs/concepts/2026-06-29-views-with-routines-resolution/">Views mit Routinen</a>). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. <strong>Stufe 1 (S–M):</strong> referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). <strong>Stufe 2 (M):</strong> Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). <strong>Stufe 3 (XL, zurückgestellt):</strong> echte Daten-Lineage durch den PL/SQL-Body.</li>
 </ul>
@@ -1325,6 +1325,10 @@ Doku/AppImage/Projektposter.</p>
 <p><strong>v0.45.3</strong> (2026-06-28):</p>
 <ul>
 <li><strong>AP-60</strong> — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3</li>
+</ul>
+<p><strong>v0.53.0</strong> (2026-06-29):</p>
+<ul>
+<li><strong>AP-63 · Stufe 2</strong> — Trigger als neue read-only Sidebar-Kategorie: Trigger werden reflektiert (Name/Tabelle/Quelltext, SQLite via <code>sqlite_master</code>-Katalog-SQL; andere Dialekte folgen) und als eigene „Trigger"-Kategorie (nur bei N&gt;0) gezeigt; schlankes Trigger-Detail (Tabelle + <code>CREATE TRIGGER</code>-Quelltext, kein Daten-Tab). Model <code>Trigger</code>/<code>Schema.triggers</code>, <code>/api/schema</code> serialisiert sie, Demo-CMDB um Trigger erweitert. Etabliert das neue-Objekt-Kategorie-Muster; Sequences/Mat-Views = AP-63·S2b. <strong>Aufwand S–M</strong> — v0.53.0</li>
 </ul>
 <p><strong>v0.52.0</strong> (2026-06-29):</p>
 <ul>
