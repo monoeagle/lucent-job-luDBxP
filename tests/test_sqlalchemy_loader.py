@@ -179,3 +179,16 @@ def test_loader_reflects_check_constraints(indexes_checks_url):
     assert any("age" in t for t in texts)        # unnamed inline check
     assert "ck_email" in names
     assert "" in names                           # the unnamed check → name ""
+
+
+def test_loader_reflects_triggers(triggers_url):
+    schema = SqlAlchemyLoader(triggers_url).load()
+    by_name = {tr.name: tr for tr in schema.triggers}
+    assert "trg_account_audit" in by_name
+    assert by_name["trg_account_audit"].table == "Account"
+    assert "CREATE TRIGGER" in by_name["trg_account_audit"].sql
+
+
+def test_loader_no_triggers_is_empty(inventory_url):
+    schema = SqlAlchemyLoader(inventory_url).load()
+    assert schema.triggers == ()

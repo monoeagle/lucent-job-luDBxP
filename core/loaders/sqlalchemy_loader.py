@@ -1,8 +1,8 @@
 """Live-DB schema loader via SQLAlchemy reflection (SQLite + Postgres for v1)."""
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 
-from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema
+from core.model import Column, ForeignKey, Index, CheckConstraint, Table, View, Schema, Trigger
 from core.schema_loader import SchemaLoader
 
 
@@ -21,6 +21,23 @@ def _odbc_driver_hint(exc) -> "str | None":
                 "'ODBC Driver 18 for SQL Server' installieren — Windows: "
                 "Microsoft-Installer; Linux: unixODBC + msodbcsql18.")
     return None
+
+
+def _reflect_triggers(engine) -> tuple:
+    """Read-only trigger reflection. SQLite via sqlite_master; other dialects
+    return () for now (SQLAlchemy has no native trigger API)."""
+    dialect_name = getattr(getattr(engine, "dialect", None), "name", "")
+    if dialect_name != "sqlite":
+        return ()
+    try:
+        with engine.connect() as conn:
+            rows = conn.execute(text(
+                "SELECT name, tbl_name, sql FROM sqlite_master "
+                "WHERE type='trigger' AND sql IS NOT NULL ORDER BY name"
+            )).fetchall()
+        return tuple(Trigger(r[0], r[1] or "", r[2] or "") for r in rows)
+    except SQLAlchemyError:
+        return ()
 
 
 class SqlAlchemyLoader(SchemaLoader):
@@ -123,7 +140,7 @@ class SqlAlchemyLoader(SchemaLoader):
                 except SQLAlchemyError:
                     definition = ""
                 views.append(View(vname, vcols, definition))
-            return Schema(tuple(tables), tuple(views))
+            return Schema(tuple(tables), tuple(views), _reflect_triggers(engine))
         except SQLAlchemyError as exc:
             hint = _odbc_driver_hint(exc)
             raise ConnectionError(hint or f"Could not reflect schema: {exc}") from exc

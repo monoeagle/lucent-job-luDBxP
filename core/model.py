@@ -85,9 +85,17 @@ class View:
 
 
 @dataclass(frozen=True)
+class Trigger:
+    name: str
+    table: str       # besitzende Tabelle (tbl_name); "" falls unbekannt
+    sql: str         # CREATE TRIGGER …-Quelltext
+
+
+@dataclass(frozen=True)
 class Schema:
     tables: tuple[Table, ...]
     views: tuple[View, ...] = ()
+    triggers: tuple[Trigger, ...] = ()
 
     def table(self, name: str) -> Table:
         for t in self.tables:

@@ -56,6 +56,21 @@ def indexes_checks_url(tmp_path) -> str:
 
 
 @pytest.fixture
+def triggers_url(tmp_path) -> str:
+    """SQLite URL with one named trigger (for AP-63·S2 reflection tests).
+
+    Uses sqlite3.executescript so the trigger body (which contains a semicolon)
+    is parsed correctly — _build_sqlite's split(";") would break it.
+    """
+    import sqlite3
+    db_path = tmp_path / "triggers.db"
+    sql = _schema_sql("triggers_schema.sql")
+    with sqlite3.connect(str(db_path)) as con:
+        con.executescript(sql)
+    return f"sqlite:///{db_path}"
+
+
+@pytest.fixture
 def sqlite_engine(inventory_url):
     engine = create_engine(inventory_url)
     yield engine
