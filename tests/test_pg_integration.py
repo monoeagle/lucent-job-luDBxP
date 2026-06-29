@@ -36,6 +36,11 @@ def pg_objects():
         f"DROP MATERIALIZED VIEW IF EXISTS {_MV}",
         f"DROP SEQUENCE IF EXISTS {_SEQ}",
         f"DROP FUNCTION IF EXISTS {_FN}()",
+        # Pre-drops für die Trigger-Objekte (idempotent, falls ein früherer
+        # Teardown scheiterte; CREATE TRIGGER hat kein IF NOT EXISTS). CASCADE
+        # an der Tabelle entfernt einen evtl. zurückgebliebenen Trigger mit.
+        f"DROP TABLE IF EXISTS {_TRG_TAB} CASCADE",
+        f"DROP FUNCTION IF EXISTS {_TRG_FN}() CASCADE",
         f"CREATE SEQUENCE {_SEQ}",
         f"CREATE MATERIALIZED VIEW {_MV} AS SELECT 1 AS n",
         f"CREATE OR REPLACE FUNCTION {_FN}() RETURNS int LANGUAGE sql AS 'SELECT 1'",
