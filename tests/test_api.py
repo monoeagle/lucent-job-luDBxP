@@ -1284,3 +1284,16 @@ def test_analyze_valid_sql_no_parse_error_location(client):
     assert data["parse_error"] is None
     assert data["parse_error_line"] is None
     assert data["parse_error_highlight"] == ""
+
+
+def test_analyze_exposes_highlight_pos_and_hint(client):
+    data = client.post("/api/analyze", json={"sql": 'SELECT * FROM main"."ResourcePool"'}).get_json()
+    assert data["parse_error"] is not None
+    assert data["parse_error_highlight_pos"] >= 0
+    assert "Anführungszeichen" in data["parse_error_hint"]
+
+
+def test_analyze_valid_sql_highlight_pos_default(client):
+    data = client.post("/api/analyze", json={"sql": "SELECT a FROM t"}).get_json()
+    assert data["parse_error_highlight_pos"] == -1
+    assert data["parse_error_hint"] == ""

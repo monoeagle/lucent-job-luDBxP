@@ -909,6 +909,8 @@ def api_analyze():
         parse_error_col=result.parse_error_col,
         parse_error_context=result.parse_error_context,
         parse_error_highlight=result.parse_error_highlight,
+        parse_error_highlight_pos=result.parse_error_highlight_pos,
+        parse_error_hint=result.parse_error_hint,
         # AP-39 — structure & clause analysis + graph edges
         columns=list(result.columns),
         joins=list(result.joins),
