@@ -7,6 +7,7 @@ lookups those rows need upward via foreign keys (parents) WITHOUT descending
 again — this keeps the subset referentially complete without exploding.
 """
 import heapq
+import numbers
 from collections import deque
 from dataclasses import dataclass
 
@@ -201,3 +202,69 @@ def count_sql(inner_sql: str) -> str:
     """
     inner = inner_sql.strip().rstrip(";").rstrip()
     return f"SELECT COUNT(*) FROM ({inner}) subset_cnt"
+
+
+def subset_keys(pk_columns, columns, rows) -> list:
+    """Order-preserving deduplicated primary-key tuples from dump rows.
+
+    Returns [] when the table has no primary key, a PK column is absent from
+    ``columns``, or there are no rows.
+    """
+    if not pk_columns:
+        return []
+    try:
+        idx = [columns.index(c) for c in pk_columns]
+    except ValueError:
+        return []
+    seen = set()
+    out = []
+    for r in rows:
+        k = tuple(r[i] for i in idx)
+        if k not in seen:
+            seen.add(k)
+            out.append(k)
+    return out
+
+
+def _sql_literal(v, dialect: Dialect) -> str:
+    """Render a Python value as a SQL literal for a read-only artifact.
+
+    Numbers are emitted raw; strings are single-quoted with ' doubled; None
+    becomes NULL; bool becomes 1/0 (portable). The result is never executed
+    by this tool — it is generated for external inspection/use.
+    """
+    if v is None:
+        return "NULL"
+    if isinstance(v, bool):
+        return "1" if v else "0"
+    if isinstance(v, numbers.Number):
+        return str(v)
+    return "'" + str(v).replace("'", "''") + "'"
+
+
+def subset_in_list_sql(table, pk_columns, columns, rows, *,
+                       dialect: Dialect = SQLITE, schema_name: str = "") -> "str | None":
+    """Render a self-contained read-only SELECT reproducing exactly the subset
+    rows of ``table`` by their concrete primary keys. None when there is no PK
+    or no rows. Composite keys use the portable ``(a=… AND b=…) OR …`` form.
+    Executes nothing.
+    """
+    keys = subset_keys(pk_columns, columns, rows)
+    if not keys:
+        return None
+    tref = dialect.table_ref(table, schema_name)
+    if len(pk_columns) == 1:
+        col = dialect.quote(pk_columns[0])
+        lits = ", ".join(_sql_literal(k[0], dialect) for k in keys)
+        where = f"{col} IN ({lits})"
+    else:
+        qcols = [dialect.quote(c) for c in pk_columns]
+        terms = []
+        for k in keys:
+            parts = [
+                f"{qc} IS NULL" if val is None else f"{qc} = {_sql_literal(val, dialect)}"
+                for qc, val in zip(qcols, k)
+            ]
+            terms.append("(" + " AND ".join(parts) + ")")
+        where = " OR ".join(terms)
+    return f"SELECT * FROM {tref} WHERE {where};"

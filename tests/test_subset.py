@@ -4,7 +4,7 @@ from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
 from core.datapreview import count_subset_rows, execute_select, dump_subset_rows
 from core.subset import SubsetScript
 from core.model import Schema, Table, Column, ForeignKey
-from core.subset import compute_subset, generate_subset_sql, count_sql
+from core.subset import compute_subset, generate_subset_sql, count_sql, subset_keys, subset_in_list_sql
 
 
 def _t(name, cols, fks=(), pk=()):
@@ -279,3 +279,48 @@ def test_dump_subset_rows_resilient_per_table(demo_url):
     by = {d["table"]: d for d in dump}
     assert by["Datacenter"]["row_count"] == 1
     assert by["Bogus"]["rows"] == [] and by["Bogus"]["error"] is not None
+
+
+def test_subset_keys_dedup_order_preserving():
+    keys = subset_keys(("id",), ["id", "x"], [[1, "a"], [1, "b"], [2, "c"], [1, "d"]])
+    assert keys == [(1,), (2,)]
+
+
+def test_subset_keys_empty_cases():
+    assert subset_keys((), ["id"], [[1]]) == []          # no PK
+    assert subset_keys(("id",), ["id"], []) == []        # no rows
+    assert subset_keys(("missing",), ["id"], [[1]]) == []  # PK col absent
+
+
+def test_in_list_sql_single_pk():
+    sql = subset_in_list_sql("T", ("id",), ["id", "x"], [[1, "a"], [2, "b"]])
+    assert sql == 'SELECT * FROM "T" WHERE "id" IN (1, 2);'
+
+
+def test_in_list_sql_composite_pk_or_form():
+    sql = subset_in_list_sql("RP", ("ClusterID", "PoolKey"),
+                             ["ClusterID", "PoolKey", "Name"],
+                             [[1, "P1", "a"], [2, "P2", "b"]])
+    assert sql == ('SELECT * FROM "RP" WHERE '
+                   '("ClusterID" = 1 AND "PoolKey" = \'P1\') OR '
+                   '("ClusterID" = 2 AND "PoolKey" = \'P2\');')
+
+
+def test_in_list_sql_escapes_string_literals():
+    sql = subset_in_list_sql("T", ("name",), ["name"], [["O'Brien"]])
+    assert "'O''Brien'" in sql
+
+
+def test_in_list_sql_composite_none_uses_is_null():
+    sql = subset_in_list_sql("T", ("a", "b"), ["a", "b"], [[1, None]])
+    assert sql == 'SELECT * FROM "T" WHERE ("a" = 1 AND "b" IS NULL);'
+
+
+def test_in_list_sql_none_when_no_pk_or_no_rows():
+    assert subset_in_list_sql("T", (), ["id"], [[1]]) is None
+    assert subset_in_list_sql("T", ("id",), ["id"], []) is None
+
+
+def test_in_list_sql_schema_qualified():
+    sql = subset_in_list_sql("T", ("id",), ["id"], [[1]], schema_name="dbo")
+    assert sql.startswith('SELECT * FROM "dbo"."T" WHERE')
