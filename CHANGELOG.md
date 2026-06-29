@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.49.0] — 2026-06-29
+
+### Added
+- **Subset live row counts (AP-56b·Stage 1):** the "Entität exportieren" panel can now
+  execute the AP-56a footprint SELECTs read-only and show the real row count per closure
+  table plus a total. A new `count_sql` wrapper (`SELECT COUNT(*) FROM (<subset SELECT>)`,
+  Oracle-portable alias) feeds `core.datapreview.count_subset_rows`, which counts each
+  table resiliently (a per-table failure is reported as an error and the others still
+  count). New endpoint `POST /api/subset/run` returns `{tables[], total, incomplete}`;
+  the UI adds a "Zeilen zählen (live)" button, a "Zeilen" column and a "Summe" footer.
+  Counts only — no data dump, no writes. The IN-list / data dump is AP-56b·Stage 2.
+
 ## [0.48.3] — 2026-06-29
 
 ### Fixed

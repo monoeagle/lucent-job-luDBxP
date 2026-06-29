@@ -93,8 +93,14 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 > **Database-Subsetting (AP-56a, v0.48.0):** Aus Start-Tabelle + Wurzel-Filter wird die
 > referenzielle FK-Hülle schema-basiert berechnet (down-then-up, zyklus-sicher,
 > tiefenbegrenzt) und je Tabelle ein read-only SELECT erzeugt, das zur Wurzel zurück-joint
-> (`/api/subset`, Modus „Entität exportieren"). Führt nichts aus. Der Live-datengetriebene
-> Walk mit echten Zeilenzahlen/Daten-Dump ist das zurückgestellte AP-56b.
+> (`/api/subset`, Modus „Entität exportieren"). Führt nichts aus.
+
+> **Subset-Live-Zeilenzahlen (AP-56b·Stufe 1, v0.49.0):** Die AP-56a-Hüll-SELECTs werden
+> read-only ausgeführt (`SELECT COUNT(*) FROM (<Hüll-SELECT>)`, `core/subset.py::count_sql`
+> → `core/datapreview.py::count_subset_rows`, resilient pro Tabelle) und je Closure-Tabelle
+> die echte Zeilenzahl + Summe geliefert (`/api/subset/run`, UI-Button „Zeilen zählen (live)").
+> Nur Zählung, kein Schreiben. Der Live-Walk auf Daten-Ebene (konkrete IN-Listen / Daten-Dump)
+> ist das offene AP-56b·Stufe 2.
 
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:

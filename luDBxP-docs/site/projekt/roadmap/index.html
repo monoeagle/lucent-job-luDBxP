@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.48.3">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.49.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1183,7 +1183,7 @@
 <h3 id="legacy-db-migration-reverse-engineering-konzept-legacy-db-migration-tooling">Legacy-DB-Migration / Reverse-Engineering (Konzept: <a href="../../../../docs/concepts/2026-06-28-legacy-db-migration-tooling/">Legacy-DB-Migration-Tooling</a>)<a class="headerlink" href="#legacy-db-migration-reverse-engineering-konzept-legacy-db-migration-tooling" title="Permanent link">&para;</a></h3>
 <p>Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering der Alt-DBs → sauberer, referenziell konsistenter Export → Überführung in ein neues Modell). Kernerkenntnis: produkt-übergreifende Links der Alt-Suite sind <strong>fachliche IDs, keine FKs</strong> — daher ist nicht „Cross-Schema-Join" der Hebel, sondern implied-FK-Erkennung + referenziell konsistentes Subsetting.</p>
 <ul>
-<li><strong>AP-56b</strong> — Subset-Export Live-Walk: datengetriebener read-only Walk gegen die DB (echte Zeilenzahlen, konkrete IN-Listen/Daten-Dump) auf Basis des AP-56a-Footprints. <strong>Aufwand L.</strong></li>
+<li><strong>AP-56b · Stufe 2</strong> — Subset-Export Live-Walk, Daten-Ebene: konkrete Schlüssel materialisieren (IN-Listen als Export-Identität) + Roh-Daten-Dump (CSV/JSON) auf Basis des AP-56a-Footprints. Baut auf Stufe 1 (Live-Zeilenzahlen, erledigt) auf. <strong>Aufwand L.</strong></li>
 <li><strong>AP-57</strong> — Cross-Schema-Joins (volle Stufe), <strong>zurückgestellt/bedingt</strong>: Multi-Schema-Reflection + per-Tabelle-Schema-Qualifizierung in einem Join-SELECT. <strong>Nur bauen, wenn AP-54 echte Cross-Schema-FKs nachweist.</strong> Datenmodell-Umbau quer durch Model/Loader/Graph/Pathfinder/sqlgen/UI. <strong>Aufwand XL.</strong></li>
 </ul>
 <h3 id="weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien">Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: <a href="../../../../docs/concepts/2026-06-28-sidebar-object-categories/">Sidebar-Objekt-Kategorien</a>)<a class="headerlink" href="#weitere-db-objekt-kategorien-ap-63-gestuft-konzept-sidebar-objekt-kategorien" title="Permanent link">&para;</a></h3>
@@ -1327,6 +1327,10 @@ Doku/AppImage/Projektposter.</p>
 <p><strong>v0.45.3</strong> (2026-06-28):</p>
 <ul>
 <li><strong>AP-60</strong> — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3</li>
+</ul>
+<p><strong>v0.49.0</strong> (2026-06-29):</p>
+<ul>
+<li><strong>AP-56b · Stufe 1</strong> — Subset-Live-Walk (echte Zeilenzahlen): die AP-56a-Hüll-SELECTs werden read-only ausgeführt und je Closure-Tabelle die echte Zeilenzahl + Summe angezeigt (<code>core/subset.py::count_sql</code>, <code>core/datapreview.py::count_subset_rows</code>, <code>/api/subset/run</code>, UI-Button „Zeilen zählen (live)"). Resilient pro Tabelle, kein Daten-Dump. Stufe 2 (IN-Listen/Daten-Dump) bleibt offen. <strong>Aufwand S–M</strong> — v0.49.0</li>
 </ul>
 <p><strong>v0.48.3</strong> (2026-06-29):</p>
 <ul>

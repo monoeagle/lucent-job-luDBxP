@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.49.0] — 2026-06-29
+
+### Hinzugefügt
+- **Subset-Live-Zeilenzahlen (AP-56b·Stufe 1):** Das Panel „Entität exportieren" kann die
+  AP-56a-Hüll-SELECTs jetzt read-only ausführen und je Closure-Tabelle die echte Zeilenzahl
+  plus eine Summe anzeigen. Ein neuer `count_sql`-Wrapper (`SELECT COUNT(*) FROM (<Hüll-SELECT>)`,
+  Oracle-portabler Alias) speist `core.datapreview.count_subset_rows`, das jede Tabelle
+  resilient zählt (scheitert eine, wird sie als Fehler gemeldet, die übrigen zählen weiter).
+  Neuer Endpoint `POST /api/subset/run` liefert `{tables[], total, incomplete}`; die UI
+  bekommt einen Button „Zeilen zählen (live)", eine Spalte „Zeilen" und eine „Summe"-Fußzeile.
+  Nur Zählung — kein Daten-Dump, kein Schreiben. IN-Listen/Daten-Dump = AP-56b·Stufe 2.
+
 ## [0.48.3] — 2026-06-29
 
 ### Behoben

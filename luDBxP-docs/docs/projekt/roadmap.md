@@ -22,7 +22,7 @@
 
 Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering der Alt-DBs → sauberer, referenziell konsistenter Export → Überführung in ein neues Modell). Kernerkenntnis: produkt-übergreifende Links der Alt-Suite sind **fachliche IDs, keine FKs** — daher ist nicht „Cross-Schema-Join" der Hebel, sondern implied-FK-Erkennung + referenziell konsistentes Subsetting.
 
-- **AP-56b** — Subset-Export Live-Walk: datengetriebener read-only Walk gegen die DB (echte Zeilenzahlen, konkrete IN-Listen/Daten-Dump) auf Basis des AP-56a-Footprints. **Aufwand L.**
+- **AP-56b · Stufe 2** — Subset-Export Live-Walk, Daten-Ebene: konkrete Schlüssel materialisieren (IN-Listen als Export-Identität) + Roh-Daten-Dump (CSV/JSON) auf Basis des AP-56a-Footprints. Baut auf Stufe 1 (Live-Zeilenzahlen, erledigt) auf. **Aufwand L.**
 - **AP-57** — Cross-Schema-Joins (volle Stufe), **zurückgestellt/bedingt**: Multi-Schema-Reflection + per-Tabelle-Schema-Qualifizierung in einem Join-SELECT. **Nur bauen, wenn AP-54 echte Cross-Schema-FKs nachweist.** Datenmodell-Umbau quer durch Model/Loader/Graph/Pathfinder/sqlgen/UI. **Aufwand XL.**
 
 ### Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: [Sidebar-Objekt-Kategorien](../../../docs/concepts/2026-06-28-sidebar-object-categories.md))
@@ -170,6 +170,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.49.0** (2026-06-29):
+
+- **AP-56b · Stufe 1** — Subset-Live-Walk (echte Zeilenzahlen): die AP-56a-Hüll-SELECTs werden read-only ausgeführt und je Closure-Tabelle die echte Zeilenzahl + Summe angezeigt (`core/subset.py::count_sql`, `core/datapreview.py::count_subset_rows`, `/api/subset/run`, UI-Button „Zeilen zählen (live)"). Resilient pro Tabelle, kein Daten-Dump. Stufe 2 (IN-Listen/Daten-Dump) bleibt offen. **Aufwand S–M** — v0.49.0
 
 **v0.48.3** (2026-06-29):
 
