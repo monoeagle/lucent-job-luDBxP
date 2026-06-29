@@ -1,7 +1,7 @@
 import pytest
 from sample_data.build_demo_db import build
 from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
-from core.datapreview import count_subset_rows, execute_select
+from core.datapreview import count_subset_rows, execute_select, dump_subset_rows
 from core.subset import SubsetScript
 from core.model import Schema, Table, Column, ForeignKey
 from core.subset import compute_subset, generate_subset_sql, count_sql
@@ -231,3 +231,51 @@ def test_count_subset_rows_resilient_per_table(demo_url):
     assert by["Datacenter"]["count"] == 1
     assert by["Bogus"]["count"] is None
     assert by["Bogus"]["error"] is not None
+
+
+def test_dump_subset_rows_matches_actual_rows(demo_url):
+    # Cross-check: each table's dumped rows equal the rows the original subset
+    # SELECT returns directly. Data-independent.
+    _, scripts = _demo_scripts(demo_url, "VirtualMachine", "VMID", 1)
+    dump = dump_subset_rows(demo_url, scripts, max_rows_per_table=5000)
+    assert [d["table"] for d in dump] == [s.table for s in scripts]  # order preserved
+    by = {d["table"]: d for d in dump}
+    for s in scripts:
+        direct = execute_select(demo_url, s.sql, s.params, max_rows=100000)
+        assert by[s.table]["rows"] == direct["rows"]
+        assert by[s.table]["columns"] == direct["columns"]
+        assert by[s.table]["row_count"] == len(direct["rows"])
+        assert by[s.table]["truncated"] is False
+        assert by[s.table]["error"] is None
+
+
+def test_dump_subset_rows_empty_datacenter(demo_url):
+    # DatacenterID=3 = "DC-Empty": root has 1 row, every child has 0.
+    _, scripts = _demo_scripts(demo_url, "Datacenter", "DatacenterID", 3)
+    dump = dump_subset_rows(demo_url, scripts, max_rows_per_table=5000)
+    by = {d["table"]: d for d in dump}
+    assert by["Datacenter"]["row_count"] == 1
+    assert sum(d["row_count"] for d in dump) == 1
+    assert all(d["error"] is None and d["truncated"] is False for d in dump)
+
+
+def test_dump_subset_rows_truncates_per_table(demo_url):
+    # A tiny cap forces truncation on any table whose subset has >2 rows.
+    _, scripts = _demo_scripts(demo_url, "Datacenter", "DatacenterID", 1)
+    dump = dump_subset_rows(demo_url, scripts, max_rows_per_table=2)
+    # At least one closure table of DC-Frankfurt has >2 rows (e.g. Host/VirtualMachine).
+    truncated = [d for d in dump if d["truncated"]]
+    assert truncated, "expected at least one truncated table with cap=2"
+    for d in truncated:
+        assert d["row_count"] == 2 and len(d["rows"]) == 2
+
+
+def test_dump_subset_rows_resilient_per_table(demo_url):
+    good = SubsetScript("Datacenter",
+                        "SELECT * FROM Datacenter WHERE DatacenterID = :root;",
+                        {"root": 1})
+    bad = SubsetScript("Bogus", "SELECT * FROM NoSuchTable;", {})
+    dump = dump_subset_rows(demo_url, [good, bad], max_rows_per_table=5000)
+    by = {d["table"]: d for d in dump}
+    assert by["Datacenter"]["row_count"] == 1
+    assert by["Bogus"]["rows"] == [] and by["Bogus"]["error"] is not None

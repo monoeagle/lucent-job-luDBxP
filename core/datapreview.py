@@ -67,6 +67,34 @@ def count_subset_rows(connection_url: str, scripts) -> list:
     return out
 
 
+def dump_subset_rows(connection_url: str, scripts, *, max_rows_per_table: int) -> list:
+    """Execute each subset SELECT read-only and capture its rows. Resilient per table.
+
+    Fetches up to ``max_rows_per_table + 1`` rows to detect truncation: if more
+    than the cap come back, the table is flagged ``truncated`` and the rows are
+    cut to the cap. A per-table ``ConnectionError`` is caught and recorded as
+    ``error`` (empty rows) so the remaining tables still dump.
+
+    Returns a list of ``{"table","columns","rows","row_count","truncated","error"}``
+    in the same order as ``scripts``.
+    """
+    out = []
+    for s in scripts:
+        try:
+            res = execute_select(connection_url, s.sql, s.params,
+                                 max_rows=max_rows_per_table + 1)
+            rows = res["rows"]
+            truncated = len(rows) > max_rows_per_table
+            if truncated:
+                rows = rows[:max_rows_per_table]
+            out.append({"table": s.table, "columns": res["columns"], "rows": rows,
+                        "row_count": len(rows), "truncated": truncated, "error": None})
+        except ConnectionError as exc:
+            out.append({"table": s.table, "columns": [], "rows": [], "row_count": 0,
+                        "truncated": False, "error": str(exc)})
+    return out
+
+
 def fetch_rows(connection_url: str, object_name: str,
                valid_names: set, limit: int = 100, schema: str = "") -> dict:
     """Fetch up to `limit` rows from a table or view.
