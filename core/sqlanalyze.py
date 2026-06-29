@@ -79,6 +79,8 @@ class AnalysisResult:
     parse_error_col: "int | None" = None
     parse_error_context: str = ""       # excerpt around the offending token
     parse_error_highlight: str = ""     # the offending token (for marking)
+    parse_error_highlight_pos: int = -1 # context-relative index of the token; -1 = unknown
+    parse_error_hint: str = ""          # honest extra note (e.g. unclosed quote)
 
 
 def _statement_type(node) -> str:
@@ -280,31 +282,61 @@ def _optimization_suggestions(node) -> list:
     return out
 
 
-def _parse_error_location(exc, sql):
-    """Extract (line, col, context, highlight) from a sqlglot parse/token error.
+def _unclosed_quote_offset(sql):
+    """Return the offset of the quote (" or ') left open at end of input, else
+    None. Toggles quote state; a doubled quote ('' / "") is close+open = neutral,
+    which matches SQL's escaped-quote convention. Pure, read-only."""
+    q = None
+    open_at = None
+    for i, c in enumerate(sql):
+        if q is None:
+            if c in ('"', "'"):
+                q = c
+                open_at = i
+        elif c == q:
+            q = None
+            open_at = None
+    return open_at
 
-    ParseError carries structured ``.errors`` (line/col/start_context/highlight/
-    end_context). TokenError does not — its message embeds the consumed prefix,
-    which is a true prefix of the input, so the failure sits just past it.
-    Returns ``(None, None, "", "")`` when nothing usable can be extracted.
-    """
+
+def _parse_error_location(exc, sql):
+    """Extract (line, col, context, highlight, highlight_pos, hint) from a
+    sqlglot parse/token error. ParseError carries structured ``.errors``;
+    TokenError does not — an unclosed quote makes the tokenizer consume to EOF,
+    so we locate the quote left open at end of input and flag it. Returns
+    ``(None, None, "", "", -1, "")`` when nothing usable can be extracted."""
     errors = getattr(exc, "errors", None)
     if errors:
         e = errors[0]
+        start = e.get("start_context") or ""
         highlight = e.get("highlight") or ""
-        context = (e.get("start_context") or "") + highlight + (e.get("end_context") or "")
-        return e.get("line"), e.get("col"), context, highlight
+        context = start + highlight + (e.get("end_context") or "")
+        return e.get("line"), e.get("col"), context, highlight, len(start), ""
+    # TokenError: prefer the unclosed-quote scan (the common, real case).
+    off = _unclosed_quote_offset(sql)
+    if off is not None:
+        line = sql.count("\n", 0, off) + 1
+        col = off - sql.rfind("\n", 0, off)          # rfind == -1 → col = off + 1
+        highlight = sql[off]
+        ctx_start = max(0, off - 30)
+        context = sql[ctx_start:off + 10]
+        hint = ("Nicht geschlossenes Anführungszeichen — markiert ist das am "
+                "Statement-Ende offene Quote; bei verschobenen Quotes kann die "
+                "eigentliche Ursache weiter oben liegen.")
+        return line, col, context, highlight, off - ctx_start, hint
+    # Balanced quotes, other tokenizer error: fall back to the message prefix.
     m = _TOKEN_ERR_RE.match(str(exc))
     if m:
         prefix = m.group(1)
         if sql.startswith(prefix):
             off = len(prefix)
             line = prefix.count("\n") + 1
-            col = off - prefix.rfind("\n")          # rfind == -1 → col = off + 1
+            col = off - prefix.rfind("\n")
             highlight = sql[off] if off < len(sql) else ""
-            context = sql[max(0, off - 20):off + 20]
-            return line, col, context, highlight
-    return None, None, "", ""
+            ctx_start = max(0, off - 20)
+            context = sql[ctx_start:off + 20]
+            return line, col, context, highlight, off - ctx_start, ""
+    return None, None, "", "", -1, ""
 
 
 def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResult:
@@ -326,11 +358,12 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
     except (SqlglotError, ValueError) as exc:
         # sqlglot underlines the offending token with ANSI escape codes; strip
         # them so the browser shows clean text, not "□[4m…□[0m" garbage.
-        line, col, ctx, hl = _parse_error_location(exc, sql)
+        line, col, ctx, hl, hlpos, hint = _parse_error_location(exc, sql)
         return AnalysisResult(
             "OTHER", (), (), (), _ANSI_RE.sub("", str(exc)),
             parse_error_line=line, parse_error_col=col,
             parse_error_context=ctx, parse_error_highlight=hl,
+            parse_error_highlight_pos=hlpos, parse_error_hint=hint,
         )
     if node is None:
         return AnalysisResult("OTHER", (), (), (), "empty statement")

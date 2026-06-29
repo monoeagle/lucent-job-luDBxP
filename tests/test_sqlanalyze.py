@@ -361,3 +361,49 @@ def test_valid_sql_has_no_parse_error_location():
     assert r.parse_error_col is None
     assert r.parse_error_context == ""
     assert r.parse_error_highlight == ""
+
+
+# --- AP-65·A-Härtung: unclosed-quote-Lokalisierung + highlight_pos + hint ---
+
+def test_unclosed_quote_offset_helper():
+    from core.sqlanalyze import _unclosed_quote_offset
+    assert _unclosed_quote_offset('SELECT a FROM t') is None          # balanciert
+    assert _unclosed_quote_offset('SELECT "a FROM t') == 7            # ein offenes "
+    assert _unclosed_quote_offset('SELECT * FROM main"."ResourcePool"') == 33
+
+
+def test_parse_error_tokenerror_unclosed_quote_short():
+    r = analyze('SELECT * FROM main"."ResourcePool"')
+    assert r.parse_error is not None
+    assert r.parse_error_line == 1
+    assert r.parse_error_col == 34
+    assert r.parse_error_highlight == '"'
+    assert r.parse_error_highlight_pos >= 0
+    assert r.parse_error_context[r.parse_error_highlight_pos] == '"'
+    assert "Anführungszeichen" in r.parse_error_hint
+
+
+def test_parse_error_tokenerror_unclosed_quote_multiline():
+    # Reproduktion des Screenshot-Falls: fehlendes " in einer mittleren Zeile.
+    sql = ('SELECT "a"\n'
+           'FROM "t"\n'
+           '    AND main"."x" = "main"."y";')
+    r = analyze(sql)
+    assert r.parse_error_line is not None
+    assert r.parse_error_highlight == '"'
+    assert r.parse_error_highlight_pos >= 0
+    assert r.parse_error_context[r.parse_error_highlight_pos] == '"'
+    assert "Anführungszeichen" in r.parse_error_hint
+
+
+def test_parse_error_parseerror_has_highlight_pos_no_hint():
+    r = analyze("SELECT a b c FROM t")
+    assert r.parse_error_highlight_pos == 11        # len(start_context "SELECT a b ")
+    assert r.parse_error_context[r.parse_error_highlight_pos] == "c"
+    assert r.parse_error_hint == ""
+
+
+def test_valid_sql_no_highlight_pos_no_hint():
+    r = analyze("SELECT a FROM t")
+    assert r.parse_error_highlight_pos == -1
+    assert r.parse_error_hint == ""
