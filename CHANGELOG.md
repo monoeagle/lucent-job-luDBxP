@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.50.0] — 2026-06-29
+
+### Added
+- **Subset data dump (AP-56b·Stage 2):** the "Entität exportieren" panel can now export
+  the actual rows of the referential closure. A new `core.datapreview.dump_subset_rows`
+  executes the AP-56a footprint SELECTs read-only and captures the rows per closure table;
+  a per-table cap (`config.MAX_RESULT_ROWS`) is enforced with a loud truncation flag
+  (detected by fetching `cap + 1`), and a per-table failure is reported as an error while
+  the others still dump. New endpoint `POST /api/subset/dump` returns a JSON bundle
+  `{start, truncated, incomplete, row_cap, tables[{columns, rows, row_count, truncated,
+  error}]}`; the UI adds a "Daten-Dump (JSON)" button that downloads the bundle client-side
+  (browser-native Blob, no server file). Read-only — no writes. Explicit IN-lists remain a
+  follow-up.
+
 ## [0.49.0] — 2026-06-29
 
 ### Added

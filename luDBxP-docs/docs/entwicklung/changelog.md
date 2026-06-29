@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.50.0] — 2026-06-29
+
+### Hinzugefügt
+- **Subset-Daten-Dump (AP-56b·Stufe 2):** Das Panel „Entität exportieren" kann jetzt die
+  echten Zeilen der referenziellen Hülle exportieren. Ein neues `core.datapreview.dump_subset_rows`
+  führt die AP-56a-Hüll-SELECTs read-only aus und erfasst die Zeilen je Closure-Tabelle;
+  ein Per-Tabelle-Cap (`config.MAX_RESULT_ROWS`) wird mit lautem Truncation-Flag durchgesetzt
+  (erkannt über `cap + 1`-Fetch), und eine gescheiterte Tabelle wird als Fehler gemeldet,
+  während die übrigen weiter dumpen. Neuer Endpoint `POST /api/subset/dump` liefert ein
+  JSON-Bundle `{start, truncated, incomplete, row_cap, tables[{columns, rows, row_count,
+  truncated, error}]}`; die UI bekommt einen Button „Daten-Dump (JSON)", der das Bundle
+  client-seitig herunterlädt (Browser-nativer Blob, keine Server-Datei). Read-only — kein
+  Schreiben. Explizite IN-Listen bleiben ein Folge-AP.
+
 ## [0.49.0] — 2026-06-29
 
 ### Hinzugefügt

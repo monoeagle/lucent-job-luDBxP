@@ -1,18 +1,48 @@
 {
-  "generatedAt": "2026-06-29T13:58:35",
+  "generatedAt": "2026-06-29T14:32:56",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 21,
+      "commits": 27,
       "kinds": {
-        "fix": 4,
-        "feat": 4,
-        "docs": 13
+        "feat": 7,
+        "docs": 16,
+        "fix": 4
       },
       "list": [
+        {
+          "sha": "cb474d5",
+          "subject": "feat(subset): UI „Daten-Dump (JSON)\" — Blob-Download der Closure-Zeilen (AP-56b Stufe 2)",
+          "kind": "feat"
+        },
+        {
+          "sha": "69f48bd",
+          "subject": "feat(subset): /api/subset/dump — JSON-Daten-Bundle der Closure (AP-56b Stufe 2)",
+          "kind": "feat"
+        },
+        {
+          "sha": "38c29a0",
+          "subject": "feat(subset): dump_subset_rows — read-only Zeilen-Dump je Tabelle, truncation-aware (AP-56b Stufe 2)",
+          "kind": "feat"
+        },
+        {
+          "sha": "dc7d412",
+          "subject": "docs: Plan AP-56b·Stufe 2 — Subset-Daten-Dump (4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "86f3c53",
+          "subject": "docs: Spec AP-56b·Stufe 2 — Subset-Daten-Dump (JSON)",
+          "kind": "docs"
+        },
+        {
+          "sha": "fdeef19",
+          "subject": "docs: Release v0.49.0 — AP-56b·Stufe 1 (Subset-Live-Zeilenzahlen)",
+          "kind": "docs"
+        },
         {
           "sha": "199b3cf",
           "subject": "fix(subset): Live-Count nutzt Build-Zeit-Payload — keine Footprint/Count-Drift (AP-56b Review)",
@@ -1855,17 +1885,17 @@
     }
   },
   "stats": {
-    "totalCommits": 357,
+    "totalCommits": 363,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 169
+        "count": 172
       },
       {
         "kind": "feat",
-        "count": 102
+        "count": 105
       },
       {
         "kind": "fix",
@@ -1892,7 +1922,7 @@
         "count": 3
       }
     ],
-    "testCount": 366
+    "testCount": 373
   },
   "phases": []
 }
