@@ -23,3 +23,6 @@ luDBxP-docs/.cache/
 .tools/
 build/
 .coverage
+
+# Lokale Smoke-/Wegwerf-Skripte
+scratchpad/
