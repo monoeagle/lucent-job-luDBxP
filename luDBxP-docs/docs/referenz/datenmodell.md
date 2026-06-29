@@ -14,11 +14,11 @@ Das Wurzelobjekt nach einer Reflection-Operation. Enthält:
 
 - `tables: tuple[Table]` — alle reflektierten Tabellen
 - `views: tuple[View]` — alle reflektierten Views
-- `triggers: tuple[Trigger]` — reflektierte Trigger (AP-63·S2; aktuell nur SQLite via Katalog-SQL)
-- `sequences: tuple[Sequence]` — reflektierte Sequenzen (AP-63·S2b; nur PostgreSQL/Oracle)
+- `triggers: tuple[Trigger]` — reflektierte Trigger (AP-63·S2 + Trigger-FF; SQLite/PG/Oracle/MSSQL via Pro-Dialekt-Katalog-SQL)
+- `sequences: tuple[Sequence]` — reflektierte Sequenzen (AP-63·S2b; PG/Oracle/MSSQL; nur SQLite → leer)
 - `materialized_views: tuple[View]` — reflektierte Materialized Views (AP-63·S2b; nur PG/Oracle), reusen das `View`-Shape
 - `routines: tuple[Routine]` — reflektierte Routinen: Procedures, Functions, Packages (AP-63·S3; nur PG/Oracle/MSSQL)
-- `synonyms: tuple[Synonym]` — reflektierte Synonyme (AP-63·S3; nur Oracle)
+- `synonyms: tuple[Synonym]` — reflektierte Synonyme (AP-63·S3; Oracle + MSSQL seit AP-67·MSSQL-Grundlage v0.60.0)
 - `has_column(table, column)` — Validierungsmethode für API-Aufrufe
 - `cross_schema_fks(current_schema)` — FK-Kanten über Schema-Grenzen (AP-54-Diagnose)
 
@@ -91,7 +91,7 @@ Materialized Views (AP-63·S2b) werden auf dasselbe `View`-Shape abgebildet (ink
 | Klasse | Attribute | Beschreibung |
 |---|---|---|
 | `Routine` | `name: str`, `kind: str`, `sql: str` | Routine (Name, Art: `procedure`/`function`/`package`, Quelltext); read-only, keine Ausführung |
-| `Synonym` | `name: str`, `target: str` | Synonym (Name + Zielobjekt); read-only, nur Oracle |
+| `Synonym` | `name: str`, `target: str` | Synonym (Name + Zielobjekt); read-only, Oracle + MSSQL (AP-67·MSSQL-Grundlage v0.60.0) |
 
 Alle read-only Objekt-Kategorien (Index/Check/Trigger/Sequence/Materialized View/Routine/Synonym) nehmen **nicht** an Join-Pfaden oder SQL-Generierung teil — reine Anzeige.
 
@@ -164,8 +164,10 @@ Er enthält keine Views — nur Tabellen mit FK-Beziehungen.
 ```
 
 Die Felder `triggers`/`sequences`/`materialized_views` sind je nach Backend leer
-(`[]`): Trigger nur SQLite (AP-63·S2), Sequences/Materialized Views nur
-PostgreSQL/Oracle (AP-63·S2b). Die Felder `procedures`/`functions`/`packages`/`synonyms`
-sind je nach Backend leer (`[]`): Routinen nur PG/Oracle/MSSQL, Synonyme nur Oracle
-(AP-63·S3). Das Feld `routines` auf jedem View-/Matview-Eintrag ist `[]`, wenn die View
-keine reflektierten Routinen aufruft, oder keine Routinen vorhanden sind (AP-66·S1).
+(`[]`): Trigger SQLite/PG/Oracle/MSSQL (AP-63·S2 + Trigger-FF), Sequences PG/Oracle/MSSQL
+(AP-63·S2b; nur SQLite → leer), Materialized Views nur PG/Oracle. Die Felder
+`procedures`/`functions`/`packages`/`synonyms` sind je nach Backend leer (`[]`):
+Routinen nur PG/Oracle/MSSQL, Synonyme Oracle + MSSQL (AP-63·S3; MSSQL-Synonyme
+via `sys.synonyms` seit AP-67·MSSQL-Grundlage v0.60.0). Das Feld `routines` auf
+jedem View-/Matview-Eintrag ist `[]`, wenn die View keine reflektierten Routinen
+aufruft, oder keine Routinen vorhanden sind (AP-66·S1).

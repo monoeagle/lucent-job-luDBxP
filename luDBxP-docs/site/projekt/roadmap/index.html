@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.59.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.60.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1198,6 +1198,7 @@
 <ul>
 <li><strong>AP-61</strong> — Demo-CMDB zur vollen CMDB erweitern: die Demo ist aktuell ein vSphere-Virtualisierungs-Inventar (Datacenter/Cluster/Host/VM/Datastore/Network/…); es fehlt die CMDB-/Business-Schicht. Ergänzen (mit FKs zur Infra): Application, Service, Owner/Person, Vendor, Contract, Location (Rack/Raum), Software/License, Asset-Status — in <code>sample_data/build_demo_db.py</code> + Beispiel-Daten. <strong>Umfang offen:</strong> CMDB-Schicht (empfohlen) / + ITSM (Incident/Change) / minimal (Application+Service+Owner). <strong>Aufwand M–L.</strong></li>
 <li><strong>AP-62</strong> — Sichere Passwort-Persistenz (OS-Keyring), <strong>bedingt</strong>: das Passwort wird heute bewusst nie gespeichert (Whitelist <code>routes.py:_CONN_FIELDS</code> ohne <code>password</code>; Verbindungen liegen als Klartext-JSON). Optionales „Passwort merken" via OS-Keyring (verschlüsselt, neue <code>keyring</code>-Dependency, plattformübergreifend) statt Klartext. <strong>Nur bauen, wenn Persistenz gewünscht</strong> — Status quo (jede Sitzung neu eingeben) ist eine valide Sicherheitswahl. <strong>Aufwand M.</strong></li>
+<li><strong>AP-67·Oracle-Adaption</strong> — Server-Demo-CMDB für Oracle: Seed-Skript analog <code>sample_data/seed_server_demo.py</code>, aber SQL/PL-SQL für Oracle (gleiche CMDB-Tabellenstruktur + Oracle-spezifische Objekte: SEQUENCE, MATERIALIZED VIEW, PACKAGE, Procedures/Functions, SYNONYM, PL/SQL-TRIGGER, VIEW die Function aufruft). <strong>Hängt an laufender Oracle-XE-Instanz.</strong> MSSQL-Grundlage erledigt v0.60.0. <strong>Aufwand M.</strong></li>
 </ul>
 <hr />
 <h2 id="erledigte-arbeitspakete">Erledigte Arbeitspakete<a class="headerlink" href="#erledigte-arbeitspakete" title="Permanent link">&para;</a></h2>
@@ -1323,6 +1324,10 @@ Doku/AppImage/Projektposter.</p>
 <p><strong>v0.45.3</strong> (2026-06-28):</p>
 <ul>
 <li><strong>AP-60</strong> — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3</li>
+</ul>
+<p><strong>v0.60.0</strong> (2026-06-30):</p>
+<ul>
+<li><strong>AP-67·MSSQL-Grundlage</strong> — MSSQL-Synonyme + Server-Demo-CMDB: <code>_reflect_synonyms</code> in <code>core/loaders/sqlalchemy_loader.py</code> erhält einen MSSQL-Zweig (<code>sys.synonyms</code>); Synonyme waren bisher Oracle-only. Neues idempotentes Seeder-Skript <code>sample_data/seed_server_demo.py</code> baut eine kompakte 5-Tabellen-CMDB + alle MSSQL-spezifischen Objektkategorien (Sequence, Function, Procedure, Trigger, View die Function aufruft, Synonym) — MSSQL-first, strukturiert für spätere Oracle-Adaption; externes Setup-Skript. <code>sample_data/server-demo-README.md</code> dokumentiert den Bring-up. Neuer skip-guardeter MSSQL-Integrationstest verifiziert alle 7 Objektkategorien (inkl. AP-66·S1 View→Routine) live gegen MSSQL-Container. <strong>Aufwand M</strong> — v0.60.0</li>
 </ul>
 <p><strong>v0.59.0</strong> (2026-06-30):</p>
 <ul>

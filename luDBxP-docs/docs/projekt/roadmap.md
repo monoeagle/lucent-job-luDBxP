@@ -38,6 +38,7 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 - **AP-61** — Demo-CMDB zur vollen CMDB erweitern: die Demo ist aktuell ein vSphere-Virtualisierungs-Inventar (Datacenter/Cluster/Host/VM/Datastore/Network/…); es fehlt die CMDB-/Business-Schicht. Ergänzen (mit FKs zur Infra): Application, Service, Owner/Person, Vendor, Contract, Location (Rack/Raum), Software/License, Asset-Status — in `sample_data/build_demo_db.py` + Beispiel-Daten. **Umfang offen:** CMDB-Schicht (empfohlen) / + ITSM (Incident/Change) / minimal (Application+Service+Owner). **Aufwand M–L.**
 - **AP-62** — Sichere Passwort-Persistenz (OS-Keyring), **bedingt**: das Passwort wird heute bewusst nie gespeichert (Whitelist `routes.py:_CONN_FIELDS` ohne `password`; Verbindungen liegen als Klartext-JSON). Optionales „Passwort merken" via OS-Keyring (verschlüsselt, neue `keyring`-Dependency, plattformübergreifend) statt Klartext. **Nur bauen, wenn Persistenz gewünscht** — Status quo (jede Sitzung neu eingeben) ist eine valide Sicherheitswahl. **Aufwand M.**
+- **AP-67·Oracle-Adaption** — Server-Demo-CMDB für Oracle: Seed-Skript analog `sample_data/seed_server_demo.py`, aber SQL/PL-SQL für Oracle (gleiche CMDB-Tabellenstruktur + Oracle-spezifische Objekte: SEQUENCE, MATERIALIZED VIEW, PACKAGE, Procedures/Functions, SYNONYM, PL/SQL-TRIGGER, VIEW die Function aufruft). **Hängt an laufender Oracle-XE-Instanz.** MSSQL-Grundlage erledigt v0.60.0. **Aufwand M.**
 
 ---
 
@@ -166,6 +167,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.60.0** (2026-06-30):
+
+- **AP-67·MSSQL-Grundlage** — MSSQL-Synonyme + Server-Demo-CMDB: `_reflect_synonyms` in `core/loaders/sqlalchemy_loader.py` erhält einen MSSQL-Zweig (`sys.synonyms`); Synonyme waren bisher Oracle-only. Neues idempotentes Seeder-Skript `sample_data/seed_server_demo.py` baut eine kompakte 5-Tabellen-CMDB + alle MSSQL-spezifischen Objektkategorien (Sequence, Function, Procedure, Trigger, View die Function aufruft, Synonym) — MSSQL-first, strukturiert für spätere Oracle-Adaption; externes Setup-Skript. `sample_data/server-demo-README.md` dokumentiert den Bring-up. Neuer skip-guardeter MSSQL-Integrationstest verifiziert alle 7 Objektkategorien (inkl. AP-66·S1 View→Routine) live gegen MSSQL-Container. **Aufwand M** — v0.60.0
 
 **v0.59.0** (2026-06-30):
 

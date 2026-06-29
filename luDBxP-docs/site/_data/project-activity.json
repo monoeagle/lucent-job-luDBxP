@@ -1,18 +1,53 @@
 {
-  "generatedAt": "2026-06-30T00:52:53",
+  "generatedAt": "2026-06-30T01:41:33",
   "range": {
     "from": "2025-07-01",
     "to": "2026-06-30"
   },
   "byDay": {
     "2026-06-30": {
-      "commits": 6,
+      "commits": 13,
       "kinds": {
-        "feat": 3,
-        "docs": 2,
-        "other": 1
+        "other": 3,
+        "feat": 5,
+        "docs": 5
       },
       "list": [
+        {
+          "sha": "cab4cf9",
+          "subject": "test+docs: MSSQL-Demo-Seed-Integrationstest (7 Kategorien) + Bring-up-README (AP-67·MSSQL)",
+          "kind": "other"
+        },
+        {
+          "sha": "0cc944f",
+          "subject": "feat(demo): Server-Demo-CMDB-Seeder (MSSQL) für alle Objektkategorien (AP-67·MSSQL)",
+          "kind": "feat"
+        },
+        {
+          "sha": "f8ad040",
+          "subject": "feat(loader): MSSQL-Synonym-Reflektion (sys.synonyms) (AP-67·MSSQL)",
+          "kind": "feat"
+        },
+        {
+          "sha": "02ed2a6",
+          "subject": "docs(plan): AP-67·MSSQL-Grundlage Implementierungsplan — Seeder + MSSQL-Synonyme (DDL vorab gegen Container verifiziert)",
+          "kind": "docs"
+        },
+        {
+          "sha": "169ae6a",
+          "subject": "docs(spec): AP-67·MSSQL-Grundlage Design — Server-Demo-CMDB + MSSQL-Synonym-Reflektion",
+          "kind": "docs"
+        },
+        {
+          "sha": "7ce8039",
+          "subject": "docs(concept): AP-67 Oracle-Demo-CMDB — Seed-Skript für alle Oracle-Objektkategorien im Tree",
+          "kind": "docs"
+        },
+        {
+          "sha": "be8d831",
+          "subject": "release: v0.59.0 — AP-65·A-Härtung (TokenError-Quote-Hinweis + Mark-Fix)",
+          "kind": "other"
+        },
         {
           "sha": "f3660f0",
           "subject": "feat(ui): Analyzer-Markierung über highlight_pos + Quote-Hinweis (AP-65·A-Härtung)",
@@ -2228,25 +2263,25 @@
     }
   },
   "stats": {
-    "totalCommits": 429,
+    "totalCommits": 436,
     "activeDays": 6,
     "longestStreak": 6,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 202
+        "count": 205
       },
       {
         "kind": "feat",
-        "count": 132
+        "count": 134
+      },
+      {
+        "kind": "other",
+        "count": 37
       },
       {
         "kind": "fix",
         "count": 36
-      },
-      {
-        "kind": "other",
-        "count": 35
       },
       {
         "kind": "test",
@@ -2265,7 +2300,7 @@
         "count": 4
       }
     ],
-    "testCount": 442
+    "testCount": 444
   },
   "phases": []
 }

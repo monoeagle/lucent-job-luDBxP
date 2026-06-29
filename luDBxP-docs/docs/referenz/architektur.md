@@ -112,10 +112,10 @@ mit Browser-Blob-Downloads (kein Server-Filehandling).
 `pg_trigger`/`pg_get_triggerdef`; Oracle via `all_triggers`/`dbms_metadata.get_ddl`; MSSQL via
 `sys.triggers`/`sys.sql_modules`; nur Tabellen-/DML-Trigger, MSSQL live verifiziert, PG/Oracle
 skip-guarded), **Sequences + Materialized
-Views** (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle), sowie **Stored Procedures,
-Functions, Oracle Packages und Oracle Synonyme** als vier eigene Sidebar-Kategorien (AP-63·S3,
+Views** (AP-63·S2b, SQLAlchemy-nativ; Sequences: PG/Oracle/MSSQL, Materialized Views: nur PG/Oracle), sowie **Stored Procedures,
+Functions, Oracle Packages und Synonyme** als vier eigene Sidebar-Kategorien (AP-63·S3,
 Pro-Dialekt-Katalog-SQL: `_reflect_routines` via `pg_proc`/`all_objects`+`all_source`/`sys.objects`+
-`sys.sql_modules`; `_reflect_synonyms` via `all_synonyms`, Oracle-only). `/api/schema` serialisiert
+`sys.sql_modules`; `_reflect_synonyms` via `all_synonyms` Oracle + `sys.synonyms` MSSQL, AP-67·MSSQL-Grundlage v0.60.0). `/api/schema` serialisiert
 alle Felder: `procedures`, `functions`, `packages`, `synonyms` (je `{"name","sql"}`, Synonyme
 `{"name","target"}`). Alle Objekt-Kategorien erscheinen nur bei N>0, haben keinen Daten-Tab und
 nehmen nicht an Join-Pfaden teil.

@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.60.0] — 2026-06-30
+
+### Added
+- **MSSQL synonyms now reflect (AP-67·MSSQL-Grundlage):** `_reflect_synonyms` in
+  `core/loaders/sqlalchemy_loader.py` gained an MSSQL branch (`sys.synonyms`); synonyms were
+  previously Oracle-only (`all_synonyms`). A new idempotent SQLAlchemy seeder
+  `sample_data/seed_server_demo.py` builds a compact 5-table CMDB plus all MSSQL-specific
+  object categories (sequence, function, procedure, trigger, a view that calls the function,
+  synonym) — MSSQL-first, structured to adapt to Oracle later; external setup script not run by
+  the read-only tool. `sample_data/server-demo-README.md` documents bring-up. A new
+  skip-guarded MSSQL integration test verifies all 7 reflectable object categories including
+  the AP-66·S1 view→routine link, live against an MSSQL container.
+
+### Fixed
+- **Doc: MSSQL sequences incorrectly claimed empty:** Project docs stated `get_sequence_names`
+  returns empty for MSSQL (`"SQLite/MSSQL → leer"`); MSSQL sequences **do** reflect via
+  `get_sequence_names`. Corrected in CLAUDE.md, architektur.md, and datenmodell.md.
+
 ## [0.59.0] — 2026-06-30
 
 ### Fixed

@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.60.0] — 2026-06-30
+
+### Hinzugefügt
+- **MSSQL-Synonyme werden jetzt reflektiert (AP-67·MSSQL-Grundlage):** `_reflect_synonyms` in
+  `core/loaders/sqlalchemy_loader.py` erhält einen MSSQL-Zweig (`sys.synonyms`); Synonyme waren
+  bisher nur für Oracle (`all_synonyms`) reflektiert. Ein neues idempotentes SQLAlchemy-Seeder-Skript
+  `sample_data/seed_server_demo.py` baut eine kompakte 5-Tabellen-CMDB plus alle MSSQL-spezifischen
+  Objektkategorien (Sequence, Function, Procedure, Trigger, eine View die die Function aufruft,
+  Synonym) — MSSQL-first, strukturiert für eine spätere Oracle-Adaption; externes Setup-Skript,
+  das das read-only-Werkzeug nicht ausführt. `sample_data/server-demo-README.md` dokumentiert den
+  Bring-up. Ein neuer skip-guardeter MSSQL-Integrationstest verifiziert alle 7 reflektierbaren
+  Objektkategorien inkl. AP-66·S1 View→Routine-Verknüpfung, live gegen einen MSSQL-Container.
+
+### Behoben
+- **Doku: MSSQL-Sequenzen wurden fälschlich als leer behauptet:** Die Projektdoku behauptete,
+  `get_sequence_names` liefere für MSSQL leere Ergebnisse (`„SQLite/MSSQL → leer"`); MSSQL-Sequenzen
+  werden über `get_sequence_names` **tatsächlich reflektiert**. In CLAUDE.md, architektur.md und
+  datenmodell.md korrigiert.
+
 ## [0.59.0] — 2026-06-30
 
 ### Behoben

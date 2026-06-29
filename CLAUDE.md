@@ -87,12 +87,12 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **Trigger-Sidebar-Kategorie (AP-63·S2 + Trigger-Fast-Follow, v0.53.0 → v0.56.0):** Trigger werden read-only als eigene Sidebar-Kategorie reflektiert (Name/Tabelle/Quelltext) — via Pro-Dialekt-Katalog-SQL (`core/loaders/sqlalchemy_loader.py::_reflect_triggers(engine, schema)`, Model `Trigger`): **SQLite** via `sqlite_master`; **PostgreSQL** via `pg_trigger` + `pg_get_triggerdef` (`NOT tgisinternal`); **Oracle** via `all_triggers` (`base_object_type='TABLE'`) + `dbms_metadata.get_ddl`; **MSSQL** via `sys.triggers` + `sys.sql_modules` (`is_ms_shipped=0`). Nur Tabellen-/DML-Trigger; MSSQL live gegen SQL Server 2022 verifiziert; PG/Oracle skip-guarded. Kategorie nur bei N>0; schlankes Trigger-Detail ohne Daten-Tab; Trigger werden nie ausgeführt, keine Join-Teilnahme.
 
-> **Sequences + Materialized-View-Kategorien (AP-63·S2b, v0.54.0):** Sequenzen (nur Name) + Materialized Views (Spalten + Definition, Matviews reusen das `View`-Model) werden read-only als je eigene Sidebar-Kategorie reflektiert (`get_sequence_names`/`get_materialized_view_names`, Model `Sequence`); echte Werte **nur PG/Oracle** (SQLite/MSSQL → leer). Display-only (kein Daten-Tab), Kategorie nur bei N>0, keine Join-Teilnahme. Optionaler Live-Test `tests/test_pg_integration.py` (`LUCENT_PG_TEST_URL`).
+> **Sequences + Materialized-View-Kategorien (AP-63·S2b, v0.54.0):** Sequenzen (nur Name) + Materialized Views (Spalten + Definition, Matviews reusen das `View`-Model) werden read-only als je eigene Sidebar-Kategorie reflektiert (`get_sequence_names`/`get_materialized_view_names`, Model `Sequence`); Sequenzen: PG/Oracle/MSSQL (nur SQLite → leer); Materialized Views: nur PG/Oracle. Display-only (kein Daten-Tab), Kategorie nur bei N>0, keine Join-Teilnahme. Optionaler Live-Test `tests/test_pg_integration.py` (`LUCENT_PG_TEST_URL`).
 
-> **Routinen- und Synonym-Kategorien (AP-63·S3, v0.55.0):** Stored Procedures, Functions, Oracle
-> Packages und Oracle Synonyme werden read-only als je eigene Sidebar-Kategorie reflektiert — via
+> **Routinen- und Synonym-Kategorien (AP-63·S3, v0.55.0 → Synonyme MSSQL v0.60.0):** Stored Procedures, Functions, Oracle
+> Packages und Synonyme werden read-only als je eigene Sidebar-Kategorie reflektiert — via
 > Pro-Dialekt-Katalog-SQL (`pg_proc` PG; `all_objects`/`all_source` Oracle; `sys.objects`/`sys.sql_modules`
-> MSSQL; Synonyme `all_synonyms` Oracle-only). Model `Routine(name, kind, sql)` (kind ∈ procedure/function/package)
+> MSSQL; Synonyme `all_synonyms` Oracle, `sys.synonyms` MSSQL — AP-67·MSSQL-Grundlage). Model `Routine(name, kind, sql)` (kind ∈ procedure/function/package)
 > + `Synonym(name, target)` + `Schema.routines`/`Schema.synonyms`; `/api/schema` liefert
 > `procedures`/`functions`/`packages`/`synonyms`. Kategorie nur bei N>0, kein Daten-Tab, keine
 > Join-Teilnahme. Skip-guarded Live-Tests (PG/Oracle/MSSQL); SQLite/andere → leer.

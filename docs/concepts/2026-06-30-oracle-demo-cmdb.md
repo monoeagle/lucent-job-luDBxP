@@ -1,7 +1,7 @@
 # Konzept & Arbeitspaket — Oracle-Demo-CMDB (AP-67)
 
 **Datum:** 2026-06-30
-**Status:** Konzept / Backlog (AP-67)
+**Status:** MSSQL-first-Grundlage erledigt (v0.60.0); Oracle-Adaption offen (AP-67)
 **Auslöser:** Nutzerwunsch — *„oracle_demo cmdb, damit wir auch im Tree alle Oracle-spezifischen Sachen zu sehen sind."* Die mitgelieferte SQLite-Demo kann die Oracle-spezifischen Objektkategorien (Sequences, Materialized Views, Packages, Procedures, Functions, Synonyms) **prinzipiell nicht** enthalten — sie erscheinen im Sidebar-Tree daher nie.
 
 ## 1. Problem
