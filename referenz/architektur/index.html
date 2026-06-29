@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.55.1">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.56.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1426,7 +1426,10 @@ mit Browser-Blob-Downloads (kein Server-Filehandling).</p>
 <p>Über Tabellen/Views hinaus werden weitere DB-Objekte <strong>read-only</strong> reflektiert und angezeigt
 (keine Join-/SQL-Teilnahme): <strong>Indizes + Check-Constraints</strong> im Tabellen-Detail (AP-63·S1,
 <code>get_indexes</code>/<code>get_check_constraints</code>, alle Engines), <strong>Trigger</strong> als eigene Sidebar-Kategorie
-(AP-63·S2, dialekt-Katalog-SQL — SQLite via <code>sqlite_master</code>), <strong>Sequences + Materialized
+(AP-63·S2 + Trigger-Fast-Follow, Pro-Dialekt-Katalog-SQL: SQLite via <code>sqlite_master</code>; PostgreSQL via
+<code>pg_trigger</code>/<code>pg_get_triggerdef</code>; Oracle via <code>all_triggers</code>/<code>dbms_metadata.get_ddl</code>; MSSQL via
+<code>sys.triggers</code>/<code>sys.sql_modules</code>; nur Tabellen-/DML-Trigger, MSSQL live verifiziert, PG/Oracle
+skip-guarded), <strong>Sequences + Materialized
 Views</strong> (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle), sowie <strong>Stored Procedures,
 Functions, Oracle Packages und Oracle Synonyme</strong> als vier eigene Sidebar-Kategorien (AP-63·S3,
 Pro-Dialekt-Katalog-SQL: <code>_reflect_routines</code> via <code>pg_proc</code>/<code>all_objects</code>+<code>all_source</code>/<code>sys.objects</code>+

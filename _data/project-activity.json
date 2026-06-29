@@ -1,21 +1,51 @@
 {
-  "generatedAt": "2026-06-29T21:51:11",
+  "generatedAt": "2026-06-29T22:30:36",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 66,
+      "commits": 72,
       "kinds": {
+        "test": 3,
+        "feat": 24,
+        "docs": 38,
         "fix": 5,
         "other": 1,
-        "docs": 35,
-        "test": 1,
-        "feat": 23,
         "chore": 1
       },
       "list": [
+        {
+          "sha": "aec3446",
+          "subject": "test(pg): Pre-Drops für Trigger-Fixture-Objekte (Idempotenz, Review-Fix) (AP-63 Trigger-FF)",
+          "kind": "test"
+        },
+        {
+          "sha": "a7c4cfa",
+          "subject": "test: Live-Trigger-Reflektion MSSQL(live)/PG/Oracle (AP-63 Trigger-FF)",
+          "kind": "test"
+        },
+        {
+          "sha": "6d7f9f7",
+          "subject": "feat(loader): Trigger-Reflektion für PG/Oracle/MSSQL (Katalog-SQL) (AP-63 Trigger-FF)",
+          "kind": "feat"
+        },
+        {
+          "sha": "a6f9c4e",
+          "subject": "docs(plan): AP-63·Trigger-Fast-Follow Implementierungsplan — PG/Oracle/MSSQL-Trigger",
+          "kind": "docs"
+        },
+        {
+          "sha": "1495a87",
+          "subject": "docs(spec): AP-63·Trigger-Fast-Follow Design — PG/Oracle/MSSQL-Trigger-Reflektion (read-only)",
+          "kind": "docs"
+        },
+        {
+          "sha": "14b7a66",
+          "subject": "docs: v0.55.1 — MSSQL-Reflektions-Fix (Changelog EN/DE, CLAUDE.md, Kennzahlen, Site)",
+          "kind": "docs"
+        },
         {
           "sha": "6bd3343",
           "subject": "fix(loader): MSSQL-Reflektion — NotImplementedError bei get_unique_constraints/get_indexes abfangen (v0.55.1)",
@@ -2083,17 +2113,17 @@
     }
   },
   "stats": {
-    "totalCommits": 402,
+    "totalCommits": 408,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 191
+        "count": 194
       },
       {
         "kind": "feat",
-        "count": 121
+        "count": 122
       },
       {
         "kind": "fix",
@@ -2104,6 +2134,10 @@
         "count": 32
       },
       {
+        "kind": "test",
+        "count": 6
+      },
+      {
         "kind": "chore",
         "count": 6
       },
@@ -2112,15 +2146,11 @@
         "count": 6
       },
       {
-        "kind": "test",
-        "count": 4
-      },
-      {
         "kind": "refactor",
         "count": 4
       }
     ],
-    "testCount": 411
+    "testCount": 415
   },
   "phases": []
 }
