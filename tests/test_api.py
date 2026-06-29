@@ -1113,6 +1113,55 @@ def test_subset_dump_missing_url_returns_400(client):
     assert resp.status_code == 400
 
 
+# ===== AP-56c: /api/subset/inlists =====
+
+def test_subset_inlists_single_pk(client, demo_url):
+    resp = client.post("/api/subset/inlists", json={
+        "connection_url": demo_url, "start_table": "Datacenter",
+        "root_filter": {"column": "DatacenterID", "op": "=", "value": 1}})
+    data = resp.get_json()
+    assert resp.status_code == 200 and data["row_cap"] == 5000
+    by = {t["name"]: t for t in data["tables"]}
+    dc = by["Datacenter"]
+    assert dc["has_pk"] is True and dc["pk_columns"] == ["DatacenterID"]
+    assert dc["key_count"] == 1
+    assert 'WHERE "DatacenterID" IN (1)' in dc["sql"]
+
+
+def test_subset_inlists_composite_pk(client, demo_url):
+    # ResourcePool has a composite PK (ClusterID, PoolKey).
+    resp = client.post("/api/subset/inlists", json={
+        "connection_url": demo_url, "start_table": "ResourcePool",
+        "root_filter": {"column": "ClusterID", "op": "=", "value": 1}})
+    data = resp.get_json()
+    assert resp.status_code == 200
+    rp = {t["name"]: t for t in data["tables"]}["ResourcePool"]
+    assert rp["pk_columns"] == ["ClusterID", "PoolKey"]
+    assert '("ClusterID" = ' in rp["sql"] and ' AND "PoolKey" = ' in rp["sql"]
+
+
+def test_subset_inlists_deterministic_anchor(client, demo_url):
+    resp = client.post("/api/subset/inlists", json={
+        "connection_url": demo_url, "start_table": "Datacenter",
+        "root_filter": {"column": "DatacenterID", "op": "=", "value": 3}})
+    data = resp.get_json()
+    by = {t["name"]: t for t in data["tables"]}
+    assert by["Datacenter"]["key_count"] == 1
+
+
+def test_subset_inlists_unknown_table_returns_400(client, demo_url):
+    resp = client.post("/api/subset/inlists", json={
+        "connection_url": demo_url, "start_table": "Nope",
+        "root_filter": {"column": "x", "op": "=", "value": 1}})
+    assert resp.status_code == 400
+
+
+def test_subset_inlists_missing_url_returns_400(client):
+    resp = client.post("/api/subset/inlists", json={"start_table": "Datacenter",
+        "root_filter": {"column": "DatacenterID", "op": "=", "value": 1}})
+    assert resp.status_code == 400
+
+
 # ===== AP-64: /api/connect meldet jeden Verbindungsfehler als 400 =====
 
 def test_connect_unhandled_loader_error_returns_400(client, monkeypatch):
