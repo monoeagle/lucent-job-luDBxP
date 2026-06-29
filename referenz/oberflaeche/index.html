@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.58.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.59.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1571,6 +1571,14 @@ zeigt der Analyzer jetzt <strong>„Parse-Fehler in Zeile N, Spalte M:"</strong>
 Kontext-Ausschnitt, in dem das fehlerhafte Token rot hervorgehoben ist (<code>.an-err-mark</code>-Span).
 Ist keine Position ermittelbar (z. B. leere Eingabe), erscheint weiterhin der reine
 Fehlertext. Read-only — keine Autokorrektur.</p>
+<p><strong>Unclosed-Quote-Härtung (AP-65·A-Härtung):</strong> Ein nicht geschlossenes Anführungszeichen
+in einem mehrzeiligen Statement (TokenError, sqlglot konsumiert bis EOF) erhält jetzt
+ebenfalls eine Positions-Anzeige: der Scanner <code>_unclosed_quote_offset</code> lokalisiert das
+offen gebliebene Anführungszeichen, der Analyzer markiert es mit dem exakten kontextrelativen
+Index (<code>parse_error_highlight_pos</code>) statt der alten <code>indexOf</code>-Erstvorkommens-Logik.
+Darunter erscheint ein ehrlicher Hinweis-Text (<code>parse_error_hint</code>): bei verschobenen
+Anführungszeichen kann die eigentliche Ursache früher im Statement liegen, da sqlglot
+die Position nur annähernd ermitteln kann.</p>
 <h2 id="info-ubersicht-cross-schema-fk-diagnose-ap-54">Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)<a class="headerlink" href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
 eine Zeile <strong>„Cross-Schema-FKs"</strong>: die Anzahl der Foreign Keys, die auf ein <strong>anderes

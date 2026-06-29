@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.58.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.59.0">
       
       
         <meta name="author" content="LucentTools">
@@ -587,10 +587,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#analysisresult-ap-65a" class="md-nav__link">
+  <a href="#analysisresult-ap-65a-ap-65a-hartung" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        AnalysisResult (AP-65·A)
+        AnalysisResult (AP-65·A / AP-65·A-Härtung)
       </span>
     </span>
   </a>
@@ -1222,10 +1222,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#analysisresult-ap-65a" class="md-nav__link">
+  <a href="#analysisresult-ap-65a-ap-65a-hartung" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        AnalysisResult (AP-65·A)
+        AnalysisResult (AP-65·A / AP-65·A-Härtung)
       </span>
     </span>
   </a>
@@ -1515,8 +1515,8 @@ Join-Wege.</p>
 </tbody>
 </table>
 <p>Alle read-only Objekt-Kategorien (Index/Check/Trigger/Sequence/Materialized View/Routine/Synonym) nehmen <strong>nicht</strong> an Join-Pfaden oder SQL-Generierung teil — reine Anzeige.</p>
-<h3 id="analysisresult-ap-65a">AnalysisResult (AP-65·A)<a class="headerlink" href="#analysisresult-ap-65a" title="Permanent link">&para;</a></h3>
-<p>Rückgabeobjekt von <code>core/sqlanalyze.py::analyze</code> und <code>/api/analyze</code>. Die ersten Felder existierten seit AP-25/39; AP-65·A ergänzt vier abschließende Positionsfelder für Parse-Fehler:</p>
+<h3 id="analysisresult-ap-65a-ap-65a-hartung">AnalysisResult (AP-65·A / AP-65·A-Härtung)<a class="headerlink" href="#analysisresult-ap-65a-ap-65a-hartung" title="Permanent link">&para;</a></h3>
+<p>Rückgabeobjekt von <code>core/sqlanalyze.py::analyze</code> und <code>/api/analyze</code>. Die ersten Felder existierten seit AP-25/39; AP-65·A ergänzt vier abschließende Positionsfelder für Parse-Fehler; AP-65·A-Härtung ergänzt zwei weitere Felder für präzisere Markierung und ehrliche Hinweise:</p>
 <table>
 <thead>
 <tr>
@@ -1551,9 +1551,19 @@ Join-Wege.</p>
 <td><code>str</code></td>
 <td>Das fehlerhafte Token selbst (für die rot markierte <code>.an-err-mark</code>-Darstellung); <code>""</code> wenn nicht verfügbar (AP-65·A)</td>
 </tr>
+<tr>
+<td><code>parse_error_highlight_pos</code></td>
+<td><code>int</code></td>
+<td>Kontextrelativer Index des markierten Tokens im Kontext-Ausschnitt (AP-65·A-Härtung); ersetzt die alte <code>indexOf</code>-Erstvorkommens-Logik, die bei wiederholten Zeichen falsch markierte; <code>-1</code> wenn unbekannt/keine Position</td>
+</tr>
+<tr>
+<td><code>parse_error_hint</code></td>
+<td><code>str</code></td>
+<td>Optionaler Hinweis-Text unterhalb des Kontext-Ausschnitts (AP-65·A-Härtung); bei nicht geschlossenem/verschobenem Anführungszeichen weist er darauf hin, dass die eigentliche Ursache früher liegen kann; <code>""</code> wenn kein Hinweis nötig</td>
+</tr>
 </tbody>
 </table>
-<p><code>ParseError</code> wird über sqlglots <code>.errors[0]</code> aufgelöst (strukturierte Position). <code>TokenError</code> (z. B. nicht geschlossenes String-Literal) leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab. <code>/api/analyze</code> serialisiert alle vier Felder; die UI zeigt „Parse-Fehler in Zeile N, Spalte M:" + Kontext mit markiertem Token, fällt auf den Zeichenketten-Fallback zurück wenn keine Position verfügbar.</p>
+<p><code>ParseError</code> wird über sqlglots <code>.errors[0]</code> aufgelöst (strukturierte Position). <code>TokenError</code> (z. B. nicht geschlossenes String-Literal) leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab; für den Unclosed-Quote-Fall lokalisiert <code>_unclosed_quote_offset(sql)</code> das offen gebliebene Anführungszeichen. <code>/api/analyze</code> serialisiert alle sechs Felder; die UI zeigt „Parse-Fehler in Zeile N, Spalte M:" + Kontext mit markiertem Token + optionalem Hint-Text, fällt auf den Zeichenketten-Fallback zurück wenn keine Position verfügbar.</p>
 <h2 id="fk-graph">FK-Graph<a class="headerlink" href="#fk-graph" title="Permanent link">&para;</a></h2>
 <p>Der FK-Graph (<code>core/graph.py</code>) ist ein gerichteter NetworkX-Graph:</p>
 <ul>
