@@ -300,10 +300,21 @@ function openDetail(kind, name) {
       ? "<ul>" + t.foreign_keys.map((f) =>
           `<li>${esc(f.columns.join(", "))} → ${esc(f.ref_table)}.${esc(f.ref_columns.join(", "))}</li>`).join("") + "</ul>"
       : "<p class='hint'>keine Foreign Keys</p>";
+    const idxHtml = (t.indexes && t.indexes.length)
+      ? "<ul>" + t.indexes.map((ix) =>
+          `<li>${esc(ix.name || "(unbenannt)")} · ${esc(ix.columns.join(", "))}` +
+          (ix.unique ? ` <span class="badge">unique</span>` : "") + `</li>`).join("") + "</ul>"
+      : "<p class='hint'>keine Indizes</p>";
+    const ckHtml = (t.check_constraints && t.check_constraints.length)
+      ? "<ul>" + t.check_constraints.map((cc) =>
+          `<li>${esc(cc.name || "(unbenannt)")}: ${esc(cc.sqltext)}</li>`).join("") + "</ul>"
+      : "<p class='hint'>keine Check-Constraints</p>";
     defHtml = `<h2${t.comment ? ` title="${escAttr(t.comment)}"` : ""}>Tabelle: ${esc(t.name)}</h2>` +
       `<table class="cols"><thead><tr><th>Spalte</th><th>Typ</th></tr></thead>` +
       `<tbody>${colRows(t.columns, true)}</tbody></table>` +
-      `<h3>Foreign Keys</h3>${fks}`;
+      `<h3>Foreign Keys</h3>${fks}` +
+      `<h3>Indizes</h3>${idxHtml}` +
+      `<h3>Check-Constraints</h3>${ckHtml}`;
     sqlText = t.ddl;
   } else {
     const v = SCHEMA.views.find((x) => x.name === name);

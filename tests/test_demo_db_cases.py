@@ -74,6 +74,20 @@ def test_isolated_table_raises_no_path(demo_graph):
         find_paths(demo_graph, "LicenseKey", "Datacenter")
 
 
+@pytest.fixture
+def demo_url(tmp_path):
+    from sample_data.build_demo_db import build
+    db = tmp_path / "demo.db"; build(str(db)); return f"sqlite:///{db}"
+
+
+def test_demo_has_index_and_check(demo_url):
+    schema = SqlAlchemyLoader(demo_url).load()
+    host_ix = {ix.name for ix in schema.table("Host").indexes}
+    assert "ix_host_cluster" in host_ix
+    vmdisk_checks = schema.table("VMDisk").check_constraints
+    assert any("SizeGB" in cc.sqltext for cc in vmdisk_checks)
+
+
 def test_filter_weave_on_real_schema_has_no_duplicate_tables(demo_graph):
     path = find_paths(
         demo_graph, "Network", "Cluster", required_tables=("OperatingSystem",)

@@ -80,7 +80,7 @@ CREATE TABLE VMDisk (
     DiskID      INTEGER PRIMARY KEY,
     VMID        INTEGER NOT NULL REFERENCES VirtualMachine(VMID),
     DatastoreID INTEGER NOT NULL REFERENCES Datastore(DatastoreID),
-    SizeGB      INTEGER NOT NULL
+    SizeGB      INTEGER NOT NULL CHECK (SizeGB > 0)
 );
 
 CREATE TABLE ResourcePool (
@@ -109,6 +109,8 @@ CREATE TABLE LicenseKey (
     Product   TEXT NOT NULL,
     KeyValue  TEXT NOT NULL
 );
+
+CREATE INDEX ix_host_cluster ON Host(ClusterID);
 
 CREATE VIEW WindowsVMs AS
     SELECT vm.VMID, vm.Name AS VMName, os.Family, os.Version
