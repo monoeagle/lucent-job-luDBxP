@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.51.0] — 2026-06-29
+
+### Added
+- **Subset IN-lists (AP-56c):** the "Entität exportieren" panel can now export the
+  referential **export identity** — per closure table the primary-key set rendered as a
+  self-contained read-only `SELECT * FROM tab WHERE pk IN (…);`. Composite primary keys use
+  the portable `(a = … AND b = …) OR …` form (no row-value IN); literals are type-rendered
+  (strings single-quoted with `'` doubled). The keys are derived from the AP-56b·Stage-2
+  dump (`core/subset.py::subset_keys`/`subset_in_list_sql`) via the new endpoint
+  `POST /api/subset/inlists`; the UI adds an "IN-Listen (SQL)" button that downloads one
+  `.sql` (one annotated block per table). Tables without a primary key are loudly flagged
+  (`incomplete`). Note: PK literals assume int/str/Decimal/bool; datetime/bytes PKs render
+  best-effort.
+
 ## [0.50.0] — 2026-06-29
 
 ### Added

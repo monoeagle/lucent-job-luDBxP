@@ -22,7 +22,6 @@
 
 Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering der Alt-DBs → sauberer, referenziell konsistenter Export → Überführung in ein neues Modell). Kernerkenntnis: produkt-übergreifende Links der Alt-Suite sind **fachliche IDs, keine FKs** — daher ist nicht „Cross-Schema-Join" der Hebel, sondern implied-FK-Erkennung + referenziell konsistentes Subsetting.
 
-- **AP-56c** — Subset-IN-Listen (Export-Identität): aus dem Daten-Dump (AP-56b·Stufe 2) je Tabelle die kompakte PK-Menge als `WHERE pk IN (...)` materialisieren (Composite-PKs berücksichtigt) — die referenzielle Export-Identität zum Weiterreichen an die ETL-Schicht. **Aufwand S–M.**
 - **AP-57** — Cross-Schema-Joins (volle Stufe), **zurückgestellt/bedingt**: Multi-Schema-Reflection + per-Tabelle-Schema-Qualifizierung in einem Join-SELECT. **Nur bauen, wenn AP-54 echte Cross-Schema-FKs nachweist.** Datenmodell-Umbau quer durch Model/Loader/Graph/Pathfinder/sqlgen/UI. **Aufwand XL.**
 
 ### Weitere DB-Objekt-Kategorien — AP-63 (gestuft, Konzept: [Sidebar-Objekt-Kategorien](../../../docs/concepts/2026-06-28-sidebar-object-categories.md))
@@ -170,6 +169,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.51.0** (2026-06-29):
+
+- **AP-56c** — Subset-IN-Listen (SQL-Export-Identität): je Closure-Tabelle wird aus dem Stufe-2-Dump die PK-Menge abgeleitet und als self-contained read-only `SELECT * FROM tab WHERE pk IN (…);` gerendert (Composite-PKs als portable `(a=… AND b=…) OR …`-Form; `core/subset.py::subset_keys`/`subset_in_list_sql`, `/api/subset/inlists`, UI-Button „IN-Listen (SQL)" mit `.sql`-Download). No-PK-Tabellen werden laut markiert. **Damit ist Wave 2 (Migration: AP-54/55/56a/56b·1+2/56c) abgeschlossen; AP-57 bleibt bedingt.** **Aufwand S–M** — v0.51.0
 
 **v0.50.0** (2026-06-29):
 

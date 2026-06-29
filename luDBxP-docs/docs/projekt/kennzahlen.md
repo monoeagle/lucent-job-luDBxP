@@ -1,6 +1,6 @@
 # Projekt-Kennzahlen
 
-Stand **v0.50.0** · 2026-06-29 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
+Stand **v0.51.0** · 2026-06-29 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
 
 Die <span class="kz-tag kz-tag--m">gemessen</span>-Werte (Version, Tests, Coverage, Docstrings, Commits, Sessions)
 sind am 2026-06-28 neu erhoben (aus `git`, `pytest --cov` und AST-Zählung). Die
@@ -24,7 +24,7 @@ bewusst nicht neu vermessen.
 <div class="kz-card">
   <div class="kz-lbl">Testabdeckung</div>
   <div class="kz-val kz-good">91 <small>%</small></div>
-  <div class="kz-note">373 Tests grün (2 skip Oracle/MSSQL) · 1671 Statements</div>
+  <div class="kz-note">386 Tests grün (2 skip Oracle/MSSQL) · 1671 Statements</div>
 </div>
 
 <div class="kz-card">
@@ -83,9 +83,9 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 |---|---|---|---|
 | Umsetzung (Roadmap) | ≈ 89 % | ≈ 57 erledigt · ≈ 7 offener Backlog (AP-56/57, AP-61/62, AP-63, AP-19/35) · Quelle: `roadmap.md` | gemessen |
 | Commits | 329 | 2026-06-25 → 06-28 · 4 Kalendertage · 13 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
-| Aktuelle Version | v0.50.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 13 Sessions | gemessen |
+| Aktuelle Version | v0.51.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 13 Sessions | gemessen |
 | Testabdeckung | 91 % | 1671 Statements, 157 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
-| Tests | 373 | alle grün · 2 skipped (optionale Oracle/MSSQL-Live-Tests) · ~10 s Laufzeit | gemessen |
+| Tests | 386 | alle grün · 2 skipped (optionale Oracle/MSSQL-Live-Tests) · ~10 s Laufzeit | gemessen |
 | Doku-Abdeckung (Module) | 93 % | 26/28 Python-Module mit Modul-Docstring (AST-Zählung) | gemessen |
 | Doku-Abdeckung (öffentl. API) | 62 % | 60/96 öffentliche Funktionen/Klassen mit Docstring · gesamt 93/143 ≈ 65 % | gemessen |
 | Effort (COCOMO) | ~20 PM | organic · E = 2,4·KSLOC^1,05 · T ≈ 7,8 Monate Kalender | Baseline |

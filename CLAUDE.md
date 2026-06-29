@@ -105,7 +105,13 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 > read-only aus (`core/datapreview.py::dump_subset_rows`) und liefert die echten Zeilen je Closure-Tabelle
 > als JSON-Bundle; die UI lädt es client-seitig (Browser-Blob) herunter. Per-Tabelle-Cap `MAX_RESULT_ROWS`
 > mit lautem Truncation-Flag (`cap+1`-Erkennung), resilient pro Tabelle. Kein Schreiben, kein CSV/INSERT.
-> Explizite PK-IN-Listen (Export-Identität) sind das offene AP-56c.
+
+> **Subset-IN-Listen (AP-56c, v0.51.0):** `/api/subset/inlists` leitet je Closure-Tabelle die PK-Menge
+> aus dem Stufe-2-Dump ab und rendert read-only `SELECT * FROM tab WHERE pk IN (…);` (Composite-PK als
+> portable `(a=… AND b=…) OR …`-Form, `core/subset.py::subset_keys`/`subset_in_list_sql`); UI-Button
+> „IN-Listen (SQL)" lädt als `.sql`. No-PK-Tabellen werden laut markiert (`incomplete`). PK-Literale
+> nehmen int/str/Decimal/bool an; datetime/bytes-PKs rendern best-effort. Damit ist Wave 2 (Migration)
+> abgeschlossen; Cross-Schema-Joins (AP-57) bleiben bedingt.
 
 ## Version Management
 Version lives in `config.APP_VERSION`. **Never edit it by hand.** Use `sync_version.py` which updates `config.py` and `lucent-hub.yml` in lockstep:

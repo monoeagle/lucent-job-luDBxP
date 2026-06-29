@@ -103,6 +103,7 @@ def subset_in_list_sql(table, pk_columns, columns, rows, *, dialect=SQLITE, sche
 - **Aus dem Dump abgeleitet** → erbt Per-Tabelle-Cap (`MAX_RESULT_ROWS`) + Truncation-Flag (unvollständige Identität wird laut markiert); keine dedizierten Key-only-SELECTs mit eigenem Cap.
 - **Composite-PK als OR-Form** (portabel) — kein Row-Value-`IN`.
 - Kein Cross-Schema; `bool`-PKs als 1/0.
+- **PK-Literale nehmen int/str/Decimal/bool an;** `datetime`/`date`/`bytes`-PKs rendern best-effort (datetime als gequoteter ISO-String, bytes als Python-Repr) — selten (PKs sind meist int/str/UUID/Decimal); typgerechtes Date/Hex-Rendering wäre ein Folge-AP.
 - Kein `DELETE`/`INSERT`/DDL — reine `SELECT`-Identität (ETL-Schicht baut das Weitere).
 
 ## 6. Release / Doku (nach Implementierung)

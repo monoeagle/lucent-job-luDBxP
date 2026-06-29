@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.51.0] — 2026-06-29
+
+### Hinzugefügt
+- **Subset-IN-Listen (AP-56c):** Das Panel „Entität exportieren" kann jetzt die referenzielle
+  **Export-Identität** exportieren — je Closure-Tabelle die PK-Menge als self-contained read-only
+  `SELECT * FROM tab WHERE pk IN (…);`. Composite-PKs nutzen die portable `(a = … AND b = …) OR …`-Form
+  (kein Row-Value-IN); Literale werden typgerecht gerendert (Strings `'…'` mit verdoppeltem `'`).
+  Die Schlüssel werden aus dem AP-56b·Stufe-2-Dump abgeleitet (`core/subset.py::subset_keys`/`subset_in_list_sql`)
+  über den neuen Endpoint `POST /api/subset/inlists`; die UI bekommt einen Button „IN-Listen (SQL)",
+  der eine `.sql` herunterlädt (ein annotierter Block je Tabelle). Tabellen ohne PK werden laut
+  markiert (`incomplete`). Hinweis: PK-Literale nehmen int/str/Decimal/bool an; datetime/bytes-PKs
+  rendern best-effort.
+
 ## [0.50.0] — 2026-06-29
 
 ### Hinzugefügt
