@@ -89,6 +89,14 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 > **Sequences + Materialized-View-Kategorien (AP-63·S2b, v0.54.0):** Sequenzen (nur Name) + Materialized Views (Spalten + Definition, Matviews reusen das `View`-Model) werden read-only als je eigene Sidebar-Kategorie reflektiert (`get_sequence_names`/`get_materialized_view_names`, Model `Sequence`); echte Werte **nur PG/Oracle** (SQLite/MSSQL → leer). Display-only (kein Daten-Tab), Kategorie nur bei N>0, keine Join-Teilnahme. Optionaler Live-Test `tests/test_pg_integration.py` (`LUCENT_PG_TEST_URL`).
 
+> **Routinen- und Synonym-Kategorien (AP-63·S3, v0.55.0):** Stored Procedures, Functions, Oracle
+> Packages und Oracle Synonyme werden read-only als je eigene Sidebar-Kategorie reflektiert — via
+> Pro-Dialekt-Katalog-SQL (`pg_proc` PG; `all_objects`/`all_source` Oracle; `sys.objects`/`sys.sql_modules`
+> MSSQL; Synonyme `all_synonyms` Oracle-only). Model `Routine(name, kind, sql)` (kind ∈ procedure/function/package)
+> + `Synonym(name, target)` + `Schema.routines`/`Schema.synonyms`; `/api/schema` liefert
+> `procedures`/`functions`/`packages`/`synonyms`. Kategorie nur bei N>0, kein Daten-Tab, keine
+> Join-Teilnahme. Skip-guarded Live-Tests (PG/Oracle/MSSQL); SQLite/andere → leer.
+
 > **GROUP BY / Aggregates (Tier-3, v0.41.0):** Each SELECT column may carry an aggregate (COUNT/SUM/AVG/MIN/MAX); GROUP BY is auto-derived from the non-aggregated columns. The generated SQL gains GROUP BY and the read-only run path executes grouped queries.
 
 > **Aggregat-Operationen — HAVING + ORDER BY auf Aggregaten (v0.42.0):** ORDER BY may sort by an aggregate (`ORDER BY COUNT(...) DESC`) and a new HAVING clause filters groups by an aggregate (scalar comparison, parametrised). Clause order: WHERE → GROUP BY → HAVING → ORDER BY → LIMIT.

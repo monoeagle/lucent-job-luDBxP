@@ -7,7 +7,7 @@ graph LR
     end
     subgraph CORE["core/"]
         LOADER["loaders/\nsqlalchemy_loader\nmanual_loader\nddl_loader"]
-        MODEL["model.py\nSchema · Table · Column · FK · View\nIndex · Check · Trigger · Sequence"]
+        MODEL["model.py\nSchema · Table · Column · FK · View\nIndex · Check · Trigger · Sequence · Routine · Synonym"]
         GRAPH["graph.py\nbuild_graph()\nNetworkX DiGraph"]
         PF["pathfinder.py\nfind_paths()\nk-shortest"]
         SQLGEN["sqlgen.py\ngenerate_sql()\nSELECT+JOIN"]

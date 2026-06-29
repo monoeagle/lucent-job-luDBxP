@@ -12,7 +12,7 @@ lucent-job-luDBxP/
 ├── sync_version.py           # Versions-Bump: config.py + alle Stellen synchron
 │
 ├── core/                     # Reine Business-Logik (kein Flask-Import)
-│   ├── model.py              # Schema, Table, Column, ForeignKey, View, Index, CheckConstraint, Trigger, Sequence
+│   ├── model.py              # Schema, Table, Column, ForeignKey, View, Index, CheckConstraint, Trigger, Sequence, Routine, Synonym
 │   ├── schema_loader.py      # Abstrakte Loader-Schnittstelle
 │   ├── graph.py              # build_graph() → NetworkX DiGraph
 │   ├── pathfinder.py         # find_paths() — k-kürzeste Pfade
@@ -42,7 +42,7 @@ lucent-job-luDBxP/
 │   ├── about.py              # Info-Dialog (Tkinter, eigener Prozess, primär-Monitor-zentriert)
 │   └── __main__.py           # Einstieg: python -m launcher (Windows fensterlos via pythonw)
 │
-├── tests/                    # pytest-Tests (398, 3 skip-guarded: MSSQL/Oracle/PG live)
+├── tests/                    # pytest-Tests (406, 6 skip-guarded: MSSQL/Oracle/PG live)
 │   ├── conftest.py           # Fixtures (Test-Schema, Flask-Client)
 │   ├── test_api.py           # HTTP-API-Tests (via Flask-Testclient)
 │   ├── test_subset.py        # Subset-Footprint/Count/Dump/IN-Listen (AP-56)

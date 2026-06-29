@@ -1,19 +1,70 @@
 {
-  "generatedAt": "2026-06-29T20:33:01",
+  "generatedAt": "2026-06-29T21:38:35",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 54,
+      "commits": 64,
       "kinds": {
-        "docs": 30,
-        "feat": 19,
+        "docs": 35,
+        "test": 1,
+        "feat": 23,
         "chore": 1,
         "fix": 4
       },
       "list": [
+        {
+          "sha": "cfbd521",
+          "subject": "docs(loader): Kommentar zur PG>=11-prokind-Abhängigkeit (_reflect_routines)",
+          "kind": "docs"
+        },
+        {
+          "sha": "890e12b",
+          "subject": "test: skip-guarded Routine/Synonym-Live-Tests (PG/Oracle/MSSQL) (AP-63·S3)",
+          "kind": "test"
+        },
+        {
+          "sha": "52c61e6",
+          "subject": "feat(ui): Prozeduren/Funktionen/Packages/Synonyme-Kategorien + Detail; objList escAttr + findByName (AP-63·S3)",
+          "kind": "feat"
+        },
+        {
+          "sha": "3a53956",
+          "subject": "feat(api): procedures/functions/packages/synonyms in /api/schema (AP-63·S3)",
+          "kind": "feat"
+        },
+        {
+          "sha": "cb6ad4a",
+          "subject": "feat(loader): Routine- + Synonym-Reflektion (PG/Oracle/MSSQL Katalog-SQL) (AP-63·S3)",
+          "kind": "feat"
+        },
+        {
+          "sha": "61112ca",
+          "subject": "feat(model): Routine + Synonym Dataclasses + Schema-Felder (AP-63·S3)",
+          "kind": "feat"
+        },
+        {
+          "sha": "c39f540",
+          "subject": "docs(plan): AP-63·S3 Implementierungsplan — Procedures/Functions/Packages/Synonyms",
+          "kind": "docs"
+        },
+        {
+          "sha": "0ddca80",
+          "subject": "docs(spec): AP-63·S3 Design — Procedures/Functions/Packages/Synonyms (read-only Kategorien)",
+          "kind": "docs"
+        },
+        {
+          "sha": "346d6d3",
+          "subject": "docs: Handoff Session 15 — Git-SHAs + Doku-Catchup + Verifikations-Regel nachgezogen",
+          "kind": "docs"
+        },
+        {
+          "sha": "facff08",
+          "subject": "docs: Referenz-Doku-Drift der Session 15 nachgezogen (Architektur/Datenmodell/Struktur/Oberfläche/Diagramme/Kennzahlen)",
+          "kind": "docs"
+        },
         {
           "sha": "19b72f7",
           "subject": "docs: Session-15-Handoff + Insight (Scheiben nach Testbarkeit + Naht-Tests) + KPI-Zeile #15",
@@ -2021,17 +2072,17 @@
     }
   },
   "stats": {
-    "totalCommits": 390,
+    "totalCommits": 400,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 186
+        "count": 191
       },
       {
         "kind": "feat",
-        "count": 117
+        "count": 121
       },
       {
         "kind": "fix",
@@ -2050,15 +2101,15 @@
         "count": 6
       },
       {
-        "kind": "refactor",
+        "kind": "test",
         "count": 4
       },
       {
-        "kind": "test",
-        "count": 3
+        "kind": "refactor",
+        "count": 4
       }
     ],
-    "testCount": 399
+    "testCount": 410
   },
   "phases": []
 }

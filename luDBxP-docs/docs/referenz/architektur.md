@@ -108,8 +108,14 @@ mit Browser-Blob-Downloads (kein Server-Filehandling).
 Über Tabellen/Views hinaus werden weitere DB-Objekte **read-only** reflektiert und angezeigt
 (keine Join-/SQL-Teilnahme): **Indizes + Check-Constraints** im Tabellen-Detail (AP-63·S1,
 `get_indexes`/`get_check_constraints`, alle Engines), **Trigger** als eigene Sidebar-Kategorie
-(AP-63·S2, dialekt-Katalog-SQL — SQLite via `sqlite_master`), sowie **Sequences + Materialized
-Views** (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle). Alle erscheinen in `/api/schema`.
+(AP-63·S2, dialekt-Katalog-SQL — SQLite via `sqlite_master`), **Sequences + Materialized
+Views** (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle), sowie **Stored Procedures,
+Functions, Oracle Packages und Oracle Synonyme** als vier eigene Sidebar-Kategorien (AP-63·S3,
+Pro-Dialekt-Katalog-SQL: `_reflect_routines` via `pg_proc`/`all_objects`+`all_source`/`sys.objects`+
+`sys.sql_modules`; `_reflect_synonyms` via `all_synonyms`, Oracle-only). `/api/schema` serialisiert
+alle Felder: `procedures`, `functions`, `packages`, `synonyms` (je `{"name","sql"}`, Synonyme
+`{"name","target"}`). Alle Objekt-Kategorien erscheinen nur bei N>0, haben keinen Daten-Tab und
+nehmen nicht an Join-Pfaden teil.
 
 ### Webserver (waitress, AP-31)
 

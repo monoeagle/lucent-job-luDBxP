@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.54.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.55.0">
       
       
         <meta name="author" content="LucentTools">
@@ -569,6 +569,17 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Trigger / Sequence (AP-63·S2 / S2b)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routine-synonym-ap-63s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Routine / Synonym (AP-63·S3)
       </span>
     </span>
   </a>
@@ -1188,6 +1199,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#routine-synonym-ap-63s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Routine / Synonym (AP-63·S3)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1244,6 +1266,8 @@ jedem API-Aufruf frisch aus der Zieldatenbank reflektiert.</p>
 <li><code>triggers: tuple[Trigger]</code> — reflektierte Trigger (AP-63·S2; aktuell nur SQLite via Katalog-SQL)</li>
 <li><code>sequences: tuple[Sequence]</code> — reflektierte Sequenzen (AP-63·S2b; nur PostgreSQL/Oracle)</li>
 <li><code>materialized_views: tuple[View]</code> — reflektierte Materialized Views (AP-63·S2b; nur PG/Oracle), reusen das <code>View</code>-Shape</li>
+<li><code>routines: tuple[Routine]</code> — reflektierte Routinen: Procedures, Functions, Packages (AP-63·S3; nur PG/Oracle/MSSQL)</li>
+<li><code>synonyms: tuple[Synonym]</code> — reflektierte Synonyme (AP-63·S3; nur Oracle)</li>
 <li><code>has_column(table, column)</code> — Validierungsmethode für API-Aufrufe</li>
 <li><code>cross_schema_fks(current_schema)</code> — FK-Kanten über Schema-Grenzen (AP-54-Diagnose)</li>
 </ul>
@@ -1441,7 +1465,29 @@ Join-Wege.</p>
 </tr>
 </tbody>
 </table>
-<p>Alle read-only Objekt-Kategorien (Index/Check/Trigger/Sequence/Materialized View) nehmen <strong>nicht</strong> an Join-Pfaden oder SQL-Generierung teil — reine Anzeige.</p>
+<h3 id="routine-synonym-ap-63s3">Routine / Synonym (AP-63·S3)<a class="headerlink" href="#routine-synonym-ap-63s3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Klasse</th>
+<th>Attribute</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Routine</code></td>
+<td><code>name: str</code>, <code>kind: str</code>, <code>sql: str</code></td>
+<td>Routine (Name, Art: <code>procedure</code>/<code>function</code>/<code>package</code>, Quelltext); read-only, keine Ausführung</td>
+</tr>
+<tr>
+<td><code>Synonym</code></td>
+<td><code>name: str</code>, <code>target: str</code></td>
+<td>Synonym (Name + Zielobjekt); read-only, nur Oracle</td>
+</tr>
+</tbody>
+</table>
+<p>Alle read-only Objekt-Kategorien (Index/Check/Trigger/Sequence/Materialized View/Routine/Synonym) nehmen <strong>nicht</strong> an Join-Pfaden oder SQL-Generierung teil — reine Anzeige.</p>
 <h2 id="fk-graph">FK-Graph<a class="headerlink" href="#fk-graph" title="Permanent link">&para;</a></h2>
 <p>Der FK-Graph (<code>core/graph.py</code>) ist ein gerichteter NetworkX-Graph:</p>
 <ul>
@@ -1481,12 +1527,18 @@ Er enthält keine Views — nur Tabellen mit FK-Beziehungen.</p>
 </span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">  </span><span class="nt">&quot;sequences&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orders_id_seq&quot;</span><span class="p">}],</span>
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">  </span><span class="nt">&quot;materialized_views&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 </span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mv_sales&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SELECT ...&quot;</span><span class="p">}</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">  </span><span class="p">]</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="p">}</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">  </span><span class="nt">&quot;procedures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sp_refresh&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sql&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE PROCEDURE ...&quot;</span><span class="p">}],</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">  </span><span class="nt">&quot;functions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fn_total&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sql&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE FUNCTION ...&quot;</span><span class="p">}],</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">  </span><span class="nt">&quot;packages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pkg_util&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;sql&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE PACKAGE ...&quot;</span><span class="p">}],</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">  </span><span class="nt">&quot;synonyms&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emp&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hr.employees&quot;</span><span class="p">}]</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Die Felder <code>triggers</code>/<code>sequences</code>/<code>materialized_views</code> sind je nach Backend leer
 (<code>[]</code>): Trigger nur SQLite (AP-63·S2), Sequences/Materialized Views nur
-PostgreSQL/Oracle (AP-63·S2b).</p>
+PostgreSQL/Oracle (AP-63·S2b). Die Felder <code>procedures</code>/<code>functions</code>/<code>packages</code>/<code>synonyms</code>
+sind je nach Backend leer (<code>[]</code>): Routinen nur PG/Oracle/MSSQL, Synonyme nur Oracle
+(AP-63·S3).</p>
 
 
 

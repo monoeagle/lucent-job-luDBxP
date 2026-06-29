@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.54.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.55.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1426,8 +1426,14 @@ mit Browser-Blob-Downloads (kein Server-Filehandling).</p>
 <p>Über Tabellen/Views hinaus werden weitere DB-Objekte <strong>read-only</strong> reflektiert und angezeigt
 (keine Join-/SQL-Teilnahme): <strong>Indizes + Check-Constraints</strong> im Tabellen-Detail (AP-63·S1,
 <code>get_indexes</code>/<code>get_check_constraints</code>, alle Engines), <strong>Trigger</strong> als eigene Sidebar-Kategorie
-(AP-63·S2, dialekt-Katalog-SQL — SQLite via <code>sqlite_master</code>), sowie <strong>Sequences + Materialized
-Views</strong> (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle). Alle erscheinen in <code>/api/schema</code>.</p>
+(AP-63·S2, dialekt-Katalog-SQL — SQLite via <code>sqlite_master</code>), <strong>Sequences + Materialized
+Views</strong> (AP-63·S2b, SQLAlchemy-nativ, nur PostgreSQL/Oracle), sowie <strong>Stored Procedures,
+Functions, Oracle Packages und Oracle Synonyme</strong> als vier eigene Sidebar-Kategorien (AP-63·S3,
+Pro-Dialekt-Katalog-SQL: <code>_reflect_routines</code> via <code>pg_proc</code>/<code>all_objects</code>+<code>all_source</code>/<code>sys.objects</code>+
+<code>sys.sql_modules</code>; <code>_reflect_synonyms</code> via <code>all_synonyms</code>, Oracle-only). <code>/api/schema</code> serialisiert
+alle Felder: <code>procedures</code>, <code>functions</code>, <code>packages</code>, <code>synonyms</code> (je <code>{"name","sql"}</code>, Synonyme
+<code>{"name","target"}</code>). Alle Objekt-Kategorien erscheinen nur bei N&gt;0, haben keinen Daten-Tab und
+nehmen nicht an Join-Pfaden teil.</p>
 <h3 id="webserver-waitress-ap-31">Webserver (waitress, AP-31)<a class="headerlink" href="#webserver-waitress-ap-31" title="Permanent link">&para;</a></h3>
 <p>Im Normalbetrieb wird die WSGI-/Flask-App vom <strong>waitress</strong>-Server bereitgestellt
 (reiner Python-Prod-WSGI-Server, identisch unter Windows und Linux, als

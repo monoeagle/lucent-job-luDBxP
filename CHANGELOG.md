@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.55.0] — 2026-06-29
+
+### Added
+- **Stored Procedures, Functions, Oracle Packages, and Oracle Synonyms as four new read-only
+  sidebar categories (AP-63·S3):** reflected via per-dialect catalog SQL (`pg_proc` for
+  PostgreSQL; `all_objects`/`all_source` for Oracle; `sys.objects`/`sys.sql_modules` for MSSQL;
+  synonyms via `all_synonyms`, Oracle-only). Each category is shown only when N>0; the detail
+  includes the source text/definition. Model gains `Routine(name, kind, sql)` (kind ∈
+  procedure/function/package) + `Synonym(name, target)` and two trailing `Schema` fields
+  `routines`/`synonyms`; `/api/schema` serialises `procedures`, `functions`, `packages`,
+  `synonyms` (each `{"name","sql"}`, synonyms `{"name","target"}`). Display-only — no Data tab,
+  no join participation. Skip-guarded live integration tests for PostgreSQL, Oracle, and MSSQL;
+  SQLite/others return none.
+
 ## [0.54.0] — 2026-06-29
 
 ### Added

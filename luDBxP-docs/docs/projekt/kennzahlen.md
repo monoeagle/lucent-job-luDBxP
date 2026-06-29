@@ -1,9 +1,9 @@
 # Projekt-Kennzahlen
 
-Stand **v0.54.0** · 2026-06-29 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
+Stand **v0.55.0** · 2026-06-29 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
 
 Die <span class="kz-tag kz-tag--m">gemessen</span>-Werte (Version, Tests, Coverage, Docstrings, Commits, Sessions)
-sind am 2026-06-28 neu erhoben (aus `git`, `pytest --cov` und AST-Zählung). Die
+sind am 2026-06-29 neu erhoben (aus `git`, `pytest --cov` und AST-Zählung). Die
 <span class="kz-tag kz-tag--s">Baseline</span>-Werte (COCOMO, LOC) stammen vom 2026-06-27 (v0.34.0) und wurden
 bewusst nicht neu vermessen.
 
@@ -17,14 +17,14 @@ bewusst nicht neu vermessen.
 
 <div class="kz-card">
   <div class="kz-lbl">Tempo</div>
-  <div class="kz-val">390 <small>Commits</small></div>
-  <div class="kz-note">15 Sessions an 5 Kalendertagen (25.–29.06.)</div>
+  <div class="kz-val">400 <small>Commits</small></div>
+  <div class="kz-note">16 Sessions an 5 Kalendertagen (25.–29.06.)</div>
 </div>
 
 <div class="kz-card">
   <div class="kz-lbl">Testabdeckung</div>
-  <div class="kz-val kz-good">90 <small>%</small></div>
-  <div class="kz-note">398 Tests grün (3 skip Oracle/MSSQL/PG) · 1897 Statements</div>
+  <div class="kz-val kz-good">89 <small>%</small></div>
+  <div class="kz-note">406 Tests grün (6 skip Oracle/MSSQL/PG) · 1938 Statements</div>
 </div>
 
 <div class="kz-card">
@@ -61,7 +61,7 @@ bewusst nicht neu vermessen.
 
 ## Umsetzungsstand — Arbeitspakete
 
-Abgeschlossen ≈ 57 · offener Backlog ≈ 7 — über die Spanne AP&#8209;1…63 (ohne AP&#8209;17 *gestrichen* und
+Abgeschlossen ≈ 58 · offener Backlog ≈ 6 — über die Spanne AP&#8209;1…63 (ohne AP&#8209;17 *gestrichen* und
 AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 
 <div class="kz-stack">
@@ -69,23 +69,23 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
   <div class="kz-seg-plan" style="width:11%">11 %</div>
 </div>
 
-**✅ Fertig (≈ 57):** Core (Modell/Loader/FK-Graph/Pathfinder/SQL-Generator/Flask-API) · `AP-11` Composite-FK ·
+**✅ Fertig (≈ 58):** Core (Modell/Loader/FK-Graph/Pathfinder/SQL-Generator/Flask-API) · `AP-11` Composite-FK ·
 `AP-25/39/48/49` SQL-Analyzer · `AP-30` N-1-Stern · `AP-36…47` Join-Builder-Ausbau · `AP-50/51` 1-1-Fan-out ·
 `AP-52` Multi-Schema · `AP-53` Oracle · Tier-2/3 + Aggregat-Kette (GROUP BY/HAVING/COUNT) · `AP-A…F` SQL-Builder-UI ·
-`AP-54` Cross-Schema-FK-Diagnose · `AP-55` Implied-FK-Schärfung … (volle Liste in der [Roadmap](roadmap.md)).
+`AP-54` Cross-Schema-FK-Diagnose · `AP-55` Implied-FK-Schärfung · `AP-63·S1–S3` Objekt-Kategorien … (volle Liste in der [Roadmap](roadmap.md)).
 
-**⬜ Offener Backlog (≈ 7):** `AP-56` Subset-Export · `AP-57` Cross-Schema-Joins (zurückgestellt/bedingt) ·
-`AP-61/62` Demo/Passwort-UX · `AP-63` (S1–S3) Objekt-Kategorien · `AP-19` Meta-Pattern · `AP-35` Windows-`run.ps1`-Fix.
+**⬜ Offener Backlog (≈ 6):** `AP-56` Subset-Export · `AP-57` Cross-Schema-Joins (zurückgestellt/bedingt) ·
+`AP-61/62` Demo/Passwort-UX · `AP-63·Trigger-FF` PG/Oracle-Trigger · `AP-19` Meta-Pattern · `AP-35` Windows-`run.ps1`-Fix.
 
 ## Kennzahlen-Übersicht
 
 | Kennzahl | Wert | Detail / Quelle | Art |
 |---|---|---|---|
-| Umsetzung (Roadmap) | ≈ 89 % | ≈ 57 erledigt · ≈ 7 offener Backlog (AP-56/57, AP-61/62, AP-63, AP-19/35) · Quelle: `roadmap.md` | gemessen |
-| Commits | 390 | 2026-06-25 → 06-29 · 5 Kalendertage · 15 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
-| Aktuelle Version | v0.54.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 15 Sessions | gemessen |
-| Testabdeckung | 90 % | 1897 Statements, 185 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
-| Tests | 398 | alle grün · 2 skipped (optionale Oracle/MSSQL-Live-Tests) · ~10 s Laufzeit | gemessen |
+| Umsetzung (Roadmap) | ≈ 89 % | ≈ 58 erledigt · ≈ 6 offener Backlog (AP-56/57, AP-61/62, AP-63·Trigger-FF, AP-19/35) · Quelle: `roadmap.md` | gemessen |
+| Commits | 400 | 2026-06-25 → 06-29 · 5 Kalendertage · 16 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
+| Aktuelle Version | v0.55.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 16 Sessions | gemessen |
+| Testabdeckung | 89 % | 1938 Statements, 211 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
+| Tests | 406 | alle grün · 6 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~10 s Laufzeit | gemessen |
 | Doku-Abdeckung (Module) | 93 % | 26/28 Python-Module mit Modul-Docstring (AST-Zählung) | gemessen |
 | Doku-Abdeckung (öffentl. API) | 62 % | 60/96 öffentliche Funktionen/Klassen mit Docstring · gesamt 93/143 ≈ 65 % | gemessen |
 | Effort (COCOMO) | ~20 PM | organic · E = 2,4·KSLOC^1,05 · T ≈ 7,8 Monate Kalender | Baseline |
@@ -101,7 +101,7 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
   <div class="kz-barrow"><span class="kz-k">web/ (Flask-Routes)</span><div class="kz-bar"><span style="width:87%"></span></div><span class="kz-p">87 %</span></div>
   <div class="kz-barrow"><span class="kz-k">launcher/core.py</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p">89 %</span></div>
   <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI (Tray)</span><div class="kz-bar"><span style="width:0%"></span></div><span class="kz-p kz-muted">0 % *</span></div>
-  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:90%"></span></div><span class="kz-p kz-good">90 %</span></div>
+  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p kz-good">89 %</span></div>
 </div>
 
 \* `tray.py`/`__main__.py` sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten

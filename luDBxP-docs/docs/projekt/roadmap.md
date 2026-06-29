@@ -28,8 +28,7 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 
 Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen **nicht** an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:
 
-- **AP-63 · Trigger-Fast-Follow** — **PG/Oracle-Trigger-Reflektion** (eigene Katalog-Query je Dialekt, nur live testbar); heute reflektiert nur SQLite Trigger (AP-63·S2). **Aufwand S–M.** (Sequences + Materialized Views = AP-63·S2b, erledigt v0.54.0.)
-- **AP-63 · Stufe 3** — **Stored Procedures + Functions** (+ Oracle Packages, Synonyms) via Pro-Dialekt-Katalog-SQL, Detail mit Quelltext. Nur live testbar (PG/Oracle/MSSQL). **Aufwand L.**
+- **AP-63 · Trigger-Fast-Follow** — **PG/Oracle-Trigger-Reflektion** (eigene Katalog-Query je Dialekt, nur live testbar); heute reflektiert nur SQLite Trigger (AP-63·S2). **Aufwand S–M.** (Sequences + Materialized Views = AP-63·S2b erledigt v0.54.0; Procedures/Functions/Packages/Synonyms = AP-63·S3 erledigt v0.55.0.)
 - **AP-66** — Views, die **Prozeduren/Funktionen** verwenden, auflösen (Konzept: [Views mit Routinen](../../../docs/concepts/2026-06-29-views-with-routines-resolution.md)). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. **Stufe 1 (S–M):** referenzierte Routinen aus dem View-Definitionstext extrahieren + im View-Detail anzeigen („beruht auf Routinen-Logik" → nicht über reine Join/FK-Lineage migrierbar). **Stufe 2 (M):** Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). **Stufe 3 (XL, zurückgestellt):** echte Daten-Lineage durch den PL/SQL-Body.
 
 ### SQL-Analyzer-Tiefe
@@ -168,6 +167,10 @@ Doku/AppImage/Projektposter.
 **v0.45.3** (2026-06-28):
 
 - **AP-60** — Connection-Form sauber ausgerichtet: feste Label-Spaltenbreite (lange Labels wie „Server-Zertifikat vertrauen" brechen innerhalb der Spalte um, statt das Feld zu verschieben) + einheitliche Feld-Breite → alle Felder fluchten über SQLite/PG/MySQL/MSSQL/Oracle. Nur CSS — v0.45.3
+
+**v0.55.0** (2026-06-29):
+
+- **AP-63 · Stufe 3** — Stored Procedures, Functions, Oracle Packages + Oracle Synonyme als vier neue read-only Sidebar-Kategorien: via Pro-Dialekt-Katalog-SQL (`pg_proc` PG; `all_objects`/`all_source` Oracle; `sys.objects`/`sys.sql_modules` MSSQL; Synonyme `all_synonyms` Oracle-only); Detail mit Quelltext, Kategorie nur bei N>0. Model `Routine(name, kind, sql)`/`Synonym(name, target)`, `/api/schema` serialisiert `procedures`/`functions`/`packages`/`synonyms`. Nur Anzeige (kein Daten-Tab, keine Join-Teilnahme), skip-guarded Live-Tests (PG/Oracle/MSSQL). **Aufwand L** — v0.55.0
 
 **v0.54.0** (2026-06-29):
 

@@ -297,6 +297,10 @@ SQL-Teilnahme):
 - **Sequences + Materialized Views** (AP-63·S2b): je eigene Sidebar-Kategorie (nur wenn
   vorhanden) — Sequenzen zeigen den Namen, Materialized Views Spalten + Definition (display-only).
   Echte Reflektion nur PostgreSQL/Oracle.
+- **Prozeduren, Funktionen, Packages, Synonyme** (AP-63·S3): vier eigene Sidebar-Kategorien
+  (je nur wenn vorhanden) — jede Routine zeigt ihren Namen + Quelltext, Synonyme ihren Namen +
+  Zielobjekt (display-only, kein Daten-Tab). Echte Reflektion nur PostgreSQL/Oracle/MSSQL;
+  Synonyme nur Oracle. Keine Join-Teilnahme.
 
 ## Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)
 
