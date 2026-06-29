@@ -97,15 +97,16 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 ## Testabdeckung nach Modul/Layer
 
 <div class="kz-bars">
-  <div class="kz-barrow"><span class="kz-k">core/ (Geschäftslogik)</span><div class="kz-bar"><span style="width:95%"></span></div><span class="kz-p">~95 %</span></div>
+  <div class="kz-barrow"><span class="kz-k">core/ (Geschäftslogik)</span><div class="kz-bar"><span style="width:92%"></span></div><span class="kz-p">92 %</span></div>
   <div class="kz-barrow"><span class="kz-k">web/ (Flask-Routes)</span><div class="kz-bar"><span style="width:87%"></span></div><span class="kz-p">87 %</span></div>
   <div class="kz-barrow"><span class="kz-k">launcher/core.py</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p">89 %</span></div>
-  <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI (Tray)</span><div class="kz-bar"><span style="width:0%"></span></div><span class="kz-p kz-muted">0 % *</span></div>
+  <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI-Schale (Tray)</span><div class="kz-bar"><span style="width:72%"></span></div><span class="kz-p kz-muted">~72 % *</span></div>
   <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p kz-good">89 %</span></div>
 </div>
 
-\* `tray.py`/`__main__.py` sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten
-`launcher/core.py` (per Controller-E2E zusätzlich gegen echtes `app.py` verifiziert).
+\* `tray.py`/`__main__.py` sind die pystray-GUI-Schale: Import- und Definitions-Ebene sind gedeckt (~72 %), aber die
+**GUI-Runtime** (pystray-Event-Loop, Tray-Icon) ist headless nicht ausführbar. Die testbare Logik liegt im getesteten
+`launcher/core.py` (89 %, per Controller-E2E zusätzlich gegen echtes `app.py` verifiziert).
 
 ## Code-Qualität (pyflakes, Produktcode)
 

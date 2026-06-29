@@ -1243,15 +1243,16 @@ AP&#8209;19 <em>Meta</em>). Autoritative, gepflegte Liste: <a href="../roadmap/"
 </table>
 <h2 id="testabdeckung-nach-modullayer">Testabdeckung nach Modul/Layer<a class="headerlink" href="#testabdeckung-nach-modullayer" title="Permanent link">&para;</a></h2>
 <div class="kz-bars">
-  <div class="kz-barrow"><span class="kz-k">core/ (Geschäftslogik)</span><div class="kz-bar"><span style="width:95%"></span></div><span class="kz-p">~95 %</span></div>
+  <div class="kz-barrow"><span class="kz-k">core/ (Geschäftslogik)</span><div class="kz-bar"><span style="width:92%"></span></div><span class="kz-p">92 %</span></div>
   <div class="kz-barrow"><span class="kz-k">web/ (Flask-Routes)</span><div class="kz-bar"><span style="width:87%"></span></div><span class="kz-p">87 %</span></div>
   <div class="kz-barrow"><span class="kz-k">launcher/core.py</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p">89 %</span></div>
-  <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI (Tray)</span><div class="kz-bar"><span style="width:0%"></span></div><span class="kz-p kz-muted">0 % *</span></div>
+  <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI-Schale (Tray)</span><div class="kz-bar"><span style="width:72%"></span></div><span class="kz-p kz-muted">~72 % *</span></div>
   <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p kz-good">89 %</span></div>
 </div>
 
-<p>* <code>tray.py</code>/<code>__main__.py</code> sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten
-<code>launcher/core.py</code> (per Controller-E2E zusätzlich gegen echtes <code>app.py</code> verifiziert).</p>
+<p>* <code>tray.py</code>/<code>__main__.py</code> sind die pystray-GUI-Schale: Import- und Definitions-Ebene sind gedeckt (~72 %), aber die
+<strong>GUI-Runtime</strong> (pystray-Event-Loop, Tray-Icon) ist headless nicht ausführbar. Die testbare Logik liegt im getesteten
+<code>launcher/core.py</code> (89 %, per Controller-E2E zusätzlich gegen echtes <code>app.py</code> verifiziert).</p>
 <h2 id="code-qualitat-pyflakes-produktcode">Code-Qualität (pyflakes, Produktcode)<a class="headerlink" href="#code-qualitat-pyflakes-produktcode" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

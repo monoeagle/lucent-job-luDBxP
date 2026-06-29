@@ -1,21 +1,26 @@
 {
-  "generatedAt": "2026-06-29T22:30:36",
+  "generatedAt": "2026-06-29T22:40:21",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 72,
+      "commits": 73,
       "kinds": {
+        "other": 2,
         "test": 3,
         "feat": 24,
         "docs": 38,
         "fix": 5,
-        "other": 1,
         "chore": 1
       },
       "list": [
+        {
+          "sha": "1d8e8a7",
+          "subject": "release: v0.56.0 — AP-63 Trigger-Fast-Follow (PG/Oracle/MSSQL-Trigger)",
+          "kind": "other"
+        },
         {
           "sha": "aec3446",
           "subject": "test(pg): Pre-Drops für Trigger-Fixture-Objekte (Idempotenz, Review-Fix) (AP-63 Trigger-FF)",
@@ -2113,7 +2118,7 @@
     }
   },
   "stats": {
-    "totalCommits": 408,
+    "totalCommits": 409,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
@@ -2131,7 +2136,7 @@
       },
       {
         "kind": "other",
-        "count": 32
+        "count": 33
       },
       {
         "kind": "test",
