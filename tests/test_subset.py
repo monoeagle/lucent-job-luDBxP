@@ -1,3 +1,8 @@
+import pytest
+from sample_data.build_demo_db import build
+from core.loaders.sqlalchemy_loader import SqlAlchemyLoader
+from core.datapreview import count_subset_rows, execute_select
+from core.subset import SubsetScript
 from core.model import Schema, Table, Column, ForeignKey
 from core.subset import compute_subset, generate_subset_sql, count_sql
 
@@ -176,3 +181,53 @@ def test_count_sql_wraps_and_strips_semicolon():
     assert ";" not in out                      # trailing ';' stripped before embedding
     assert "DISTINCT t0.*" in out              # inner SELECT (incl. DISTINCT) preserved
     assert " AS " not in out                   # alias without AS → Oracle-portable
+
+
+@pytest.fixture
+def demo_url(tmp_path):
+    db = tmp_path / "demo.db"
+    build(str(db))
+    return f"sqlite:///{db}"
+
+
+def _demo_scripts(url, start, column, value):
+    schema = SqlAlchemyLoader(url).load()
+    result = compute_subset(schema, start)
+    return schema, generate_subset_sql(
+        schema, result, {"column": column, "op": "=", "value": value})
+
+
+def test_count_subset_rows_matches_actual_rows(demo_url):
+    # Cross-check: each table's COUNT must equal the real number of rows the
+    # original (non-count) subset SELECT returns. Data-independent correctness.
+    _, scripts = _demo_scripts(demo_url, "VirtualMachine", "VMID", 1)
+    counts = count_subset_rows(demo_url, scripts)
+    assert [c["table"] for c in counts] == [s.table for s in scripts]  # order preserved
+    by_table = {c["table"]: c for c in counts}
+    for s in scripts:
+        actual = len(execute_select(demo_url, s.sql, s.params, max_rows=100000)["rows"])
+        assert by_table[s.table]["count"] == actual
+        assert by_table[s.table]["error"] is None
+
+
+def test_count_subset_rows_empty_datacenter_is_one_total(demo_url):
+    # DatacenterID=3 is "DC-Empty": no Cluster/Network/Host hang off it, so every
+    # child count is 0 and only the root row itself counts.
+    _, scripts = _demo_scripts(demo_url, "Datacenter", "DatacenterID", 3)
+    counts = count_subset_rows(demo_url, scripts)
+    by = {c["table"]: c for c in counts}
+    assert by["Datacenter"]["count"] == 1
+    assert sum(c["count"] for c in counts) == 1
+
+
+def test_count_subset_rows_resilient_per_table(demo_url):
+    # A script referencing a non-existent column fails only that table.
+    good = SubsetScript("Datacenter",
+                        "SELECT * FROM Datacenter WHERE DatacenterID = :root;",
+                        {"root": 1})
+    bad = SubsetScript("Bogus", "SELECT * FROM NoSuchTable;", {})
+    counts = count_subset_rows(demo_url, [good, bad])
+    by = {c["table"]: c for c in counts}
+    assert by["Datacenter"]["count"] == 1
+    assert by["Bogus"]["count"] is None
+    assert by["Bogus"]["error"] is not None

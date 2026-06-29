@@ -7,6 +7,7 @@ not an injection vector.
 """
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
+from core.subset import count_sql
 
 
 def execute_select(connection_url: str, sql: str, params: dict,
@@ -42,6 +43,28 @@ def execute_select(connection_url: str, sql: str, params: dict,
         raise ConnectionError(f"Could not execute query: {exc}") from exc
     finally:
         engine.dispose()
+
+
+def count_subset_rows(connection_url: str, scripts) -> list:
+    """Execute each subset SELECT as a read-only COUNT, resilient per table.
+
+    For each ``SubsetScript`` the COUNT query (``count_sql``) is run via
+    ``execute_select``. A per-table ``ConnectionError`` (permission, broken
+    type, missing object) is caught and recorded as ``error`` with
+    ``count=None`` so the remaining tables are still counted.
+
+    Returns a list of ``{"table", "count": int|None, "error": str|None}`` in
+    the same order as ``scripts``.
+    """
+    out = []
+    for s in scripts:
+        try:
+            res = execute_select(connection_url, count_sql(s.sql), s.params, max_rows=1)
+            count = res["rows"][0][0] if res["rows"] else 0
+            out.append({"table": s.table, "count": count, "error": None})
+        except ConnectionError as exc:
+            out.append({"table": s.table, "count": None, "error": str(exc)})
+    return out
 
 
 def fetch_rows(connection_url: str, object_name: str,
