@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.57.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.58.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1566,6 +1566,11 @@ Abschnitt mit vier schema-freien AST-Heuristiken — überflüssiges <code>DISTI
 <code>GROUP BY</code>, <code>ORDER BY</code> ohne <code>LIMIT</code>, <code>OR</code> im Top-Level-<code>WHERE</code> (kann Indexnutzung
 verhindern) und eine Nicht-<code>EXISTS</code>-Unterabfrage in <code>WHERE</code> (oft besser als
 JOIN/EXISTS). Read-only, nur Hinweise — der Analyzer schreibt nichts um.</p>
+<p><strong>Parse-Fehler-Position (AP-65·A):</strong> Kann sqlglot das eingefügte Statement nicht parsen,
+zeigt der Analyzer jetzt <strong>„Parse-Fehler in Zeile N, Spalte M:"</strong> gefolgt von einem
+Kontext-Ausschnitt, in dem das fehlerhafte Token rot hervorgehoben ist (<code>.an-err-mark</code>-Span).
+Ist keine Position ermittelbar (z. B. leere Eingabe), erscheint weiterhin der reine
+Fehlertext. Read-only — keine Autokorrektur.</p>
 <h2 id="info-ubersicht-cross-schema-fk-diagnose-ap-54">Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)<a class="headerlink" href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
 eine Zeile <strong>„Cross-Schema-FKs"</strong>: die Anzahl der Foreign Keys, die auf ein <strong>anderes
