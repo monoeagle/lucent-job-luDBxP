@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.52.0] — 2026-06-29
+
+### Added
+- **Indexes + check constraints in the table detail (AP-63·S1):** the table detail's
+  "Definition" tab now lists **all indexes** (name, columns, a `unique` badge) and
+  **check constraints** (name, expression), read-only via SQLAlchemy reflection
+  (`get_indexes()` / `get_check_constraints()`, all engines incl. SQLite). The model
+  gains `Index`/`CheckConstraint` and `Table.indexes`/`check_constraints`; `/api/schema`
+  serializes them. The demo CMDB gained an index (`ix_host_cluster`) and a check
+  (`VMDisk.SizeGB > 0`). Display only — the reconstructed DDL and join paths are unchanged;
+  expression/functional indexes are skipped.
+
 ## [0.51.0] — 2026-06-29
 
 ### Added

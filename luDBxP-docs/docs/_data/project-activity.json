@@ -1,18 +1,54 @@
 {
-  "generatedAt": "2026-06-29T16:14:57",
+  "generatedAt": "2026-06-29T16:51:29",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 33,
+      "commits": 40,
       "kinds": {
-        "feat": 10,
-        "docs": 19,
+        "feat": 13,
+        "docs": 22,
+        "chore": 1,
         "fix": 4
       },
       "list": [
+        {
+          "sha": "c99bbe8",
+          "subject": "feat(subset): Tabellen-Detail zeigt Indizes + Check-Constraints; Demo-CMDB erweitert (AP-63·S1)",
+          "kind": "feat"
+        },
+        {
+          "sha": "1e3f71a",
+          "subject": "feat(subset): /api/schema liefert Indizes + Check-Constraints je Tabelle (AP-63·S1)",
+          "kind": "feat"
+        },
+        {
+          "sha": "fed7a61",
+          "subject": "feat(model): Index + CheckConstraint reflektieren + im Table tragen (AP-63·S1)",
+          "kind": "feat"
+        },
+        {
+          "sha": "8a58dd4",
+          "subject": "docs: Plan AP-63·S1 — Indizes + Check-Constraints (4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "08a3c77",
+          "subject": "docs: Spec AP-63·S1 — Indizes + Check-Constraints im Tabellen-Detail",
+          "kind": "docs"
+        },
+        {
+          "sha": "21612de",
+          "subject": "chore: scratchpad/ gitignoren + versehentlich committeten Smoke entfernen",
+          "kind": "chore"
+        },
+        {
+          "sha": "d3c8377",
+          "subject": "docs: Release v0.51.0 — AP-56c (Subset-IN-Listen SQL-Export-Identität)",
+          "kind": "docs"
+        },
         {
           "sha": "6a708e3",
           "subject": "feat(subset): UI „IN-Listen (SQL)\" — .sql-Download der PK-Identität (AP-56c)",
@@ -1915,17 +1951,17 @@
     }
   },
   "stats": {
-    "totalCommits": 369,
+    "totalCommits": 376,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 175
+        "count": 178
       },
       {
         "kind": "feat",
-        "count": 108
+        "count": 111
       },
       {
         "kind": "fix",
@@ -1936,12 +1972,12 @@
         "count": 31
       },
       {
-        "kind": "build",
+        "kind": "chore",
         "count": 6
       },
       {
-        "kind": "chore",
-        "count": 5
+        "kind": "build",
+        "count": 6
       },
       {
         "kind": "refactor",
@@ -1952,7 +1988,7 @@
         "count": 3
       }
     ],
-    "testCount": 386
+    "testCount": 390
   },
   "phases": []
 }
