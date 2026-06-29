@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.54.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.55.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1626,6 +1626,10 @@ SQL-Teilnahme):</p>
 <li><strong>Sequences + Materialized Views</strong> (AP-63·S2b): je eigene Sidebar-Kategorie (nur wenn
   vorhanden) — Sequenzen zeigen den Namen, Materialized Views Spalten + Definition (display-only).
   Echte Reflektion nur PostgreSQL/Oracle.</li>
+<li><strong>Prozeduren, Funktionen, Packages, Synonyme</strong> (AP-63·S3): vier eigene Sidebar-Kategorien
+  (je nur wenn vorhanden) — jede Routine zeigt ihren Namen + Quelltext, Synonyme ihren Namen +
+  Zielobjekt (display-only, kein Daten-Tab). Echte Reflektion nur PostgreSQL/Oracle/MSSQL;
+  Synonyme nur Oracle. Keine Join-Teilnahme.</li>
 </ul>
 <h2 id="info-ubersicht-implizite-geratene-foreign-keys-ap-55">Info / Übersicht — Implizite (geratene) Foreign Keys (AP-55)<a class="headerlink" href="#info-ubersicht-implizite-geratene-foreign-keys-ap-55" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel listet zusätzlich die <strong>implizit erkannten (geratenen) Foreign Keys</strong>

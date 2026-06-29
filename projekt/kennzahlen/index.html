@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.54.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.55.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1085,9 +1085,9 @@
                   
 
 <h1 id="projekt-kennzahlen">Projekt-Kennzahlen<a class="headerlink" href="#projekt-kennzahlen" title="Permanent link">&para;</a></h1>
-<p>Stand <strong>v0.54.0</strong> · 2026-06-29 · Branch <code>master</code> · Python/Flask · read-only Join-Pfad-Builder.</p>
+<p>Stand <strong>v0.55.0</strong> · 2026-06-29 · Branch <code>master</code> · Python/Flask · read-only Join-Pfad-Builder.</p>
 <p>Die <span class="kz-tag kz-tag--m">gemessen</span>-Werte (Version, Tests, Coverage, Docstrings, Commits, Sessions)
-sind am 2026-06-28 neu erhoben (aus <code>git</code>, <code>pytest --cov</code> und AST-Zählung). Die
+sind am 2026-06-29 neu erhoben (aus <code>git</code>, <code>pytest --cov</code> und AST-Zählung). Die
 <span class="kz-tag kz-tag--s">Baseline</span>-Werte (COCOMO, LOC) stammen vom 2026-06-27 (v0.34.0) und wurden
 bewusst nicht neu vermessen.</p>
 <div class="kz-cards">
@@ -1100,14 +1100,14 @@ bewusst nicht neu vermessen.</p>
 
 <div class="kz-card">
   <div class="kz-lbl">Tempo</div>
-  <div class="kz-val">390 <small>Commits</small></div>
-  <div class="kz-note">15 Sessions an 5 Kalendertagen (25.–29.06.)</div>
+  <div class="kz-val">400 <small>Commits</small></div>
+  <div class="kz-note">16 Sessions an 5 Kalendertagen (25.–29.06.)</div>
 </div>
 
 <div class="kz-card">
   <div class="kz-lbl">Testabdeckung</div>
-  <div class="kz-val kz-good">90 <small>%</small></div>
-  <div class="kz-note">398 Tests grün (3 skip Oracle/MSSQL/PG) · 1897 Statements</div>
+  <div class="kz-val kz-good">89 <small>%</small></div>
+  <div class="kz-note">406 Tests grün (6 skip Oracle/MSSQL/PG) · 1938 Statements</div>
 </div>
 
 <div class="kz-card">
@@ -1143,19 +1143,19 @@ bewusst nicht neu vermessen.</p>
 </div>
 
 <h2 id="umsetzungsstand-arbeitspakete">Umsetzungsstand — Arbeitspakete<a class="headerlink" href="#umsetzungsstand-arbeitspakete" title="Permanent link">&para;</a></h2>
-<p>Abgeschlossen ≈ 57 · offener Backlog ≈ 7 — über die Spanne AP&#8209;1…63 (ohne AP&#8209;17 <em>gestrichen</em> und
+<p>Abgeschlossen ≈ 58 · offener Backlog ≈ 6 — über die Spanne AP&#8209;1…63 (ohne AP&#8209;17 <em>gestrichen</em> und
 AP&#8209;19 <em>Meta</em>). Autoritative, gepflegte Liste: <a href="../roadmap/">Roadmap</a>.</p>
 <div class="kz-stack">
   <div class="kz-seg-done" style="width:89%">89 % fertig</div>
   <div class="kz-seg-plan" style="width:11%">11 %</div>
 </div>
 
-<p><strong>✅ Fertig (≈ 57):</strong> Core (Modell/Loader/FK-Graph/Pathfinder/SQL-Generator/Flask-API) · <code>AP-11</code> Composite-FK ·
+<p><strong>✅ Fertig (≈ 58):</strong> Core (Modell/Loader/FK-Graph/Pathfinder/SQL-Generator/Flask-API) · <code>AP-11</code> Composite-FK ·
 <code>AP-25/39/48/49</code> SQL-Analyzer · <code>AP-30</code> N-1-Stern · <code>AP-36…47</code> Join-Builder-Ausbau · <code>AP-50/51</code> 1-1-Fan-out ·
 <code>AP-52</code> Multi-Schema · <code>AP-53</code> Oracle · Tier-&#8532; + Aggregat-Kette (GROUP BY/HAVING/COUNT) · <code>AP-A…F</code> SQL-Builder-UI ·
-<code>AP-54</code> Cross-Schema-FK-Diagnose · <code>AP-55</code> Implied-FK-Schärfung … (volle Liste in der <a href="../roadmap/">Roadmap</a>).</p>
-<p><strong>⬜ Offener Backlog (≈ 7):</strong> <code>AP-56</code> Subset-Export · <code>AP-57</code> Cross-Schema-Joins (zurückgestellt/bedingt) ·
-<code>AP-61/62</code> Demo/Passwort-UX · <code>AP-63</code> (S1–S3) Objekt-Kategorien · <code>AP-19</code> Meta-Pattern · <code>AP-35</code> Windows-<code>run.ps1</code>-Fix.</p>
+<code>AP-54</code> Cross-Schema-FK-Diagnose · <code>AP-55</code> Implied-FK-Schärfung · <code>AP-63·S1–S3</code> Objekt-Kategorien … (volle Liste in der <a href="../roadmap/">Roadmap</a>).</p>
+<p><strong>⬜ Offener Backlog (≈ 6):</strong> <code>AP-56</code> Subset-Export · <code>AP-57</code> Cross-Schema-Joins (zurückgestellt/bedingt) ·
+<code>AP-61/62</code> Demo/Passwort-UX · <code>AP-63·Trigger-FF</code> PG/Oracle-Trigger · <code>AP-19</code> Meta-Pattern · <code>AP-35</code> Windows-<code>run.ps1</code>-Fix.</p>
 <h2 id="kennzahlen-ubersicht">Kennzahlen-Übersicht<a class="headerlink" href="#kennzahlen-ubersicht" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1170,31 +1170,31 @@ AP&#8209;19 <em>Meta</em>). Autoritative, gepflegte Liste: <a href="../roadmap/"
 <tr>
 <td>Umsetzung (Roadmap)</td>
 <td>≈ 89 %</td>
-<td>≈ 57 erledigt · ≈ 7 offener Backlog (AP-56/57, AP-61/62, AP-63, AP-19/35) · Quelle: <code>roadmap.md</code></td>
+<td>≈ 58 erledigt · ≈ 6 offener Backlog (AP-56/57, AP-61/62, AP-63·Trigger-FF, AP-19/35) · Quelle: <code>roadmap.md</code></td>
 <td>gemessen</td>
 </tr>
 <tr>
 <td>Commits</td>
-<td>390</td>
-<td>2026-06-25 → 06-29 · 5 Kalendertage · 15 Sessions · FF-Merges je AP (SDD-Branches)</td>
+<td>400</td>
+<td>2026-06-25 → 06-29 · 5 Kalendertage · 16 Sessions · FF-Merges je AP (SDD-Branches)</td>
 <td>gemessen</td>
 </tr>
 <tr>
 <td>Aktuelle Version</td>
-<td>v0.54.0</td>
-<td>SemVer je AP (<code>sync_version.py</code>) · von 0.1.0 in 15 Sessions</td>
+<td>v0.55.0</td>
+<td>SemVer je AP (<code>sync_version.py</code>) · von 0.1.0 in 16 Sessions</td>
 <td>gemessen</td>
 </tr>
 <tr>
 <td>Testabdeckung</td>
-<td>90 %</td>
-<td>1897 Statements, 185 ungedeckt · <code>pytest --cov</code> (core/web/launcher/config/app)</td>
+<td>89 %</td>
+<td>1938 Statements, 211 ungedeckt · <code>pytest --cov</code> (core/web/launcher/config/app)</td>
 <td>gemessen</td>
 </tr>
 <tr>
 <td>Tests</td>
-<td>398</td>
-<td>alle grün · 2 skipped (optionale Oracle/MSSQL-Live-Tests) · ~10 s Laufzeit</td>
+<td>406</td>
+<td>alle grün · 6 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~10 s Laufzeit</td>
 <td>gemessen</td>
 </tr>
 <tr>
@@ -1247,7 +1247,7 @@ AP&#8209;19 <em>Meta</em>). Autoritative, gepflegte Liste: <a href="../roadmap/"
   <div class="kz-barrow"><span class="kz-k">web/ (Flask-Routes)</span><div class="kz-bar"><span style="width:87%"></span></div><span class="kz-p">87 %</span></div>
   <div class="kz-barrow"><span class="kz-k">launcher/core.py</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p">89 %</span></div>
   <div class="kz-barrow"><span class="kz-k kz-muted">launcher/ GUI (Tray)</span><div class="kz-bar"><span style="width:0%"></span></div><span class="kz-p kz-muted">0 % *</span></div>
-  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:90%"></span></div><span class="kz-p kz-good">90 %</span></div>
+  <div class="kz-barrow"><span class="kz-k kz-strong">GESAMT</span><div class="kz-bar"><span style="width:89%"></span></div><span class="kz-p kz-good">89 %</span></div>
 </div>
 
 <p>* <code>tray.py</code>/<code>__main__.py</code> sind die pystray-GUI-Schale — headless nicht unit-testbar; die Logik liegt im getesteten
