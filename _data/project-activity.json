@@ -1,17 +1,63 @@
 {
-  "generatedAt": "2026-06-29T01:17:27",
+  "generatedAt": "2026-06-29T13:58:35",
   "range": {
     "from": "2025-06-30",
     "to": "2026-06-29"
   },
   "byDay": {
     "2026-06-29": {
-      "commits": 12,
+      "commits": 21,
       "kinds": {
-        "docs": 10,
-        "fix": 2
+        "fix": 4,
+        "feat": 4,
+        "docs": 13
       },
       "list": [
+        {
+          "sha": "199b3cf",
+          "subject": "fix(subset): Live-Count nutzt Build-Zeit-Payload — keine Footprint/Count-Drift (AP-56b Review)",
+          "kind": "fix"
+        },
+        {
+          "sha": "6d27590",
+          "subject": "fix(subset): escAttr für data-table-Attribut — korrekte Zeilen-Zuordnung (AP-56b Review)",
+          "kind": "fix"
+        },
+        {
+          "sha": "40ab31b",
+          "subject": "feat(subset): UI „Zeilen zählen (live)\" — Live-Count-Spalte + Summe (AP-56b)",
+          "kind": "feat"
+        },
+        {
+          "sha": "3370d35",
+          "subject": "feat(subset): /api/subset/run — Live-Zeilenzahlen je Closure-Tabelle (AP-56b)",
+          "kind": "feat"
+        },
+        {
+          "sha": "244e405",
+          "subject": "feat(subset): count_subset_rows — resilienter read-only Live-Count (AP-56b)",
+          "kind": "feat"
+        },
+        {
+          "sha": "e757b6e",
+          "subject": "feat(subset): count_sql COUNT-Wrapper für Live-Walk (AP-56b)",
+          "kind": "feat"
+        },
+        {
+          "sha": "49e3ba0",
+          "subject": "docs: Plan AP-56b·Stufe 1 — Subset-Live-Zeilenzahlen (5 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "d6fcfbc",
+          "subject": "docs: Spec AP-56b·Stufe 1 — Subset-Live-Walk (echte Zeilenzahlen)",
+          "kind": "docs"
+        },
+        {
+          "sha": "4a93f0e",
+          "subject": "docs: Übersichten-Lücke geschlossen — AP-64/65/66 in Gantt + Board enumeriert",
+          "kind": "docs"
+        },
         {
           "sha": "2b4185d",
           "subject": "docs: Session-14-Handoff + Insight (Doku-Arbeit als Bug-Detektor) + KPI-Zeile #14",
@@ -1809,21 +1855,21 @@
     }
   },
   "stats": {
-    "totalCommits": 348,
+    "totalCommits": 357,
     "activeDays": 5,
     "longestStreak": 5,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 166
+        "count": 169
       },
       {
         "kind": "feat",
-        "count": 98
+        "count": 102
       },
       {
         "kind": "fix",
-        "count": 33
+        "count": 35
       },
       {
         "kind": "other",
@@ -1846,7 +1892,7 @@
         "count": 3
       }
     ],
-    "testCount": 359
+    "testCount": 366
   },
   "phases": []
 }
