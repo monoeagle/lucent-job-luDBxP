@@ -530,10 +530,25 @@ function applyAnalyzeMarkers(read, written, edges) {
 function renderAnalyzeResult(panel, res) {
   const out = panel.querySelector("#an_result");
   if (res.parse_error) {
-    // Label, then the (ANSI-stripped) error on its own line — preformatted, since
-    // sqlglot includes a multi-line SQL excerpt around the offending token.
-    out.innerHTML = `<p class="hint">Konnte nicht geparst werden:</p>` +
-      `<pre class="an-parse-error">${esc(res.parse_error)}</pre>`;
+    if (res.parse_error_line != null) {
+      const ctx = res.parse_error_context || "";
+      const hl = res.parse_error_highlight || "";
+      const i = hl ? ctx.indexOf(hl) : -1;
+      const ctxHtml = (i >= 0)
+        ? esc(ctx.slice(0, i)) +
+          `<span class="an-err-mark">${esc(hl)}</span>` +
+          esc(ctx.slice(i + hl.length))
+        : esc(ctx);
+      out.innerHTML =
+        `<p class="hint">Parse-Fehler in Zeile ${esc(String(res.parse_error_line))}, ` +
+        `Spalte ${esc(String(res.parse_error_col))}:</p>` +
+        `<pre class="an-parse-error">${ctxHtml}</pre>`;
+    } else {
+      // Label, then the (ANSI-stripped) error on its own line — preformatted, since
+      // sqlglot includes a multi-line SQL excerpt around the offending token.
+      out.innerHTML = `<p class="hint">Konnte nicht geparst werden:</p>` +
+        `<pre class="an-parse-error">${esc(res.parse_error)}</pre>`;
+    }
     clearAnalyzeMarkers();
     return;
   }
