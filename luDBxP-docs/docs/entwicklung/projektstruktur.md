@@ -25,6 +25,7 @@ lucent-job-luDBxP/
 │   ├── settings.py           # Settings.load/save (config.json)
 │   ├── log.py                # Logging-Setup
 │   ├── sqlanalyze.py         # analyze() — read-only SQL-Analyzer (AP-25, sqlglot)
+│   ├── viewdeps.py           # referenced_routines() — View→Routine-Extraktion (AP-66·S1, sqlglot)
 │   ├── userpaths.py          # Pro-Nutzer-Pfade + dynamischer Port + Migration (AP-31)
 │   └── loaders/
 │       ├── sqlalchemy_loader.py   # Haupt-Loader (SQLAlchemy inspect)
@@ -57,7 +58,9 @@ lucent-job-luDBxP/
 ├── sample_data/
 │   ├── demo_cmdb.db          # Mitgelieferte Demo-CMDB (SQLite, eingecheckt)
 │   ├── demo_cmdb_nofk.db     # Demo-CMDB ohne FK-Constraints (für implizite FKs)
-│   └── build_demo_db.py      # Generator für beide Demo-DBs
+│   ├── build_demo_db.py      # Generator für beide SQLite-Demo-DBs
+│   ├── seed_server_demo.py   # Server-Demo-CMDB-Seeder (MSSQL/Oracle, AP-67) — zeigt alle Objektkategorien im Tree
+│   └── server-demo-README.md # Bring-up der Server-Demo (podman MSSQL + Seed + Verbinden)
 │
 ├── web/static/
 │   ├── js/app.js             # Frontend-Logik (3-Panel-UI, Graph, SQL-Builder)

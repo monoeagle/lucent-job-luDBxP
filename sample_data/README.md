@@ -12,6 +12,8 @@ Integrationstests (`tests/test_demo_db_cases.py`).
 | `build_demo_db.py` | Generator (reine stdlib `sqlite3`, läuft ohne venv). Erzeugt beide DBs reproduzierbar. |
 | `demo_cmdb.db` | Die fertige Datenbank (mit deklarierten Foreign Keys) — sofort nutzbar. |
 | `demo_cmdb_nofk.db` | Gleiche Tabellen/Daten, aber **ohne** deklarierte FKs — zum Ausprobieren der **impliziten Foreign Keys**. |
+| `seed_server_demo.py` | **Server-Demo-CMDB-Seeder** (SQLAlchemy, idempotent): kompakte CMDB + Procedures/Functions/Trigger/Sequences/Synonyms → zeigt im Tree **alle reflektierbaren Objektkategorien**, die SQLite nicht kann. MSSQL implementiert, Oracle-adaptierbar (AP-67). |
+| `server-demo-README.md` | Bring-up der Server-Demo: podman-MSSQL-Container + Seed-Befehl + Verbinden (inkl. dedizierte-DB-Tipp). |
 
 ## Neu erzeugen
 
@@ -29,6 +31,19 @@ sqlite:////ABSOLUTER/PFAD/zum/repo/sample_data/demo_cmdb.db
 ```
 
 (Vier Schrägstriche nach `sqlite:` = absoluter Pfad.)
+
+## Server-Demo (MSSQL/Oracle) — alle Objektkategorien im Tree
+
+SQLite kann keine Stored Procedures/Functions/Sequences/Synonyms/Trigger-Quelltexte zeigen.
+Für eine Demo, die **alle reflektierbaren DB-Objektkategorien** im Sidebar-Tree zeigt, gibt es
+den Server-Demo-Seeder (MSSQL implementiert, Oracle-adaptierbar):
+
+```bash
+python sample_data/seed_server_demo.py '<SQLAlchemy-URL>'
+```
+
+Details (Container-Bring-up, Connection-String, aufgeräumte Demo-DB) in
+[`server-demo-README.md`](server-demo-README.md).
 
 ## Abgedeckte Fälle und Beispiel-Eingaben
 

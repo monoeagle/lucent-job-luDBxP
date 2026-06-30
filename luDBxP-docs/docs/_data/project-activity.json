@@ -1,18 +1,28 @@
 {
-  "generatedAt": "2026-06-30T01:41:33",
+  "generatedAt": "2026-06-30T02:05:28",
   "range": {
     "from": "2025-07-01",
     "to": "2026-06-30"
   },
   "byDay": {
     "2026-06-30": {
-      "commits": 13,
+      "commits": 15,
       "kinds": {
-        "other": 3,
-        "feat": 5,
-        "docs": 5
+        "docs": 6,
+        "other": 4,
+        "feat": 5
       },
       "list": [
+        {
+          "sha": "e690055",
+          "subject": "docs: Handoff Session 16 + Insight (Live-Container-Test) + KPI-Zeile #16",
+          "kind": "docs"
+        },
+        {
+          "sha": "7c4c2fe",
+          "subject": "release: v0.60.0 — AP-67·MSSQL-Grundlage (Server-Demo-CMDB + MSSQL-Synonyme)",
+          "kind": "other"
+        },
         {
           "sha": "cab4cf9",
           "subject": "test+docs: MSSQL-Demo-Seed-Integrationstest (7 Kategorien) + Bring-up-README (AP-67·MSSQL)",
@@ -2263,13 +2273,13 @@
     }
   },
   "stats": {
-    "totalCommits": 436,
+    "totalCommits": 438,
     "activeDays": 6,
     "longestStreak": 6,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 205
+        "count": 206
       },
       {
         "kind": "feat",
@@ -2277,7 +2287,7 @@
       },
       {
         "kind": "other",
-        "count": 37
+        "count": 38
       },
       {
         "kind": "fix",
