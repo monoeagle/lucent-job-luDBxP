@@ -286,6 +286,14 @@ Gutter · scroll-synchrone Backdrop-Ebene (eine Zeile je logischer Textzeile, Fe
 bei erfolgreichem Parse oder jeder Eingabe gelöscht; das Feld bleibt vertikal verstellbar. Keine
 Editor-Bibliothek (NO-CDN), read-only, kein Backend-Change.
 
+**Lints mit Zeilenbezug (AP-65·C):** Jede knoten-spezifische Warnung/Empfehlung (SELECT *, LIKE
+mit führendem '%', Funktion-auf-Spalte, verdächtiger Alias, kartesischer Join, unbekannte
+Tabelle/Spalte, OR in WHERE, Unterabfrage in WHERE) beginnt jetzt mit „**Zeile N:**" und ist
+**anklickbar** — ein Klick markiert die zugehörige Zeile im Eingabefeld (rote Markierung des
+AP-65·B-Gutters). Meldungen der Statement-Ebene (z. B. WRITE_STATEMENT, NO_WHERE) tragen keine
+Zeile und sind nicht klickbar. Die Zeile stammt aus der sqlglot-Token-Position (`_node_line`);
+read-only, kein neues Core-Modul.
+
 ## Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
 
 Das **Info**-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern

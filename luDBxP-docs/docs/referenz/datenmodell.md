@@ -111,6 +111,13 @@ Rückgabeobjekt von `core/sqlanalyze.py::analyze` und `/api/analyze`. Die ersten
 
 `ParseError` wird über sqlglots `.errors[0]` aufgelöst (strukturierte Position). `TokenError` (z. B. nicht geschlossenes String-Literal) leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab; für den Unclosed-Quote-Fall lokalisiert `_unclosed_quote_offset(sql)` das offen gebliebene Anführungszeichen. **AP-65·A-Härtung 2:** weicht die tatsächliche Fehlerzeile davon ab, wird sie über `_odd_quote_line(sql, quote_char)` (einzige Zeile mit ungerader Quote-Anzahl) bestimmt und `_parse_error_location` leitet die Position dorthin um — mit `parse_error_col=None`, `parse_error_highlight=""`, `parse_error_highlight_pos=-1` (ein fehlendes Quote hat keine exakte Position) und einem `parse_error_hint`, der die Zeile nennt. `/api/analyze` serialisiert alle sechs Felder; die UI zeigt „Parse-Fehler in Zeile N, Spalte M:" (bzw. nur „Zeile N:", wenn keine Spalte vorliegt) + Kontext mit markiertem Token + optionalem Hint-Text, fällt auf den Zeichenketten-Fallback zurück wenn keine Position verfügbar.
 
+**AP-65·C — Zeilenbezug an Lints:** `AnalysisWarning` und `AnalysisSuggestion` erhalten je ein
+Feld `line: int | None` — die 1-basierte Quellzeile der auslösenden Stelle, über
+`_node_line(node, sql)` aus dem frühesten positionierten sqlglot-Nachfahren (`meta['start']`)
+bestimmt, oder `None` für Meldungen der Statement-Ebene (WRITE_STATEMENT/NO_WHERE/…).
+`/api/analyze` serialisiert `line` je Warnung/Vorschlag; die UI stellt solchen Meldungen
+„Zeile N:" voran und markiert per Klick die Zeile im Eingabefeld (AP-65·B-Gutter).
+
 ## FK-Graph
 
 Der FK-Graph (`core/graph.py`) ist ein gerichteter NetworkX-Graph:

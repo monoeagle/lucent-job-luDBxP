@@ -1,7 +1,7 @@
 # Konzept & Arbeitspaket — SQL-Analyzer: Zeilennummern + Fehler-Lokalisierung (AP-65)
 
 **Datum:** 2026-06-29
-**Status:** Stufe A erledigt (v0.58.0) · Stufe A-Härtung erledigt (v0.59.0) · Stufe A-Härtung 2 — Unclosed-Quote echte Fehlerzeile via Ungerade-Heuristik erledigt (v0.61.0) · Stufe B — Zeilennummern-Gutter + Fehlerzeilen-Highlight erledigt (v0.62.0) · Stufe C offen (AP-65·C)
+**Status:** Stufe A erledigt (v0.58.0) · Stufe A-Härtung erledigt (v0.59.0) · Stufe A-Härtung 2 — Unclosed-Quote echte Fehlerzeile via Ungerade-Heuristik erledigt (v0.61.0) · Stufe B — Zeilennummern-Gutter + Fehlerzeilen-Highlight erledigt (v0.62.0) · Stufe C — Lints mit Zeilenbezug + Klick-Lokalisierung erledigt (v0.63.0). **AP-65 vollständig abgeschlossen.**
 **Auslöser:** Beim Analysieren eines fehlerhaften Statements (einer JOIN-Tabelle fehlt ein `"`) meldet der Analyzer nur `Error tokenizing 'ePool"…'` — ohne **Zeile/Spalte** und ohne die fehlerhafte Stelle zu markieren. Der Nutzer kann die Fehlerstelle nicht zuordnen (die Meldung zeigt einen *Folge*-Token, nicht die Ursache `JOIN main"."ResourcePool"` mit dem fehlenden `"`).
 
 ## 1. Problem

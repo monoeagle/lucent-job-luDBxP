@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.63.0] — 2026-07-01
+
+### Added
+- **Analyzer lints carry a source line + click-to-locate (AP-65·C):** each node-specific warning
+  and optimization suggestion (SELECT *, leading-wildcard LIKE, function-on-column, suspicious
+  alias, cartesian join, unknown table/column, OR-in-WHERE, subquery-in-WHERE) now reports the
+  line it refers to. A new pure helper `core/sqlanalyze.py::_node_line(node, sql)` derives the
+  1-based line from the earliest positioned sqlglot descendant (`.meta['start']`);
+  `AnalysisWarning`/`AnalysisSuggestion` gain a `line: int | None` field (statement-level messages
+  like WRITE_STATEMENT/NO_WHERE stay `None`). `/api/analyze` serializes `line`; the UI prefixes
+  such messages with "Zeile N:" and makes them **click-to-locate** — clicking highlights the line
+  in the input via the AP-65·B gutter (`setErrorLine`). Read-only, NO-CDN, no new core module.
+
 ## [0.62.0] — 2026-07-01
 
 ### Added

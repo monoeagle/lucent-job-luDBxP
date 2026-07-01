@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.63.0] — 2026-07-01
+
+### Hinzugefügt
+- **Analyzer-Lints mit Zeilenbezug + Klick-Lokalisierung (AP-65·C):** Jede knoten-spezifische
+  Warnung und jeder Optimierungs-Vorschlag (SELECT *, LIKE mit führendem '%', Funktion-auf-Spalte,
+  verdächtiger Alias, kartesischer Join, unbekannte Tabelle/Spalte, OR in WHERE, Unterabfrage in
+  WHERE) nennt jetzt die zugehörige **Zeile**. Ein neuer reiner Helfer
+  `core/sqlanalyze.py::_node_line(node, sql)` leitet die 1-basierte Zeile aus dem frühesten
+  positionierten sqlglot-Nachfahren ab (`.meta['start']`); `AnalysisWarning`/`AnalysisSuggestion`
+  erhalten ein Feld `line: int | None` (Statement-Ebene wie WRITE_STATEMENT/NO_WHERE bleibt `None`).
+  `/api/analyze` serialisiert `line`; die UI stellt solchen Meldungen „Zeile N:" voran und macht sie
+  **anklickbar** — ein Klick markiert die Zeile im Eingabefeld über den AP-65·B-Gutter
+  (`setErrorLine`). Read-only, NO-CDN, kein neues Core-Modul.
+
 ## [0.62.0] — 2026-07-01
 
 ### Hinzugefügt
