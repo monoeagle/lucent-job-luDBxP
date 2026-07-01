@@ -278,6 +278,14 @@ Position; der Kopf zeigt dann nur „Parse-Fehler in Zeile N:"), und der Hinweis
 vermutete Zeile. Bei mehrdeutiger Zählung (0 oder ≥2 ungerade Zeilen, z. B. ein legitimer
 mehrzeiliger String) bleibt das Eingabe-Ende-Verhalten.
 
+**Zeilennummern-Gutter (AP-65·B):** Das Analyzer-Eingabefeld hat links eine scroll-synchrone
+**Zeilennummern-Spalte**, und bei einem Parse-Fehler wird die **Fehlerzeile** (`parse_error_line`)
+im Feld farbig hinterlegt. Technisch ein reiner Frontend-3-Schicht-Editor (`attachLineGutter`):
+Gutter · scroll-synchrone Backdrop-Ebene (eine Zeile je logischer Textzeile, Fehlerzeile mit
+`.an-line-error`) · transparente Textarea (`wrap="off"`, bleibt Wert-Träger). Der Highlight wird
+bei erfolgreichem Parse oder jeder Eingabe gelöscht; das Feld bleibt vertikal verstellbar. Keine
+Editor-Bibliothek (NO-CDN), read-only, kein Backend-Change.
+
 ## Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
 
 Das **Info**-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern

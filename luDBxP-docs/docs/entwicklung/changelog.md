@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.62.0] — 2026-07-01
+
+### Hinzugefügt
+- **Analyzer-Zeilennummern-Gutter + Fehlerzeilen-Highlight (AP-65·B):** Das Eingabefeld des
+  SQL-Analyzers hat jetzt eine scroll-synchrone Zeilennummern-Spalte, und bei einem Parse-Fehler
+  wird die Fehlerzeile (`parse_error_line`) im Feld farbig hinterlegt. Umsetzung als reiner
+  Frontend-3-Schicht-Editor (`web/static/js/app.js::attachLineGutter`): Zeilennummern-Gutter,
+  scroll-synchrone Backdrop-Ebene mit einer Zeile je logischer Textzeile (die Fehlerzeile trägt
+  `.an-line-error`) und die transparente Textarea (`wrap="off"` → 1 logische Zeile = 1 visuelle
+  Zeile) darüber, die einziger Wert-Träger bleibt. `openAnalyzer` verdrahtet sie (`panel._gutter`),
+  `renderAnalyzeResult` ruft `setErrorLine(res.parse_error_line)` (wird bei erfolgreichem Parse oder
+  jeder Eingabe gelöscht). NO-CDN (keine Editor-Lib), read-only, kein Backend-Change. Das Eingabefeld
+  bleibt vertikal verstellbar.
+
 ## [0.61.0] — 2026-07-01
 
 ### Geändert

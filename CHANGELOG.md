@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.62.0] — 2026-07-01
+
+### Added
+- **Analyzer line-number gutter + error-line highlight (AP-65·B):** the SQL-Analyzer's input
+  textarea now has a scroll-synced line-number gutter, and on a parse error the offending line
+  (`parse_error_line`) is highlighted in the input. Implemented as a pure-frontend 3-layer editor
+  (`web/static/js/app.js::attachLineGutter`): a line-number gutter, a scroll-synced backdrop that
+  holds one row per logical line (the error row gets `.an-line-error`), and the textarea
+  (transparent, `wrap="off"` → one logical line = one visual row) on top, which stays the single
+  value source. `openAnalyzer` wires it (`panel._gutter`); `renderAnalyzeResult` calls
+  `setErrorLine(res.parse_error_line)` (cleared on a successful parse or on any edit). NO-CDN
+  (no editor library), read-only, no backend change. The input stays vertically resizable.
+
 ## [0.61.0] — 2026-07-01
 
 ### Changed

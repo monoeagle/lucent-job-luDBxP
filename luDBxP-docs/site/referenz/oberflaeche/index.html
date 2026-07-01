@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.61.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.62.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1587,6 +1587,13 @@ diesem Fall entfällt die Spalten-/Markierungs-Angabe (ein <em>fehlendes</em> Qu
 Position; der Kopf zeigt dann nur „Parse-Fehler in Zeile N:"), und der Hinweis nennt die
 vermutete Zeile. Bei mehrdeutiger Zählung (0 oder ≥2 ungerade Zeilen, z. B. ein legitimer
 mehrzeiliger String) bleibt das Eingabe-Ende-Verhalten.</p>
+<p><strong>Zeilennummern-Gutter (AP-65·B):</strong> Das Analyzer-Eingabefeld hat links eine scroll-synchrone
+<strong>Zeilennummern-Spalte</strong>, und bei einem Parse-Fehler wird die <strong>Fehlerzeile</strong> (<code>parse_error_line</code>)
+im Feld farbig hinterlegt. Technisch ein reiner Frontend-3-Schicht-Editor (<code>attachLineGutter</code>):
+Gutter · scroll-synchrone Backdrop-Ebene (eine Zeile je logischer Textzeile, Fehlerzeile mit
+<code>.an-line-error</code>) · transparente Textarea (<code>wrap="off"</code>, bleibt Wert-Träger). Der Highlight wird
+bei erfolgreichem Parse oder jeder Eingabe gelöscht; das Feld bleibt vertikal verstellbar. Keine
+Editor-Bibliothek (NO-CDN), read-only, kein Backend-Change.</p>
 <h2 id="info-ubersicht-cross-schema-fk-diagnose-ap-54">Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)<a class="headerlink" href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
 eine Zeile <strong>„Cross-Schema-FKs"</strong>: die Anzahl der Foreign Keys, die auf ein <strong>anderes
