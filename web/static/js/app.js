@@ -761,8 +761,6 @@ async function runSubset() {
     `<td><span class="badge">${esc(t.kind)}</span></td>` +
     `<td>${esc(t.via_table || "")}</td><td>${t.depth}</td>` +
     `<td class="sub-count">—</td></tr>`).join("");
-  const scripts = res.scripts.map((s) =>
-    `<h4>${esc(s.table)}</h4><pre class="sql">${esc(s.sql)}</pre>`).join("");
   const trunc = res.truncated
     ? `<p class='hint'>Tiefenlimit erreicht — Hülle evtl. unvollständig.</p>` : "";
   out.innerHTML =
@@ -772,10 +770,24 @@ async function runSubset() {
     `<span id="sub_total" class="hint"></span></p>` +
     `<table class="subtbl cols"><thead><tr><th>Tabelle</th><th>Rolle</th>` +
     `<th>via</th><th>Tiefe</th><th>Zeilen</th></tr></thead><tbody>${rows}</tbody></table>` +
-    trunc + `<h3>Export-Skelett (read-only SELECTs)</h3>${scripts}`;
+    trunc + `<h3>Export-Skelett (read-only SELECTs)</h3><div id="sub_scripts"></div>`;
   $("sub_count").addEventListener("click", runSubsetCount);
   $("sub_dump").addEventListener("click", runSubsetDump);
   $("sub_inlists").addEventListener("click", runSubsetInlists);
+
+  const scriptsHost = $("sub_scripts");
+  scriptsHost.innerHTML = "";
+  for (const script of res.scripts) {
+    const wrap = document.createElement("div");
+    wrap.className = "subset-item";
+    const h = document.createElement("h4");
+    h.textContent = script.table;
+    const ed = sqlEditor({ readOnly: true, rows: 4 });
+    wrap.appendChild(h);
+    wrap.appendChild(ed.el);
+    scriptsHost.appendChild(wrap);
+    ed.setValue(script.sql);
+  }
 }
 
 async function runSubsetCount() {
