@@ -33,7 +33,29 @@ podman exec -i mssql-luDBxP /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 
 Verbindung mit der Seed-URL anlegen → der Tree zeigt alle 7 Kategorien; `vw_vm_labeled`
 zeigt im Detail „Verwendet Routinen: fn_vm_label" (AP-66·S1).
 
-## Oracle-Adaption (Folge)
-Gleiche Tabellen, Oracle-Objekt-DDL (PL/SQL-Trigger/Function/Procedure, PACKAGE, SEQUENCE,
-SYNONYM, MATERIALIZED VIEW). `seed()` dispatcht bereits auf den Dialekt; der Oracle-Block ist
-zu ergänzen, sobald eine Oracle-Instanz verfügbar ist.
+## Oracle (AP-67·Oracle-Adaption)
+
+Oracle hat kein portables Einzeldatei-Format — die Demo braucht eine laufende Instanz.
+
+1. Container starten (login-freies Image):
+   ```bash
+   podman run -d --name oracle-luDBxP -p 1521:1521 \
+     -e ORACLE_PASSWORD=LucentTest2026 -e APP_USER=demo -e APP_USER_PASSWORD=demo \
+     docker.io/gvenzl/oracle-xe:21-slim-faststart
+   ```
+2. Demo einspielen (idempotent):
+   ```bash
+   ./venv/bin/python sample_data/seed_server_demo.py \
+     'oracle+oracledb://demo:demo@localhost:1521/?service_name=XEPDB1'
+   ```
+3. In der App verbinden mit
+   `oracle+oracledb://demo:demo@localhost:1521/?service_name=XEPDB1` — der Sidebar-Tree
+   zeigt dann alle Oracle-Kategorien (Tabellen, View, Sequence, Materialized View,
+   Trigger, Function, Procedure, Package, Synonym).
+4. Live-Test (optional):
+   ```bash
+   LUCENT_ORACLE_TEST_URL='oracle+oracledb://demo:demo@localhost:1521/?service_name=XEPDB1' \
+     ./venv/bin/python -m pytest tests/test_oracle_seed_integration.py
+   ```
+
+Hinweis: `CLUSTER` ist in Oracle reserviert; die Cluster-Tabelle heißt im Oracle-Demo `VMCluster`.
