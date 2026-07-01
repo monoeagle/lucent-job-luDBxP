@@ -355,7 +355,7 @@ body {
 /* AP-65·B: Analyzer-Editor — 3 Schichten (Gutter · Backdrop-Highlight · Textarea). */
 .an-editor { display: flex; align-items: stretch; border: 1px solid #ccc;
   border-radius: 4px; overflow: hidden; background: #fff; min-height: 17rem;
-  resize: vertical; font-family: monospace; font-size: .82rem; line-height: 1.5; }
+  font-family: monospace; font-size: .82rem; line-height: 1.5; }
 .an-gutter { position: relative; flex: 0 0 auto; width: 3.2rem; overflow: hidden;
   background: #f3f3f7; border-right: 1px solid #e3e3ea; color: #9a9aa6;
   text-align: right; user-select: none; }
@@ -368,9 +368,9 @@ body {
 .an-line { white-space: pre; min-width: 100%; height: calc(.82rem * 1.5); }
 .an-line-error { background: #fdecea; }
 /* AP-48/AP-65·B: analyzer input — transparent, no wrap, sits over the backdrop. */
-#an_sql { position: relative; display: block; width: 100%; height: 100%;
-  box-sizing: border-box; margin: 0; border: 0; outline: none;
-  padding: .4rem; background: transparent; color: #1a1a2e;
+#an_sql { position: relative; display: block; width: 100%; height: auto;
+  box-sizing: border-box; margin: 0; border: 0; outline: none; resize: vertical;
+  min-height: 17rem; padding: .4rem; background: transparent; color: #1a1a2e;
   font-family: monospace; font-size: .82rem; line-height: 1.5;
   white-space: pre; overflow: auto; tab-size: 4; }
 /* AP-49: read-only marker styled as a badge, set off from the run button. */

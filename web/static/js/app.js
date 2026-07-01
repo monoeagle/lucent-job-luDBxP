@@ -621,8 +621,8 @@ async function runAnalyze(panel) {
 }
 
 // AP-65·B: wraps the analyzer textarea in a 3-layer editor (line-number gutter +
-// scroll-synced backdrop). The textarea stays the single value source. Returns a
-// small handle; setErrorLine is added in AP-65·B Task 2.
+// scroll-synced backdrop). The textarea stays the single value source. Returns
+// { refresh, setErrorLine }.
 function attachLineGutter(textarea) {
   textarea.setAttribute("wrap", "off");
   const editor = document.createElement("div");
