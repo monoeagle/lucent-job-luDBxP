@@ -6,8 +6,10 @@ offene APs als benannte Rauten an ihrem Zieldatum. Stdlib-only.
 """
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from pathlib import Path
 
 
 def parse_date(s: str) -> date:
@@ -166,3 +168,22 @@ def render_svg(lanes: list[Lane], dmin: date, dmax: date, *, width: int = 1200) 
 
     parts.append("</svg>")
     return "\n".join(parts)
+
+
+OUT = Path(__file__).resolve().parent.parent / "docs" / "images" / "roadmap" / "projekt-roadmap.svg"
+
+
+def main() -> int:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    import roadmap_data as data
+    lanes = lane_spans(data.APS, data.THEMES)
+    dmin, dmax = date_range(data.APS)
+    svg = render_svg(lanes, dmin, dmax)
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(svg, encoding="utf-8")
+    print(f"✓ Roadmap-SVG → {OUT}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

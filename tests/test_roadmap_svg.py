@@ -95,3 +95,16 @@ def test_render_svg_wellformed_and_contains_open_labels():
 
 def test_esc():
     assert g.esc("A & B <x>") == "A &amp; B &lt;x&gt;"
+
+
+def test_real_data_consistent_and_open_aps_rendered():
+    sys.path.insert(0, str(_TOOLS.parent))  # luDBxP-docs/
+    import roadmap_data as data
+    g.validate(data.APS, data.THEMES)                       # keine kaputten Zeilen
+    lanes = g.lane_spans(data.APS, data.THEMES)
+    dmin, dmax = g.date_range(data.APS)
+    svg = g.render_svg(lanes, dmin, dmax)
+    open_aps = [a["ap"] for a in data.APS if a["status"] == "open"]
+    assert open_aps, "es sollte offene APs geben"
+    for ap in open_aps:                                     # Enumerate-Regel
+        assert ap in svg, f"offene {ap} fehlt im gerenderten SVG"
