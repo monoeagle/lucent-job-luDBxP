@@ -543,9 +543,11 @@ function renderAnalyzeResult(panel, res) {
         : esc(ctx);
       const hintHtml = res.parse_error_hint
         ? `<p class="hint an-err-hint">${esc(res.parse_error_hint)}</p>` : "";
+      const loc = (res.parse_error_col != null)
+        ? `Zeile ${esc(String(res.parse_error_line))}, Spalte ${esc(String(res.parse_error_col))}`
+        : `Zeile ${esc(String(res.parse_error_line))}`;
       out.innerHTML =
-        `<p class="hint">Parse-Fehler in Zeile ${esc(String(res.parse_error_line))}, ` +
-        `Spalte ${esc(String(res.parse_error_col))}:</p>` +
+        `<p class="hint">Parse-Fehler in ${loc}:</p>` +
         `<pre class="an-parse-error">${ctxHtml}</pre>` + hintHtml;
     } else {
       // Label, then the (ANSI-stripped) error on its own line — preformatted, since
