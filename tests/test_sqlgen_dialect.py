@@ -48,6 +48,20 @@ def test_postgres_and_oracle_double_quote():
         assert '    "VirtualMachine"."VMID"' in g.sql
 
 
+def test_oracle_quote_if_needed():
+    # v0.65.1: Oracle uses quote-if-needed (SQLAlchemy preparer). A reflected
+    # lower-cased name must render UNQUOTED (Oracle folds it to upper case →
+    # matches the stored object); a mixed-case/reserved name is quoted as-is.
+    # Always-quoting a lower-cased name broke with ORA-00942.
+    assert ORACLE.quote("storagearray") == "storagearray"
+    assert ORACLE.quote("virtualmachine") == "virtualmachine"
+    assert ORACLE.quote("VirtualMachine") == '"VirtualMachine"'
+    assert ORACLE.quote("select") == '"select"'          # reserved word → quoted
+    assert ORACLE.qualify("virtualmachine", "vmid") == "virtualmachine.vmid"
+    # Other dialects keep always-quote (unchanged behavior).
+    assert POSTGRES.quote("storagearray") == '"storagearray"'
+
+
 def test_quote_escaping_doubles_close_char():
     # A column whose name contains the quote char must escape it by doubling.
     g = generate_sql(_path(), selects=(Selection("VirtualMachine", 'we"ird'),))
