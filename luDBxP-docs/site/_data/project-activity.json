@@ -1,20 +1,25 @@
 {
-  "generatedAt": "2026-07-01T19:15:43",
+  "generatedAt": "2026-07-01T21:25:20",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 48,
+      "commits": 49,
       "kinds": {
+        "other": 11,
         "feat": 16,
-        "other": 10,
         "docs": 14,
         "test": 1,
         "fix": 7
       },
       "list": [
+        {
+          "sha": "700823d",
+          "subject": "release: v0.66.1 — AP-68 Roadmap-Swimlane Polish (Doku/Version/Kennzahlen)",
+          "kind": "other"
+        },
         {
           "sha": "97bf3b6",
           "subject": "feat(roadmap): AP-68 Polish — zentrierter Titel, AP-Anzahl im Balken, 🚧-Marker, Anti-Overlap",
@@ -2530,7 +2535,7 @@
     }
   },
   "stats": {
-    "totalCommits": 487,
+    "totalCommits": 488,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
@@ -2544,7 +2549,7 @@
       },
       {
         "kind": "other",
-        "count": 48
+        "count": 49
       },
       {
         "kind": "fix",
