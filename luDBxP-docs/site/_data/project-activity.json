@@ -1,20 +1,25 @@
 {
-  "generatedAt": "2026-07-01T09:36:05",
+  "generatedAt": "2026-07-01T09:53:08",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 36,
+      "commits": 37,
       "kinds": {
+        "other": 9,
         "test": 1,
         "fix": 7,
-        "other": 8,
         "feat": 10,
         "docs": 10
       },
       "list": [
+        {
+          "sha": "73c429e",
+          "subject": "release: v0.65.1 — Fix: Oracle-Bezeichner-Casing im generierten SQL (Join/Distinct/Subset)",
+          "kind": "other"
+        },
         {
           "sha": "832a304",
           "subject": "test(sqlgen): Oracle quote-if-needed offline-Unit-Test (Regressions-Guard)",
@@ -2470,7 +2475,7 @@
     }
   },
   "stats": {
-    "totalCommits": 475,
+    "totalCommits": 476,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
@@ -2484,7 +2489,7 @@
       },
       {
         "kind": "other",
-        "count": 46
+        "count": 47
       },
       {
         "kind": "fix",

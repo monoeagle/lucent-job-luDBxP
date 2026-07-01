@@ -18,7 +18,7 @@ bewusst nicht neu vermessen.
 <div class="kz-card">
   <div class="kz-lbl">Tempo</div>
   <div class="kz-val">476 <small>Commits</small></div>
-  <div class="kz-note">16 Sessions an 7 Kalendertagen (25.06.–01.07.)</div>
+  <div class="kz-note">17 Sessions an 7 Kalendertagen (25.06.–01.07.)</div>
 </div>
 
 <div class="kz-card">
@@ -82,8 +82,8 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 | Kennzahl | Wert | Detail / Quelle | Art |
 |---|---|---|---|
 | Umsetzung (Roadmap) | ≈ 89 % | ≈ 59 erledigt · ≈ 5 offener Backlog (AP-56/57, AP-61/62, AP-19/35) · Quelle: `roadmap.md` | gemessen |
-| Commits | 476 | 2026-06-25 → 07-01 · 7 Kalendertage · 16 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
-| Aktuelle Version | v0.65.1 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 16 Sessions | gemessen |
+| Commits | 476 | 2026-06-25 → 07-01 · 7 Kalendertage · 17 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
+| Aktuelle Version | v0.65.1 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 17 Sessions | gemessen |
 | Testabdeckung | 88 % | 2060 Statements, 241 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
 | Tests | 446 | alle grün · 11 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~10 s Laufzeit | gemessen |
 | Doku-Abdeckung (Module) | 93 % | 26/28 Python-Module mit Modul-Docstring (AST-Zählung) | gemessen |

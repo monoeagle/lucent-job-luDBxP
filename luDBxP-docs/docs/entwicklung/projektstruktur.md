@@ -59,8 +59,9 @@ lucent-job-luDBxP/
 │   ├── demo_cmdb.db          # Mitgelieferte Demo-CMDB (SQLite, eingecheckt)
 │   ├── demo_cmdb_nofk.db     # Demo-CMDB ohne FK-Constraints (für implizite FKs)
 │   ├── build_demo_db.py      # Generator für beide SQLite-Demo-DBs
-│   ├── seed_server_demo.py   # Server-Demo-CMDB-Seeder (MSSQL/Oracle, AP-67) — zeigt alle Objektkategorien im Tree
-│   └── server-demo-README.md # Bring-up der Server-Demo (podman MSSQL + Seed + Verbinden)
+│   ├── seed_server_demo.py   # Server-Demo-CMDB-Seeder (MSSQL/Oracle, AP-67); Oracle-DDL aus oracle_demo.py
+│   ├── oracle_demo.py        # Reiche Oracle-Demo-CMDB (~37 Tab/10 Views/16 Routinen, AP-67 Slice 2a) — DROPS/TABLES/DATA/OBJECTS
+│   └── server-demo-README.md # Bring-up der Server-Demo (podman MSSQL/Oracle + Seed + Verbinden)
 │
 ├── web/static/
 │   ├── js/app.js             # Frontend-Logik (3-Panel-UI, Graph, SQL-Builder)
