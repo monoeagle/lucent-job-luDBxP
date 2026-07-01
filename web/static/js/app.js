@@ -483,7 +483,8 @@ function openSqlBuilder() {
     `<button id="sb_refresh" title="Ausgabe mit aktuellen Sortierungen/Spalten neu berechnen">Aktualisieren</button>` +
     `<span id="sb_rows_info" class="hint"></span></div>` +
     `<div id="join_result"></div></div>`;
-  SQL_OUT = sqlEditor({ readOnly: true, rows: 6 });
+  SQL_OUT = sqlEditor({ readOnly: true, rows: 6,
+    placeholder: "Noch kein SQL generiert — Start und Ziel wählen, dann „Generieren“ klicken." });
   panel.querySelector("#sql_out_mount").replaceWith(SQL_OUT.el);
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
@@ -641,7 +642,7 @@ async function runAnalyze(panel) {
 // AP-69·A: gemeinsame SQL-Editor-Komponente. 3-Schicht-Editor (Zeilennummern-Gutter
 // + scroll-synchrone Backdrop + textarea). readOnly=true -> gedimmt, nicht editierbar,
 // Auto-Höhe bis max-height. Gibt { el, getValue, setValue, setErrorLine } zurück.
-function sqlEditor({ value = "", readOnly = false, rows = 14 } = {}) {
+function sqlEditor({ value = "", readOnly = false, rows = 14, placeholder = "" } = {}) {
   const editor = document.createElement("div");
   editor.className = "sqled-editor" + (readOnly ? " sqled-editor--readonly" : "");
   const gutter = document.createElement("div");
@@ -663,6 +664,7 @@ function sqlEditor({ value = "", readOnly = false, rows = 14 } = {}) {
   textarea.setAttribute("wrap", "off");
   textarea.spellcheck = false;
   textarea.rows = rows;
+  if (placeholder) textarea.placeholder = placeholder;
   textarea.value = value;
   if (readOnly) textarea.readOnly = true;
 
@@ -732,7 +734,8 @@ function openAnalyzer() {
     `<span class="an-readonly" title="Der Analyzer parst nur — er führt nichts auf der Datenbank aus">read-only — wird nie ausgeführt</span></div>` +
     `<div id="an_result"></div></div>`;
   panel.querySelector("#an_run").addEventListener("click", () => runAnalyze(panel));
-  const _ed = sqlEditor({ readOnly: false, rows: 14 });
+  const _ed = sqlEditor({ readOnly: false, rows: 14,
+    placeholder: "SQL-Statement hier einfügen … " });
   panel.querySelector("#an_editor_mount").replaceWith(_ed.el);
   panel._gutter = _ed;   // behält setErrorLine-API (Aufruf in renderAnalyzeResult, ~533)
   panel.querySelector("#an_result").addEventListener("click", (ev) => {

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.67.0] — 2026-07-01
+
+### Geändert
+- **Gemeinsame SQL-Editor-Komponente (AP-69·A):** alle SQL-Flächen (Analyzer-Eingabe, generiertes
+  SQL-Panel, Detail-SQL-Tab, Subset-Export-SQL je Tabelle) rendern jetzt über eine gemeinsame
+  `sqlEditor`-Factory (`web/static/js/app.js`) — ein dunkles, monospace, zeilennummeriertes Textfeld
+  (`.sqled-*`-CSS), das den bisherigen Mix aus eigenem Analyzer-Gutter (`.an-editor`/`.an-gutter`)
+  und schlichten `<pre class="sql_out">`/`<pre class="viewdef">`-Blöcken ablöst. Der Analyzer-Editor
+  bleibt editierbar (mit Fehlerzeilen-Hervorhebung bei Parse-Fehlern); generiertes SQL,
+  Objekt-Definition und Subset-SQL sind read-only und optisch gedimmt. Keine Verhaltensänderung an
+  SQL-Erzeugung, -Parsing oder -Ausführung — reine Darstellung.
+
 ## [0.66.1] — 2026-07-01
 
 ### Geändert

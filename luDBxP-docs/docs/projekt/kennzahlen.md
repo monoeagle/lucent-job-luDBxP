@@ -1,6 +1,6 @@
 # Projekt-Kennzahlen
 
-Stand **v0.66.1** · 2026-07-01 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
+Stand **v0.67.0** · 2026-07-01 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
 
 Die <span class="kz-tag kz-tag--m">gemessen</span>-Werte (Version, Tests, Coverage, Docstrings, Commits, Sessions)
 sind am 2026-07-01 neu erhoben (aus `git`, `pytest --cov` und AST-Zählung). Die
@@ -83,7 +83,7 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 |---|---|---|---|
 | Umsetzung (Roadmap) | ≈ 89 % | ≈ 59 erledigt · ≈ 5 offener Backlog (AP-56/57, AP-61/62, AP-19/35) · Quelle: `roadmap.md` | gemessen |
 | Commits | 485 | 2026-06-25 → 07-01 · 7 Kalendertage · 18 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
-| Aktuelle Version | v0.66.1 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 18 Sessions | gemessen |
+| Aktuelle Version | v0.67.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 18 Sessions | gemessen |
 | Testabdeckung | 88 % | 2067 Statements, 241 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
 | Tests | 459 | alle grün · 11 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~12 s Laufzeit | gemessen |
 | Doku-Abdeckung (Module) | 93 % | 26/28 Python-Module mit Modul-Docstring (AST-Zählung) | gemessen |
