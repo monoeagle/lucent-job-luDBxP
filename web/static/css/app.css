@@ -356,10 +356,11 @@ body {
 .an-editor { display: flex; align-items: stretch; border: 1px solid #ccc;
   border-radius: 4px; overflow: hidden; background: #fff; min-height: 17rem;
   font-family: monospace; font-size: .82rem; line-height: 1.5; }
-.an-gutter { flex: 0 0 auto; overflow: hidden; background: #f3f3f7;
-  border-right: 1px solid #e3e3ea; color: #9a9aa6; text-align: right;
-  user-select: none; }
-.an-gutter-inner { padding: .4rem .45rem .4rem .55rem; will-change: transform; }
+.an-gutter { position: relative; flex: 0 0 auto; width: 3.2rem; overflow: hidden;
+  background: #f3f3f7; border-right: 1px solid #e3e3ea; color: #9a9aa6;
+  text-align: right; user-select: none; }
+.an-gutter-inner { position: absolute; top: 0; left: 0; right: 0;
+  padding: .4rem .45rem .4rem .55rem; will-change: transform; }
 .an-gutter-num { white-space: pre; }
 .an-edit-area { position: relative; flex: 1 1 auto; overflow: hidden; }
 .an-backdrop { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
