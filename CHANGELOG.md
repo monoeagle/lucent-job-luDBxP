@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.65.0] — 2026-07-01
+
+### Added
+- **Rich Oracle demo schema (AP-67 Slice 2a):** the Oracle server-demo grew from a compact 5-table
+  CMDB to a large VMware-style one — **~37 tables** across 5 subdomains (Reference / Compute /
+  Storage / Network / Backup-DR / License-Audit), **10 views**, **16 routines** (8 functions, 4
+  procedures, 4 packages), 3 sequences, 2 materialized views, 3 synonyms — so complex join paths,
+  subsetting and the analyzer have realistic material. The FK graph is deliberately rich: multiple
+  diamonds, a composite FK (`VMPlacement`→`ResourcePool`), two self-references (`Folder`,
+  `VMSnapshot`), alternative routes (`Replication`), and a no-path isolated table (`AuditLog`); six
+  views call functions (AP-66·S1 ƒ-badge). The DDL lives in a new module `sample_data/oracle_demo.py`
+  (lists `DROPS`/`TABLES`/`DATA`/`OBJECTS`); `seed_server_demo.py`'s oracle branch imports it. Built
+  with the `CREATE`-then-`ALTER … ADD FK` pattern (no create-order coupling), idempotent,
+  **live-verified against Oracle 21c XE**. The sidebar object list is already scrollable, so the
+  large tree is fully navigable. External setup script — the read-only tool never runs it.
+
 ## [0.64.2] — 2026-07-01
 
 ### Fixed

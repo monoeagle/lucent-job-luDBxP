@@ -1,7 +1,7 @@
 # Konzept & Arbeitspaket — Oracle-Demo-CMDB (AP-67)
 
 **Datum:** 2026-06-30
-**Status:** MSSQL-Grundlage erledigt (v0.60.0); Oracle-Adaption erledigt (v0.64.0, live gegen Oracle 21c XE verifiziert). Folge: Offline-Fixture-Vorschau (Slice 2).
+**Status:** MSSQL-Grundlage erledigt (v0.60.0); Oracle-Adaption erledigt (v0.64.0, live gegen Oracle 21c XE verifiziert). Slice 2a (reiches Oracle-Schema, ~37 Tab) erledigt (v0.65.0). Folge: Offline-Fixture-Vorschau (Slice 2b).
 **Auslöser:** Nutzerwunsch — *„oracle_demo cmdb, damit wir auch im Tree alle Oracle-spezifischen Sachen zu sehen sind."* Die mitgelieferte SQLite-Demo kann die Oracle-spezifischen Objektkategorien (Sequences, Materialized Views, Packages, Procedures, Functions, Synonyms) **prinzipiell nicht** enthalten — sie erscheinen im Sidebar-Tree daher nie.
 
 ## 1. Problem
