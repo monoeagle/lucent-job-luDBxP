@@ -59,6 +59,69 @@ _MSSQL_OBJECTS = [
     "CREATE SYNONYM dbo.syn_vm FOR dbo.VirtualMachine",
 ]
 
+# --- Oracle (AP-67·Oracle-Adaption) — live gegen Oracle 21c XE verifiziert. ---
+# Kein IF EXISTS in Oracle → Drop je Objekt als eigener Block, Fehler geschluckt.
+_ORACLE_DROPS = [
+    "BEGIN EXECUTE IMMEDIATE 'DROP VIEW vw_vm_labeled'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP MATERIALIZED VIEW mv_vm_per_host'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP SYNONYM syn_vm'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_vm_audit'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP PACKAGE pkg_vm'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP FUNCTION fn_vm_label'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP PROCEDURE usp_vm_count'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE demo_vm_seq'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP TABLE VirtualMachine'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP TABLE Host'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP TABLE VMCluster'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP TABLE Datacenter'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+    "BEGIN EXECUTE IMMEDIATE 'DROP TABLE OperatingSystem'; EXCEPTION WHEN OTHERS THEN NULL; END;",
+]
+
+_ORACLE_TABLES = [
+    "CREATE TABLE OperatingSystem (OSID NUMBER PRIMARY KEY, Name VARCHAR2(100))",
+    "CREATE TABLE Datacenter (DatacenterID NUMBER PRIMARY KEY, Name VARCHAR2(100))",
+    "CREATE TABLE VMCluster (ClusterID NUMBER PRIMARY KEY, DatacenterID NUMBER, Name VARCHAR2(100), "
+    "CONSTRAINT fk_cluster_dc FOREIGN KEY (DatacenterID) REFERENCES Datacenter(DatacenterID))",
+    "CREATE TABLE Host (HostID NUMBER PRIMARY KEY, ClusterID NUMBER, Hostname VARCHAR2(100), "
+    "CONSTRAINT fk_host_cluster FOREIGN KEY (ClusterID) REFERENCES VMCluster(ClusterID))",
+    "CREATE TABLE VirtualMachine (VMID NUMBER PRIMARY KEY, HostID NUMBER, OSID NUMBER, Name VARCHAR2(100), "
+    "CONSTRAINT fk_vm_host FOREIGN KEY (HostID) REFERENCES Host(HostID), "
+    "CONSTRAINT fk_vm_os FOREIGN KEY (OSID) REFERENCES OperatingSystem(OSID))",
+]
+
+# Oracle kennt kein Multi-Row-VALUES → je Zeile ein INSERT.
+_ORACLE_DATA = [
+    "INSERT INTO OperatingSystem VALUES (1, 'Windows Server 2022')",
+    "INSERT INTO OperatingSystem VALUES (2, 'Ubuntu 24.04')",
+    "INSERT INTO Datacenter VALUES (1, 'DC-North')",
+    "INSERT INTO VMCluster VALUES (1, 1, 'Cluster-A')",
+    "INSERT INTO Host VALUES (1, 1, 'esx-01')",
+    "INSERT INTO VirtualMachine VALUES (1, 1, 1, 'web-vm')",
+    "INSERT INTO VirtualMachine VALUES (2, 1, 2, 'db-vm')",
+]
+
+# Je Statement ein execute(); PL/SQL-Blöcke ohne abschließendes '/'.
+_ORACLE_OBJECTS = [
+    "CREATE SEQUENCE demo_vm_seq START WITH 1000 INCREMENT BY 1",
+    "CREATE OR REPLACE FUNCTION fn_vm_label(p_id IN NUMBER) RETURN VARCHAR2 IS v VARCHAR2(120); "
+    "BEGIN SELECT Name INTO v FROM VirtualMachine WHERE VMID = p_id; RETURN v; END;",
+    "CREATE OR REPLACE PROCEDURE usp_vm_count(p_n OUT NUMBER) IS "
+    "BEGIN SELECT COUNT(*) INTO p_n FROM VirtualMachine; END;",
+    "CREATE OR REPLACE PACKAGE pkg_vm AS FUNCTION vm_name(p_id IN NUMBER) RETURN VARCHAR2; "
+    "PROCEDURE vm_count(p_n OUT NUMBER); END pkg_vm;",
+    "CREATE OR REPLACE PACKAGE BODY pkg_vm AS "
+    "FUNCTION vm_name(p_id IN NUMBER) RETURN VARCHAR2 IS v VARCHAR2(120); "
+    "BEGIN SELECT Name INTO v FROM VirtualMachine WHERE VMID = p_id; RETURN v; END; "
+    "PROCEDURE vm_count(p_n OUT NUMBER) IS "
+    "BEGIN SELECT COUNT(*) INTO p_n FROM VirtualMachine; END; END pkg_vm;",
+    "CREATE OR REPLACE TRIGGER trg_vm_audit AFTER INSERT ON VirtualMachine BEGIN NULL; END;",
+    "CREATE OR REPLACE VIEW vw_vm_labeled AS "
+    "SELECT VMID, fn_vm_label(VMID) AS VMLabel FROM VirtualMachine",
+    "CREATE MATERIALIZED VIEW mv_vm_per_host AS "
+    "SELECT HostID, COUNT(*) AS Cnt FROM VirtualMachine GROUP BY HostID",
+    "CREATE OR REPLACE SYNONYM syn_vm FOR VirtualMachine",
+]
+
 
 def seed(url):
     """Seed the demo CMDB at `url`. Idempotent. Raises on unsupported dialect."""
@@ -70,8 +133,8 @@ def seed(url):
                 for stmt in (_MSSQL_DROPS + _MSSQL_TABLES + _MSSQL_DATA + _MSSQL_OBJECTS):
                     conn.execute(text(stmt))
             elif name == "oracle":
-                raise NotImplementedError(
-                    "Oracle-Seed ist eine Folgescheibe — siehe sample_data/server-demo-README.md")
+                for stmt in (_ORACLE_DROPS + _ORACLE_TABLES + _ORACLE_DATA + _ORACLE_OBJECTS):
+                    conn.execute(text(stmt))
             else:
                 raise SystemExit(f"Demo-Seed unterstuetzt nur mssql/oracle, nicht: {name}")
     finally:
