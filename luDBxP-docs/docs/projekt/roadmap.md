@@ -2,7 +2,7 @@
 
 ## Phasen-Timeline
 
-<img src="../images/mermaid/projekt-roadmap-1.svg" alt="Arbeitspaket-Roadmap (Gantt)">
+<img src="../images/roadmap/projekt-roadmap.svg" alt="Arbeitspaket-Roadmap (Themen-Swimlane)">
 
 ---
 

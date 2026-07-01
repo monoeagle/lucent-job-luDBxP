@@ -150,6 +150,19 @@ def step_generate_activity() -> None:
         warn(f"generate_project_activity.py exit {rc} (nicht-fatal)")
 
 
+def step_generate_roadmap() -> None:
+    script = TOOLS_DIR / "generate_roadmap_svg.py"
+    if not script.is_file():
+        warn("generate_roadmap_svg.py fehlt — uebersprungen")
+        return
+    step("Roadmap-Swimlane-SVG generieren")
+    rc = run([sys.executable, str(script)], check=False)
+    if rc == 0:
+        ok("projekt-roadmap.svg aktualisiert")
+    else:
+        warn(f"generate_roadmap_svg.py exit {rc} (nicht-fatal)")
+
+
 def step_zensical_build() -> None:
     step("Zensical-Build (site/)")
     if SITE_DIR.exists():
@@ -212,6 +225,8 @@ def main() -> None:
 
     if not args.no_activity:
         step_generate_activity()
+
+    step_generate_roadmap()
 
     step_zensical_build()
 
