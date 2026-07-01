@@ -95,6 +95,20 @@ def _render_agg(agg: str, expr: str) -> str:
     return f"{agg}({expr})"
 
 
+_ORACLE_PREPARER = None
+
+
+def _oracle_quote(ident: str) -> str:
+    """Quote one identifier the way SQLAlchemy's Oracle dialect would — i.e.
+    only when needed (mixed case, reserved word, non-simple chars), so a
+    reflected lower-cased name stays unquoted and matches the stored object."""
+    global _ORACLE_PREPARER
+    if _ORACLE_PREPARER is None:
+        from sqlalchemy.dialects import oracle as _ora
+        _ORACLE_PREPARER = _ora.dialect().identifier_preparer
+    return _ORACLE_PREPARER.quote(ident)
+
+
 @dataclass(frozen=True)
 class Dialect:
     """SQL-dialect rules for read-only SELECT rendering (AP-29).
@@ -110,7 +124,16 @@ class Dialect:
     limit_style: str
 
     def quote(self, ident: str) -> str:
-        """Quote one identifier, escaping the closing char by doubling it."""
+        """Quote one identifier, escaping the closing char by doubling it.
+
+        Oracle uses SQLAlchemy's identifier preparer (quote-if-needed): a
+        reflected all-lower-case name renders **unquoted** (Oracle folds it to
+        upper case, matching the stored object), while a mixed-case or reserved
+        name is quoted as-is. Always-quoting a lower-cased reflected name would
+        raise ORA-00942 (`"storagearray"` ≠ the stored `STORAGEARRAY`).
+        """
+        if self.name == "oracle":
+            return _oracle_quote(ident)
         return (self.quote_open
                 + ident.replace(self.quote_close, self.quote_close * 2)
                 + self.quote_close)
