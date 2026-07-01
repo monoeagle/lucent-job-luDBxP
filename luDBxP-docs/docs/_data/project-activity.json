@@ -1,22 +1,27 @@
 {
-  "generatedAt": "2026-07-01T18:49:38",
+  "generatedAt": "2026-07-01T19:15:43",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 47,
+      "commits": 48,
       "kinds": {
+        "feat": 16,
         "other": 10,
-        "feat": 15,
         "docs": 14,
         "test": 1,
         "fix": 7
       },
       "list": [
         {
-          "sha": "dd8aaee",
+          "sha": "97bf3b6",
+          "subject": "feat(roadmap): AP-68 Polish — zentrierter Titel, AP-Anzahl im Balken, 🚧-Marker, Anti-Overlap",
+          "kind": "feat"
+        },
+        {
+          "sha": "c03c8ac",
           "subject": "release: v0.66.0 — AP-68 Roadmap-Swimlane (Doku/Version/Kennzahlen)",
           "kind": "other"
         },
@@ -2525,7 +2530,7 @@
     }
   },
   "stats": {
-    "totalCommits": 486,
+    "totalCommits": 487,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
@@ -2535,7 +2540,7 @@
       },
       {
         "kind": "feat",
-        "count": 149
+        "count": 150
       },
       {
         "kind": "other",
@@ -2562,7 +2567,7 @@
         "count": 4
       }
     ],
-    "testCount": 466
+    "testCount": 468
   },
   "phases": []
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.66.1] — 2026-07-01
+
+### Changed
+- **Roadmap swimlane polish (AP-68):** the generated roadmap graphic now (1) centers the title over
+  the full width, (2) shows the **number of completed APs inside each done bar** (white, centered; or
+  to the right of very narrow bars), (3) marks open/in-progress APs with a **🚧 icon** (instead of a
+  plain diamond; legend updated to "in Arbeit / geplant"), and (4) fixes label collisions —
+  icon+label travel together across up to three vertical offset levels, labels near the right edge
+  render leftward instead of being clipped, and marker labels get a white halo so they stay legible
+  over the green bars. 2 new unit tests cover the centered title, the done count and the 🚧 marker.
+
 ## [0.66.0] — 2026-07-01
 
 ### Added

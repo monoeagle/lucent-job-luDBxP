@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.66.1] — 2026-07-01
+
+### Geändert
+- **Roadmap-Swimlane-Politur (AP-68):** die generierte Roadmap-Grafik (1) zentriert jetzt den Titel
+  über die volle Breite, (2) zeigt die **Anzahl erledigter APs im jeweiligen Done-Balken** (weiß,
+  mittig; bei sehr schmalen Balken rechts daneben), (3) markiert offene/in-Arbeit-APs mit einem
+  **🚧-Icon** (statt einer schlichten Raute; Legende → „in Arbeit / geplant") und (4) behebt
+  Label-Überlappungen — Icon+Label wandern gemeinsam über bis zu drei Versatz-Ebenen, Labels nahe
+  dem rechten Rand werden nach links gerendert statt abgeschnitten, und Marker-Labels erhalten einen
+  weißen Halo, damit sie über den grünen Balken lesbar bleiben. 2 neue Unit-Tests decken den
+  zentrierten Titel, die Anzahl-Anzeige und den 🚧-Marker ab.
+
 ## [0.66.0] — 2026-07-01
 
 ### Hinzugefügt
