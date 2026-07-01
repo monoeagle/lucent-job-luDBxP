@@ -1,17 +1,59 @@
 {
-  "generatedAt": "2026-07-01T02:59:27",
+  "generatedAt": "2026-07-01T03:38:06",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 5,
+      "commits": 13,
       "kinds": {
-        "feat": 3,
-        "docs": 2
+        "fix": 3,
+        "feat": 5,
+        "docs": 4,
+        "other": 1
       },
       "list": [
+        {
+          "sha": "e13a3be",
+          "subject": "fix(ui): Analyzer-Textarea selbst vertikal verstellbar (Grip-Konflikt behoben) [AP-65·B]",
+          "kind": "fix"
+        },
+        {
+          "sha": "9d563a7",
+          "subject": "feat(ui): Analyzer-Fehlerzeile im Eingabefeld hervorheben (setErrorLine) [AP-65·B]",
+          "kind": "feat"
+        },
+        {
+          "sha": "4734a7a",
+          "subject": "fix(ui): Analyzer-Editor vertikal verstellbar halten (resize auf Container) [AP-65·B]",
+          "kind": "fix"
+        },
+        {
+          "sha": "3af2f4d",
+          "subject": "fix(ui): Analyzer-Gutter-Höhe an Textarea binden (inner absolut, feste Breite) [AP-65·B]",
+          "kind": "fix"
+        },
+        {
+          "sha": "1079bf3",
+          "subject": "feat(ui): Analyzer-Zeilennummern-Gutter (scroll-synchron, 3-Schicht-Editor) [AP-65·B]",
+          "kind": "feat"
+        },
+        {
+          "sha": "7e0f5f2",
+          "subject": "docs(plan): AP-65·B Analyzer Zeilennummern-Gutter",
+          "kind": "docs"
+        },
+        {
+          "sha": "369eca5",
+          "subject": "docs(spec): AP-65·B Analyzer Zeilennummern-Gutter + Fehlerzeilen-Highlight",
+          "kind": "docs"
+        },
+        {
+          "sha": "4fe1e81",
+          "subject": "release: v0.61.0 — AP-65·A-Härtung 2 (Unclosed-Quote echte Fehlerzeile via Ungerade-Heuristik)",
+          "kind": "other"
+        },
         {
           "sha": "902fc0c",
           "subject": "feat(ui): Analyzer-Parse-Fehler ohne Spalte anzeigen, wenn nicht bestimmbar",
@@ -2312,25 +2354,25 @@
     }
   },
   "stats": {
-    "totalCommits": 444,
+    "totalCommits": 452,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 209
+        "count": 211
       },
       {
         "kind": "feat",
-        "count": 137
-      },
-      {
-        "kind": "other",
-        "count": 38
+        "count": 139
       },
       {
         "kind": "fix",
-        "count": 36
+        "count": 39
+      },
+      {
+        "kind": "other",
+        "count": 39
       },
       {
         "kind": "test",
