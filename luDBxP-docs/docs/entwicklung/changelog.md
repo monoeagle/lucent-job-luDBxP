@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.65.1] — 2026-07-01
+
+### Behoben
+- **Oracle-Bezeichner-Casing im generierten SQL (Join-Ausführung, Filter-Dropdown, Subset-Export):**
+  `core/sqlgen.py::Dialect.quote()` quotete Bezeichner immer. Auf Oracle traf das den
+  kleingeschriebenen Reflektions-Namen (`"storagearray"`) nicht das gespeicherte `STORAGEARRAY` →
+  ein Join, das Filter-Wert-Dropdown (`/api/distinct`) oder der Subset-Export scheiterten mit
+  `ORA-00942`/`ORA-00904`. Der Oracle-Dialekt quotet jetzt über SQLAlchemys Identifier-Preparer
+  (quote-if-needed): kleingeschriebene Reflektions-Namen unquoted (Oracle uppercased → matcht),
+  mixed-case/reservierte Namen quoted. **Eine** Korrektur am geteilten `Dialect.quote()` repariert
+  alle drei Pfade; SQLite/PostgreSQL/MySQL/MSSQL unverändert. Live gegen Oracle 21c XE verifiziert
+  (Multi-Join, Distinct, Subset laufen). Zusammen mit dem v0.64.2-Daten-Vorschau-Fix round-trippen
+  jetzt alle Oracle-SQL-Ausführungspfade die reflektierten Namen.
+
 ## [0.65.0] — 2026-07-01
 
 ### Hinzugefügt

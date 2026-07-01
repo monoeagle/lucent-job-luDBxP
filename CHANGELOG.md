@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.65.1] — 2026-07-01
+
+### Fixed
+- **Oracle identifier casing in generated SQL (join execution, filter dropdown, subset export):**
+  `core/sqlgen.py::Dialect.quote()` always wrapped identifiers in quotes. On Oracle that quoted the
+  reflected (lower-cased) name — `"storagearray"` — which does not match the stored upper-cased
+  object `STORAGEARRAY`, so running a join, opening the filter-value dropdown (`/api/distinct`) or
+  exporting a subset failed with `ORA-00942`/`ORA-00904`. The Oracle dialect now quotes via
+  SQLAlchemy's identifier preparer (quote-if-needed): a reflected lower-case name renders unquoted
+  (Oracle folds it to upper case → matches), while a mixed-case or reserved name is quoted as-is.
+  One fix at the shared `Dialect.quote()` repairs all three paths; SQLite/PostgreSQL/MySQL/MSSQL are
+  unchanged. Verified live against Oracle 21c XE (multi-join, distinct, subset all run). Together
+  with the v0.64.2 data-preview fix, every Oracle SQL-execution path now round-trips reflected names.
+
 ## [0.65.0] — 2026-07-01
 
 ### Added
