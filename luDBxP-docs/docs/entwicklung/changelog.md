@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.67.1] — 2026-07-02
+
+### Behoben
+- **SQL-Editor: Text der Fehlerzeile war unsichtbar.** Nach dem AP-69·A-Refactor lag die
+  Markierungs-Ebene *über* der Textarea (verlorenes `position: relative; z-index` aus der alten
+  `#an_sql`-Regel) — die markierte Fehlerzeile zeigte nur den roten Balken, keinen Text. Die Textarea
+  liegt jetzt wieder über der Markierung; Editor-Schrift im dunklen Thema heller
+  (`#eaeaea`→`#f4f5fa`, read-only `#9a9ab0`→`#cdd0e0`).
+- **Windows-Offline-Install: `cryptography` fehlte im Wheelhouse.** `oracledb` braucht
+  `cryptography>=3.2.1`, das in `wheels/` fehlte (und das lokal vorhandene Wheel war die
+  free-threaded `cp314t`-ABI, inkompatibel zum Standard-CPython-3.14 → „from versions: none").
+  Das richtige **abi3**-Wheel (`cryptography-49.0.0-cp311-abi3-win_amd64`) + `cffi` + `pycparser`
+  ergänzt; die `pip download`-Anleitung der Wheelhouse-README auf `--abi abi3 --abi none` korrigiert.
+  Vollständiger Offline-Resolve aus `wheels/` für win_amd64/cp314 verifiziert.
+
 ## [0.67.0] — 2026-07-01
 
 ### Geändert

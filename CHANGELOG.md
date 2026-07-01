@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.67.1] — 2026-07-02
+
+### Fixed
+- **SQL editor: error-line text was invisible.** After the AP-69·A refactor the highlight band
+  painted *over* the textarea (a lost `position: relative; z-index` from the old `#an_sql` rule), so
+  the marked error line showed the red band but no text. The textarea now sits above the highlight
+  again; editor font brightened for the dark theme (`#eaeaea`→`#f4f5fa`, read-only `#9a9ab0`→`#cdd0e0`).
+- **Windows offline install: missing `cryptography` in the wheelhouse.** `oracledb` requires
+  `cryptography>=3.2.1`, which was absent from `wheels/` (and the locally-present wheel was the
+  free-threaded `cp314t` ABI, incompatible with the standard CPython 3.14 interpreter → "from
+  versions: none"). Added the correct **abi3** wheel (`cryptography-49.0.0-cp311-abi3-win_amd64`) plus
+  `cffi` + `pycparser`; fixed the wheelhouse README's `pip download` recipe to include
+  `--abi abi3 --abi none`. Full offline resolve from `wheels/` for win_amd64/cp314 verified.
+
 ## [0.67.0] — 2026-07-01
 
 ### Changed
