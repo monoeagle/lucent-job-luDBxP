@@ -55,8 +55,10 @@ def test_lane_spans_done_and_markers():
     engine = lanes[0]
     assert engine.done_span == (date(2026, 6, 25), date(2026, 6, 28))
     assert engine.markers == []
+    assert engine.done_count == 2          # AP-1 + AP-2 erledigt
     betrieb = lanes[1]
     assert betrieb.done_span is None
+    assert betrieb.done_count == 0         # nur offene APs
     # nach Datum sortiert: AP-35 (07-02) vor AP-31 (07-05)
     assert [m[0] for m in betrieb.markers] == ["AP-35", "AP-31"]
 
@@ -91,6 +93,26 @@ def test_render_svg_wellformed_and_contains_open_labels():
     assert 'width="100%"' not in svg
     # Done-Farbe der erledigten Lane vorhanden
     assert "#1f6f3c" in svg
+
+
+def test_render_title_centered():
+    lanes = g.lane_spans(_aps(), _THEMES)
+    dmin, dmax = g.date_range(_aps())
+    svg = g.render_svg(lanes, dmin, dmax)
+    # Titel wird mittig ausgerichtet gerendert (nicht mehr linksbündig an der Label-Spalte).
+    assert 'text-anchor="middle" fill="#33373b">' in svg
+    assert 'LucentTools DB Explorer — Arbeitspaket-Roadmap</text>' in svg
+
+
+def test_render_done_count_and_wip_icon():
+    lanes = g.lane_spans(_aps(), _THEMES)
+    dmin, dmax = g.date_range(_aps())
+    svg = g.render_svg(lanes, dmin, dmax)
+    # Anzahl erledigter APs steht als Zahl im/neben dem Balken (engine = 2).
+    assert ">2</text>" in svg
+    # Offene/in-Arbeit-APs tragen das 🚧-Icon; Legende benennt es.
+    assert g.WIP_ICON in svg
+    assert "in Arbeit / geplant" in svg
 
 
 def test_esc():

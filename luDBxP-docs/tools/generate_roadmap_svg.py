@@ -1,8 +1,9 @@
 """AP-68 — Roadmap-Swimlane-Generator.
 
 Erzeugt aus roadmap_data.py (Single Source of Truth) einen SVG mit konstanter
-Höhe: eine Lane je Themenbereich, erledigte Historie als ein verdichteter Balken,
-offene APs als benannte Rauten an ihrem Zieldatum. Stdlib-only.
+Höhe: eine Lane je Themenbereich, erledigte Historie als ein verdichteter Balken
+(mit Anzahl erledigter APs), offene/in-Arbeit-APs als 🚧-Marker an ihrem
+Zieldatum. Stdlib-only.
 """
 from __future__ import annotations
 
@@ -35,6 +36,7 @@ class Lane:
     label: str
     done_span: tuple[date, date] | None
     markers: list[tuple[str, str, date]] = field(default_factory=list)
+    done_count: int = 0
 
 
 def validate(aps: list[dict], themes: list[tuple[str, str]]) -> None:
@@ -60,13 +62,13 @@ def lane_spans(aps: list[dict], themes: list[tuple[str, str]]) -> list[Lane]:
             ((a["ap"], a["label"], parse_date(a["date"])) for a in mine if a["status"] == "open"),
             key=lambda m: m[2],
         )
-        lanes.append(Lane(key, label, span, markers))
+        lanes.append(Lane(key, label, span, markers, done_count=len(done)))
     return lanes
 
 
 MARGIN_LEFT = 210
 MARGIN_TOP = 70
-LANE_H = 34
+LANE_H = 40
 LEGEND_H = 44
 PLOT_PAD_RIGHT = 30
 
@@ -76,6 +78,11 @@ LANE_BG_A = "#f7f7fa"
 LANE_BG_B = "#ffffff"
 AXIS_COL = "#9aa0a6"
 LABEL_COL = "#33373b"
+
+# Emoji-Marker für offene/in-Arbeit-APs (rendert wie die Lane-Emojis in Chrome).
+WIP_ICON = "\U0001f6a7"  # 🚧
+_CHAR_W = 5.4            # grobe Zeichenbreite bei font-size 10 (Label-Kollisionsschätzung)
+_LABEL_LEVELS = (4, -9, 17)  # vertikale Versatz-Ebenen relativ zur Lane-Mitte
 
 
 def esc(s: str) -> str:
@@ -102,8 +109,9 @@ def render_svg(lanes: list[Lane], dmin: date, dmax: date, *, width: int = 1200) 
     )
     parts.append(f'<rect width="{width}" height="{height}" fill="#ffffff"/>')
     parts.append(
-        f'<text x="{MARGIN_LEFT}" y="30" font-size="20" font-weight="700" '
-        f'fill="{LABEL_COL}">LucentTools DB Explorer — Arbeitspaket-Roadmap</text>'
+        f'<text x="{width / 2:.0f}" y="30" font-size="20" font-weight="700" '
+        f'text-anchor="middle" fill="{LABEL_COL}">'
+        f'LucentTools DB Explorer — Arbeitspaket-Roadmap</text>'
     )
 
     # X-Achse (Datums-Ticks) über die volle Plot-Höhe
@@ -122,49 +130,78 @@ def render_svg(lanes: list[Lane], dmin: date, dmax: date, *, width: int = 1200) 
     # Lanes
     for i, lane in enumerate(lanes):
         ly = MARGIN_TOP + i * LANE_H
+        cy = ly + LANE_H / 2
         bg = LANE_BG_A if i % 2 == 0 else LANE_BG_B
         parts.append(f'<rect x="0" y="{ly}" width="{width}" height="{LANE_H}" fill="{bg}"/>')
         parts.append(
-            f'<text x="{MARGIN_LEFT - 12}" y="{ly + LANE_H/2 + 4:.0f}" font-size="12" '
+            f'<text x="{MARGIN_LEFT - 12}" y="{cy + 4:.0f}" font-size="12" '
             f'text-anchor="end" fill="{LABEL_COL}">{esc(lane.label)}</text>'
         )
-        # Done-Balken
+        # Done-Balken + Anzahl erledigter APs
         if lane.done_span:
             s, e = lane.done_span
             bx0 = date_to_x(s, dmin, dmax, x0, x1)
             bx1 = date_to_x(e, dmin, dmax, x0, x1)
             bw = max(6.0, bx1 - bx0)
             parts.append(
-                f'<rect x="{bx0:.1f}" y="{ly + 8}" width="{bw:.1f}" height="{LANE_H - 16}" '
+                f'<rect x="{bx0:.1f}" y="{ly + 9}" width="{bw:.1f}" height="{LANE_H - 18}" '
                 f'rx="3" fill="{DONE_FILL}"/>'
             )
-        # Offene Marker (Rauten) + Label, mit einfachem Anti-Overlap-Versatz
-        last_label_end = -1e9
+            if lane.done_count:
+                if bw >= 22:  # Zahl mittig in den Balken (weiß)
+                    parts.append(
+                        f'<text x="{bx0 + bw/2:.1f}" y="{cy + 4:.1f}" font-size="12" '
+                        f'font-weight="700" text-anchor="middle" fill="#ffffff">'
+                        f'{lane.done_count}</text>'
+                    )
+                else:         # zu schmal → Zahl rechts daneben
+                    parts.append(
+                        f'<text x="{bx1 + 5:.1f}" y="{cy + 4:.1f}" font-size="11" '
+                        f'font-weight="700" fill="{DONE_FILL}">{lane.done_count}</text>'
+                    )
+        # Offene / in Arbeit: 🚧-Marker + Label, mehrstufiger Anti-Overlap-Versatz.
+        # Icon und Label wandern gemeinsam auf die Versatz-Ebene (so überlagert ein
+        # Icon nie den Text eines anderen, dicht benachbarten Markers).
+        placed: list[tuple[float, float, int]] = []  # (x_start, x_end, level)
         for (ap, label, d) in lane.markers:
             mx = date_to_x(d, dmin, dmax, x0, x1)
-            cy = ly + LANE_H / 2
-            r = 5
-            parts.append(
-                f'<polygon points="{mx:.1f},{cy-r:.1f} {mx+r:.1f},{cy:.1f} '
-                f'{mx:.1f},{cy+r:.1f} {mx-r:.1f},{cy:.1f}" fill="{OPEN_FILL}"/>'
-            )
             txt = f"{ap} {label}"
-            ty = cy + 4
-            if mx < last_label_end + 8:      # Labels zu nah → zweite Zeile
-                ty = cy - 8
+            tw = len(txt) * _CHAR_W
+            # Nahe dem rechten Rand: Label nach links rendern statt es abzuschneiden.
+            if mx + 16 + tw > x1:
+                anchor, tx = "end", mx - 12
+                xs, xe = tx - tw, mx + 8
+            else:
+                anchor, tx = "start", mx + 12
+                xs, xe = mx - 8, tx + tw
+            # Niedrigste Versatz-Ebene ohne Überlappung (Belegung deckt Icon + Label).
+            level = len(_LABEL_LEVELS) - 1
+            for lvl in range(len(_LABEL_LEVELS)):
+                if not any(p[2] == lvl and not (xe < p[0] - 4 or xs > p[1] + 4) for p in placed):
+                    level = lvl
+                    break
+            ty = cy + _LABEL_LEVELS[level]
             parts.append(
-                f'<text x="{mx + 8:.1f}" y="{ty:.1f}" font-size="10" fill="{OPEN_FILL}">'
-                f'{esc(txt)}</text>'
+                f'<text x="{mx:.1f}" y="{ty:.1f}" font-size="13" '
+                f'text-anchor="middle">{WIP_ICON}</text>'
             )
-            last_label_end = mx + 8 + len(txt) * 5.4
+            parts.append(
+                f'<text x="{tx:.1f}" y="{ty:.1f}" font-size="10" text-anchor="{anchor}" '
+                f'paint-order="stroke" stroke="#ffffff" stroke-width="2.5" '
+                f'stroke-linejoin="round" fill="{OPEN_FILL}">{esc(txt)}</text>'
+            )
+            placed.append((xs, xe, level))
 
     # Legende
     lgy = plot_bottom + 22
     parts.append(f'<rect x="{MARGIN_LEFT}" y="{lgy-9}" width="22" height="12" rx="3" fill="{DONE_FILL}"/>')
-    parts.append(f'<text x="{MARGIN_LEFT+28}" y="{lgy+1}" font-size="11" fill="{LABEL_COL}">erledigt (Zeitraum)</text>')
-    dx = MARGIN_LEFT + 190
-    parts.append(f'<polygon points="{dx},{lgy-6} {dx+6},{lgy} {dx},{lgy+6} {dx-6},{lgy}" fill="{OPEN_FILL}"/>')
-    parts.append(f'<text x="{dx+14}" y="{lgy+1}" font-size="11" fill="{LABEL_COL}">offen (Ziel-Datum)</text>')
+    parts.append(
+        f'<text x="{MARGIN_LEFT+28}" y="{lgy+1}" font-size="11" fill="{LABEL_COL}">'
+        f'erledigt (Zeitraum · Zahl = Anzahl APs)</text>'
+    )
+    dx = MARGIN_LEFT + 290
+    parts.append(f'<text x="{dx:.0f}" y="{lgy+4:.0f}" font-size="14" text-anchor="middle">{WIP_ICON}</text>')
+    parts.append(f'<text x="{dx+12}" y="{lgy+1}" font-size="11" fill="{LABEL_COL}">in Arbeit / geplant</text>')
 
     parts.append("</svg>")
     return "\n".join(parts)
