@@ -434,3 +434,49 @@ def test_parse_error_redirect_to_odd_quote_line():
     assert r.parse_error_context == 'SELECT "a' # der volle Zeilentext
     assert "Zeile 1" in r.parse_error_hint
     assert "Anführungszeichen" in r.parse_error_hint
+
+
+# --- AP-65·C: Zeilen-Tracking an Lints/Vorschlägen (_node_line) ----------------
+
+def test_node_line_helper():
+    import sqlglot
+    from sqlglot import exp
+    from core.sqlanalyze import _node_line
+    sql = 'SELECT *\nFROM t\nWHERE upper(x) = 1'
+    node = sqlglot.parse_one(sql)
+    star = next(node.find_all(exp.Star))
+    assert _node_line(star, sql) == 1                       # * in Zeile 1
+    tbl = next(node.find_all(exp.Table))
+    assert _node_line(tbl, sql) == 2                        # FROM t in Zeile 2
+    fn = next(node.find(exp.Where).find_all(exp.Func))
+    assert _node_line(fn, sql) == 3                         # upper(x) in Zeile 3
+
+
+def test_lint_select_star_carries_line():
+    r = analyze('SELECT *\nFROM t')
+    w = next(w for w in r.warnings if w.code == "SELECT_STAR")
+    assert w.line == 1
+
+
+def test_lint_leading_wildcard_line():
+    r = analyze("SELECT a\nFROM t\nWHERE b LIKE '%x'")
+    w = next(w for w in r.warnings if w.code == "LEADING_WILDCARD")
+    assert w.line == 3
+
+
+def test_lint_func_on_column_line():
+    r = analyze('SELECT a\nFROM t\nWHERE upper(b) = 1')
+    w = next(w for w in r.warnings if w.code == "FUNC_ON_COLUMN")
+    assert w.line == 3
+
+
+def test_suggestion_or_in_where_line():
+    r = analyze('SELECT a\nFROM t\nWHERE b = 1 OR c = 2')
+    s = next(s for s in r.suggestions if s.code == "OR_IN_WHERE")
+    assert s.line == 3
+
+
+def test_statement_level_warnings_have_no_line():
+    r = analyze('UPDATE t SET x = 1')
+    w = next(w for w in r.warnings if w.code == "WRITE_STATEMENT")
+    assert w.line is None

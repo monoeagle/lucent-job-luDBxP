@@ -44,12 +44,14 @@ class AnalysisWarning:
     level: str    # "info" | "warn" | "danger"
     code: str     # stable machine code, e.g. "WRITE_STATEMENT"
     message: str  # German user-facing text
+    line: "int | None" = None   # 1-based source line, or None for statement-level
 
 
 @dataclass(frozen=True)
 class AnalysisSuggestion:
     code: str     # stabile Maschinen-Code, z. B. "DISTINCT_WITH_GROUP_BY"
     message: str  # deutscher, anzeigbarer Vorschlagstext
+    line: "int | None" = None   # 1-based source line, or None
 
 
 @dataclass(frozen=True)
@@ -208,20 +210,34 @@ def _within_edit1(a: str, b: str) -> bool:
 _JOIN_KEYWORD_LOOKALIKES = ("LEFT", "RIGHT", "INNER", "OUTER", "FULL", "CROSS")
 
 
-def _static_lints(node) -> list:
-    """Schema-free static-quality lints (SELECT *, non-sargable predicates, …)."""
+def _node_line(node, sql):
+    """1-based source line of the earliest positioned descendant of node, else
+    None. sqlglot records char offsets in leaf-node ``.meta['start']``; a
+    composite node inherits a line via its descendants. Pure, read-only."""
+    starts = [e.meta["start"] for e in node.walk()
+              if isinstance(e, exp.Expression) and e.meta.get("start") is not None]
+    if not starts:
+        return None
+    return sql.count("\n", 0, min(starts)) + 1
+
+
+def _static_lints(node, sql) -> list:
+    """Schema-free static-quality lints (SELECT *, non-sargable predicates, ...)."""
     out: list[AnalysisWarning] = []
-    if any(isinstance(e, exp.Star) for e in node.find_all(exp.Star)):
+    star = next((e for e in node.find_all(exp.Star)), None)
+    if star is not None:
         out.append(AnalysisWarning(
             "info", "SELECT_STAR",
-            "SELECT * — nur benötigte Spalten auswählen (klarer + weniger I/O)."))
+            "SELECT * — nur benötigte Spalten auswählen (klarer + weniger I/O).",
+            line=_node_line(star, sql)))
     # Leading-wildcard LIKE ('%…') cannot use a normal index.
     for like in node.find_all(exp.Like):
         pat = like.expression
         if isinstance(pat, exp.Literal) and pat.is_string and pat.this.startswith("%"):
             out.append(AnalysisWarning(
                 "warn", "LEADING_WILDCARD",
-                "LIKE mit führendem '%' ist nicht index-nutzbar (Full Scan)."))
+                "LIKE mit führendem '%' ist nicht index-nutzbar (Full Scan).",
+                line=_node_line(like, sql)))
             break
     # A function wrapping a column inside WHERE defeats an index on that column.
     where = node.find(exp.Where)
@@ -230,7 +246,8 @@ def _static_lints(node) -> list:
             if fn.find(exp.Column) is not None:
                 out.append(AnalysisWarning(
                     "info", "FUNC_ON_COLUMN",
-                    "Funktion auf einer Spalte in WHERE — ein Index darauf wird ignoriert."))
+                    "Funktion auf einer Spalte in WHERE — ein Index darauf wird ignoriert.",
+                    line=_node_line(fn, sql)))
                 break
     # Typo heuristic: sqlglot silently parses a mistyped join keyword as a table
     # alias (LEFTI → alias). Flag aliases that closely resemble a join keyword.
@@ -245,13 +262,14 @@ def _static_lints(node) -> list:
                 flagged.add(au)
                 out.append(AnalysisWarning(
                     "warn", "SUSPICIOUS_ALIAS",
-                    f'Tabellen-Alias „{alias}“ ähnelt dem Schlüsselwort „{kw}“ — '
-                    f'möglicher Tippfehler im Join-Typ?'))
+                    f'Tabellen-Alias „{alias}" ähnelt dem Schlüsselwort „{kw}" — '
+                    f'möglicher Tippfehler im Join-Typ?',
+                    line=_node_line(tbl, sql)))
                 break
     return out
 
 
-def _optimization_suggestions(node) -> list:
+def _optimization_suggestions(node, sql) -> list:
     """Schema-freie Optimierungs-Hinweise für ein Top-Level-SELECT — neutrale
     Ratschläge, getrennt vom Warnungs-Kanal. Max. ein Vorschlag je Heuristik."""
     out: list[AnalysisSuggestion] = []
@@ -265,19 +283,23 @@ def _optimization_suggestions(node) -> list:
             "ORDER BY ohne LIMIT sortiert das gesamte Ergebnis — LIMIT ergänzen, "
             "wenn nur ein Ausschnitt gebraucht wird."))
     where = node.args.get("where")
-    if where is not None and any(
-            o.find_ancestor(exp.Select) is node for o in where.find_all(exp.Or)):
-        out.append(AnalysisSuggestion(
-            "OR_IN_WHERE",
-            "OR in WHERE kann die Nutzung von Indizes verhindern — "
-            "IN(…) (gleiche Spalte) oder UNION erwägen."))
+    if where is not None:
+        or_node = next((o for o in where.find_all(exp.Or)
+                        if o.find_ancestor(exp.Select) is node), None)
+        if or_node is not None:
+            out.append(AnalysisSuggestion(
+                "OR_IN_WHERE",
+                "OR in WHERE kann die Nutzung von Indizes verhindern — "
+                "IN(…) (gleiche Spalte) oder UNION erwägen.",
+                line=_node_line(or_node, sql)))
     if where is not None:
         for sub in where.find_all(exp.Select):
             if sub.find_ancestor(exp.Exists) is None:   # EXISTS ist bereits empfohlen
                 out.append(AnalysisSuggestion(
                     "SUBQUERY_IN_WHERE",
                     "Unterabfrage in WHERE — oft als JOIN oder EXISTS "
-                    "effizienter formulierbar."))
+                    "effizienter formulierbar.",
+                    line=_node_line(sub, sql)))
                 break
     return out
 
@@ -408,15 +430,13 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
 
     # Cartesian heuristic: a JOIN/comma-join without ON/USING and no WHERE to
     # link the tables. A present WHERE is assumed to provide the link.
-    joins_without_on = any(
-        j.args.get("on") is None and j.args.get("using") is None
-        for j in node.find_all(exp.Join)
-    )
-    if joins_without_on and node.args.get("where") is None:
+    bad_join = next((j for j in node.find_all(exp.Join)
+                     if j.args.get("on") is None and j.args.get("using") is None), None)
+    if bad_join is not None and node.args.get("where") is None:
         warnings.append(AnalysisWarning(
             "warn", "CARTESIAN_JOIN",
             "Join ohne Verknüpfungsbedingung — möglicher kartesischer Join "
-            "(Zeilen-Explosion)."))
+            "(Zeilen-Explosion).", line=_node_line(bad_join, sql)))
 
     if schema is not None:
         known = {t.name.lower() for t in schema.tables}
@@ -437,7 +457,8 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             if real.lower() not in known:
                 warnings.append(AnalysisWarning(
                     "warn", "UNKNOWN_TABLE",
-                    f'Tabelle „{real}“ ist im verbundenen Schema nicht vorhanden.'))
+                    f'Tabelle „{real}" ist im verbundenen Schema nicht vorhanden.',
+                    line=_node_line(tbl, sql)))
         # Qualified columns only (table.column); unqualified columns are skipped.
         for col in node.find_all(exp.Column):
             tbl_ref = col.table
@@ -450,7 +471,8 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             if cols is not None and col.name.lower() not in cols:
                 warnings.append(AnalysisWarning(
                     "warn", "UNKNOWN_COLUMN",
-                    f'Spalte „{col.name}“ existiert nicht in Tabelle „{real}“.'))
+                    f'Spalte „{col.name}" existiert nicht in Tabelle „{real}".',
+                    line=_node_line(col, sql)))
 
     # --- AP-39: clause & structure extraction (display + graph) ---
     amap = _alias_map(node)
@@ -498,8 +520,8 @@ def analyze(sql: str, schema=None, dialect: "str | None" = None) -> AnalysisResu
             limit_txt = lim.expression.sql() if lim.expression is not None else lim.sql()
 
     structure, score, grade = _structure_and_complexity(node)
-    warnings.extend(_static_lints(node))
-    suggestions = (_optimization_suggestions(node)
+    warnings.extend(_static_lints(node, sql))
+    suggestions = (_optimization_suggestions(node, sql)
                    if isinstance(node, exp.Select) else [])
 
     return AnalysisResult(
