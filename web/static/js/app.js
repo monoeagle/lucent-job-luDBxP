@@ -622,7 +622,7 @@ function renderAnalyzeResult(panel, res) {
 }
 
 async function runAnalyze(panel) {
-  const sql = panel.querySelector("#an_sql").value;
+  const sql = panel._gutter.getValue();
   if (!sql.trim()) return;
   try {
     const res = await postJSON("/api/analyze",
@@ -634,49 +634,56 @@ async function runAnalyze(panel) {
   }
 }
 
-// AP-65·B: wraps the analyzer textarea in a 3-layer editor (line-number gutter +
-// scroll-synced backdrop). The textarea stays the single value source. Returns
-// { refresh, setErrorLine }.
-function attachLineGutter(textarea) {
-  textarea.setAttribute("wrap", "off");
+// AP-69·A: gemeinsame SQL-Editor-Komponente. 3-Schicht-Editor (Zeilennummern-Gutter
+// + scroll-synchrone Backdrop + textarea). readOnly=true -> gedimmt, nicht editierbar,
+// Auto-Höhe bis max-height. Gibt { el, getValue, setValue, setErrorLine } zurück.
+function sqlEditor({ value = "", readOnly = false, rows = 14 } = {}) {
   const editor = document.createElement("div");
-  editor.className = "an-editor";
+  editor.className = "sqled-editor" + (readOnly ? " sqled-editor--readonly" : "");
   const gutter = document.createElement("div");
-  gutter.className = "an-gutter";
+  gutter.className = "sqled-gutter";
   gutter.setAttribute("aria-hidden", "true");
   const gutterInner = document.createElement("div");
-  gutterInner.className = "an-gutter-inner";
+  gutterInner.className = "sqled-gutter-inner";
   gutter.appendChild(gutterInner);
   const area = document.createElement("div");
-  area.className = "an-edit-area";
+  area.className = "sqled-area";
   const backdrop = document.createElement("div");
-  backdrop.className = "an-backdrop";
+  backdrop.className = "sqled-backdrop";
   backdrop.setAttribute("aria-hidden", "true");
   const backdropInner = document.createElement("div");
-  backdropInner.className = "an-backdrop-inner";
+  backdropInner.className = "sqled-backdrop-inner";
   backdrop.appendChild(backdropInner);
+  const textarea = document.createElement("textarea");
+  textarea.className = "sqled-textarea";
+  textarea.setAttribute("wrap", "off");
+  textarea.spellcheck = false;
+  textarea.rows = rows;
+  textarea.value = value;
+  if (readOnly) textarea.readOnly = true;
 
-  textarea.parentNode.insertBefore(editor, textarea);
   area.appendChild(backdrop);
   area.appendChild(textarea);
   editor.appendChild(gutter);
   editor.appendChild(area);
 
-  function lineCount() {
-    return Math.max(1, textarea.value.split("\n").length);
-  }
   let errorLine = null;
+  function lineCount() { return Math.max(1, textarea.value.split("\n").length); }
+  function autoHeight() {
+    if (!readOnly) return;
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  }
   function refresh() {
     const n = lineCount();
-    let g = "";
-    for (let i = 1; i <= n; i++) g += `<div class="an-gutter-num">${i}</div>`;
-    gutterInner.innerHTML = g;
-    let b = "";
+    let g = "", b = "";
     for (let i = 1; i <= n; i++) {
-      const cls = (i === errorLine) ? "an-line an-line-error" : "an-line";
-      b += `<div class="${cls}"></div>`;
+      g += `<div class="sqled-num">${i}</div>`;
+      b += `<div class="sqled-line${i === errorLine ? " sqled-line--error" : ""}"></div>`;
     }
+    gutterInner.innerHTML = g;
     backdropInner.innerHTML = b;
+    autoHeight();
   }
   function syncScroll() {
     gutterInner.style.transform = `translateY(${-textarea.scrollTop}px)`;
@@ -684,6 +691,7 @@ function attachLineGutter(textarea) {
       `translate(${-textarea.scrollLeft}px, ${-textarea.scrollTop}px)`;
   }
   function setErrorLine(n) {
+    if (readOnly) return;
     const total = lineCount();
     errorLine = (typeof n === "number" && n >= 1 && n <= total) ? n : null;
     refresh();
@@ -697,11 +705,16 @@ function attachLineGutter(textarea) {
     }
     syncScroll();
   }
+  function setValue(str) {
+    textarea.value = (str == null) ? "" : String(str);
+    errorLine = null; refresh(); syncScroll();
+  }
+  function getValue() { return textarea.value; }
+
   textarea.addEventListener("input", () => { errorLine = null; refresh(); syncScroll(); });
   textarea.addEventListener("scroll", syncScroll);
-  refresh();
-  syncScroll();
-  return { refresh, setErrorLine };
+  refresh(); syncScroll();
+  return { el: editor, getValue, setValue, setErrorLine };
 }
 
 function openAnalyzer() {
@@ -710,12 +723,14 @@ function openAnalyzer() {
   panel.dataset.built = "1";
   panel.innerHTML =
     `<div class="analyzer">` +
-    `<textarea id="an_sql" rows="14" placeholder="SQL-Statement hier einfügen … "></textarea>` +
+    `<div id="an_editor_mount"></div>` +
     `<div class="row"><button id="an_run">Analysieren</button>` +
     `<span class="an-readonly" title="Der Analyzer parst nur — er führt nichts auf der Datenbank aus">read-only — wird nie ausgeführt</span></div>` +
     `<div id="an_result"></div></div>`;
   panel.querySelector("#an_run").addEventListener("click", () => runAnalyze(panel));
-  panel._gutter = attachLineGutter(panel.querySelector("#an_sql"));
+  const _ed = sqlEditor({ readOnly: false, rows: 14 });
+  panel.querySelector("#an_editor_mount").replaceWith(_ed.el);
+  panel._gutter = _ed;   // behält setErrorLine-API (Aufruf in renderAnalyzeResult, ~533)
   panel.querySelector("#an_result").addEventListener("click", (ev) => {
     const el = ev.target.closest("[data-line]");
     if (el && panel._gutter) panel._gutter.setErrorLine(Number(el.dataset.line));
