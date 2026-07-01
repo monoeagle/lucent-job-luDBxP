@@ -357,11 +357,11 @@ body {
 .sqled-backdrop-inner { padding: .4rem; will-change: transform; }
 .sqled-line { white-space: pre; min-width: 100%; height: calc(.82rem * 1.5); }
 .sqled-line--error { background: #4a1f1f; }
-.sqled-textarea { display: block; width: 100%; box-sizing: border-box; resize: vertical;
-  border: 0; outline: 0; padding: .4rem; margin: 0; background: transparent;
-  color: #eaeaea; font: inherit; line-height: 1.5; white-space: pre; overflow: auto;
-  caret-color: #eaeaea; }
-.sqled-editor--readonly .sqled-textarea { resize: none; color: #9a9ab0;
+.sqled-textarea { position: relative; z-index: 1; display: block; width: 100%;
+  box-sizing: border-box; resize: vertical; border: 0; outline: 0; padding: .4rem;
+  margin: 0; background: transparent; color: #f4f5fa; font: inherit; line-height: 1.5;
+  white-space: pre; overflow: auto; caret-color: #f4f5fa; }
+.sqled-editor--readonly .sqled-textarea { resize: none; color: #cdd0e0;
   caret-color: transparent; overflow: auto; max-height: 60vh; }
 .sqled-textarea::placeholder { color: #6b6b8a; opacity: 1; }
 /* AP-49: read-only marker styled as a badge, set off from the run button. */
