@@ -900,9 +900,10 @@ def api_analyze():
         statement_type=result.statement_type,
         tables_read=list(result.tables_read),
         tables_written=list(result.tables_written),
-        warnings=[{"level": w.level, "code": w.code, "message": w.message}
+        warnings=[{"level": w.level, "code": w.code, "message": w.message,
+                   "line": w.line}
                   for w in result.warnings],
-        suggestions=[{"code": s.code, "message": s.message}
+        suggestions=[{"code": s.code, "message": s.message, "line": s.line}
                      for s in result.suggestions],
         parse_error=result.parse_error,
         parse_error_line=result.parse_error_line,

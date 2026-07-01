@@ -577,14 +577,28 @@ function renderAnalyzeResult(panel, res) {
     `UNION ${s.unions ?? 0}`, `Window ${s.window_functions ?? 0}`,
     `Aggregate ${s.aggregates ?? 0}`, `CASE ${s.case_blocks ?? 0}`,
   ].join(" · ");
+  // AP-65·C: line-bearing messages get a "Zeile N:" prefix + are click-to-locate.
+  const lintBits = (o) => {
+    const has = (o.line != null);
+    return {
+      cls: has ? " an-lint-clickable" : "",
+      attr: has ? ` data-line="${esc(String(o.line))}"` : "",
+      prefix: has ? "Zeile " + esc(String(o.line)) + ": " : "",
+    };
+  };
   const warns = res.warnings.length
-    ? res.warnings.map((w) =>
-        `<div class="an-warn an-l-${esc(w.level)}">${esc(w.message)}</div>`).join("")
+    ? res.warnings.map((w) => {
+        const b = lintBits(w);
+        return `<div class="an-warn an-l-${esc(w.level)}${b.cls}"${b.attr}>` +
+          `${b.prefix}${esc(w.message)}</div>`;
+      }).join("")
     : `<p class="hint">keine Warnungen</p>`;
   const suggs = (res.suggestions && res.suggestions.length)
     ? `<h4>Optimierungs-Vorschläge</h4>` +
-      res.suggestions.map((s) =>
-        `<div class="an-sugg">💡 ${esc(s.message)}</div>`).join("")
+      res.suggestions.map((s) => {
+        const b = lintBits(s);
+        return `<div class="an-sugg${b.cls}"${b.attr}>💡 ${b.prefix}${esc(s.message)}</div>`;
+      }).join("")
     : "";
   out.innerHTML =
     `<div class="an-type">Typ: <strong>${esc(res.statement_type)}</strong>` +
@@ -702,6 +716,10 @@ function openAnalyzer() {
     `<div id="an_result"></div></div>`;
   panel.querySelector("#an_run").addEventListener("click", () => runAnalyze(panel));
   panel._gutter = attachLineGutter(panel.querySelector("#an_sql"));
+  panel.querySelector("#an_result").addEventListener("click", (ev) => {
+    const el = ev.target.closest("[data-line]");
+    if (el && panel._gutter) panel._gutter.setErrorLine(Number(el.dataset.line));
+  });
 }
 
 async function runSubset() {

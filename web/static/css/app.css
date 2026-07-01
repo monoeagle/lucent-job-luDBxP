@@ -352,6 +352,9 @@ body {
 /* AP-F: Optimierungs-Vorschläge — blauer Akzent, abgesetzt von Warn-Levels und .an-readonly. */
 .an-sugg { padding: 4px 8px; margin: 3px 0; border-radius: 3px; font-size: 0.9em;
            background: #f4f7fb; color: #21456b; border-left: 3px solid #1a73e8; }
+/* AP-65·C: line-bearing lints are click-to-locate in the input. */
+.an-lint-clickable { cursor: pointer; }
+.an-lint-clickable:hover { text-decoration: underline; }
 /* AP-65·B: Analyzer-Editor — 3 Schichten (Gutter · Backdrop-Highlight · Textarea). */
 .an-editor { display: flex; align-items: stretch; border: 1px solid #ccc;
   border-radius: 4px; overflow: hidden; background: #fff; min-height: 17rem;

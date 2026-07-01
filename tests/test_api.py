@@ -1297,3 +1297,11 @@ def test_analyze_valid_sql_highlight_pos_default(client):
     data = client.post("/api/analyze", json={"sql": "SELECT a FROM t"}).get_json()
     assert data["parse_error_highlight_pos"] == -1
     assert data["parse_error_hint"] == ""
+
+
+def test_api_analyze_warning_carries_line(client):
+    r = client.post("/api/analyze", json={"sql": "SELECT *\nFROM t"})
+    assert r.status_code == 200
+    warns = r.get_json()["warnings"]
+    star = next(w for w in warns if w["code"] == "SELECT_STAR")
+    assert star["line"] == 1
