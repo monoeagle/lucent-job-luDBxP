@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.60.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.61.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1579,6 +1579,14 @@ Index (<code>parse_error_highlight_pos</code>) statt der alten <code>indexOf</co
 Darunter erscheint ein ehrlicher Hinweis-Text (<code>parse_error_hint</code>): bei verschobenen
 Anführungszeichen kann die eigentliche Ursache früher im Statement liegen, da sqlglot
 die Position nur annähernd ermitteln kann.</p>
+<p><strong>Echte Fehlerzeile (AP-65·A-Härtung 2):</strong> Statt auf das am Eingabe-Ende offene
+Anführungszeichen zu zeigen, findet der reine Helfer <code>_odd_quote_line(sql, quote_char)</code> die
+einzige Zeile mit <strong>ungerader</strong> Anzahl des Quote-Zeichens — die tatsächliche Fehlerzeile — und
+der Analyzer leitet die Anzeige dorthin um, sobald sie von der Eingabe-Ende-Zeile abweicht. In
+diesem Fall entfällt die Spalten-/Markierungs-Angabe (ein <em>fehlendes</em> Quote hat keine exakte
+Position; der Kopf zeigt dann nur „Parse-Fehler in Zeile N:"), und der Hinweis nennt die
+vermutete Zeile. Bei mehrdeutiger Zählung (0 oder ≥2 ungerade Zeilen, z. B. ein legitimer
+mehrzeiliger String) bleibt das Eingabe-Ende-Verhalten.</p>
 <h2 id="info-ubersicht-cross-schema-fk-diagnose-ap-54">Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)<a class="headerlink" href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
 eine Zeile <strong>„Cross-Schema-FKs"</strong>: die Anzahl der Foreign Keys, die auf ein <strong>anderes
