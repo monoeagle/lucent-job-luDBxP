@@ -59,6 +59,12 @@ LUCENT_PG_TEST_URL='postgresql+psycopg://user:pw@host:5432/db' \
   ./venv/bin/python -m pytest tests/test_pg_integration.py
 ```
 
+**Optional Oracle demo-seed integration test** (`tests/test_oracle_seed_integration.py`, AP-67 Slice 2a) seeds the rich Oracle server-demo (`sample_data/oracle_demo.py`) and asserts every object category reflects (≥35 tables, ≥10 views, ≥15 routines incl. package, composite-FK, self-ref, AP-66·S1 view→function) — runs only with `LUCENT_ORACLE_TEST_URL`, else skips. A cheap local Oracle: `podman run -d --name oracle-luDBxP -p 1521:1521 -e ORACLE_PASSWORD=<pw> -e APP_USER=demo -e APP_USER_PASSWORD=demo docker.io/gvenzl/oracle-xe:21-slim-faststart`:
+```bash
+LUCENT_ORACLE_TEST_URL='oracle+oracledb://demo:demo@localhost:1521/?service_name=XEPDB1' \
+  ./venv/bin/python -m pytest tests/test_oracle_seed_integration.py
+```
+
 ## Logging
 `core/log.py::init_logging` writes to stdout + a rotating `app.log`. Overridable per environment:
 - `LUCENT_LOG_DIR` — log directory (else per-user OS path, see below)
@@ -74,7 +80,7 @@ Request logging (method · path · status · duration) lives in the `web/` app f
 
 ## Bekannte Einschränkungen
 
-- **Database backends:** PostgreSQL/MySQL support is implemented via SQLAlchemy but is only covered by automated tests against SQLite. **MS SQL Server** has an optional, skip-guarded live integration test (`tests/test_mssql_integration.py`, set `LUCENT_MSSQL_TEST_URL`) verified against SQL Server 2022 (incl. AP-63·S3 routine reflection; v0.55.1 fixed a loader crash where the MSSQL dialect's `get_unique_constraints`/`get_indexes` raised a bare `NotImplementedError`). **Oracle** ist seit AP-53 verbindbar (python-oracledb Thin-Mode, Adressierung per Service-Name) — mit optionalem, skip-guardetem Live-Integrationstest (`tests/test_oracle_integration.py`, `LUCENT_ORACLE_TEST_URL`).
+- **Database backends:** PostgreSQL/MySQL support is implemented via SQLAlchemy but is only covered by automated tests against SQLite. **MS SQL Server** has an optional, skip-guarded live integration test (`tests/test_mssql_integration.py`, set `LUCENT_MSSQL_TEST_URL`) verified against SQL Server 2022 (incl. AP-63·S3 routine reflection; v0.55.1 fixed a loader crash where the MSSQL dialect's `get_unique_constraints`/`get_indexes` raised a bare `NotImplementedError`). **Oracle** ist seit AP-53 verbindbar (python-oracledb Thin-Mode, Adressierung per Service-Name) — mit optionalem, skip-guardetem Live-Integrationstest (`tests/test_oracle_integration.py`, `LUCENT_ORACLE_TEST_URL`). Seit AP-67 gibt es eine **reiche Oracle-Server-Demo** (`sample_data/oracle_demo.py`, ~37 Tabellen/10 Views/16 Routinen, via `seed_server_demo.py`) und **alle SQL-Ausführungspfade sind live gegen Oracle 21c XE verifiziert** (Daten-Vorschau, Join-Ausführung, Filter-Distinct, Subset-Export): die Daten-Vorschau baut ihre Query über SQLAlchemy Core (dialekt-korrektes `FETCH FIRST` + Casing, v0.64.2), und generiertes SQL quotet Oracle-Bezeichner „quote-if-needed" (reflektierte lowercase-Namen unquoted → matcht das gespeicherte Uppercase-Objekt; `core/sqlgen.py::Dialect.quote`, v0.65.1) — sonst ORA-00942.
   Ein einzelnes, wählbares Schema ist reflektierbar (AP-52): `/api/schemas` listet die Schemas, der gewählte Name wird durch Reflection und SQL-Erzeugung (`schema.table`) gefädelt. Gleichzeitiges Multi-Schema und Cross-Schema-Joins sind noch nicht unterstützt.
 
 > **Composite foreign keys** are fully supported since AP-11 (v0.5.0): a multi-column FK is carried as one `ForeignKey` with all `(local, ref)` column pairs and emitted as `JOIN … ON a.x = b.x AND a.y = b.y`. Two *separate* single-column FKs between the same tables stay distinct alternative join routes.
