@@ -1,18 +1,57 @@
 {
-  "generatedAt": "2026-06-30T02:05:28",
+  "generatedAt": "2026-07-01T02:59:27",
   "range": {
-    "from": "2025-07-01",
-    "to": "2026-06-30"
+    "from": "2025-07-02",
+    "to": "2026-07-01"
   },
   "byDay": {
-    "2026-06-30": {
-      "commits": 15,
+    "2026-07-01": {
+      "commits": 5,
       "kinds": {
-        "docs": 6,
+        "feat": 3,
+        "docs": 2
+      },
+      "list": [
+        {
+          "sha": "902fc0c",
+          "subject": "feat(ui): Analyzer-Parse-Fehler ohne Spalte anzeigen, wenn nicht bestimmbar",
+          "kind": "feat"
+        },
+        {
+          "sha": "b0e45a9",
+          "subject": "feat(analyze): unclosed-Quote auf echte Fehlerzeile umleiten (Ungerade-Heuristik)",
+          "kind": "feat"
+        },
+        {
+          "sha": "b82cfdd",
+          "subject": "feat(analyze): _odd_quote_line helper — Zeile mit ungerader Quote-Anzahl",
+          "kind": "feat"
+        },
+        {
+          "sha": "7ff6983",
+          "subject": "docs(plan): Analyzer Pro-Zeile-Ungerade-Quote-Heuristik",
+          "kind": "docs"
+        },
+        {
+          "sha": "148fe56",
+          "subject": "docs(spec): Analyzer Pro-Zeile-Ungerade-Quote-Heuristik (AP-65 Follow-up)",
+          "kind": "docs"
+        }
+      ]
+    },
+    "2026-06-30": {
+      "commits": 16,
+      "kinds": {
+        "docs": 7,
         "other": 4,
         "feat": 5
       },
       "list": [
+        {
+          "sha": "0e80ce5",
+          "subject": "docs: Projektstruktur + sample_data-README um core/viewdeps.py + seed_server_demo.py ergänzt (Doku-Lücke Session 16)",
+          "kind": "docs"
+        },
         {
           "sha": "e690055",
           "subject": "docs: Handoff Session 16 + Insight (Live-Container-Test) + KPI-Zeile #16",
@@ -2273,17 +2312,17 @@
     }
   },
   "stats": {
-    "totalCommits": 438,
-    "activeDays": 6,
-    "longestStreak": 6,
+    "totalCommits": 444,
+    "activeDays": 7,
+    "longestStreak": 7,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 206
+        "count": 209
       },
       {
         "kind": "feat",
-        "count": 134
+        "count": 137
       },
       {
         "kind": "other",
@@ -2310,7 +2349,7 @@
         "count": 4
       }
     ],
-    "testCount": 444
+    "testCount": 446
   },
   "phases": []
 }

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.61.0] — 2026-07-01
+
+### Changed
+- **Analyzer points unclosed quotes at the true error line (AP-65·A-Härtung 2):** when a
+  statement has a non-terminated quote, sqlglot raises a positionless `TokenError`. Previously
+  the analyzer marked the quote left open at end-of-input; with a *shifted* quote (the real
+  missing quote sits higher up, followed by again-balanced quotes) that pointed at the wrong
+  line. A new pure helper `core/sqlanalyze.py::_odd_quote_line(sql, quote_char)` finds the sole
+  line whose count of that quote character is odd — the real error line. When that line differs
+  from the end-of-input line, `_parse_error_location` now redirects the reported parse error to
+  it, without a column or char-mark (a *missing* quote has no exact position) and with a German
+  hint naming the line. When the odd line coincides with the end-of-input line, or the count is
+  ambiguous (zero or ≥2 odd lines, e.g. a legitimate multi-line string), the previous
+  end-of-input behavior is unchanged. The Analyzer UI omits ", Spalte N" from the error header
+  when no column is available. Read-only, no new core module, fully CI-testable.
+
 ## [0.60.0] — 2026-06-30
 
 ### Added

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.61.0] — 2026-07-01
+
+### Geändert
+- **Analyzer zeigt bei nicht geschlossenem Anführungszeichen die echte Fehlerzeile
+  (AP-65·A-Härtung 2):** Ein neuer reiner Helfer `core/sqlanalyze.py::_odd_quote_line(sql,
+  quote_char)` findet die einzige Zeile mit **ungerader** Anzahl des offenen Quote-Zeichens —
+  das ist die tatsächliche Fehlerzeile. Weicht sie von der am Eingabe-Ende offenen Zeile ab,
+  leitet `_parse_error_location` die gemeldete Position dorthin um — **ohne Spalte/Markierung**
+  (ein *fehlendes* Quote hat keine exakte Position) und mit deutschem Hinweis, der die Zeile
+  nennt. Fällt die Ungerade-Zeile mit der Eingabe-Ende-Zeile zusammen oder ist die Zählung
+  mehrdeutig (0 oder ≥2 ungerade Zeilen, z. B. legitimer mehrzeiliger String), bleibt das
+  bisherige Eingabe-Ende-Verhalten unverändert. Die Analyzer-UI lässt „, Spalte N" im
+  Fehler-Kopf weg, wenn keine Spalte vorliegt. Read-only, kein neues Core-Modul, voll CI-testbar.
+
 ## [0.60.0] — 2026-06-30
 
 ### Hinzugefügt

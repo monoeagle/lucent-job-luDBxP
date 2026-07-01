@@ -269,6 +269,15 @@ Darunter erscheint ein ehrlicher Hinweis-Text (`parse_error_hint`): bei verschob
 Anführungszeichen kann die eigentliche Ursache früher im Statement liegen, da sqlglot
 die Position nur annähernd ermitteln kann.
 
+**Echte Fehlerzeile (AP-65·A-Härtung 2):** Statt auf das am Eingabe-Ende offene
+Anführungszeichen zu zeigen, findet der reine Helfer `_odd_quote_line(sql, quote_char)` die
+einzige Zeile mit **ungerader** Anzahl des Quote-Zeichens — die tatsächliche Fehlerzeile — und
+der Analyzer leitet die Anzeige dorthin um, sobald sie von der Eingabe-Ende-Zeile abweicht. In
+diesem Fall entfällt die Spalten-/Markierungs-Angabe (ein *fehlendes* Quote hat keine exakte
+Position; der Kopf zeigt dann nur „Parse-Fehler in Zeile N:"), und der Hinweis nennt die
+vermutete Zeile. Bei mehrdeutiger Zählung (0 oder ≥2 ungerade Zeilen, z. B. ein legitimer
+mehrzeiliger String) bleibt das Eingabe-Ende-Verhalten.
+
 ## Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)
 
 Das **Info**-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
