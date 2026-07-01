@@ -325,7 +325,17 @@ def _parse_error_location(exc, sql):
     # TokenError: prefer the unclosed-quote scan (the common, real case).
     off = _unclosed_quote_offset(sql)
     if off is not None:
+        q = sql[off]
         line = sql.count("\n", 0, off) + 1
+        # Ungerade-Quote-Heuristik: die echte Fehlerzeile hat eine ungerade Anzahl
+        # des offenen Quote-Zeichens. Weicht sie von der EOF-Zeile ab, dorthin
+        # umleiten — ohne Spalte/Mark, da ein fehlendes Quote keine Position hat.
+        odd_line = _odd_quote_line(sql, q)
+        if odd_line is not None and odd_line != line:
+            context = sql.split("\n")[odd_line - 1]
+            hint = (f"Vermutlich fehlt ein {q} in Zeile {odd_line} — die genaue "
+                    f"Position ist nicht bestimmbar (fehlendes Anführungszeichen).")
+            return odd_line, None, context, "", -1, hint
         col = off - sql.rfind("\n", 0, off)          # rfind == -1 → col = off + 1
         highlight = sql[off]
         ctx_start = max(0, off - 30)

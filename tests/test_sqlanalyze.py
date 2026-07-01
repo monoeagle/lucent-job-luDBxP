@@ -419,3 +419,18 @@ def test_odd_quote_line_helper():
     assert _odd_quote_line('SELECT "a""b" FROM t', '"') is None
     # zwei ungerade Zeilen → mehrdeutig → None
     assert _odd_quote_line('SELECT "a\nFROM "t', '"') is None
+
+
+def test_parse_error_redirect_to_odd_quote_line():
+    # Unclosed " in Zeile 1; danach balancierte Quotes → echte Fehlerzeile = 1,
+    # nicht die EOF-Zeile. Spalte ist bewusst None (fehlendes Quote hat keine Position).
+    sql = 'SELECT "a\nFROM t\nWHERE x = "b"'
+    r = analyze(sql)
+    assert r.parse_error is not None            # es ist ein Parse-Fehler
+    assert r.parse_error_line == 1              # umgeleitet auf die Ungerade-Zeile
+    assert r.parse_error_col is None            # keine Spalte
+    assert r.parse_error_highlight == ""        # kein Zeichen-Mark
+    assert r.parse_error_highlight_pos == -1
+    assert r.parse_error_context == 'SELECT "a' # der volle Zeilentext
+    assert "Zeile 1" in r.parse_error_hint
+    assert "Anführungszeichen" in r.parse_error_hint
