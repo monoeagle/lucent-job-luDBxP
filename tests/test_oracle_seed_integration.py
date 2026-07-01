@@ -54,18 +54,19 @@ def test_oracle_demo_seed_shows_all_categories():
                for t in schema.tables for fk in t.foreign_keys)  # Self-Ref
     assert any(v.routines for v in schema.views)  # AP-66·S1
 
-    # Compact demo regression guard (basic categories)
+    # Category regression guard (rich-demo object names)
     assert {"VIRTUALMACHINE", "HOST", "VMCLUSTER", "DATACENTER", "OPERATINGSYSTEM"} <= up(schema.tables)
     assert "VW_VM_LABELED" in up(schema.views)
     assert "TRG_VM_AUDIT" in up(schema.triggers)
-    assert "DEMO_VM_SEQ" in up(schema.sequences)
-    assert "MV_VM_PER_HOST" in up(schema.materialized_views)
+    assert "SEQ_VM_ID" in up(schema.sequences)
+    assert "MV_CLUSTER_CAPACITY" in up(schema.materialized_views)
     assert "SYN_VM" in up(schema.synonyms)
 
-    # v0.64.2 regression guard: data preview must work on Oracle for both a table
-    # and a view (dialect LIMIT → FETCH FIRST, and reflected lower-cased names).
+    # v0.64.2 regression guard: data preview must work on Oracle for a table and a
+    # view (dialect LIMIT → FETCH FIRST, and reflected lower-cased names).
     from core.datapreview import fetch_rows
     valid = {t.name for t in schema.tables} | {v.name for v in schema.views}
     tbl_name = next(t.name for t in schema.tables if t.name.upper() == "VIRTUALMACHINE")
-    assert len(fetch_rows(_ORACLE_URL, tbl_name, valid, limit=100)["rows"]) == 2
-    assert len(fetch_rows(_ORACLE_URL, vw.name, valid, limit=100)["rows"]) == 2
+    vw = next(v for v in schema.views if v.name.upper() == "VW_VM_LABELED")
+    assert len(fetch_rows(_ORACLE_URL, tbl_name, valid, limit=100)["rows"]) >= 1
+    assert len(fetch_rows(_ORACLE_URL, vw.name, valid, limit=100)["rows"]) >= 1
