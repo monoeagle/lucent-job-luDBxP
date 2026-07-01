@@ -17,8 +17,8 @@ bewusst nicht neu vermessen.
 
 <div class="kz-card">
   <div class="kz-lbl">Tempo</div>
-  <div class="kz-val">485 <small>Commits</small></div>
-  <div class="kz-note">18 Sessions an 7 Kalendertagen (25.06.–01.07.)</div>
+  <div class="kz-val">500 <small>Commits</small></div>
+  <div class="kz-note">18 Sessions an 8 Kalendertagen (25.06.–02.07.)</div>
 </div>
 
 <div class="kz-card">
@@ -82,7 +82,7 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 | Kennzahl | Wert | Detail / Quelle | Art |
 |---|---|---|---|
 | Umsetzung (Roadmap) | ≈ 89 % | ≈ 59 erledigt · ≈ 5 offener Backlog (AP-56/57, AP-61/62, AP-19/35) · Quelle: `roadmap.md` | gemessen |
-| Commits | 485 | 2026-06-25 → 07-01 · 7 Kalendertage · 18 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
+| Commits | 500 | 2026-06-25 → 07-02 · 8 Kalendertage · 18 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
 | Aktuelle Version | v0.67.1 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 18 Sessions | gemessen |
 | Testabdeckung | 88 % | 2067 Statements, 241 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
 | Tests | 459 | alle grün · 11 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~12 s Laufzeit | gemessen |

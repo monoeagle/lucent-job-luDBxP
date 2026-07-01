@@ -77,6 +77,12 @@ parametrisierte SQL (mehrzeilig, Composite-Keys ausgerichtet) erscheint darunter
 gefolgt von der Ergebnistabelle. Im Schema-Graph werden die beteiligten Tabellen und
 Kanten farblich hervorgehoben.
 
+**Gemeinsame SQL-Editor-Komponente (AP-69·A, v0.67.0):** alle SQL-Flächen — die Analyzer-Eingabe,
+das generierte SQL, der Definitions-/Quelltext im „SQL"-Sub-Tab (View/Routine/Trigger/DDL) und die
+Subset-SQL — nutzen einen **einheitlichen dunklen Editor mit Zeilennummern**. Die Analyzer-Eingabe
+ist **editierbar** (mit Fehlerzeilen-Markierung); alle Ausgaben sind **read-only** (gedimmt, kein
+Cursor), aber weiterhin markier- und kopierbar. Der Kopier-Knopf am generierten SELECT bleibt.
+
 **Interaktive Ergebnistabelle (AP-45):** Ein Klick auf einen **Spaltenkopf** öffnet ein Menü mit
 **Sortieren ASC/DESC**, **Als Filter…** und **Spalte entfernen**. Sortieren ergänzt eine
 Sortierzeile und baut neu, „Als Filter" legt eine vorbefüllte Filterzeile an, „Spalte entfernen"

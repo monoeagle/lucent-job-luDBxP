@@ -1,17 +1,23 @@
 {
-  "generatedAt": "2026-07-02T00:53:16",
+  "generatedAt": "2026-07-02T01:06:40",
   "range": {
     "from": "2025-07-03",
     "to": "2026-07-02"
   },
   "byDay": {
     "2026-07-02": {
-      "commits": 3,
+      "commits": 4,
       "kinds": {
+        "other": 1,
         "fix": 2,
         "docs": 1
       },
       "list": [
+        {
+          "sha": "226a389",
+          "subject": "release: v0.67.1 — Fixes: SQL-Editor-Fehlerzeilen-Sichtbarkeit + Windows-Wheelhouse (cryptography abi3)",
+          "kind": "other"
+        },
         {
           "sha": "0f0034a",
           "subject": "fix(windows): cryptography (abi3) + cffi + pycparser ins Offline-Wheelhouse",
@@ -2599,7 +2605,7 @@
     }
   },
   "stats": {
-    "totalCommits": 499,
+    "totalCommits": 500,
     "activeDays": 8,
     "longestStreak": 8,
     "topKinds": [
@@ -2613,7 +2619,7 @@
       },
       {
         "kind": "other",
-        "count": 50
+        "count": 51
       },
       {
         "kind": "fix",
