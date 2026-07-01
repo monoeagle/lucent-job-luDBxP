@@ -50,8 +50,17 @@ Oracle hat kein portables Einzeldatei-Format — die Demo braucht eine laufende 
    ```
 3. In der App verbinden mit
    `oracle+oracledb://demo:demo@localhost:1521/?service_name=XEPDB1` — der Sidebar-Tree
-   zeigt dann alle Oracle-Kategorien (Tabellen, View, Sequence, Materialized View,
-   Trigger, Function, Procedure, Package, Synonym).
+   zeigt dann alle Oracle-Kategorien (Tabellen, Views, Sequences, Materialized Views,
+   Trigger, Functions, Procedures, Packages, Synonyms).
+
+### Reiche Oracle-Demo (AP-67·Slice 2a)
+Die Seeder-DB (`sample_data/oracle_demo.py`) enthält eine umfangreiche VMware-CMDB mit ~37 Tabellen
+(5 Subdomänen: Virtualisierung, Storage, Networking, Lizenzierung, Auditing), 10+ Views,
+~15 Routinen (Functions/Procedures/Packages), sowie Sequences, Materialized Views und Synonyme.
+Die reiche Demo eignet sich für komplexe Join-Pfade, Subsetting und die Analyzer-Zeile.
+Im Sidebar-Tree sind alle Kategorien scrollbar zugänglich; der Join-Builder kann interessante
+Multi-Table-Pfade erkunden.
+
 4. Live-Test (optional):
    ```bash
    LUCENT_ORACLE_TEST_URL='oracle+oracledb://demo:demo@localhost:1521/?service_name=XEPDB1' \

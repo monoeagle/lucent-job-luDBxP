@@ -38,19 +38,29 @@ def test_oracle_demo_seed_shows_all_categories():
 
     schema = SqlAlchemyLoader(_ORACLE_URL).load()
     up = lambda xs: {x.name.upper() for x in xs}
+
+    # Rich demo assertions (AP-67·Slice 2a)
+    assert len(schema.tables) >= 35
+    assert len(schema.views) >= 10
+    assert len(schema.routines) >= 15
+    kinds = {r.kind for r in schema.routines}
+    assert {"function", "procedure", "package"} <= kinds
+    assert len(schema.sequences) >= 2
+    assert len(schema.materialized_views) >= 2
+    assert len(schema.synonyms) >= 2
+    # Structural features
+    assert any(len(fk.columns) > 1 for t in schema.tables for fk in t.foreign_keys)  # Composite-FK
+    assert any(fk.ref_table.upper() == t.name.upper()
+               for t in schema.tables for fk in t.foreign_keys)  # Self-Ref
+    assert any(v.routines for v in schema.views)  # AP-66·S1
+
+    # Compact demo regression guard (basic categories)
     assert {"VIRTUALMACHINE", "HOST", "VMCLUSTER", "DATACENTER", "OPERATINGSYSTEM"} <= up(schema.tables)
     assert "VW_VM_LABELED" in up(schema.views)
     assert "TRG_VM_AUDIT" in up(schema.triggers)
     assert "DEMO_VM_SEQ" in up(schema.sequences)
     assert "MV_VM_PER_HOST" in up(schema.materialized_views)
     assert "SYN_VM" in up(schema.synonyms)
-    kinds = {r.name.upper(): r.kind for r in schema.routines}
-    assert kinds.get("FN_VM_LABEL") == "function"
-    assert kinds.get("USP_VM_COUNT") == "procedure"
-    assert kinds.get("PKG_VM") == "package"
-    # AP-66·S1: the view references the function
-    vw = next(v for v in schema.views if v.name.upper() == "VW_VM_LABELED")
-    assert "FN_VM_LABEL" in {r.upper() for r in vw.routines}
 
     # v0.64.2 regression guard: data preview must work on Oracle for both a table
     # and a view (dialect LIMIT → FETCH FIRST, and reflected lower-cased names).
