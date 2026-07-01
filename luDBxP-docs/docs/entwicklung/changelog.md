@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.64.1] — 2026-07-01
+
+### Behoben
+- **Verbinden einer gespeicherten Passwort-DB fragt jetzt nach dem Passwort:** Gespeicherte
+  Verbindungen enthalten bewusst nie ein Passwort — ein Klick auf „Verbinden" bei einer
+  gespeicherten Oracle-/MSSQL-/PostgreSQL-Verbindung versuchte passwortlos zu verbinden und
+  scheiterte mit einem Auth-Fehler (z. B. `ORA-01017`), ohne Möglichkeit, das Passwort über das
+  Header-Dropdown einzugeben (der Verbindungen-Tab hatte nur „Testen"/„Speichern", kein
+  funktionierendes Verbinden). Der Topbar-Connect-Flow (`connectSaved`/`connectSavedWith` in
+  `web/static/js/app.js`) fragt jetzt bei einem Auth-Fehler einmalig nach dem Passwort und wiederholt
+  den Versuch; passwortlose Verbindungen (SQLite) bleiben unverändert. Der obsolete kaputte Fallback
+  in den Verbindungen-Tab (und das nur dort genutzte `prefillConnForm`) wurde entfernt. Live gegen
+  Oracle 21c XE verifiziert.
+
 ## [0.64.0] — 2026-07-01
 
 ### Hinzugefügt

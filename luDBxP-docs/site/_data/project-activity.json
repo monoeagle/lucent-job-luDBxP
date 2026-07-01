@@ -1,19 +1,29 @@
 {
-  "generatedAt": "2026-07-01T08:11:10",
+  "generatedAt": "2026-07-01T08:30:32",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 23,
+      "commits": 25,
       "kinds": {
-        "other": 4,
+        "fix": 4,
+        "other": 5,
         "feat": 8,
-        "docs": 8,
-        "fix": 3
+        "docs": 8
       },
       "list": [
+        {
+          "sha": "31bcbc5",
+          "subject": "fix(ui): Passwort-Abfrage beim Verbinden einer gespeicherten Passwort-DB",
+          "kind": "fix"
+        },
+        {
+          "sha": "51760be",
+          "subject": "release: v0.64.0 — AP-67·Oracle-Adaption (Oracle-Server-Demo-CMDB-Seeder)",
+          "kind": "other"
+        },
         {
           "sha": "b6fe2ea",
           "subject": "test+docs: Oracle-Demo-Seed-Integrationstest + Bring-up-README [AP-67·Oracle]",
@@ -2404,7 +2414,7 @@
     }
   },
   "stats": {
-    "totalCommits": 462,
+    "totalCommits": 464,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
@@ -2418,11 +2428,11 @@
       },
       {
         "kind": "other",
-        "count": 42
+        "count": 43
       },
       {
         "kind": "fix",
-        "count": 39
+        "count": 40
       },
       {
         "kind": "test",

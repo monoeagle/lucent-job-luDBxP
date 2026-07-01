@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.64.1] — 2026-07-01
+
+### Fixed
+- **Connecting a saved password database now prompts for the password:** saved connections never
+  store a password (by design), so clicking "Verbinden" on a saved Oracle/MSSQL/PostgreSQL
+  connection tried to connect passwordless and failed with an authentication error (e.g.
+  `ORA-01017`) — with no way to supply the password from the topbar dropdown (the connections tab
+  had only "Testen"/"Speichern", no working connect). The topbar connect flow
+  (`connectSaved`/`connectSavedWith` in `web/static/js/app.js`) now, on an authentication error,
+  prompts once for the password and retries; passwordless connections (SQLite) are unaffected. The
+  obsolete broken fallback to the connections tab (and the now-unused `prefillConnForm`) was removed.
+  Verified live against Oracle 21c XE.
+
 ## [0.64.0] — 2026-07-01
 
 ### Added
