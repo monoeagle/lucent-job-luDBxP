@@ -1,19 +1,29 @@
 {
-  "generatedAt": "2026-07-01T08:30:32",
+  "generatedAt": "2026-07-01T08:43:12",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 25,
+      "commits": 27,
       "kinds": {
-        "fix": 4,
-        "other": 5,
+        "fix": 5,
+        "other": 6,
         "feat": 8,
         "docs": 8
       },
       "list": [
+        {
+          "sha": "ec5988f",
+          "subject": "fix(datapreview): dialekt-korrekte Daten-Vorschau (Oracle FETCH FIRST + Casing)",
+          "kind": "fix"
+        },
+        {
+          "sha": "15a5ec6",
+          "subject": "release: v0.64.1 — Fix: Passwort-Abfrage beim Verbinden gespeicherter Passwort-DBs",
+          "kind": "other"
+        },
         {
           "sha": "31bcbc5",
           "subject": "fix(ui): Passwort-Abfrage beim Verbinden einer gespeicherten Passwort-DB",
@@ -2414,7 +2424,7 @@
     }
   },
   "stats": {
-    "totalCommits": 464,
+    "totalCommits": 466,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
@@ -2428,11 +2438,11 @@
       },
       {
         "kind": "other",
-        "count": 43
+        "count": 44
       },
       {
         "kind": "fix",
-        "count": 40
+        "count": 41
       },
       {
         "kind": "test",
