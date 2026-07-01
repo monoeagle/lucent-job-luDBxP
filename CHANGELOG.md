@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.64.2] — 2026-07-01
+
+### Fixed
+- **Data preview now works on Oracle (and MSSQL):** the table/view data preview
+  (`core/datapreview.py::fetch_rows`) built its query as a raw `SELECT * FROM "<name>" LIMIT n`.
+  On Oracle that failed twice — `LIMIT` is not Oracle syntax (`ORA-00933`), and force-quoting a
+  reflected (lower-cased) Oracle name did not match the real upper-cased object (`ORA-00942`); it
+  would also have broken on MSSQL (no `LIMIT`). The query is now built via SQLAlchemy Core
+  (`select(literal_column("*")).select_from(table(name)).limit(n)`), so the row cap renders
+  dialect-correctly (`LIMIT` / `FETCH FIRST … ROWS ONLY` / `SELECT TOP …`) and identifier
+  casing/quoting round-trips per dialect. SQLite/PostgreSQL/MySQL unchanged. Verified live against
+  Oracle 21c XE (table + view); a regression assertion was added to the skip-guarded Oracle
+  integration test.
+
 ## [0.64.1] — 2026-07-01
 
 ### Fixed
