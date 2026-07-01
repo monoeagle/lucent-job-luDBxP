@@ -299,6 +299,16 @@ def _unclosed_quote_offset(sql):
     return open_at
 
 
+def _odd_quote_line(sql, quote_char):
+    """Return the 1-based line number of the sole line whose count of
+    ``quote_char`` is odd, or None when zero or multiple lines qualify.
+    A missing quote leaves exactly that line with an odd count; doubled
+    ("") escapes and balanced quotes stay even. Pure, read-only."""
+    odd = [i + 1 for i, line in enumerate(sql.split("\n"))
+           if line.count(quote_char) % 2 == 1]
+    return odd[0] if len(odd) == 1 else None
+
+
 def _parse_error_location(exc, sql):
     """Extract (line, col, context, highlight, highlight_pos, hint) from a
     sqlglot parse/token error. ParseError carries structured ``.errors``;

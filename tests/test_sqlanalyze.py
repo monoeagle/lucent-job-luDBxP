@@ -407,3 +407,15 @@ def test_valid_sql_no_highlight_pos_no_hint():
     r = analyze("SELECT a FROM t")
     assert r.parse_error_highlight_pos == -1
     assert r.parse_error_hint == ""
+
+
+def test_odd_quote_line_helper():
+    from core.sqlanalyze import _odd_quote_line
+    assert _odd_quote_line('SELECT a FROM t', '"') is None          # keine Quotes
+    assert _odd_quote_line('SELECT "a" FROM "t"', '"') is None      # balanciert (gerade)
+    # unclosed in Zeile 1, balanciert in Zeile 3 → nur Zeile 1 ungerade
+    assert _odd_quote_line('SELECT "a\nFROM t\nWHERE x = "b"', '"') == 1
+    # verdoppeltes "" zählt gerade → neutral
+    assert _odd_quote_line('SELECT "a""b" FROM t', '"') is None
+    # zwei ungerade Zeilen → mehrdeutig → None
+    assert _odd_quote_line('SELECT "a\nFROM "t', '"') is None
