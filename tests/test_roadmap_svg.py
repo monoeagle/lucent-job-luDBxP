@@ -76,3 +76,22 @@ def test_validate_rejects_bad_status():
     bad = [{"ap": "AP-9", "label": "x", "theme": "engine", "date": "2026-06-25", "status": "wip"}]
     with pytest.raises(ValueError, match="status"):
         g.validate(bad, _THEMES)
+
+
+def test_render_svg_wellformed_and_contains_open_labels():
+    lanes = g.lane_spans(_aps(), _THEMES)
+    dmin, dmax = g.date_range(_aps())
+    svg = g.render_svg(lanes, dmin, dmax)
+    assert svg.startswith("<svg")
+    assert svg.rstrip().endswith("</svg>")
+    # Enumerate-Regel: jede offene AP muss namentlich im SVG stehen
+    assert "AP-31" in svg and "AP-35" in svg
+    # intrinsische Pixel-Breite, nicht width="100%"
+    assert 'width="1200"' in svg
+    assert 'width="100%"' not in svg
+    # Done-Farbe der erledigten Lane vorhanden
+    assert "#1f6f3c" in svg
+
+
+def test_esc():
+    assert g.esc("A & B <x>") == "A &amp; B &lt;x&gt;"
