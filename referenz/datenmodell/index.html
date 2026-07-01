@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.62.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.63.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1564,6 +1564,12 @@ Join-Wege.</p>
 </tbody>
 </table>
 <p><code>ParseError</code> wird über sqlglots <code>.errors[0]</code> aufgelöst (strukturierte Position). <code>TokenError</code> (z. B. nicht geschlossenes String-Literal) leitet die Position best-effort aus dem konsumierten Präfix in der Fehlermeldung ab; für den Unclosed-Quote-Fall lokalisiert <code>_unclosed_quote_offset(sql)</code> das offen gebliebene Anführungszeichen. <strong>AP-65·A-Härtung 2:</strong> weicht die tatsächliche Fehlerzeile davon ab, wird sie über <code>_odd_quote_line(sql, quote_char)</code> (einzige Zeile mit ungerader Quote-Anzahl) bestimmt und <code>_parse_error_location</code> leitet die Position dorthin um — mit <code>parse_error_col=None</code>, <code>parse_error_highlight=""</code>, <code>parse_error_highlight_pos=-1</code> (ein fehlendes Quote hat keine exakte Position) und einem <code>parse_error_hint</code>, der die Zeile nennt. <code>/api/analyze</code> serialisiert alle sechs Felder; die UI zeigt „Parse-Fehler in Zeile N, Spalte M:" (bzw. nur „Zeile N:", wenn keine Spalte vorliegt) + Kontext mit markiertem Token + optionalem Hint-Text, fällt auf den Zeichenketten-Fallback zurück wenn keine Position verfügbar.</p>
+<p><strong>AP-65·C — Zeilenbezug an Lints:</strong> <code>AnalysisWarning</code> und <code>AnalysisSuggestion</code> erhalten je ein
+Feld <code>line: int | None</code> — die 1-basierte Quellzeile der auslösenden Stelle, über
+<code>_node_line(node, sql)</code> aus dem frühesten positionierten sqlglot-Nachfahren (<code>meta['start']</code>)
+bestimmt, oder <code>None</code> für Meldungen der Statement-Ebene (WRITE_STATEMENT/NO_WHERE/…).
+<code>/api/analyze</code> serialisiert <code>line</code> je Warnung/Vorschlag; die UI stellt solchen Meldungen
+„Zeile N:" voran und markiert per Klick die Zeile im Eingabefeld (AP-65·B-Gutter).</p>
 <h2 id="fk-graph">FK-Graph<a class="headerlink" href="#fk-graph" title="Permanent link">&para;</a></h2>
 <p>Der FK-Graph (<code>core/graph.py</code>) ist ein gerichteter NetworkX-Graph:</p>
 <ul>

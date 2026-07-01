@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.62.0">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.63.0">
       
       
         <meta name="author" content="LucentTools">
@@ -1594,6 +1594,13 @@ Gutter · scroll-synchrone Backdrop-Ebene (eine Zeile je logischer Textzeile, Fe
 <code>.an-line-error</code>) · transparente Textarea (<code>wrap="off"</code>, bleibt Wert-Träger). Der Highlight wird
 bei erfolgreichem Parse oder jeder Eingabe gelöscht; das Feld bleibt vertikal verstellbar. Keine
 Editor-Bibliothek (NO-CDN), read-only, kein Backend-Change.</p>
+<p><strong>Lints mit Zeilenbezug (AP-65·C):</strong> Jede knoten-spezifische Warnung/Empfehlung (SELECT <em>, LIKE
+mit führendem '%', Funktion-auf-Spalte, verdächtiger Alias, kartesischer Join, unbekannte
+Tabelle/Spalte, OR in WHERE, Unterabfrage in WHERE) beginnt jetzt mit „</em><em>Zeile N:</em><em>" und ist
+*</em>anklickbar** — ein Klick markiert die zugehörige Zeile im Eingabefeld (rote Markierung des
+AP-65·B-Gutters). Meldungen der Statement-Ebene (z. B. WRITE_STATEMENT, NO_WHERE) tragen keine
+Zeile und sind nicht klickbar. Die Zeile stammt aus der sqlglot-Token-Position (<code>_node_line</code>);
+read-only, kein neues Core-Modul.</p>
 <h2 id="info-ubersicht-cross-schema-fk-diagnose-ap-54">Info / Übersicht — Cross-Schema-FK-Diagnose (AP-54)<a class="headerlink" href="#info-ubersicht-cross-schema-fk-diagnose-ap-54" title="Permanent link">&para;</a></h2>
 <p>Das <strong>Info</strong>-Panel (Sidebar → Info → Übersicht) zeigt neben Tabellen-/Views-/FK-Zählern
 eine Zeile <strong>„Cross-Schema-FKs"</strong>: die Anzahl der Foreign Keys, die auf ein <strong>anderes
