@@ -41,7 +41,7 @@
 <text x="443.9" y="249.0" font-size="10" fill="#234a78">AP-34 Log-Fenster/Verknüpfung</text>
 <rect x="0" y="274" width="1200" height="34" fill="#f7f7fa"/>
 <text x="198" y="295" font-size="12" text-anchor="end" fill="#33373b">📚 Doku &amp; Prozess</text>
-<rect x="266.5" y="282" width="6.0" height="18" rx="3" fill="#1f6f3c"/>
+<rect x="266.5" y="282" width="282.4" height="18" rx="3" fill="#1f6f3c"/>
 <polygon points="492.4,286.0 497.4,291.0 492.4,296.0 487.4,291.0" fill="#234a78"/>
 <text x="500.4" y="295.0" font-size="10" fill="#234a78">AP-19 .pattern_transfer</text>
 <rect x="0" y="308" width="1200" height="34" fill="#ffffff"/>

@@ -1,20 +1,30 @@
 {
-  "generatedAt": "2026-07-01T18:13:41",
+  "generatedAt": "2026-07-01T18:49:38",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 45,
+      "commits": 47,
       "kinds": {
-        "feat": 14,
+        "other": 10,
+        "feat": 15,
         "docs": 14,
-        "other": 9,
         "test": 1,
         "fix": 7
       },
       "list": [
+        {
+          "sha": "dd8aaee",
+          "subject": "release: v0.66.0 — AP-68 Roadmap-Swimlane (Doku/Version/Kennzahlen)",
+          "kind": "other"
+        },
+        {
+          "sha": "8cf2f5e",
+          "subject": "feat(roadmap): AP-68 build_docs-Integration, Gantt archiviert, Embed umgestellt",
+          "kind": "feat"
+        },
         {
           "sha": "931c227",
           "subject": "feat(roadmap): AP-68 Datenquelle roadmap_data.py + main() + gerenderte SVG",
@@ -2515,7 +2525,7 @@
     }
   },
   "stats": {
-    "totalCommits": 484,
+    "totalCommits": 486,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
@@ -2525,11 +2535,11 @@
       },
       {
         "kind": "feat",
-        "count": 148
+        "count": 149
       },
       {
         "kind": "other",
-        "count": 47
+        "count": 48
       },
       {
         "kind": "fix",

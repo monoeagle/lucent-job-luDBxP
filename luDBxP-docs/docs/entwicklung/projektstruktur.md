@@ -73,8 +73,11 @@ lucent-job-luDBxP/
 │   ├── zensical.toml
 │   ├── build_docs.py
 │   ├── run_luDBxP_docs.sh
+│   ├── roadmap_data.py       # Single Source of Truth für die Roadmap-Swimlane-Grafik (AP-68)
 │   ├── docs/
 │   └── tools/
+│       ├── generate_roadmap_svg.py     # AP-68: erzeugt die Roadmap-Swimlane-SVG aus roadmap_data.py
+│       └── _bootstrap_roadmap_data.py  # AP-68: Einmal-Helfer, leitet roadmap_data.APS aus den .mmd-Quellen ab (nicht Teil des Builds)
 │
 └── lucent-hub.yml            # Hub-Registrierung (Port 5057, Docs 8046)
 ```

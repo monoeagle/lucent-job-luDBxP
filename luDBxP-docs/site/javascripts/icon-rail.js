@@ -408,11 +408,11 @@
     rail.appendChild(footer);
   }
 
-  // ── Roadmap-Badge im Header → Gantt im Modal ──────────────────────────
+  // ── Roadmap-Badge im Header → Swimlane im Modal ───────────────────────
   function roadmapSvgUrl() {
     const s = document.querySelector('script[src*="javascripts/icon-rail.js"]');
     const base = s ? s.src.replace(/javascripts\/icon-rail\.js.*$/, '') : '/';
-    return base + 'images/mermaid/projekt-roadmap-1.svg';
+    return base + 'images/roadmap/projekt-roadmap.svg';
   }
   function closeRoadmap() {
     const ov = document.getElementById('adb-roadmap-overlay');
@@ -432,8 +432,8 @@
       ov.innerHTML =
         '<button class="adb-lightbox-close" aria-label="Schliessen">&times;</button>' +
         '<div class="adb-lightbox-content"><img class="adb-lightbox-img" src="' +
-        roadmapSvgUrl() + '" alt="Arbeitspaket-Roadmap (Gantt)"></div>' +
-        '<div class="adb-lightbox-caption">Arbeitspaket-Roadmap (Gantt)</div>';
+        roadmapSvgUrl() + '" alt="Arbeitspaket-Roadmap (Themen-Swimlane)"></div>' +
+        '<div class="adb-lightbox-caption">Arbeitspaket-Roadmap (Themen-Swimlane)</div>';
       document.body.appendChild(ov);
       ov.addEventListener('click', function (e) {
         if (e.target === ov || e.target.classList.contains('adb-lightbox-close')) {
@@ -509,7 +509,7 @@
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'adb-status-badge adb-roadmap-badge';
-    btn.title = 'Arbeitspaket-Roadmap (Gantt) öffnen';
+    btn.title = 'Arbeitspaket-Roadmap (Themen-Swimlane) öffnen';
     btn.innerHTML =
       '<span class="adb-status-badge__dot" aria-hidden="true"></span>Roadmap';
     btn.addEventListener('click', openRoadmap);

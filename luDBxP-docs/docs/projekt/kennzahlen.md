@@ -1,9 +1,9 @@
 # Projekt-Kennzahlen
 
-Stand **v0.65.1** · 2026-07-01 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
+Stand **v0.66.0** · 2026-07-01 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
 
 Die <span class="kz-tag kz-tag--m">gemessen</span>-Werte (Version, Tests, Coverage, Docstrings, Commits, Sessions)
-sind am 2026-06-30 neu erhoben (aus `git`, `pytest --cov` und AST-Zählung). Die
+sind am 2026-07-01 neu erhoben (aus `git`, `pytest --cov` und AST-Zählung). Die
 <span class="kz-tag kz-tag--s">Baseline</span>-Werte (COCOMO, LOC) stammen vom 2026-06-27 (v0.34.0) und wurden
 bewusst nicht neu vermessen.
 
@@ -17,14 +17,14 @@ bewusst nicht neu vermessen.
 
 <div class="kz-card">
   <div class="kz-lbl">Tempo</div>
-  <div class="kz-val">476 <small>Commits</small></div>
-  <div class="kz-note">17 Sessions an 7 Kalendertagen (25.06.–01.07.)</div>
+  <div class="kz-val">485 <small>Commits</small></div>
+  <div class="kz-note">18 Sessions an 7 Kalendertagen (25.06.–01.07.)</div>
 </div>
 
 <div class="kz-card">
   <div class="kz-lbl">Testabdeckung</div>
   <div class="kz-val kz-good">88 <small>%</small></div>
-  <div class="kz-note">446 Tests grün (11 skipped Oracle/MSSQL/PG) · 2060 Statements</div>
+  <div class="kz-note">457 Tests grün (11 skipped Oracle/MSSQL/PG) · 2067 Statements</div>
 </div>
 
 <div class="kz-card">
@@ -82,10 +82,10 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 | Kennzahl | Wert | Detail / Quelle | Art |
 |---|---|---|---|
 | Umsetzung (Roadmap) | ≈ 89 % | ≈ 59 erledigt · ≈ 5 offener Backlog (AP-56/57, AP-61/62, AP-19/35) · Quelle: `roadmap.md` | gemessen |
-| Commits | 476 | 2026-06-25 → 07-01 · 7 Kalendertage · 17 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
-| Aktuelle Version | v0.65.1 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 17 Sessions | gemessen |
-| Testabdeckung | 88 % | 2060 Statements, 241 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
-| Tests | 446 | alle grün · 11 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~10 s Laufzeit | gemessen |
+| Commits | 485 | 2026-06-25 → 07-01 · 7 Kalendertage · 18 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
+| Aktuelle Version | v0.66.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 18 Sessions | gemessen |
+| Testabdeckung | 88 % | 2067 Statements, 241 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
+| Tests | 457 | alle grün · 11 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~12 s Laufzeit | gemessen |
 | Doku-Abdeckung (Module) | 93 % | 26/28 Python-Module mit Modul-Docstring (AST-Zählung) | gemessen |
 | Doku-Abdeckung (öffentl. API) | 62 % | 60/96 öffentliche Funktionen/Klassen mit Docstring · gesamt 93/143 ≈ 65 % | gemessen |
 | Effort (COCOMO) | ~20 PM | organic · E = 2,4·KSLOC^1,05 · T ≈ 7,8 Monate Kalender | Baseline |

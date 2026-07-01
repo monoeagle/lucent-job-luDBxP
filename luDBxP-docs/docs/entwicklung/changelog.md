@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.66.0] — 2026-07-01
+
+### Hinzugefügt
+- **Roadmap-Grafik: eigener Swimlane-SVG-Generator (AP-68):** die Roadmap-Grafik wächst nicht mehr
+  als Mermaid-Gantt um eine Zeile je AP (ab ~80 APs unlesbar). Ein neuer, reiner Python-Generator
+  (`luDBxP-docs/tools/generate_roadmap_svg.py`, Datenquelle `luDBxP-docs/roadmap_data.py`, 83 APs)
+  rendert **10 Themen-Swimlanes konstanter Höhe**: erledigte Historie je Lane wird zu einem einzigen
+  Spannbalken verdichtet (mit Anti-Overlap-Datumsversatz), offene APs erscheinen als benannte
+  Rauten-Marker auf einer gemeinsamen Zeitachse. In `build_docs.py` verdrahtet (läuft vor dem
+  Mermaid-Pass, unabhängig von `mmdc`); die alte Mermaid-Gantt-Quelle ist archiviert (wird nicht mehr
+  gerendert), der Roadmap-Seiten-Embed zeigt jetzt auf das generierte SVG. 11 neue Offline-Unit-Tests
+  decken Zeitskala, Lane-Spans, Validierung und SVG-Emission ab (inkl. einer
+  Enumerate-Regressions-Guard, die prüft, dass jeder offene AP als benannter Knoten im gerenderten
+  SVG steht).
+
 ## [0.65.1] — 2026-07-01
 
 ### Behoben

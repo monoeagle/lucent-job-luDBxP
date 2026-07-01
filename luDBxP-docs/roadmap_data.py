@@ -100,6 +100,7 @@ APS = [
     {"ap": "AP-65·C", "label": "Lints mit Zeilenbezug", "theme": "sqlbuilder", "date": "2026-07-01", "status": "done"},
     {"ap": "AP-67·Oracle-Adaption", "label": "Oracle-Demo-CMDB", "theme": "objekte", "date": "2026-07-01", "status": "done"},
     {"ap": "AP-67 Slice 2a", "label": "reiches Oracle-Schema", "theme": "objekte", "date": "2026-07-01", "status": "done"},
+    {"ap": "AP-68", "label": "Roadmap-Swimlane", "theme": "doku", "date": "2026-07-01", "status": "done"},
     # … alle erledigten APs (status="done") oben + offene (status="open") unten …
     {"ap": "AP-35", "label": "run.ps1 leeres-venv-Fix", "theme": "betrieb", "date": "2026-06-28", "status": "open"},
     {"ap": "AP-31", "label": "Idle-Shutdown/Deploy (Rest)", "theme": "betrieb", "date": "2026-06-29", "status": "open"},
