@@ -2051,34 +2051,34 @@ function syncConnSelectors(name) {
   const cs = $("conn_saved"); if (cs) cs.value = name || "";
 }
 
-// Prefill the connection-tab form from a saved connection (never a password).
-function prefillConnForm(c) {
-  if (!$("conn_type")) return;
-  $("conn_type").value = c.db_type || "sqlite";
-  renderConnFields(c);
-  if ($("conn_name")) $("conn_name").value = c.name || "";
-}
-
-// AP-10: connect directly from a saved connection chosen in the topbar.
-// Passwordless connections (SQLite, or servers without auth) connect straight
-// away; if the server rejects the empty password, fall back to the connection
-// tab prefilled so the user can add it.
+// AP-10 + v0.64.1: connect directly from a saved connection chosen in the topbar.
+// Saved connections never store a password (by design). Try passwordless first
+// (SQLite / auth-less servers); on an authentication error, prompt for the
+// password once and retry — so a password DB connects straight from the dropdown.
 async function connectSaved(name) {
   const c = SAVED_CONNS.find((x) => x.name === name);
-  if (!c) return;
+  if (c) await connectSavedWith(c, name, null);
+}
+
+async function connectSavedWith(c, name, password) {
   $("status").textContent = `verbinde mit „${name}“…`;
   try {
-    const r = await postJSON("/api/connect", c);  // build_url ignores extra "name"
+    const payload = (password != null) ? Object.assign({}, c, { password }) : c;
+    const r = await postJSON("/api/connect", payload);  // build_url ignores extra "name"
     setCurrentUrl(r.connection_url);
     await doConnect();
     syncConnSelectors(name);
   } catch (e) {
     $("status").textContent = "";
-    openConnections();
-    prefillConnForm(c);
+    const authErr = /passwort|password|logon denied|ORA-01017|login failed|authenticat/i
+      .test(e.message || "");
+    if (password == null && authErr) {
+      const pw = window.prompt(`Passwort für „${name}“:`, "");
+      if (pw) { await connectSavedWith(c, name, pw); return; }
+      return;   // cancelled / empty → abort quietly
+    }
     syncConnSelectors(name);
-    alert(`„${name}“ konnte nicht direkt verbunden werden:\n${e.message}\n\n` +
-          `Im Verbindungs-Tab ggf. das Passwort ergänzen und „Verbinden“ klicken.`);
+    alert(`„${name}“ konnte nicht verbunden werden:\n${e.message}`);
   }
 }
 
