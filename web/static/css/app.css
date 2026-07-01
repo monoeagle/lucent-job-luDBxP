@@ -306,8 +306,6 @@ body {
   border-radius: 3px; }
 .rtn-badge { font-size: .7rem; background: #5a7a3a; color: #fff; padding: 0 .3rem;
   border-radius: 3px; margin-left: .25rem; cursor: default; }
-.viewdef { background: #1A1A2E; color: #eaeaea; padding: .8rem; overflow-x: auto;
-  white-space: pre; border-radius: 4px; }
 /* Outer-join NULL cells stand out so orphan rows are obvious. */
 .null-cell { background: #fdf6e3; }
 .null-cell i { color: #b08900; font-style: italic; }

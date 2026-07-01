@@ -408,9 +408,10 @@ function openDetail(kind, name) {
     `<button class="subtab" data-sub="sql">SQL</button></div>` +
     `<div class="subpanel active" data-sub="def">${defHtml}</div>` +
     dataPane +
-    `<div class="subpanel" data-sub="sql"><pre class="viewdef"></pre></div></div>`;
-  panel.querySelector('.subpanel[data-sub="sql"] .viewdef').textContent =
-    sqlText || "(keine Definition)";
+    `<div class="subpanel" data-sub="sql"><div class="sql-def-mount"></div></div></div>`;
+  const _defEd = sqlEditor({ readOnly: true, rows: 6 });
+  panel.querySelector('.subpanel[data-sub="sql"] .sql-def-mount').replaceWith(_defEd.el);
+  _defEd.setValue(sqlText || "(keine Definition)");
 
   const dataPanel = panel.querySelector('.subpanel[data-sub="data"]');
   let dataLoaded = false;
