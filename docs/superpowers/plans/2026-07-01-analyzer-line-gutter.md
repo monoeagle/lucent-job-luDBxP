@@ -35,11 +35,13 @@
 /* AP-65·B: Analyzer-Editor — 3 Schichten (Gutter · Backdrop-Highlight · Textarea). */
 .an-editor { display: flex; align-items: stretch; border: 1px solid #ccc;
   border-radius: 4px; overflow: hidden; background: #fff; min-height: 17rem;
-  font-family: monospace; font-size: .82rem; line-height: 1.5; }
-.an-gutter { flex: 0 0 auto; overflow: hidden; background: #f3f3f7;
-  border-right: 1px solid #e3e3ea; color: #9a9aa6; text-align: right;
-  user-select: none; }
-.an-gutter-inner { padding: .4rem .45rem .4rem .55rem; will-change: transform; }
+  resize: vertical; font-family: monospace; font-size: .82rem; line-height: 1.5; }
+.an-gutter { position: relative; flex: 0 0 auto; width: 3.2rem; overflow: hidden;
+  background: #f3f3f7; border-right: 1px solid #e3e3ea; color: #9a9aa6;
+  text-align: right; user-select: none; }
+/* inner ist absolut → treibt die Gutter-/Editor-Höhe NICHT auf; feste Gutter-Breite. */
+.an-gutter-inner { position: absolute; top: 0; left: 0; right: 0;
+  padding: .4rem .45rem .4rem .55rem; will-change: transform; }
 .an-gutter-num { white-space: pre; }
 .an-edit-area { position: relative; flex: 1 1 auto; overflow: hidden; }
 .an-backdrop { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -47,9 +49,9 @@
 .an-line { white-space: pre; min-width: 100%; height: calc(.82rem * 1.5); }
 .an-line-error { background: #fdecea; }
 /* AP-48/AP-65·B: analyzer input — transparent, no wrap, sits over the backdrop. */
-#an_sql { position: relative; display: block; width: 100%; height: auto;
-  box-sizing: border-box; margin: 0; border: 0; outline: none; resize: vertical;
-  min-height: 17rem; padding: .4rem; background: transparent; color: #1a1a2e;
+#an_sql { position: relative; display: block; width: 100%; height: 100%;
+  box-sizing: border-box; margin: 0; border: 0; outline: none;
+  padding: .4rem; background: transparent; color: #1a1a2e;
   font-family: monospace; font-size: .82rem; line-height: 1.5;
   white-space: pre; overflow: auto; tab-size: 4; }
 ```
