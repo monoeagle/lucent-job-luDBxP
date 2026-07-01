@@ -245,16 +245,6 @@ body {
 .path-mark { font-family: monospace; color: #aaa; flex: 0 0 auto; }
 .path_list li.active .path-mark { color: #1e7e34; font-weight: 700; }
 .path_list li.active a { font-weight: 600; }
-/* Soft-wrap long lines so the SQL box never scrolls horizontally. pre-wrap keeps
-   the real newlines + indentation, so copy/paste yields the original statement
-   (the wrapping is visual only); overflow-wrap breaks over-long quoted tokens. */
-.sql_out { background: #1A1A2E; color: #eaeaea; padding: .55rem .7rem;
-  white-space: pre-wrap; overflow-wrap: anywhere; border-radius: 4px; margin: 0;
-  /* Auch vor dem ersten "Generieren" eine vollwertige Box (kein schmaler Streifen),
-     damit das Copy-Icon (top:10px) vollständig hineinpasst. */
-  min-height: 4.5em; box-sizing: border-box; }
-.sql_out:empty::before { content: "Noch kein SQL generiert — Start und Ziel wählen, "
-  "dann „Generieren“ klicken."; color: #8a8aa0; }
 /* AP-20: copy icon in the SELECT's top-right corner */
 /* Spacing lives on the wrapper so the <pre>'s top edge == the box edge —
    otherwise the icon floats in the pre's default margin, above the box. */
@@ -375,12 +365,6 @@ body {
   caret-color: #eaeaea; }
 .sqled-editor--readonly .sqled-textarea { resize: none; color: #9a9ab0;
   caret-color: transparent; overflow: auto; max-height: 60vh; }
-/* AP-48/AP-65·B: analyzer input — transparent, no wrap, sits over the backdrop. */
-#an_sql { position: relative; display: block; width: 100%; height: auto;
-  box-sizing: border-box; margin: 0; border: 0; outline: none; resize: vertical;
-  min-height: 17rem; padding: .4rem; background: transparent; color: #1a1a2e;
-  font-family: monospace; font-size: .82rem; line-height: 1.5;
-  white-space: pre; overflow: auto; tab-size: 4; }
 /* AP-49: read-only marker styled as a badge, set off from the run button. */
 .an-readonly { margin-left: 1rem; font-size: .74rem; font-weight: 600;
   color: #1e7e34; background: #e3f4e8; border: 1px solid #bfe3c9;

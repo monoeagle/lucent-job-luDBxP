@@ -26,6 +26,7 @@ const GRAPH_FIT_PAD = 16;
 let SB_LAST = null;     // { body, paths } from the last successful build
 let SB_PATH_IDX = 0;    // currently selected path index
 let SB_JOIN_TYPES = []; // AP-41: per-step join type for the active path (INNER default)
+let SQL_OUT = null;     // AP-69·A: read-only sqlEditor instance showing the generated SELECT
 
 // ===== Subset state (AP-56b) =====
 let SUB_LAST_PAYLOAD = null; // payload used to build the currently displayed footprint
@@ -471,7 +472,7 @@ function openSqlBuilder() {
     `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" ` +
     `stroke-width="1.4"><rect x="4" y="3" width="9" height="11" rx="1.5"/>` +
     `<path d="M6 3V2.2A1.2 1.2 0 0 1 7.2 1h2.6A1.2 1.2 0 0 1 11 2.2V3"/></svg></button>` +
-    `<pre class="sql_out" id="sql_out"></pre></div>` +
+    `<div id="sql_out_mount"></div></div>` +
     `<div class="row sb-result-bar" id="sb_result_bar" style="display:none">` +
     `<label>Zeilen</label>` +
     `<select id="sb_rows">` +
@@ -481,6 +482,8 @@ function openSqlBuilder() {
     `<button id="sb_refresh" title="Ausgabe mit aktuellen Sortierungen/Spalten neu berechnen">Aktualisieren</button>` +
     `<span id="sb_rows_info" class="hint"></span></div>` +
     `<div id="join_result"></div></div>`;
+  SQL_OUT = sqlEditor({ readOnly: true, rows: 6 });
+  panel.querySelector("#sql_out_mount").replaceWith(SQL_OUT.el);
   $("start_table").addEventListener("change", () => fillCols("start_table", "start_col"));
   $("target_table").addEventListener("change", () => fillCols("target_table", "target_col"));
   wireAggColDisable($("start_agg"), $("start_col"));
@@ -926,7 +929,7 @@ function refillSqlBuilder() {
   $("order_bys").innerHTML = "";
   $("extra_cols").innerHTML = "";
   $("path_list").innerHTML = "";
-  $("sql_out").textContent = "";
+  if (SQL_OUT) SQL_OUT.setValue("");
   if ($("join_result")) $("join_result").innerHTML = "";
   if ($("sb_distinct")) $("sb_distinct").checked = false;
   if ($("sb_limit")) $("sb_limit").value = "";
@@ -1459,7 +1462,7 @@ async function renderJoinResult(i) {
   _renderPathList();
   // Show the runnable, value-inlined SQL (copy uses this text too); the server
   // still executes the parameterised form server-side from the form body.
-  $("sql_out").textContent = SB_LAST.paths[i].sql_inline || SB_LAST.paths[i].sql;
+  SQL_OUT.setValue(SB_LAST.paths[i].sql_inline || SB_LAST.paths[i].sql);
   highlightPath(SB_LAST.paths[i].steps || SB_LAST.paths[i].edges || []);
   const resultEl = $("join_result");
   if (!resultEl) return;
@@ -1582,7 +1585,7 @@ async function runBuild(preserveIndex = false) {
       renderJoinResult(SB_PATH_IDX);
     } else {
       if (bar) bar.style.display = "none";
-      $("sql_out").textContent = "";
+      if (SQL_OUT) SQL_OUT.setValue("");
       $("join_result").innerHTML = "";
     }
   } catch (e) { alert(e.message); }
@@ -2211,7 +2214,7 @@ function setupSqlCopy() {
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest ? e.target.closest("#sql_copy") : null;
     if (!btn) return;
-    const sql = $("sql_out") ? $("sql_out").textContent : "";
+    const sql = SQL_OUT ? SQL_OUT.getValue() : "";
     if (!sql.trim()) return;
     try {
       await navigator.clipboard.writeText(sql);
