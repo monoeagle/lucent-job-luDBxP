@@ -51,3 +51,11 @@ def test_oracle_demo_seed_shows_all_categories():
     # AP-66·S1: the view references the function
     vw = next(v for v in schema.views if v.name.upper() == "VW_VM_LABELED")
     assert "FN_VM_LABEL" in {r.upper() for r in vw.routines}
+
+    # v0.64.2 regression guard: data preview must work on Oracle for both a table
+    # and a view (dialect LIMIT → FETCH FIRST, and reflected lower-cased names).
+    from core.datapreview import fetch_rows
+    valid = {t.name for t in schema.tables} | {v.name for v in schema.views}
+    tbl_name = next(t.name for t in schema.tables if t.name.upper() == "VIRTUALMACHINE")
+    assert len(fetch_rows(_ORACLE_URL, tbl_name, valid, limit=100)["rows"]) == 2
+    assert len(fetch_rows(_ORACLE_URL, vw.name, valid, limit=100)["rows"]) == 2

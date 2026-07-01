@@ -5,7 +5,7 @@ strictly read-only (SELECT only, fixed LIMIT) and the object name is validated
 against the reflected schema before being quoted into the statement, so it is
 not an injection vector.
 """
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, select, table, literal_column
 from sqlalchemy.exc import SQLAlchemyError
 from core.subset import count_sql
 
@@ -121,11 +121,15 @@ def fetch_rows(connection_url: str, object_name: str,
         raise ConnectionError(f"Could not create engine: {exc}") from exc
     try:
         with engine.connect() as conn:
-            # object_name is allow-list validated; quote it as an identifier.
-            def _q(ident: str) -> str:
-                return '"' + ident.replace('"', '""') + '"'
-            quoted = f"{_q(schema)}.{_q(object_name)}" if schema else _q(object_name)
-            result = conn.execute(text(f"SELECT * FROM {quoted} LIMIT {int(limit)}"))
+            # object_name is allow-list validated. Build the SELECT via SQLAlchemy
+            # Core so the row cap and identifier casing/quoting render per dialect:
+            # LIMIT (SQLite/PostgreSQL/MySQL), FETCH FIRST … ROWS ONLY (Oracle),
+            # SELECT TOP … (MSSQL). A raw "… LIMIT n" broke on Oracle (ORA-00933),
+            # and force-quoting a reflected (lower-cased) Oracle name broke on it too
+            # (ORA-00942). Core round-trips the reflected name correctly.
+            tbl = table(object_name, schema=schema or None)
+            stmt = select(literal_column("*")).select_from(tbl).limit(int(limit))
+            result = conn.execute(stmt)
             columns = list(result.keys())
             rows = [list(r) for r in result.fetchall()]
         return {"columns": columns, "rows": rows}
