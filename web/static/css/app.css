@@ -352,9 +352,26 @@ body {
 /* AP-F: Optimierungs-Vorschläge — blauer Akzent, abgesetzt von Warn-Levels und .an-readonly. */
 .an-sugg { padding: 4px 8px; margin: 3px 0; border-radius: 3px; font-size: 0.9em;
            background: #f4f7fb; color: #21456b; border-left: 3px solid #1a73e8; }
-/* AP-48: analyzer input — full width, monospace, only vertically resizable. */
-#an_sql { width: 100%; box-sizing: border-box; font-family: monospace;
-  font-size: .82rem; min-height: 17rem; resize: vertical; }
+/* AP-65·B: Analyzer-Editor — 3 Schichten (Gutter · Backdrop-Highlight · Textarea). */
+.an-editor { display: flex; align-items: stretch; border: 1px solid #ccc;
+  border-radius: 4px; overflow: hidden; background: #fff; min-height: 17rem;
+  font-family: monospace; font-size: .82rem; line-height: 1.5; }
+.an-gutter { flex: 0 0 auto; overflow: hidden; background: #f3f3f7;
+  border-right: 1px solid #e3e3ea; color: #9a9aa6; text-align: right;
+  user-select: none; }
+.an-gutter-inner { padding: .4rem .45rem .4rem .55rem; will-change: transform; }
+.an-gutter-num { white-space: pre; }
+.an-edit-area { position: relative; flex: 1 1 auto; overflow: hidden; }
+.an-backdrop { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.an-backdrop-inner { padding: .4rem; will-change: transform; }
+.an-line { white-space: pre; min-width: 100%; height: calc(.82rem * 1.5); }
+.an-line-error { background: #fdecea; }
+/* AP-48/AP-65·B: analyzer input — transparent, no wrap, sits over the backdrop. */
+#an_sql { position: relative; display: block; width: 100%; height: auto;
+  box-sizing: border-box; margin: 0; border: 0; outline: none; resize: vertical;
+  min-height: 17rem; padding: .4rem; background: transparent; color: #1a1a2e;
+  font-family: monospace; font-size: .82rem; line-height: 1.5;
+  white-space: pre; overflow: auto; tab-size: 4; }
 /* AP-49: read-only marker styled as a badge, set off from the run button. */
 .an-readonly { margin-left: 1rem; font-size: .74rem; font-weight: 600;
   color: #1e7e34; background: #e3f4e8; border: 1px solid #bfe3c9;

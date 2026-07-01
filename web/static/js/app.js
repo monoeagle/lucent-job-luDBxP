@@ -617,6 +617,58 @@ async function runAnalyze(panel) {
   }
 }
 
+// AP-65·B: wraps the analyzer textarea in a 3-layer editor (line-number gutter +
+// scroll-synced backdrop). The textarea stays the single value source. Returns a
+// small handle; setErrorLine is added in AP-65·B Task 2.
+function attachLineGutter(textarea) {
+  textarea.setAttribute("wrap", "off");
+  const editor = document.createElement("div");
+  editor.className = "an-editor";
+  const gutter = document.createElement("div");
+  gutter.className = "an-gutter";
+  gutter.setAttribute("aria-hidden", "true");
+  const gutterInner = document.createElement("div");
+  gutterInner.className = "an-gutter-inner";
+  gutter.appendChild(gutterInner);
+  const area = document.createElement("div");
+  area.className = "an-edit-area";
+  const backdrop = document.createElement("div");
+  backdrop.className = "an-backdrop";
+  backdrop.setAttribute("aria-hidden", "true");
+  const backdropInner = document.createElement("div");
+  backdropInner.className = "an-backdrop-inner";
+  backdrop.appendChild(backdropInner);
+
+  textarea.parentNode.insertBefore(editor, textarea);
+  area.appendChild(backdrop);
+  area.appendChild(textarea);
+  editor.appendChild(gutter);
+  editor.appendChild(area);
+
+  function lineCount() {
+    return Math.max(1, textarea.value.split("\n").length);
+  }
+  function refresh() {
+    const n = lineCount();
+    let g = "";
+    for (let i = 1; i <= n; i++) g += `<div class="an-gutter-num">${i}</div>`;
+    gutterInner.innerHTML = g;
+    let b = "";
+    for (let i = 1; i <= n; i++) b += `<div class="an-line"></div>`;
+    backdropInner.innerHTML = b;
+  }
+  function syncScroll() {
+    gutterInner.style.transform = `translateY(${-textarea.scrollTop}px)`;
+    backdropInner.style.transform =
+      `translate(${-textarea.scrollLeft}px, ${-textarea.scrollTop}px)`;
+  }
+  textarea.addEventListener("input", () => { refresh(); syncScroll(); });
+  textarea.addEventListener("scroll", syncScroll);
+  refresh();
+  syncScroll();
+  return { refresh };
+}
+
 function openAnalyzer() {
   const panel = ensureTab("analyzer", "SQL-Analyzer", true);
   if (panel.dataset.built) { activateTab("analyzer"); return; }
@@ -628,6 +680,7 @@ function openAnalyzer() {
     `<span class="an-readonly" title="Der Analyzer parst nur — er führt nichts auf der Datenbank aus">read-only — wird nie ausgeführt</span></div>` +
     `<div id="an_result"></div></div>`;
   panel.querySelector("#an_run").addEventListener("click", () => runAnalyze(panel));
+  panel._gutter = attachLineGutter(panel.querySelector("#an_sql"));
 }
 
 async function runSubset() {
