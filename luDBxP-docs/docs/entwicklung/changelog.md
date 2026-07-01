@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.64.0] — 2026-07-01
+
+### Hinzugefügt
+- **Oracle-Server-Demo-CMDB-Seeder (AP-67·Oracle-Adaption):** Der `oracle`-Zweig von
+  `sample_data/seed_server_demo.py` (bisher ein Stub) baut jetzt dieselbe kompakte 5-Tabellen-CMDB
+  wie der MSSQL-Seeder plus alle Oracle-spezifischen Objektkategorien — `SEQUENCE`, `MATERIALIZED
+  VIEW`, `PACKAGE` (Spec + Body), standalone `FUNCTION` und `PROCEDURE`, `SYNONYM`, PL/SQL-`TRIGGER`
+  und eine `VIEW`, die die Function aufruft (zeigt den AP-66·S1 View→Routine-Link). Damit ist jede
+  Oracle-Sidebar-Kategorie im Tree sichtbar. Oracle-Besonderheiten: Drop je Objekt via `BEGIN
+  EXECUTE IMMEDIATE 'DROP …'; EXCEPTION WHEN OTHERS THEN NULL; END;` (kein `IF EXISTS`), `CREATE OR
+  REPLACE` für PL/SQL-Objekte, einzeilige INSERTs, und — weil `CLUSTER` in Oracle reserviert ist —
+  heißt die Cluster-Tabelle `VMCluster`. Ein skip-guardeter Live-Integrationstest
+  `tests/test_oracle_seed_integration.py` (`LUCENT_ORACLE_TEST_URL`) seedet und prüft, dass jede
+  Kategorie reflektiert; `sample_data/server-demo-README.md` dokumentiert den podman-Oracle-XE-Bring-up.
+  **Live gegen Oracle 21c XE verifiziert** (alle Kategorien reflektieren, inkl. View→Function).
+  Externes Setup-Skript — das read-only-Werkzeug führt es nie aus.
+
 ## [0.63.0] — 2026-07-01
 
 ### Hinzugefügt

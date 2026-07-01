@@ -1,4 +1,4 @@
-# Server-Demo-CMDB (MSSQL; Oracle-Adaption als Folge)
+# Server-Demo-CMDB (MSSQL + Oracle)
 
 Zeigt im LucentTools-Tree alle reflektierbaren Objektkategorien (Tabellen, Views,
 Trigger, Procedures, Functions, Sequences, Synonyms) — anders als die SQLite-Demo.

@@ -1,19 +1,44 @@
 {
-  "generatedAt": "2026-07-01T04:10:17",
+  "generatedAt": "2026-07-01T08:11:10",
   "range": {
     "from": "2025-07-02",
     "to": "2026-07-01"
   },
   "byDay": {
     "2026-07-01": {
-      "commits": 18,
+      "commits": 23,
       "kinds": {
-        "feat": 7,
-        "docs": 6,
-        "other": 2,
+        "other": 4,
+        "feat": 8,
+        "docs": 8,
         "fix": 3
       },
       "list": [
+        {
+          "sha": "b6fe2ea",
+          "subject": "test+docs: Oracle-Demo-Seed-Integrationstest + Bring-up-README [AP-67·Oracle]",
+          "kind": "other"
+        },
+        {
+          "sha": "d18e1c1",
+          "subject": "feat(demo): Oracle-Server-Demo-CMDB-Seeder (alle Objektkategorien) [AP-67·Oracle]",
+          "kind": "feat"
+        },
+        {
+          "sha": "105c9e5",
+          "subject": "docs(plan): AP-67·Oracle-Adaption Slice 1 — Oracle-Seed",
+          "kind": "docs"
+        },
+        {
+          "sha": "5bec972",
+          "subject": "docs(spec): AP-67·Oracle-Adaption Slice 1 — Oracle-Seed",
+          "kind": "docs"
+        },
+        {
+          "sha": "1d3c072",
+          "subject": "release: v0.63.0 — AP-65·C Lints mit Zeilenbezug (Zeile N: + Klick-Lokalisierung)",
+          "kind": "other"
+        },
         {
           "sha": "814ac26",
           "subject": "feat(ui): Lint-Meldungen mit „Zeile N:\" + Klick markiert Zeile [AP-65·C]",
@@ -2379,21 +2404,21 @@
     }
   },
   "stats": {
-    "totalCommits": 457,
+    "totalCommits": 462,
     "activeDays": 7,
     "longestStreak": 7,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 213
+        "count": 215
       },
       {
         "kind": "feat",
-        "count": 141
+        "count": 142
       },
       {
         "kind": "other",
-        "count": 40
+        "count": 42
       },
       {
         "kind": "fix",
@@ -2416,7 +2441,7 @@
         "count": 4
       }
     ],
-    "testCount": 453
+    "testCount": 454
   },
   "phases": []
 }

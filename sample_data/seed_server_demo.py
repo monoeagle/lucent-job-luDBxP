@@ -1,7 +1,7 @@
 """Seed a server-side demo CMDB so the LucentTools tree shows all reflectable
 object categories (tables, views, triggers, procedures, functions, sequences,
-synonyms). MSSQL is implemented; Oracle is a documented follow-up (see
-sample_data/server-demo-README.md). Idempotent: drops then recreates.
+synonyms, and — on Oracle — materialized views and packages). MSSQL and Oracle are
+both implemented (see sample_data/server-demo-README.md). Idempotent: drops then recreates.
 
 This is an external SETUP script — it is NOT run by the read-only tool itself.
 
