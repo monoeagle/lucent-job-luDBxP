@@ -529,6 +529,9 @@ function applyAnalyzeMarkers(read, written, edges) {
 
 function renderAnalyzeResult(panel, res) {
   const out = panel.querySelector("#an_result");
+  if (panel._gutter) {
+    panel._gutter.setErrorLine(res.parse_error ? (res.parse_error_line ?? null) : null);
+  }
   if (res.parse_error) {
     if (res.parse_error_line != null) {
       const ctx = res.parse_error_context || "";
@@ -648,13 +651,17 @@ function attachLineGutter(textarea) {
   function lineCount() {
     return Math.max(1, textarea.value.split("\n").length);
   }
+  let errorLine = null;
   function refresh() {
     const n = lineCount();
     let g = "";
     for (let i = 1; i <= n; i++) g += `<div class="an-gutter-num">${i}</div>`;
     gutterInner.innerHTML = g;
     let b = "";
-    for (let i = 1; i <= n; i++) b += `<div class="an-line"></div>`;
+    for (let i = 1; i <= n; i++) {
+      const cls = (i === errorLine) ? "an-line an-line-error" : "an-line";
+      b += `<div class="${cls}"></div>`;
+    }
     backdropInner.innerHTML = b;
   }
   function syncScroll() {
@@ -662,11 +669,25 @@ function attachLineGutter(textarea) {
     backdropInner.style.transform =
       `translate(${-textarea.scrollLeft}px, ${-textarea.scrollTop}px)`;
   }
-  textarea.addEventListener("input", () => { refresh(); syncScroll(); });
+  function setErrorLine(n) {
+    const total = lineCount();
+    errorLine = (typeof n === "number" && n >= 1 && n <= total) ? n : null;
+    refresh();
+    if (errorLine !== null) {
+      const lh = parseFloat(getComputedStyle(textarea).lineHeight) || 18;
+      const top = (errorLine - 1) * lh;
+      if (top < textarea.scrollTop ||
+          top > textarea.scrollTop + textarea.clientHeight - lh) {
+        textarea.scrollTop = Math.max(0, top - textarea.clientHeight / 2);
+      }
+    }
+    syncScroll();
+  }
+  textarea.addEventListener("input", () => { errorLine = null; refresh(); syncScroll(); });
   textarea.addEventListener("scroll", syncScroll);
   refresh();
   syncScroll();
-  return { refresh };
+  return { refresh, setErrorLine };
 }
 
 function openAnalyzer() {
