@@ -85,3 +85,49 @@ def test_oracle_custom_port():
 def test_oracle_missing_service_name_raises():
     with pytest.raises(ValueError):
         build_url({"db_type": "oracle", "host": "h", "user": "u", "password": "p"})
+
+
+def test_oracle_url_with_sid_uses_path_form():
+    url = build_url({
+        "db_type": "oracle", "host": "h", "sid": "Configdb",
+        "oracle_connect_type": "sid", "user": "u", "password": "p"})
+    assert url == "oracle+oracledb://u:p@h:1521/Configdb"
+
+
+def test_oracle_service_explicit_connect_type():
+    url = build_url({
+        "db_type": "oracle", "host": "h", "service_name": "XEPDB1",
+        "oracle_connect_type": "service", "user": "u", "password": "p"})
+    assert url == "oracle+oracledb://u:p@h:1521/?service_name=XEPDB1"
+
+
+def test_oracle_defaults_to_service_when_type_absent():
+    # Rückwärtskompatibel: alte gespeicherte Verbindungen ohne oracle_connect_type.
+    url = build_url({
+        "db_type": "oracle", "host": "h", "service_name": "XEPDB1",
+        "user": "u", "password": "p"})
+    assert url == "oracle+oracledb://u:p@h:1521/?service_name=XEPDB1"
+
+
+def test_oracle_missing_sid_raises():
+    with pytest.raises(ValueError):
+        build_url({"db_type": "oracle", "host": "h", "oracle_connect_type": "sid",
+                   "user": "u", "password": "p"})
+
+
+def test_oracle_unknown_connect_type_raises():
+    with pytest.raises(ValueError):
+        build_url({"db_type": "oracle", "host": "h", "service_name": "X",
+                   "oracle_connect_type": "tns", "user": "u", "password": "p"})
+
+
+def test_oracle_sid_produces_sid_dsn():
+    # Absicherung gegen Rückfall zur kaputten ?sid=-Form: der reale DSN muss SID tragen.
+    from sqlalchemy import create_engine
+    from sqlalchemy.engine import make_url
+    url = build_url({
+        "db_type": "oracle", "host": "h", "sid": "Configdb",
+        "oracle_connect_type": "sid", "user": "u", "password": "p"})
+    _, kw = create_engine(url).dialect.create_connect_args(make_url(url))
+    assert "SID=Configdb" in kw["dsn"]
+    assert "sid" not in kw  # kein loses sid-Kwarg (das war der Draft-Bug)

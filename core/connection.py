@@ -51,7 +51,8 @@ def build_url(params: dict) -> str:
     Args:
         params: Keys ``db_type`` plus, for SQLite, ``filepath``; for server
             databases ``host``, ``port`` (optional), ``database``, ``user``,
-            ``password``; for Oracle ``service_name`` instead of ``database``.
+            ``password``; for Oracle ``service_name`` instead of ``database``,
+            additionally ``oracle_connect_type`` (service/sid) and ``sid``.
 
     Returns:
         A SQLAlchemy connection URL string.
@@ -79,7 +80,20 @@ def build_url(params: dict) -> str:
     auth = f"{user}:{password}@" if user else ""
 
     if db_type == "oracle":
-        # Oracle is addressed by service name, not a database path.
+        # Oracle: address by service name (query) or SID (URL path). Default to
+        # service for backward compatibility with saved connections that predate
+        # the SID option and carry only service_name.
+        connect_type = (params.get("oracle_connect_type") or "service").strip().lower()
+        if connect_type == "sid":
+            sid = (params.get("sid") or "").strip()
+            if not sid:
+                raise ValueError("SID fehlt.")
+            # SID belongs in the URL path — the ?sid= query form yields a broken
+            # DSN (dsn='host', sid as a stray kwarg); the path form produces a
+            # correct (CONNECT_DATA=(SID=...)) descriptor.
+            return f"{_DRIVERS['oracle']}://{auth}{host}:{port}/{quote_plus(sid)}"
+        if connect_type != "service":
+            raise ValueError(f"Unbekannte Oracle-Verbindungsart: {connect_type!r}")
         service = (params.get("service_name") or "").strip()
         if not service:
             raise ValueError("Service-Name fehlt.")
