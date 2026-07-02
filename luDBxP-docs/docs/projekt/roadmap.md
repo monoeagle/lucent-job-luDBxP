@@ -30,9 +30,8 @@ Auslöser: eine echte Ziel-DB (`Configdb`) ist **SID-adressiert** (`jdbc:oracle:
 
 ### Encoding / UTF-8
 
-Bestehende Quelldateien tragen Mojibake (doppelt kodierte Sequenzen wie `â†’` = „→", `Ã¼` = „ü") aus fehlerhaftem Editor-Import; ASCII-Ausweichen soll entfallen.
+**AP-72·S1 (Encoding-Hygiene-Guard) ist erledigt (v0.68.1)** — Befund: das Repo war bereits mojibake-/BOM-frei, S1 wurde daher auf reine Prävention umgescopt (Guard-Test). Offen bleibt nur die Laufzeit-Scheibe:
 
-- **AP-72·S1** — **Mojibake-Bereinigung + UTF-8-ohne-BOM-Invariante**: repo-weit `â†’`/`Ã¼`/… reparieren; alle `.py`/`.js`/`.html` als UTF-8 ohne BOM; Test-/CI-Guard, der Nicht-UTF-8-Bytes ablehnt. **Aufwand S.**
 - **AP-72·S2** — **Laufzeit-UTF-8**: `PYTHONUTF8=1` / `-X utf8` in `run.sh`/`run.ps1`, `stdout`/`stderr` `reconfigure(encoding="utf-8")` — dann sind `→ ✓ ⚠ —` sicher nutzbar. **Aufwand S.**
 
 ### Quell-Dokumentation & Doku-Packaging
@@ -69,6 +68,10 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 ---
 
 ## Erledigte Arbeitspakete
+
+**v0.68.1** (2026-07-02):
+
+- **AP-72·S1** — Encoding-Hygiene-Guard: neuer pytest (`tests/test_encoding_hygiene.py`) prüft alle getrackten Code-Dateien (`.py/.js/.html/.css/.sh/.ps1`, ohne generierte `site/`+`build/`) auf gültiges UTF-8, fehlendes BOM und die Doppelkodierungs-(Mojibake-)Signatur `[Â/Ã/â][0x80–0xBF]`; die Muster werden aus `chr()`-Codepoints gebaut, damit die Testdatei reines ASCII bleibt (kein Self-Flag), ein zweiter Test injiziert Mojibake/BOM als Detektions-Beweis. **Befund:** das Repo war bereits sauber (das besprochene Mojibake steckte nur im nie committeten Draft) → reine Prävention. Ein beabsichtigter Fall kam ans Licht: `run.ps1` trägt ein UTF-8-BOM (PowerShell-5.1-Deploy-Fix) → BOM auf `.ps1` erlaubt, sonst verboten. **Aufwand S** — v0.68.1
 
 **v0.68.0** (2026-07-02):
 

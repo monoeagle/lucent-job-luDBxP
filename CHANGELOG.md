@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.68.1] — 2026-07-02
+
+### Added
+- **Encoding-hygiene guard (AP-72·S1).** A new pytest (`tests/test_encoding_hygiene.py`) scans every
+  tracked code file (`.py/.js/.html/.css/.sh/.ps1`, excluding generated `site/`+`build/`) for valid
+  UTF-8, absence of a UTF-8 BOM, and absence of the double-encoding (mojibake) signature
+  `[Â/Ã/â][0x80–0xBF]`. The check is built from `chr()` code points so the test file itself stays pure
+  ASCII and never flags itself; a second test injects mojibake/BOM to prove the guard actually fires.
+  Repo-wide scan confirmed the codebase was already clean — this is pure regression prevention (the
+  mojibake we discussed lived only in an uncommitted draft). One real, intentional case surfaced:
+  `run.ps1` carries a UTF-8 BOM by design (PowerShell 5.1 reads BOM-less scripts as ANSI), so BOM is
+  permitted on `.ps1` and forbidden elsewhere.
+
 ## [0.68.0] — 2026-07-02
 
 ### Added
