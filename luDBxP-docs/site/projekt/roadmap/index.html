@@ -1256,9 +1256,8 @@
 <li><strong>AP-71·S4</strong> — MSSQL <strong>Named Instance</strong> (<code>host\INSTANCE</code>) + <strong>Windows-/Integrated-Auth</strong>. <strong>Aufwand M.</strong></li>
 </ul>
 <h3 id="encoding-utf-8">Encoding / UTF-8<a class="headerlink" href="#encoding-utf-8" title="Permanent link">&para;</a></h3>
-<p>Bestehende Quelldateien tragen Mojibake (doppelt kodierte Sequenzen wie <code>â†’</code> = „→", <code>Ã¼</code> = „ü") aus fehlerhaftem Editor-Import; ASCII-Ausweichen soll entfallen.</p>
+<p><strong>AP-72·S1 (Encoding-Hygiene-Guard) ist erledigt (v0.68.1)</strong> — Befund: das Repo war bereits mojibake-/BOM-frei, S1 wurde daher auf reine Prävention umgescopt (Guard-Test). Offen bleibt nur die Laufzeit-Scheibe:</p>
 <ul>
-<li><strong>AP-72·S1</strong> — <strong>Mojibake-Bereinigung + UTF-8-ohne-BOM-Invariante</strong>: repo-weit <code>â†’</code>/<code>Ã¼</code>/… reparieren; alle <code>.py</code>/<code>.js</code>/<code>.html</code> als UTF-8 ohne BOM; Test-/CI-Guard, der Nicht-UTF-8-Bytes ablehnt. <strong>Aufwand S.</strong></li>
 <li><strong>AP-72·S2</strong> — <strong>Laufzeit-UTF-8</strong>: <code>PYTHONUTF8=1</code> / <code>-X utf8</code> in <code>run.sh</code>/<code>run.ps1</code>, <code>stdout</code>/<code>stderr</code> <code>reconfigure(encoding="utf-8")</code> — dann sind <code>→ ✓ ⚠ —</code> sicher nutzbar. <strong>Aufwand S.</strong></li>
 </ul>
 <h3 id="quell-dokumentation-doku-packaging">Quell-Dokumentation &amp; Doku-Packaging<a class="headerlink" href="#quell-dokumentation-doku-packaging" title="Permanent link">&para;</a></h3>
@@ -1292,6 +1291,10 @@
 </ul>
 <hr />
 <h2 id="erledigte-arbeitspakete">Erledigte Arbeitspakete<a class="headerlink" href="#erledigte-arbeitspakete" title="Permanent link">&para;</a></h2>
+<p><strong>v0.68.1</strong> (2026-07-02):</p>
+<ul>
+<li><strong>AP-72·S1</strong> — Encoding-Hygiene-Guard: neuer pytest (<code>tests/test_encoding_hygiene.py</code>) prüft alle getrackten Code-Dateien (<code>.py/.js/.html/.css/.sh/.ps1</code>, ohne generierte <code>site/</code>+<code>build/</code>) auf gültiges UTF-8, fehlendes BOM und die Doppelkodierungs-(Mojibake-)Signatur <code>[Â/Ã/â][0x80–0xBF]</code>; die Muster werden aus <code>chr()</code>-Codepoints gebaut, damit die Testdatei reines ASCII bleibt (kein Self-Flag), ein zweiter Test injiziert Mojibake/BOM als Detektions-Beweis. <strong>Befund:</strong> das Repo war bereits sauber (das besprochene Mojibake steckte nur im nie committeten Draft) → reine Prävention. Ein beabsichtigter Fall kam ans Licht: <code>run.ps1</code> trägt ein UTF-8-BOM (PowerShell-5.1-Deploy-Fix) → BOM auf <code>.ps1</code> erlaubt, sonst verboten. <strong>Aufwand S</strong> — v0.68.1</li>
+</ul>
 <p><strong>v0.68.0</strong> (2026-07-02):</p>
 <ul>
 <li><strong>AP-70</strong> — Oracle-Verbindung per <strong>SID <em>oder</em> Service-Name</strong>: „Verbindungsart"-Dropdown in der Maske togglet ein einzelnes aktives Feld; <code>core/connection.py::build_url</code> erzeugt die SID über den <strong>URL-Pfad</strong> (<code>…/​&lt;SID&gt;</code> → <code>(CONNECT_DATA=(SID=…))</code>), nicht als <code>?sid=</code>-Query (kaputter DSN — empirisch gegen den <code>oracle+oracledb</code>-Dialekt verifiziert); Service-Name bleibt <code>?service_name=…</code>. <code>oracle_connect_type</code> fällt auf <code>service</code> zurück (rückwärtskompatibel), <code>sid</code>/<code>oracle_connect_type</code> persistieren (<code>_CONN_FIELDS</code>). Thin-Mode bleibt Default (kein <code>init_oracle_client</code>). Unit-Tests inkl. DSN-Assertion gegen die <code>?sid=</code>-Regression; JS per Playwright-Smoke. <strong>Aufwand S–M</strong> — v0.68.0</li>
