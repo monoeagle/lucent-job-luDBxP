@@ -1,18 +1,59 @@
 {
-  "generatedAt": "2026-07-02T01:06:40",
+  "generatedAt": "2026-07-02T17:54:46",
   "range": {
     "from": "2025-07-03",
     "to": "2026-07-02"
   },
   "byDay": {
     "2026-07-02": {
-      "commits": 4,
+      "commits": 12,
       "kinds": {
-        "other": 1,
-        "fix": 2,
-        "docs": 1
+        "other": 2,
+        "feat": 3,
+        "docs": 5,
+        "fix": 2
       },
       "list": [
+        {
+          "sha": "d7b9161",
+          "subject": "release: v0.68.0 — AP-70 Oracle SID/Service-Verbindung",
+          "kind": "other"
+        },
+        {
+          "sha": "a6aa639",
+          "subject": "feat(ap-70): Verbindungsmaske SID/Service-Umschalter (Oracle)",
+          "kind": "feat"
+        },
+        {
+          "sha": "7f53621",
+          "subject": "feat(ap-70): sid + oracle_connect_type in Persistenz-Whitelist",
+          "kind": "feat"
+        },
+        {
+          "sha": "a5d7792",
+          "subject": "feat(ap-70): build_url Oracle SID (Pfad-Form) + Service-Wahl",
+          "kind": "feat"
+        },
+        {
+          "sha": "c935489",
+          "subject": "docs(ap-70): Implementierungsplan (4 Tasks, TDD)",
+          "kind": "docs"
+        },
+        {
+          "sha": "1916681",
+          "subject": "docs(ap-70): Design-Spec Oracle SID/Service-Verbindung",
+          "kind": "docs"
+        },
+        {
+          "sha": "12fdfc7",
+          "subject": "docs(handoff): Session-18-Handoff auf v0.67.1-Stand (released + Windows-Fix + GitHub-Release + Deploy)",
+          "kind": "docs"
+        },
+        {
+          "sha": "511713e",
+          "subject": "docs: Kennzahlen frisch (Commits 500, 8 Kalendertage) + KPI-Zeile 19 (v0.67.1/Release) + oberflaeche SQL-Editor-Komponente",
+          "kind": "docs"
+        },
         {
           "sha": "226a389",
           "subject": "release: v0.67.1 — Fixes: SQL-Editor-Fehlerzeilen-Sichtbarkeit + Windows-Wheelhouse (cryptography abi3)",
@@ -2605,21 +2646,21 @@
     }
   },
   "stats": {
-    "totalCommits": 500,
+    "totalCommits": 508,
     "activeDays": 8,
     "longestStreak": 8,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 224
+        "count": 228
       },
       {
         "kind": "feat",
-        "count": 154
+        "count": 157
       },
       {
         "kind": "other",
-        "count": 51
+        "count": 52
       },
       {
         "kind": "fix",
@@ -2642,7 +2683,7 @@
         "count": 4
       }
     ],
-    "testCount": 468
+    "testCount": 475
   },
   "phases": []
 }

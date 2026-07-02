@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.67.1">
+        <meta name="description" content="Visueller Join-Pfad-Builder: vom FK-Graphen zum read-only SQL. · Python/Flask · v0.68.0">
       
       
         <meta name="author" content="LucentTools">
@@ -924,6 +924,39 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#verbindungs-adressierung-oracle-sidservice-dialekt-besonderheiten" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Verbindungs-Adressierung (Oracle SID/Service + Dialekt-Besonderheiten)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encoding-utf-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Encoding / UTF-8
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quell-dokumentation-doku-packaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Quell-Dokumentation &amp; Doku-Packaging
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#legacy-db-migration-reverse-engineering-konzept-legacy-db-migration-tooling" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1090,6 +1123,39 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#verbindungs-adressierung-oracle-sidservice-dialekt-besonderheiten" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Verbindungs-Adressierung (Oracle SID/Service + Dialekt-Besonderheiten)
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encoding-utf-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Encoding / UTF-8
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quell-dokumentation-doku-packaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Quell-Dokumentation &amp; Doku-Packaging
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#legacy-db-migration-reverse-engineering-konzept-legacy-db-migration-tooling" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1180,6 +1246,29 @@
 <li><strong>AP-35</strong> — <code>run.ps1</code>: leeres venv gilt fälschlich als „vollständig" (Folgefund
   aus AP-15; Fix wie in <code>run.sh</code>, signiertes Skript → eigene Windows-Session)</li>
 </ul>
+<h3 id="verbindungs-adressierung-oracle-sidservice-dialekt-besonderheiten">Verbindungs-Adressierung (Oracle SID/Service + Dialekt-Besonderheiten)<a class="headerlink" href="#verbindungs-adressierung-oracle-sidservice-dialekt-besonderheiten" title="Permanent link">&para;</a></h3>
+<p>Auslöser: eine echte Ziel-DB (<code>Configdb</code>) ist <strong>SID-adressiert</strong> (<code>jdbc:oracle:thin:@host:port:SID</code>). <strong>AP-70 (erledigt v0.68.0)</strong> macht SID/Service wählbar — die verbleibenden Adressierungsfälle folgen in AP-71.</p>
+<ul>
+<li><strong>AP-71</strong> — DB-Adressierungs-Matrix (<strong>Spike</strong>): enumeriert die offenen Adressierungsfälle je Dialekt und teilt sie in <strong>Klasse A</strong> (reiner Zusatz-Query-Param → ein generisches Feld) und <strong>Klasse B</strong> (echte Logik/UI → eigene Slice). Deliverable = die Matrix (als Referenz-Abschnitt + <code>CLAUDE.md</code>-„Bekannte Einschränkungen"). <strong>Aufwand S.</strong></li>
+<li><strong>AP-71·S1</strong> — „<strong>Erweiterte Parameter</strong>"-Feld in der Maske (Key/Value-Liste → Query-Passthrough in <code>build_url</code>); deckt PG <code>sslmode</code>/<code>search_path</code>, MySQL <code>charset</code>, Oracle Easy-Connect-Plus u. a. mit <em>einem</em> AP ab. <strong>Aufwand S.</strong></li>
+<li><strong>AP-71·S2</strong> — Oracle <strong>TNS-Alias</strong> / <code>tnsnames.ora</code> + <code>TNS_ADMIN</code>-Auflösung. <strong>Aufwand M.</strong></li>
+<li><strong>AP-71·S3</strong> — Oracle <strong>Wallet / mTLS</strong> (TCPS). <strong>Aufwand M–L, bedingt.</strong></li>
+<li><strong>AP-71·S4</strong> — MSSQL <strong>Named Instance</strong> (<code>host\INSTANCE</code>) + <strong>Windows-/Integrated-Auth</strong>. <strong>Aufwand M.</strong></li>
+</ul>
+<h3 id="encoding-utf-8">Encoding / UTF-8<a class="headerlink" href="#encoding-utf-8" title="Permanent link">&para;</a></h3>
+<p>Bestehende Quelldateien tragen Mojibake (doppelt kodierte Sequenzen wie <code>â†’</code> = „→", <code>Ã¼</code> = „ü") aus fehlerhaftem Editor-Import; ASCII-Ausweichen soll entfallen.</p>
+<ul>
+<li><strong>AP-72·S1</strong> — <strong>Mojibake-Bereinigung + UTF-8-ohne-BOM-Invariante</strong>: repo-weit <code>â†’</code>/<code>Ã¼</code>/… reparieren; alle <code>.py</code>/<code>.js</code>/<code>.html</code> als UTF-8 ohne BOM; Test-/CI-Guard, der Nicht-UTF-8-Bytes ablehnt. <strong>Aufwand S.</strong></li>
+<li><strong>AP-72·S2</strong> — <strong>Laufzeit-UTF-8</strong>: <code>PYTHONUTF8=1</code> / <code>-X utf8</code> in <code>run.sh</code>/<code>run.ps1</code>, <code>stdout</code>/<code>stderr</code> <code>reconfigure(encoding="utf-8")</code> — dann sind <code>→ ✓ ⚠ —</code> sicher nutzbar. <strong>Aufwand S.</strong></li>
+</ul>
+<h3 id="quell-dokumentation-doku-packaging">Quell-Dokumentation &amp; Doku-Packaging<a class="headerlink" href="#quell-dokumentation-doku-packaging" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>AP-73·S1</strong> — <strong>Docstring-/Synopsis-Standard je Funktion</strong> (PowerShell-<code>.SYNOPSIS</code>-artiger Header): Format je Sprache festlegen (Python-Docstring, JSDoc, PS comment-based help), dann backfillen. <strong>Aufwand M.</strong></li>
+<li><strong>AP-73·S2</strong> — <strong>API-Doku-Generierung je Sprache</strong> (Python via pdoc/Sphinx, JS via JSDoc, HTML, PS via PlatyPS) — lokal, NO-CDN. <strong>Aufwand M.</strong></li>
+<li><strong>AP-73·S3</strong> — generierte API-Doku in die <strong>LuDBxP-Docs-Site</strong> einbinden. <strong>Aufwand S.</strong></li>
+<li><strong>AP-73·S4</strong> — <strong>Packaging-Parität</strong>: Doku ins AppImage (Linux) + Doku-Zip mit gebauter Site für Windows (die unter Linux ins AppImage wandert). <strong>Aufwand M.</strong></li>
+<li><strong>AP-73·S5</strong> — <strong>Screenshots aktualisieren</strong> (nach allen UI-ändernden APs — muss zuletzt). <strong>Aufwand S.</strong></li>
+</ul>
 <h3 id="legacy-db-migration-reverse-engineering-konzept-legacy-db-migration-tooling">Legacy-DB-Migration / Reverse-Engineering (Konzept: <a href="../../../../docs/concepts/2026-06-28-legacy-db-migration-tooling/">Legacy-DB-Migration-Tooling</a>)<a class="headerlink" href="#legacy-db-migration-reverse-engineering-konzept-legacy-db-migration-tooling" title="Permanent link">&para;</a></h3>
 <p>Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering der Alt-DBs → sauberer, referenziell konsistenter Export → Überführung in ein neues Modell). Kernerkenntnis: produkt-übergreifende Links der Alt-Suite sind <strong>fachliche IDs, keine FKs</strong> — daher ist nicht „Cross-Schema-Join" der Hebel, sondern implied-FK-Erkennung + referenziell konsistentes Subsetting.</p>
 <ul>
@@ -1189,6 +1278,7 @@
 <p>Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen <strong>nicht</strong> an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:</p>
 <ul>
 <li><strong>AP-66</strong> — Views, die <strong>Prozeduren/Funktionen</strong> verwenden, auflösen (Konzept: <a href="../../../../docs/concepts/2026-06-29-views-with-routines-resolution/">Views mit Routinen</a>). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. <strong>Stufe 1 erledigt v0.57.0:</strong> <code>core/viewdeps.py::referenced_routines</code> extrahiert via sqlglot referenzierte Routine-Namen aus dem View-Definitionstext, gleicht gegen <code>schema.routines</code> ab (nur bestätigte Treffer, kein Built-in), befüllt <code>View.routines</code>; View-Detail zeigt „Verwendet Routinen"-Abschnitt, Sidebar-<code>ƒ</code>-Badge. <strong>Stufe 2 (M, offen):</strong> Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). <strong>Stufe 3 (XL, zurückgestellt):</strong> echte Daten-Lineage durch den PL/SQL-Body.</li>
+<li><strong>AP-74</strong> — Routinen/Prozeduren-<strong>Metadaten anreichern</strong> (Spike + Umsetzung): heute trägt <code>Routine(name, kind, sql)</code> nur Name/Art/Quelltext. Relevant darüber hinaus: <strong>Parameter</strong> (Name/Typ/IN-OUT/Default), <strong>Rückgabetyp</strong>, Overloads, Sprache, <code>DETERMINISTIC</code>, Package-Member, <strong>Abhängigkeiten</strong> (welche Tabellen/Views eine Routine nutzt — verzahnt mit AP-66·S2/S3-Lineage). Read-only, keine Join-Teilnahme. <strong>Aufwand M.</strong></li>
 </ul>
 <h3 id="sql-analyzer-tiefe">SQL-Analyzer-Tiefe<a class="headerlink" href="#sql-analyzer-tiefe" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1202,6 +1292,10 @@
 </ul>
 <hr />
 <h2 id="erledigte-arbeitspakete">Erledigte Arbeitspakete<a class="headerlink" href="#erledigte-arbeitspakete" title="Permanent link">&para;</a></h2>
+<p><strong>v0.68.0</strong> (2026-07-02):</p>
+<ul>
+<li><strong>AP-70</strong> — Oracle-Verbindung per <strong>SID <em>oder</em> Service-Name</strong>: „Verbindungsart"-Dropdown in der Maske togglet ein einzelnes aktives Feld; <code>core/connection.py::build_url</code> erzeugt die SID über den <strong>URL-Pfad</strong> (<code>…/​&lt;SID&gt;</code> → <code>(CONNECT_DATA=(SID=…))</code>), nicht als <code>?sid=</code>-Query (kaputter DSN — empirisch gegen den <code>oracle+oracledb</code>-Dialekt verifiziert); Service-Name bleibt <code>?service_name=…</code>. <code>oracle_connect_type</code> fällt auf <code>service</code> zurück (rückwärtskompatibel), <code>sid</code>/<code>oracle_connect_type</code> persistieren (<code>_CONN_FIELDS</code>). Thin-Mode bleibt Default (kein <code>init_oracle_client</code>). Unit-Tests inkl. DSN-Assertion gegen die <code>?sid=</code>-Regression; JS per Playwright-Smoke. <strong>Aufwand S–M</strong> — v0.68.0</li>
+</ul>
 <p><strong>v0.1.0</strong> (2026-06-25): Core-Domänenmodell, Loader, FK-Graph, Pathfinder,
 SQL-Generator, Flask-API, Filter-UI, Graph-Visualisierung, implizite FKs,
 3-Panel-Layout, Datenvorschau, Views, Verbindungs-Manager, Demo-CMDB,
