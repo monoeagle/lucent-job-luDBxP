@@ -4,7 +4,7 @@ Keeping URL assembly here (rather than in the browser) centralizes driver
 selection and credential encoding. Passwords are URL-encoded so special
 characters do not break the URL.
 """
-from urllib.parse import quote_plus, urlencode
+from urllib.parse import quote, quote_plus, urlencode
 
 # db_type -> SQLAlchemy dialect+driver prefix for server databases.
 _DRIVERS = {
@@ -90,8 +90,9 @@ def build_url(params: dict) -> str:
                 raise ValueError("SID fehlt.")
             # SID belongs in the URL path — the ?sid= query form yields a broken
             # DSN (dsn='host', sid as a stray kwarg); the path form produces a
-            # correct (CONNECT_DATA=(SID=...)) descriptor.
-            return f"{_DRIVERS['oracle']}://{auth}{host}:{port}/{quote_plus(sid)}"
+            # correct (CONNECT_DATA=(SID=...)) descriptor. Path-segment encoding
+            # (quote, not quote_plus — a space must be %20, not '+', in a path).
+            return f"{_DRIVERS['oracle']}://{auth}{host}:{port}/{quote(sid, safe='')}"
         if connect_type != "service":
             raise ValueError(f"Unbekannte Oracle-Verbindungsart: {connect_type!r}")
         service = (params.get("service_name") or "").strip()

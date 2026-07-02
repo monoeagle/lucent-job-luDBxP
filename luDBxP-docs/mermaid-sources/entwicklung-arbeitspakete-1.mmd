@@ -42,8 +42,14 @@ flowchart TB
         V5["AP-22\nImplizite FKs"]
         V6["AP-52\nMulti-Schema"]
         V7["AP-53\nOracle"]
+        V8["AP-70\nOracle SID/Service + Thin-Fix"]
+        V9["AP-71\nDB-Adressierungs-Matrix"]
+        V10["AP-71·S1\nErweiterte-Parameter-Feld"]
+        V11["AP-71·S2\nOracle TNS-Alias/TNS_ADMIN"]
+        V12["AP-71·S3\nOracle Wallet/mTLS"]
+        V13["AP-71·S4\nMSSQL Named Instance+Win-Auth"]
         V3 --> V1
-        V1 ~~~ V2 ~~~ V5 ~~~ V4 ~~~ V6 ~~~ V7
+        V1 ~~~ V2 ~~~ V5 ~~~ V4 ~~~ V6 ~~~ V7 ~~~ V8 ~~~ V9 ~~~ V10 ~~~ V11 ~~~ V12 ~~~ V13
     end
 
     %% ── C3 · SQL-Builder & SQL-Ausgabe ──────────────────────────────────
@@ -133,13 +139,15 @@ flowchart TB
         B7["AP-31\nTerminal-Server"]
         B8["AP-33\nLogging sauber"]
         B9["AP-34\nTray-Icon-Launcher"]
+        B10["AP-72·S1\nMojibake→UTF-8 (ohne BOM)"]
+        B11["AP-72·S2\nLaufzeit-UTF-8"]
         B2 --> B3
         B3 --> B4
         B3 --> B5
         B8 --> B7
         B7 --> B9
         B8 --> B9
-        B1 ~~~ B9
+        B1 ~~~ B9 ~~~ B10 ~~~ B11
     end
 
     %% ── C7 · Doku & Prozess ──────────────────────────────────────────────
@@ -151,7 +159,12 @@ flowchart TB
         K5["AP-24\nSession-KPIs"]
         K4["AP-19\n.pattern_transfer"]
         K6["AP-68\nRoadmap-Swimlane"]
-        K1 ~~~ K2 ~~~ K3 ~~~ K5 ~~~ K4 ~~~ K6
+        K7["AP-73·S1\nDocstring/Synopsis-Standard"]
+        K8["AP-73·S2\nAPI-Doku je Sprache"]
+        K9["AP-73·S3\nAPI-Doku in Site"]
+        K10["AP-73·S4\nDoku-Packaging AppImage/Win-Zip"]
+        K11["AP-73·S5\nScreenshots erneuern"]
+        K1 ~~~ K2 ~~~ K3 ~~~ K5 ~~~ K4 ~~~ K6 ~~~ K7 ~~~ K8 ~~~ K9 ~~~ K10 ~~~ K11
     end
 
     %% ── C8 · Legacy-DB-Migration / Export (geplant) ──────────────────────
@@ -176,7 +189,8 @@ flowchart TB
         O5["AP-67·MSSQL\nGrundlage (Synonyme + Demo)"]
         O6["AP-67·Oracle\nOracle-Demo-CMDB"]
         O4b["AP-66·S2/S3\nViews→Routinen (Rest)"]
-        O1 ~~~ O2 ~~~ O2b ~~~ O3 ~~~ O4 ~~~ O5 ~~~ O6 ~~~ O4b
+        O7["AP-74\nRoutinen-Metadaten"]
+        O1 ~~~ O2 ~~~ O2b ~~~ O3 ~~~ O4 ~~~ O5 ~~~ O6 ~~~ O4b ~~~ O7
     end
 
     %% ── C10 · Verbindungs-UX & Demo-Daten (geplant) ──────────────────────
@@ -219,6 +233,10 @@ flowchart TB
     class M2 done
     class M1 done
     class O1,O2,O2b,O3,O4,O5,O6 done
-    class O4b plan
+    class O4b,O7 plan
     class P2,P3 plan
     class P1,P4 done
+    class V8 done
+    class V9,V10,V11,V12,V13 plan
+    class B10,B11 plan
+    class K7,K8,K9,K10,K11 plan

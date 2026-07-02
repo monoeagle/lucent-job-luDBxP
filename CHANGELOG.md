@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.68.0] — 2026-07-02
+
+### Added
+- **Oracle connections by SID *or* Service-Name (AP-70).** The connection mask gains a
+  "Verbindungsart" dropdown that toggles a single active field — Service-Name **or** SID. `build_url`
+  emits the SID via the **URL path** (`oracle+oracledb://user:pw@host:port/<SID>` →
+  `(CONNECT_DATA=(SID=…))`), not a `?sid=` query param (which yields a broken DSN — verified against
+  the SQLAlchemy `oracle+oracledb` dialect). Service-Name stays `?service_name=…`. `oracle_connect_type`
+  defaults to `service`, so saved connections created before this feature keep working unchanged; the
+  two new fields (`sid`, `oracle_connect_type`) persist with the connection. Thin-Mode stays the default
+  (no `init_oracle_client`). Motivated by a real target DB addressed by SID.
+
 ## [0.67.1] — 2026-07-02
 
 ### Fixed

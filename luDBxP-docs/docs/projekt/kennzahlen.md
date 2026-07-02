@@ -1,6 +1,6 @@
 # Projekt-Kennzahlen
 
-Stand **v0.67.1** · 2026-07-01 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
+Stand **v0.68.0** · 2026-07-02 · Branch `master` · Python/Flask · read-only Join-Pfad-Builder.
 
 Die <span class="kz-tag kz-tag--m">gemessen</span>-Werte (Version, Tests, Coverage, Docstrings, Commits, Sessions)
 sind am 2026-07-01 neu erhoben (aus `git`, `pytest --cov` und AST-Zählung). Die
@@ -83,9 +83,9 @@ AP&#8209;19 *Meta*). Autoritative, gepflegte Liste: [Roadmap](roadmap.md).
 |---|---|---|---|
 | Umsetzung (Roadmap) | ≈ 89 % | ≈ 59 erledigt · ≈ 5 offener Backlog (AP-56/57, AP-61/62, AP-19/35) · Quelle: `roadmap.md` | gemessen |
 | Commits | 500 | 2026-06-25 → 07-02 · 8 Kalendertage · 18 Sessions · FF-Merges je AP (SDD-Branches) | gemessen |
-| Aktuelle Version | v0.67.1 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 18 Sessions | gemessen |
+| Aktuelle Version | v0.68.0 | SemVer je AP (`sync_version.py`) · von 0.1.0 in 18 Sessions | gemessen |
 | Testabdeckung | 88 % | 2067 Statements, 241 ungedeckt · `pytest --cov` (core/web/launcher/config/app) | gemessen |
-| Tests | 459 | alle grün · 11 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~12 s Laufzeit | gemessen |
+| Tests | 466 | alle grün · 11 skipped (optionale Oracle/MSSQL/PG-Live-Tests) · ~16 s Laufzeit | gemessen |
 | Doku-Abdeckung (Module) | 93 % | 26/28 Python-Module mit Modul-Docstring (AST-Zählung) | gemessen |
 | Doku-Abdeckung (öffentl. API) | 62 % | 60/96 öffentliche Funktionen/Klassen mit Docstring · gesamt 93/143 ≈ 65 % | gemessen |
 | Effort (COCOMO) | ~20 PM | organic · E = 2,4·KSLOC^1,05 · T ≈ 7,8 Monate Kalender | Baseline |

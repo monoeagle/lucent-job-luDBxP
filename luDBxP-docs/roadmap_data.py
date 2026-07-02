@@ -102,6 +102,7 @@ APS = [
     {"ap": "AP-67 Slice 2a", "label": "reiches Oracle-Schema", "theme": "objekte", "date": "2026-07-01", "status": "done"},
     {"ap": "AP-68", "label": "Roadmap-Swimlane", "theme": "doku", "date": "2026-07-01", "status": "done"},
     {"ap": "AP-69·A", "label": "SQL-Editor-Komponente", "theme": "sqlbuilder", "date": "2026-07-01", "status": "done"},
+    {"ap": "AP-70", "label": "Oracle SID/Service-Verbindung", "theme": "backends", "date": "2026-07-02", "status": "done"},
     # … alle erledigten APs (status="done") oben + offene (status="open") unten …
     {"ap": "AP-35", "label": "run.ps1 leeres-venv-Fix", "theme": "betrieb", "date": "2026-06-28", "status": "open"},
     {"ap": "AP-31", "label": "Idle-Shutdown/Deploy (Rest)", "theme": "betrieb", "date": "2026-06-29", "status": "open"},
@@ -111,4 +112,21 @@ APS = [
     {"ap": "AP-66·S2/S3", "label": "Views→Routinen (Rest)", "theme": "objekte", "date": "2026-07-10", "status": "open"},
     {"ap": "AP-61", "label": "Demo-CMDB → volle CMDB", "theme": "verbux", "date": "2026-07-11", "status": "open"},
     {"ap": "AP-62", "label": "Passwort-Keyring", "theme": "verbux", "date": "2026-07-12", "status": "open"},
+    # Verbindungs-Adressierung (Oracle SID/Service + Dialekt-Besonderheiten) — AP-70 erledigt (s. o.)
+    {"ap": "AP-71", "label": "DB-Adressierungs-Matrix", "theme": "backends", "date": "2026-07-04", "status": "open"},
+    {"ap": "AP-71·S1", "label": "Erweiterte-Parameter-Feld", "theme": "backends", "date": "2026-07-05", "status": "open"},
+    {"ap": "AP-71·S2", "label": "Oracle TNS-Alias/TNS_ADMIN", "theme": "backends", "date": "2026-07-07", "status": "open"},
+    {"ap": "AP-71·S3", "label": "Oracle Wallet/mTLS", "theme": "backends", "date": "2026-07-08", "status": "open"},
+    {"ap": "AP-71·S4", "label": "MSSQL Named Instance+Win-Auth", "theme": "backends", "date": "2026-07-09", "status": "open"},
+    # Encoding / UTF-8
+    {"ap": "AP-72·S1", "label": "Mojibake→UTF-8 (ohne BOM)", "theme": "betrieb", "date": "2026-07-03", "status": "open"},
+    {"ap": "AP-72·S2", "label": "Laufzeit-UTF-8", "theme": "betrieb", "date": "2026-07-05", "status": "open"},
+    # Routinen/Prozeduren-Metadaten
+    {"ap": "AP-74", "label": "Routinen-Metadaten", "theme": "objekte", "date": "2026-07-10", "status": "open"},
+    # Quell-Dokumentation & Doku-Packaging
+    {"ap": "AP-73·S1", "label": "Docstring/Synopsis-Standard", "theme": "doku", "date": "2026-07-14", "status": "open"},
+    {"ap": "AP-73·S2", "label": "API-Doku je Sprache", "theme": "doku", "date": "2026-07-15", "status": "open"},
+    {"ap": "AP-73·S3", "label": "API-Doku in Site", "theme": "doku", "date": "2026-07-16", "status": "open"},
+    {"ap": "AP-73·S4", "label": "Doku-Packaging AppImage/Win-Zip", "theme": "doku", "date": "2026-07-17", "status": "open"},
+    {"ap": "AP-73·S5", "label": "Screenshots erneuern", "theme": "doku", "date": "2026-07-18", "status": "open"},
 ]

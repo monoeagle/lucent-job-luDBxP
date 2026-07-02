@@ -18,6 +18,31 @@
 - **AP-35** — `run.ps1`: leeres venv gilt fälschlich als „vollständig" (Folgefund
   aus AP-15; Fix wie in `run.sh`, signiertes Skript → eigene Windows-Session)
 
+### Verbindungs-Adressierung (Oracle SID/Service + Dialekt-Besonderheiten)
+
+Auslöser: eine echte Ziel-DB (`Configdb`) ist **SID-adressiert** (`jdbc:oracle:thin:@host:port:SID`). **AP-70 (erledigt v0.68.0)** macht SID/Service wählbar — die verbleibenden Adressierungsfälle folgen in AP-71.
+
+- **AP-71** — DB-Adressierungs-Matrix (**Spike**): enumeriert die offenen Adressierungsfälle je Dialekt und teilt sie in **Klasse A** (reiner Zusatz-Query-Param → ein generisches Feld) und **Klasse B** (echte Logik/UI → eigene Slice). Deliverable = die Matrix (als Referenz-Abschnitt + `CLAUDE.md`-„Bekannte Einschränkungen"). **Aufwand S.**
+  - **AP-71·S1** — „**Erweiterte Parameter**"-Feld in der Maske (Key/Value-Liste → Query-Passthrough in `build_url`); deckt PG `sslmode`/`search_path`, MySQL `charset`, Oracle Easy-Connect-Plus u. a. mit *einem* AP ab. **Aufwand S.**
+  - **AP-71·S2** — Oracle **TNS-Alias** / `tnsnames.ora` + `TNS_ADMIN`-Auflösung. **Aufwand M.**
+  - **AP-71·S3** — Oracle **Wallet / mTLS** (TCPS). **Aufwand M–L, bedingt.**
+  - **AP-71·S4** — MSSQL **Named Instance** (`host\INSTANCE`) + **Windows-/Integrated-Auth**. **Aufwand M.**
+
+### Encoding / UTF-8
+
+Bestehende Quelldateien tragen Mojibake (doppelt kodierte Sequenzen wie `â†’` = „→", `Ã¼` = „ü") aus fehlerhaftem Editor-Import; ASCII-Ausweichen soll entfallen.
+
+- **AP-72·S1** — **Mojibake-Bereinigung + UTF-8-ohne-BOM-Invariante**: repo-weit `â†’`/`Ã¼`/… reparieren; alle `.py`/`.js`/`.html` als UTF-8 ohne BOM; Test-/CI-Guard, der Nicht-UTF-8-Bytes ablehnt. **Aufwand S.**
+- **AP-72·S2** — **Laufzeit-UTF-8**: `PYTHONUTF8=1` / `-X utf8` in `run.sh`/`run.ps1`, `stdout`/`stderr` `reconfigure(encoding="utf-8")` — dann sind `→ ✓ ⚠ —` sicher nutzbar. **Aufwand S.**
+
+### Quell-Dokumentation & Doku-Packaging
+
+- **AP-73·S1** — **Docstring-/Synopsis-Standard je Funktion** (PowerShell-`.SYNOPSIS`-artiger Header): Format je Sprache festlegen (Python-Docstring, JSDoc, PS comment-based help), dann backfillen. **Aufwand M.**
+- **AP-73·S2** — **API-Doku-Generierung je Sprache** (Python via pdoc/Sphinx, JS via JSDoc, HTML, PS via PlatyPS) — lokal, NO-CDN. **Aufwand M.**
+- **AP-73·S3** — generierte API-Doku in die **LuDBxP-Docs-Site** einbinden. **Aufwand S.**
+- **AP-73·S4** — **Packaging-Parität**: Doku ins AppImage (Linux) + Doku-Zip mit gebauter Site für Windows (die unter Linux ins AppImage wandert). **Aufwand M.**
+- **AP-73·S5** — **Screenshots aktualisieren** (nach allen UI-ändernden APs — muss zuletzt). **Aufwand S.**
+
 ### Legacy-DB-Migration / Reverse-Engineering (Konzept: [Legacy-DB-Migration-Tooling](../../../docs/concepts/2026-06-28-legacy-db-migration-tooling.md))
 
 Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering der Alt-DBs → sauberer, referenziell konsistenter Export → Überführung in ein neues Modell). Kernerkenntnis: produkt-übergreifende Links der Alt-Suite sind **fachliche IDs, keine FKs** — daher ist nicht „Cross-Schema-Join" der Hebel, sondern implied-FK-Erkennung + referenziell konsistentes Subsetting.
@@ -29,6 +54,7 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 Über Tabellen/Views hinaus weitere SQL-Objekte read-only reflektieren und anzeigen (nehmen **nicht** an Join-Pfaden teil — informativ). Gestuft nach Reflektions-Mechanismus + Testbarkeit:
 
 - **AP-66** — Views, die **Prozeduren/Funktionen** verwenden, auflösen (Konzept: [Views mit Routinen](../../../docs/concepts/2026-06-29-views-with-routines-resolution.md)). Oracle/HCMX: Views rufen oft PL/SQL-Funktionen — die Logik steckt dann in der Routine, nicht in Joins/FKs. **Stufe 1 erledigt v0.57.0:** `core/viewdeps.py::referenced_routines` extrahiert via sqlglot referenzierte Routine-Namen aus dem View-Definitionstext, gleicht gegen `schema.routines` ab (nur bestätigte Treffer, kein Built-in), befüllt `View.routines`; View-Detail zeigt „Verwendet Routinen"-Abschnitt, Sidebar-`ƒ`-Badge. **Stufe 2 (M, offen):** Routine reflektieren (Signatur/Quelltext, koppelt an AP-63·S3). **Stufe 3 (XL, zurückgestellt):** echte Daten-Lineage durch den PL/SQL-Body.
+- **AP-74** — Routinen/Prozeduren-**Metadaten anreichern** (Spike + Umsetzung): heute trägt `Routine(name, kind, sql)` nur Name/Art/Quelltext. Relevant darüber hinaus: **Parameter** (Name/Typ/IN-OUT/Default), **Rückgabetyp**, Overloads, Sprache, `DETERMINISTIC`, Package-Member, **Abhängigkeiten** (welche Tabellen/Views eine Routine nutzt — verzahnt mit AP-66·S2/S3-Lineage). Read-only, keine Join-Teilnahme. **Aufwand M.**
 
 ### SQL-Analyzer-Tiefe
 
@@ -43,6 +69,10 @@ Werkzeug-Block für die Ablösung einer Alt-Automatisierung (Reverse-Engineering
 ---
 
 ## Erledigte Arbeitspakete
+
+**v0.68.0** (2026-07-02):
+
+- **AP-70** — Oracle-Verbindung per **SID *oder* Service-Name**: „Verbindungsart"-Dropdown in der Maske togglet ein einzelnes aktives Feld; `core/connection.py::build_url` erzeugt die SID über den **URL-Pfad** (`…/​<SID>` → `(CONNECT_DATA=(SID=…))`), nicht als `?sid=`-Query (kaputter DSN — empirisch gegen den `oracle+oracledb`-Dialekt verifiziert); Service-Name bleibt `?service_name=…`. `oracle_connect_type` fällt auf `service` zurück (rückwärtskompatibel), `sid`/`oracle_connect_type` persistieren (`_CONN_FIELDS`). Thin-Mode bleibt Default (kein `init_oracle_client`). Unit-Tests inkl. DSN-Assertion gegen die `?sid=`-Regression; JS per Playwright-Smoke. **Aufwand S–M** — v0.68.0
 
 **v0.1.0** (2026-06-25): Core-Domänenmodell, Loader, FK-Graph, Pathfinder,
 SQL-Generator, Flask-API, Filter-UI, Graph-Visualisierung, implizite FKs,
