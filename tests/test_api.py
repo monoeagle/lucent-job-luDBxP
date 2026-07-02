@@ -68,6 +68,22 @@ def test_mssql_connection_persists_encrypt_and_trust(client, tmp_path, monkeypat
     assert client.get("/api/connections").get_json()["connections"] == []
 
 
+def test_oracle_connection_persists_sid_and_connect_type(client, tmp_path, monkeypatch):
+    """AP-70: Oracle sid + oracle_connect_type werden mitgespeichert."""
+    monkeypatch.setenv("LUCENT_CONFIG_DIR", str(tmp_path))
+    save = client.post("/api/connections", json={
+        "name": "ora_sid", "db_type": "oracle", "host": "h", "port": 1521,
+        "sid": "Configdb", "oracle_connect_type": "sid",
+        "user": "demo", "password": "SECRET"})
+    assert save.status_code == 200
+    conns = client.get("/api/connections").get_json()["connections"]
+    saved = next(c for c in conns if c["name"] == "ora_sid")
+    assert saved.get("sid") == "Configdb"
+    assert saved.get("oracle_connect_type") == "sid"
+    assert "password" not in saved
+    client.delete("/api/connections", json={"name": "ora_sid"})
+
+
 def test_connect_from_saved_sqlite_round_trip(client, demo_url, tmp_path, monkeypatch):
     # AP-10: the topbar picker connects directly from a saved (passwordless)
     # connection. Round-trip: save -> list -> connect using the saved entry
