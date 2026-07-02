@@ -1,19 +1,49 @@
 {
-  "generatedAt": "2026-07-02T17:54:46",
+  "generatedAt": "2026-07-02T19:09:49",
   "range": {
     "from": "2025-07-03",
     "to": "2026-07-02"
   },
   "byDay": {
     "2026-07-02": {
-      "commits": 12,
+      "commits": 18,
       "kinds": {
-        "other": 2,
-        "feat": 3,
-        "docs": 5,
-        "fix": 2
+        "fix": 3,
+        "other": 3,
+        "feat": 4,
+        "docs": 8
       },
       "list": [
+        {
+          "sha": "1718f25",
+          "subject": "fix(ap-72-s1): Review — CP1252-Mojibake + git-ls-files -z",
+          "kind": "fix"
+        },
+        {
+          "sha": "97e363b",
+          "subject": "release: v0.68.1 — AP-72·S1 Encoding-Hygiene-Guard",
+          "kind": "other"
+        },
+        {
+          "sha": "e9c2559",
+          "subject": "feat(ap-72-s1): Encoding-Hygiene-Guard (UTF-8/kein BOM/kein Mojibake)",
+          "kind": "feat"
+        },
+        {
+          "sha": "19d8bf1",
+          "subject": "docs(ap-72-s1): Implementierungsplan (Guard-Test + Release)",
+          "kind": "docs"
+        },
+        {
+          "sha": "73ca092",
+          "subject": "docs(ap-72-s1): Design-Spec Encoding-Hygiene-Guard",
+          "kind": "docs"
+        },
+        {
+          "sha": "a6d698a",
+          "subject": "docs(site): Build v0.68.0 (AP-70 + Aktivitaets-JSON frisch)",
+          "kind": "docs"
+        },
         {
           "sha": "d7b9161",
           "subject": "release: v0.68.0 — AP-70 Oracle SID/Service-Verbindung",
@@ -2646,25 +2676,25 @@
     }
   },
   "stats": {
-    "totalCommits": 508,
+    "totalCommits": 514,
     "activeDays": 8,
     "longestStreak": 8,
     "topKinds": [
       {
         "kind": "docs",
-        "count": 228
+        "count": 231
       },
       {
         "kind": "feat",
-        "count": 157
+        "count": 158
       },
       {
         "kind": "other",
-        "count": 52
+        "count": 53
       },
       {
         "kind": "fix",
-        "count": 46
+        "count": 47
       },
       {
         "kind": "test",
@@ -2683,7 +2713,7 @@
         "count": 4
       }
     ],
-    "testCount": 475
+    "testCount": 477
   },
   "phases": []
 }
