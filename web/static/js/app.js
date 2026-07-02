@@ -2015,10 +2015,23 @@ function connFieldsHtml(dbType, c) {
     `placeholder="localhost" value="${esc(c.host || "")}"></div>` +
     `<div class="row"><label>Port</label><input id="cf_port" type="number" ` +
     `value="${esc(port)}"></div>`;
-  // Oracle uses service_name instead of database
+  // Oracle: SID oder Service-Name wählbar (AP-70). Beide Felder bleiben im DOM;
+  // das inaktive ist ausgeblendet, damit ein Umschalten die Eingaben nicht verwirft.
   if (dbType === "oracle") {
-    html += `<div class="row"><label>Service-Name</label><input id="cf_service_name" ` +
-      `type="text" placeholder="XEPDB1" value="${esc(c.service_name || "")}"></div>`;
+    const ct = c.oracle_connect_type || "service";
+    const sel = (v) => (ct === v ? " selected" : "");
+    const hide = (v) => (ct === v ? "" : ' style="display:none"');
+    html +=
+      `<div class="row"><label>Verbindungsart</label>` +
+      `<select id="cf_oracle_connect_type">` +
+      `<option value="service"${sel("service")}>Service-Name</option>` +
+      `<option value="sid"${sel("sid")}>SID</option></select></div>` +
+      `<div class="row" id="cf_row_service_name"${hide("service")}>` +
+      `<label>Service-Name</label><input id="cf_service_name" type="text" ` +
+      `placeholder="XEPDB1" value="${esc(c.service_name || "")}"></div>` +
+      `<div class="row" id="cf_row_sid"${hide("sid")}>` +
+      `<label>SID</label><input id="cf_sid" type="text" ` +
+      `placeholder="ORCL" value="${esc(c.sid || "")}"></div>`;
   } else {
     html += `<div class="row"><label>Datenbank</label><input id="cf_database" type="text" ` +
       `value="${esc(c.database || "")}"></div>`;
@@ -2044,6 +2057,14 @@ function connFieldsHtml(dbType, c) {
 
 function renderConnFields(c) {
   $("conn_fields").innerHTML = connFieldsHtml($("conn_type").value, c);
+  const sel = $("cf_oracle_connect_type");
+  if (sel) {
+    sel.addEventListener("change", () => {
+      const isSid = sel.value === "sid";
+      $("cf_row_service_name").style.display = isSid ? "none" : "";
+      $("cf_row_sid").style.display = isSid ? "" : "none";
+    });
+  }
 }
 
 function formParams() {
@@ -2053,9 +2074,12 @@ function formParams() {
     db_type: t, host: $("cf_host").value, port: $("cf_port").value,
     user: $("cf_user").value, password: $("cf_password").value,
   };
-  // Oracle uses service_name; all other network types use database
-  if (t === "oracle") p.service_name = $("cf_service_name").value;
-  else p.database = $("cf_database").value;
+  // Oracle sendet Verbindungsart + beide Werte; build_url wählt anhand des Typs.
+  if (t === "oracle") {
+    p.oracle_connect_type = $("cf_oracle_connect_type").value;
+    p.service_name = $("cf_service_name").value;
+    p.sid = $("cf_sid").value;
+  } else p.database = $("cf_database").value;
   if (t === "mssql") {
     p.encrypt = $("cf_encrypt") ? $("cf_encrypt").value : "";
     p.trust_server_certificate = $("cf_trust") ? $("cf_trust").value : "";
